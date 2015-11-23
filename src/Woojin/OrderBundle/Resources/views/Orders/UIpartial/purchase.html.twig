@@ -1,0 +1,757 @@
+{% extends 'WoojinBaseBundle:Base:woojin.layout.html.twig' %}
+		
+{% block form %}
+
+{% if app.user|has_auth('PURCHASE') %}
+<script>
+window.phone_length = 10;
+</script>
+
+<div>
+	<div class="purType">
+		<label class="vader">進貨方式:</label>
+		<input type="radio" name="purchasetype" id="purRadio1" checked="checked" vale="purNormal"/>
+		<label for="purRadio1"><span data-icon="B">一般進貨</span></label>
+		<input type="radio" name="purchasetype" id="purRadio2" value="purConsign"/>
+		<label for="purRadio2"><span data-icon="X">客戶寄賣</span></label>
+	</div>	
+
+	<div class="customMobil">
+		<label class="vader">*電話號碼:</label>
+		<input type="text" name="mobil" />
+	</div>
+
+	<div>
+		<label class="vader" for="sn">*商品序號:</label>
+		<input type="text" id="sn" name="sn" value="{{ app.user.store.sn }}" class="numeric "readonly /><br />
+		<input type="text" id="cost" name="cost" class="numeric" placeholder="成本" /><br />
+		<input type="text" id="price" name="price" class="numeric" placeholder="售價" />
+	</div>
+
+	<div>
+		<label class="vader" for="level">商品新舊:</label>
+		<select name="level" id="level">
+			{% for level in levels %}
+				<option value="{{ level.id }}">{{ level.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div>
+		<label class="vader" for="brand">*選擇品牌:</label>
+		
+		<select name="brand" id="brand">
+			<option data-ratio="1" value="0">請選擇</option>
+			
+			{% for brand in brands %}
+				<option data-ratio="{{ brand.ratio }}" value="{{ brand.id }}">{{ brand.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div>
+		<label class="vader" for="web_price">*網路售價:</label>
+		<input type="text" id="web_price" name="webPrice" class="numberic" placeholder="網路售價" />
+	</div>
+
+	<div class="nFeedBack hidden">
+		<label class="vader">*寄賣實拿金額</label>
+		<input type="text" name="nFeedBack" class="numeric" placeholder="寄賣商品" value="" readonly />
+	</div>
+
+	<div>
+		<label class="vader" for="pattern">*款式:</label>
+
+		<select name="pattern" id="pattern">
+			<option value="0">請選擇</option>
+
+			{% for pattern in patterns %}
+				<option value="{{ pattern.id }}">{{ pattern.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div>
+		<label class="vader" for="seoSlogan">選擇關鍵字:</label>
+		
+		<select name="seoSlogan" id="seoSlogan">
+			<option value="0">請選擇</option>
+			
+			{% for seoSlogan in seoSlogans %}
+				<option value="{{ seoSlogan.id }}">{{ seoSlogan.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div>
+		<label class="vader" for="seoSlogan2">選擇關鍵字2:</label>
+		
+		<select name="seoSlogan2" id="seoSlogan2">
+			<option value="0">請選擇</option>
+			
+			{% for seoSlogan in seoSlogans %}
+				<option value="{{ seoSlogan.id }}">{{ seoSlogan.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div>
+		<label class="vader" for="seoWord">手動輸入關鍵字:</label>
+		<input type="text" id="seoWord" name="seoWord" />
+	</div>
+
+	<div>
+		<label class="vader" for="name">*商品名稱:</label>
+		<input type="text" id="name" name="name" onKeyPress="return preventEnterSubmit();" placeholder="至少三個字"/>
+	</div>
+
+	<div>
+		<label class="vader" id="model">*型號:</label>
+		<input type="text" id="model" name="model" />
+	</div>
+
+	<div>
+		<label class="vader" for="org_sn">品牌序號:</label>
+		<input type="text" id="org_sn" name="org_sn" placeholder="可不填寫" />
+	</div>
+
+	<div>
+		<label class="vader" id="colorSn">色號:</label>
+		<input type="text" id="colorSn" name="colorSn" />
+	</div>
+
+	<div>
+		<label class="vader" for="customSn">自定義品牌內碼:</label>
+		<input type="text" id="customSn" name="customSn" placeholder="自定義品牌內碼" />
+	</div>
+
+	<div style="width: 80%;">
+		<label id="color" class="vader">顏色<strong class="colorName" style="font-size: 27px;"></strong></label>
+
+		{% for color in colors %}
+			<div class="colorButton" style="display: inline-block; background-color: {{ color.code }}; width: 20px; height: 20px; margin: 2px; color: {{ color.code }};" title="{{ color.name }}" data-id="{{ color.id }}" data-title="{{ color.name }}">-</div>
+		{% endfor %}
+
+		<br/>
+
+		<input type="text" name="colorName" placeholder="選擇顏色" readonly />
+		<a href="#color" class="btn btn-default btn-sm cancelColor" style="color: #000;">取消顏色</a>
+		<input type="hidden" name="color" />
+	</div>
+
+	<div>
+		<label class="vader">是否上架官網:</label>
+		<input type="checkbox" name="isAllowWeb" value="1">
+	</div>
+
+	<div>
+		<label class="vader">是否允許預購:</label>
+		<input type="checkbox" name="isBehalf" value="1">
+	</div>
+
+	<div>
+		<label class="vader">是否允許刷卡:</label>
+		<input type="checkbox" name="isAllowCreditCard" value="1">
+	</div>
+
+	<script>
+	$('div.colorButton').click(function () {
+		var title = $(this).data('title');
+		var id = $(this).data('id');
+		var color = $(this).css('color');
+
+		$('strong.colorName').text('-' + title);
+		$('input[name="colorName"]').css({'backgroundColor': color});
+		$('input[name="color"]').val(id);
+	});
+
+	$('a.cancelColor').click(function (e) {
+		$('input[name="colorName"]').css({'backgroundColor': '#fff'});
+		$('input[name="color"]').val('');
+		$('strong.colorName').text('');
+
+		return false;
+	});
+	</script>
+
+	<div>
+		<label class="vader" for="mt">商品材質:</label>
+		<select name="mt" id="mt">
+			{% for mt in mts %}
+				<option value="{{ mt.id }}">{{ mt.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div>
+		<label class="vader" for="source">商品來源:</label>
+		<select name="source" id="source">
+			{% for source in sources %}
+				<option value="{{ source.id }}">{{ source.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div style="width: 80%">
+		<label class="vader">分類</label>
+		
+		{% for category in categorys %}
+			<div>
+				<input type="checkbox" name="category[{{ category.id }}]" value="{{ category.id }}">
+				<span style="color: #000">{{ category.name }}</span>
+			</div>
+		{% endfor %}
+		<br>
+	</div>
+
+	<div>
+		<label class="vader">商品描述:</label>
+		<textarea type="text" name="description" placeholder="商品描述"></textarea>
+	</div>
+
+	<div>
+		<label class="vader">賣點[Enter換行]:</label>
+		<textarea type="text" name="brief" placeholder="賣點"></textarea>
+	</div>
+
+	<div class="buttonset" >
+		<input type="radio" id="oigt1" name="oigt" checked="checked" vale="1"/>
+		<label for="oigt1"><span data-icon="9">圖片上傳</span></label>
+		<input type="radio" id="oigt2" name="oigt" value="2"/>
+		<label for="oigt2"><span data-icon="W">取消圖片</span></label>
+		<img src="" class="imgContainer">
+	</div>
+	<input type="file" id="img" name="img" style="display:none;"/>
+
+	<div style="color: #000">
+		<label class="vader">商品附圖:</label>
+		<input type="file" name="desimg" />
+	</div>
+
+	<div>
+		<label class="vader">進貨時間:</label>
+		<input type="text" name="created_at" value="{{ "now"|date("Y-m-d") }}" readonly/>
+	</div>
+
+	<div>
+		<label class="vader" for="memo">商品備註:</label>
+		<textarea name="memo" id="memo" placeholder="可不填寫"></textarea>
+	</div>
+
+	<div>
+		<label class="vader" for="purchase_amount">數量:</label>
+		<input type="number" id ="purchase_amount" name="purchase_amount" class="numeric" value="1" />
+	</div>
+
+	<div>
+		<button onkeydown="preventEnterSubmit();" type="button" class="btn btn-default"><span data-icon="#">新增</span></button>
+	</div>
+</div>
+{% else %}
+	{% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}
+
+{% block js %}
+
+{#{ render( controller('WoojinGoodsBundle:Brand:showBrandSelect') ) }#}
+<script src="/bundles/woojingoods/js/ckeditor/ckeditor.js"></script>
+<script>
+
+function preventEnterSubmit () {
+	if (event.keyCode == 13) {
+		event.cancelBubble  = true;
+		event.returnValue   = false;
+	}
+}
+
+function CKupdate() {
+    for (instance in CKEDITOR.instances)
+        CKEDITOR.instances[instance].updateElement();
+}
+
+$(function () {	
+	var 
+    $tab_ = $('#orders-purchase'),
+    $customAjaxRes = $tab_.find('.ajaxResMsgRight'),
+    $tabAllInput = $tab_.find('input'),
+    $datepicker = $tab_.find('.datepicker'),
+    $addCustomOperate = $tab_.find('.operatePanel'),
+    $addDialog = $tab_.find('.add_new_custom'),
+    $editDialog = $('.edit_custom_dialog'),
+    $detailGoodsDialog = $('.detail_of_custom_goods'),
+    sSearchUrl = Routing.generate('admin_custom_fetch'),
+    sCheckExistUrl = Routing.generate('admin_custom_checkExist'),
+    sUpdateCustomUrl = Routing.generate('admin_custom_update'),
+    sEditFormUrl = Routing.generate('orders_custom_edit_form'),
+    reMobil = /^[09]{2}[0-9]{8}$/,
+    reEmail = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
+    nSpeed = 700;
+
+    CKEDITOR.replace('description');
+
+	function editDialogRefresh(nCustomId){
+		$.post(sEditFormUrl, {'nCustomId' : nCustomId}, function(res){
+			$editDialog.html(res);
+			var 
+				$form = $('.editCustomForm'),
+				sOrgCustomEmail = $form.find('[name="sCustomEmail"]').val(),
+				sOrgCustomMobil = $form.find('[name="mobil"]').val();
+			
+			$form.find('.datepicker').datepicker({
+				changeYear: true,
+				dateFormat: "yy-mm-dd",
+				yearRange: "1901:2013",
+				defaultDate: "-30y",
+			});
+
+			$form.find('[name="sCustomEmail"]').on('blur', function(){
+				var 
+					$this = $(this),
+					sEmail = $this.val();
+
+				if (!reEmail.test(sEmail) && sEmail != '') {
+					$this.val('').attr('title', '信箱格式有誤').tooltip().focus(); //這邊可能會發生信箱重複
+				} else if (sEmail == '') {
+					$this.attr('title', '');
+				} else {
+					if (sOrgCustomEmail != sEmail ) {
+						$.post(sCheckExistUrl, {'custom_email' : sEmail}, function ( res ) {
+							if (res != '') {
+								alert('電子信箱已存在');
+								$this.val('');
+							}         
+						});
+					}
+				}
+			});
+
+			$form.find('[name="mobil"]').numeric().on('blur', function () {
+				var 
+					$this = $(this),
+					sMobil = $this.val();
+				if (sOrgCustomMobil != sMobil && sMobil != '') {
+					$.post(
+						sCheckExistUrl, 
+						{'custom_mobil' : sMobil}, 
+						function ( res ) {
+						if (res != '') {
+							alert('電話號碼已存在');
+							$this.val(sOrgCustomMobil);
+						}         
+					});
+				}
+			});
+
+			$form.ajaxForm({
+				url : sUpdateCustomUrl,
+				error: function () {
+					alert('您有欄位未填寫!');
+					$.unblockUI();
+				},
+				success: function ( res ) {
+					$('.thisTarget').closest('tr').html(res);
+					$('.thisTarget').button().on('click', function () {
+						var $this = $(this);
+
+						$this.addClass('thisTarget');
+						editDialogRefresh( $this.data('id') );
+						$editDialog.dialog('open');
+					}).button().removeClass('thisTarget');
+					$editDialog.dialog('close');
+					$.unblockUI();
+				}
+			}).on('submit', function(){
+				ajaxLoaded();
+			});
+		});
+	};
+
+	function refreshAccordion (response){
+		$customAjaxRes.html(response)
+		.accordion( 'destroy' ).accordion({heightStyle: "content"}).addClass('isSearch')
+		.find('button').button()
+		.end().find('.edit_custom').on('click', function () {
+			var $this = $(this);
+
+			$this.addClass('thisTarget');
+			editDialogRefresh( $this.data('id') );
+			$editDialog.dialog('open');
+		});
+		
+		$customAjaxRes.find('.detail_goods').each(function () {
+			var $this = $(this);
+			
+			$this.on('click', function () {
+				var 
+					nGoodsId = $(this).data('id'),
+					sOneGoodsDetailUrl = Routing.generate('goods_one_detail_info');
+
+				$.post(sOneGoodsDetailUrl , { 'nGoodsPassportId' : nGoodsId }, function ( res ) {
+					$detailGoodsDialog.html(res);
+					$detailGoodsDialog.children('div').tabs({ heightStyle: "content" });
+					$detailGoodsDialog.dialog('open');
+				});
+			});
+		});
+
+		// table pager must put at last or enevs wont bind on DOM
+		$customAjaxRes.find('.customHistoryTable').each(function(){
+			var $this = $(this);
+
+			if ( $this.find('.customBuyHistory').size() == 0 )
+				$this.add( $this.next() ).hide();
+			else
+				$this.tablesorter().tablesorterPager({ container: $this.next() });
+		});
+		$.unblockUI();
+	};
+
+	function atttchEventOnAjaxResponse_pur () {
+		var 
+			$goodsSearchAjaxLoadImg     = $('#orders-purchase').find('.ajaxResLeft'),
+			$ajaxTabs                   = $('.goodsResTabs'),
+			$ajaxButton                 = $ajaxTabs.find('button'),
+			$ajaxEditGoodsDialog        = $('.ajaxEditGoodsDialog'),
+			$tab                        = $('#orders-purchase'), 
+			$h3                         = $tab.find('h3').not('.hasAttachedAjaxEvent'),
+			sFormLoadedUrl              = Routing.generate('goods_edit_form_loaded');
+
+		$h3.on('click', function () {
+			$goodsSearchAjaxLoadImg.html( '<img src="'+$(this).data('imgpath')+'" />'  );
+		}).eq(0).click();
+
+		$ajaxTabs.tabs({
+			collapsible: true
+		})
+		.find('button').button();
+
+		var $inputCreateAt = $('table.ope_list').not('.has_attached').find('input.opeDatetime');
+
+		var createAt = $inputCreateAt.val(); 
+
+		$inputCreateAt.parent().html('<span>' + createAt + '</span>');
+
+		$inputCreateAt.closest('.ope_list').addClass('has_attached');
+
+		$ajaxButton.filter('.edit_goods').on('click', function(){
+			var 
+				$this = $(this),
+				nGoodsPassportId = $this.parent().data('id');
+
+			ajaxLoaded();
+			$.post(sFormLoadedUrl, { 'nGoodsPassportId' : nGoodsPassportId }, function(res){
+				$ajaxEditGoodsDialog.html(res);
+				$ajaxEditGoodsDialog.dialog('open');
+				$.unblockUI();
+			})
+			.fail(function (xhr, textStatus, errorThrown) {
+				alert('ajax error');
+				$.unblockUI();
+			});
+		});
+	}
+
+	function createImage_pur (file) {
+		var 
+			$tab = $('#orders-purchase'), 
+			$image = $tab.find('.imgContainer'),
+			reader;
+
+		try{
+			var 
+				max_file_size = 1048576 * 1;
+				reader = new FileReader();
+
+			if (file.size > max_file_size) {
+				alert('圖片大小超過1MB, 請將檔案瘦身後在上傳');
+				return;
+			}
+		} catch ( err ) {
+			console.log('Your Browser does not support HTML5 uploads! Cannot show preview!');
+			return;
+		}                
+
+		reader.onload = function ( e ) {
+			console.log(e.target.result);
+			$image.attr('src', e.target.result).css({'width': 300, 'height': 300}).fadeIn(500);
+		};     
+			
+		reader.readAsDataURL(file);
+		$.data(file);
+	}
+	
+	var 
+    $tab = $('#orders-purchase'),
+	$ajaxResponse = $tab.find('.ajaxResMsgRight'),
+    $purchaseForm = $tab.find('.woojinForm'),
+    $purTypeDiv = $tab.find('.purType'),
+    $purchasetypeRadio = $purTypeDiv.find('[name="purchasetype"]')
+    $customMobilDiv = $tab.find('.customMobil'),
+    $mobil = $customMobilDiv.find('input'),
+    $nFeedBackInput = $tab.find('[name="nFeedBack"]'),
+    $createAt = $tab.find('[name="created_at"]'),
+    $purGoodsName = $('#name'),
+    $purGoodsCost = $('input[name="cost"]'),
+    $purGoodsSale = $('input[name="price"]'),
+    $purGoodsMemo = $tab.find('#memo'),
+    $numeric = $tab.find('.numeric'),
+    $selectBrand = $('#brand'),
+    $addGoodsOperateOpen = $tab.find('.panelSwitch'),
+    $button = $tab.find('button'),
+    $step1                = $tab.find('.step_1'),
+    $step2                = $tab.find('.step_2'),
+    $step3                = $tab.find('.step_3'),
+    $step4                = $tab.find('.step_4'),
+    $buttonset            = $tab.find('.buttonset'),
+    $imgContainer         = $tab.find('.imgContainer'),
+    $imgTrigger           = $('#oigt1'),
+    $imgCancel            = $('#oigt2'),
+    $imgFile              = $tab.find('[name="img"]'),
+    reMobil               = /^[09]{2}[0-9]{8}$/,
+    sSaleWarning          = '售價不可比成本低喔!',
+    sUrl                  = Routing.generate('admin_purchase'),
+    sMobilFindUrl         = Routing.generate('admin_custom_fetch'),
+    sAutoByMobilUrl       = Routing.generate('admin_custom_searchByMobil'),
+    nMinLength            = 2,
+    nSpeed                = 700;
+
+	$ajaxResponse.accordion();
+	$purchaseForm.attr('action', sUrl);
+	$createAt.datepicker({ 
+		changeYear      : true,
+		dateFormat      : "yy-mm-dd",
+		yearRange       : "2013:2023",
+		defaultDate     : "+0y"
+	});
+
+	$buttonset.add($purTypeDiv).buttonset();
+
+	$purGoodsName.autocomplete({
+		source      : Routing.generate('goods_search_ajax_name'),
+		minLength   : nMinLength
+	});
+
+	// 販售型態切換
+	$purTypeDiv.find('[name="purchasetype"]').on('click', function () {
+		var val = $(this).val();
+
+		if (val == 'purConsign') {
+			var sCustomName = $mobil.next().text();
+
+			$nFeedBackInput.parent().removeClass('hidden');
+			$customMobilDiv.fadeIn(200);
+		} else {
+			$nFeedBackInput.parent().addClass('hidden');
+			$customMobilDiv.fadeOut(200);
+		}
+	});
+
+	// 手機欄位檢查是建綁定
+	$mobil.numeric().tooltip().on('blur', function(){
+		var 
+			$this = $(this),
+			$div = $this.parent(),
+			sMobil = $(this).val();
+
+		$div.find('span').remove();
+ 
+		$this.attr('title','');
+		$.post(
+			sMobilFindUrl, 
+			{ 
+				'custom_mobil[]' : sMobil, 
+				'form[_token]' : '{{ _token }}' 
+			}, 
+			function ( res ) {
+				if (res != '') {
+					refreshAccordion(res);
+					$step1.fadeIn(nSpeed);
+				} else {
+					$ajaxResponse.html('');
+					$step1.fadeOut(nSpeed);
+					$div.append('<span style="color:red;">該手機號碼不存在!</span>');
+				}
+			}
+		)
+		.fail( function () {
+			alert('ajax error!');
+		});
+	})
+	.autocomplete({
+		source      : sAutoByMobilUrl,
+		minLength   : nMinLength+3
+	})
+	.on('keydown', function(){
+		if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || (event.keyCode == 65 && event.ctrlKey === true) || (event.keyCode >= 35 && event.keyCode <= 39 ))
+		{
+			return;
+		}
+		else if ( $(this).val().length==window.phone_length)
+			event.preventDefault();
+	});
+
+	// 改變預設的File按鈕, 用圖片取代, 因此必須在圖片綁上觸發click事件
+	$imgTrigger.on('click', function(){
+		$imgFile.click();
+	});
+
+	// 取消上傳圖片, 同時清空container內容
+	$imgCancel.on('click', function(){
+		$imgFile.val('');
+		$imgContainer.attr('src', '').fadeOut(200);
+	});
+
+	// 偵測到檔案上傳時, 產生圖片物件
+  	$imgFile.on('change',
+		function() {
+			if(this.files != undefined) {
+				createImage_pur(this.files[0]);
+			}
+			else {
+			   console.log('Your Browser does not support HTML5 uploads! Cannot show preview!');
+			}
+		}
+	);
+
+  // 送出表單前做檢查
+  $purchaseForm.find('button').filter('.btn-default').click(function () {
+  	CKupdate();
+
+  	var 
+  		_isOk = true,
+  		_errorMsg =[],
+  		_cost = parseInt($purGoodsCost.val()),
+  		_sale = parseInt($purGoodsSale.val()),
+
+  		_pattern = $('select[name="pattern"]').val(),
+  		_colorSn = $('input[name="colorSn"]').val(),
+  		_model = $('input[name="model"]').val(),
+
+  		_name = $purGoodsName.val();
+
+  	if ( isNaN( _cost ) || isNaN( _sale ) ) {
+  		_errorMsg.push('請檢查您的成本和售價!')
+  		//alert(  );
+  		_isOk = false;
+  	} else {
+  		if (_cost > _sale) {
+  			_errorMsg.push('成本不可以比售價高喔! ');
+
+	  		_isOk = false;
+	  	}
+	  	if (_cost > 999999 || _sale > 999999) {
+	  		_errorMsg.push('您的成本或是售價金額太高囉! ');
+
+	  		_isOk = false;
+	  	}
+  	}
+  	
+  	if (_name.length < 3) {
+  		_errorMsg.push('您的商品名稱長度不夠喔!(三個字以上)');
+	  		
+  		_isOk = false;
+  	}
+
+  	if (_pattern == 0) {
+  		_errorMsg.push('款式尚未選擇');
+
+  		_isOk = false;
+  	}
+
+  	// if (_model == '') {
+  	// 	_errorMsg.push('型號尚未填寫');
+
+  	// 	_isOk = false;
+  	// }
+
+  	if (_isOk) {
+  		ajaxLoaded();
+  		return $purchaseForm.submit();
+  	} else {
+  		alert(_errorMsg.join("\n"));
+  		return false;
+  	}
+  });
+
+  // 表單綁上ajaxForm
+	$purchaseForm.ajaxForm({ 
+		dataType: 'json',
+		error: function () {
+			$.unblockUI();
+			alert('新增發生錯誤!'); 
+		},
+		success: function (ids) { 
+			var sFixUrl = Routing.generate('goods_fix_res_show_json');
+			$.post(sFixUrl, {'nGoodsPassportId': ids}, function (response) {
+
+				// 更新右側回應訊息
+				$ajaxResponse.hide().append(response)
+				.accordion('destroy').accordion({'heightStyle' : 'content'}).fadeIn(500);
+
+				// 重設表單值
+				$tab.find('input').not('#sn, [name^="tabs_purchase_brand_"], [name="form[_token]"], [name="purchasetype"], .opeDatetime, [type="checkbox"]').val('');
+				$tab.find(' [name="created_at"] ').val('{{ "now"|date("Y-m-d") }}');
+				$tab.find('input[name="purchase_amount"]').val(1);
+				
+				$purGoodsMemo.val('');
+				$mobil.next().text( '' );
+				$imgContainer.attr('src', '').hide();
+
+				// 回應訊息綁上ajax事件
+				atttchEventOnAjaxResponse_pur();
+				
+				// 回應手風琴自動展開
+				$ajaxResponse.find('h3').last().click();
+				$addGoodsOperateOpen.click();
+				$mobil.next().text('');					
+				$.unblockUI();
+				scrollToPageTop();		        
+			});
+		} 
+	});
+
+	// 產編輸入限制
+	$purGoodsCost.add($purGoodsSale).numeric().blur(function () {
+		var
+			_rate = 100;
+			$this = $(this), 
+			_money = $( this ).val();
+
+		if ((parseInt(_money) < _rate) || isNaN(parseInt(_money))) {
+			$this.val('');
+		} else {
+			_money = (Math.floor(_money/_rate) * _rate);
+			$this.val(_money);
+		}
+
+		$nFeedBackInput.val($purGoodsCost.val());
+	});
+
+	$purGoodsSale.keyup(function () {
+		var list = ['{{ constant('Woojin\\Utility\\Avenue\\Avenue::LV_NEW')}}', '{{ constant('Woojin\\Utility\\Avenue\\Avenue::LV_EXHIBIT')}}'];
+
+		if (list.indexOf($('#level').val()) === -1) {
+			return false;
+		}
+		var val = parseInt($(this).val() * $selectBrand.find('option:selected').data('ratio'));
+
+		$('input[name="webPrice"]').val(val);
+	});
+
+	$selectBrand.change(function () {
+		var list = ['{{ constant('Woojin\\Utility\\Avenue\\Avenue::LV_NEW')}}', '{{ constant('Woojin\\Utility\\Avenue\\Avenue::LV_EXHIBIT')}}'];
+
+		if (list.indexOf($('#level').val()) === -1) {
+			return false;
+		}
+		$('input[name="webPrice"]').val(
+			parseInt($purGoodsSale.val() * $selectBrand.find('option:selected').data('ratio'))
+		);
+	});
+
+	$('#orders .operatePanel').eq(0).css({height: 2400, width: '30%'});
+});
+
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'WoojinOrderBundle:Orders:orders.layout.html.twig' %}
+{% block library_css %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('/css/order.css') }}">
+{% endblock %}
+{% block body %}
+<div id="orders">
+	<ul>
+		{% if app.user|has_auth('BENEFIT_REPORT_OWN') %}
+			<li><a href="#orders-financial" data-icon="h">毛利報表</a></li>
+		{% endif %}
+
+		{% if app.user|has_auth('STOCK_REPORT_OWN') %}
+			<li><a href="#orders-instore" data-icon="e">進貨報表</a></li>
+		{% endif %}
+	</ul>
+	
+	{% if app.user|has_auth('BENEFIT_REPORT_OWN') %}
+		<div id="orders-financial">
+			{% include('WoojinStoreBundle:Report/partial:profit.html.twig') with {'activitys': activitys} %}
+		</div>
+	{% endif %}
+
+	{% if app.user|has_auth('STOCK_REPORT_OWN') %}
+		<div id="orders-instore">
+			{% include('WoojinStoreBundle:Report/partial:instore.html.twig') with {'brands': brands} %}
+		</div>
+	{% endif %}
+</div>
+
+<div class="detail_of_custom_goods" title="商品詳細資料"><img src="{{ AjaxLoadingGif }}" /></div>
+{% endblock %}
+
+{% block library_javascript %}
+	{{ parent() }}
+	<script src="{{ asset('/js/order.js') }}"></script>
+{% endblock %}

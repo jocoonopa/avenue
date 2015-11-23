@@ -1,0 +1,33 @@
+{% verbatim %}
+<div id="goodsDetail" class="modal fade text-left" tabindex="-1" role="dialog" aria-labelledby="goodsDetailLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button ng-click="cleanGoodsDetail();" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="goodsDetailLabel">
+        	{{ goodsDetail.sn }}
+          <small style="color:red;">{{ goodsDetail.name }}</small>
+        </h4>
+      </div>
+      
+      <div class="modal-body">
+        <p>狀態: <span style="color:red;">{{ goodsDetail.status }}</span></p>
+				<p>售價: <span style="color:red;">{{ goodsDetail.price }}</span></p>
+				<p>序號: <span style="color:red;">{{ goodsDetail.orgSn }}</span></p>
+				<p>材質: <span style="color:red;">{{ goodsDetail.material }}</span></p>
+				<p>品牌: <span style="color:red;">{{ goodsDetail.brand }}</span></p>
+				<p>款式: <span style="color:red;">{{ goodsDetail.brandType }}</span></p>
+				<p>型號: <span style="color:red;">{{ goodsDetail.brandSn }}</span></p>
+				<p>來源: <span style="color:red;">{{ goodsDetail.source }}</span></p>
+				<p>新舊: <span style="color:red;">{{ goodsDetail.level }}</span></p>
+				<p>備註: <span style="color:red;">{{ goodsDetail.memo }}</span></p>
+				<img src="{{ goodsDetail.imgURL }}" width="300" height="300" />
+      </div>
+
+      <div class="modal-footer">
+        <button ng-click="cleanGoodsDetail();" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endverbatim %}

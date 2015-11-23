@@ -1,0 +1,41 @@
+{% extends 'WoojinOrderBundle:Orders:orders.layout.html.twig' %}
+
+{% block library_css %}
+	{{ parent() }}
+
+	<link rel="stylesheet" href="{{ asset('/css/order.css') }}">
+{% endblock %}
+
+{% block body %}
+	<div id="orders">
+		<ul>
+			<li><a href="#orders-custom" data-icon="d">客戶資料</a></li>
+		</ul>
+
+		<div id="orders-custom">
+			{% include 'WoojinOrderBundle:Custom/partial:condition.html.twig' with {_token: _token} %}
+		</div>
+	</div>
+	<div class="ordersEditFormDialog" title="修改訂單"></div>
+{% endblock %}
+
+{% block library_javascript %}
+	{{ parent() }}
+	
+	<script src="{{ asset('/js/order.js') }}"></script>
+	<script>
+	$(function () {
+		$('header').add('footer').remove();
+		$('#body').css('margin', 0);
+		checkInformConsign = function () {
+			$('.openConsign').add('.openBackOrder').remove();
+		};
+
+		checkInformBackOrder = function () {
+			//....
+		};
+
+		checkInformConsign();
+	});
+	</script>
+{% endblock %}

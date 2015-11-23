@@ -1,0 +1,3 @@
+{% macro with() %}
+<pagination ng-show="totalItems > 0 && !isFetching" total-items="totalItems" rotate="false" items-per-page="perPage" boundary-links="true" ng-model="currentPage"  max-size="10" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pagerFetch();"></pagination>
+{% endmacro %}    

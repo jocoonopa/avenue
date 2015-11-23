@@ -1,0 +1,64 @@
+<!-- Modal -->
+
+<style>
+    .state-error {
+        color: red !important;
+    }
+</style>
+
+<div class="modal fade" id="behalfBank" tabindex="-1" role="dialog" aria-labelledby="behalfBankLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!--== modal header ==-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center" id="behalfBankLabel">
+                    
+                </h4>
+            </div>
+            <!--== modal header End ==-->
+     
+            <!--== modal body ==-->
+            <div class="modal-body">
+                <form action="" method="post" id="behalf-bank-info" class="sky-form">
+                    <header>付款資訊</header>
+                        
+                    <fieldset>                  
+                        <div class="row">
+                            <section class="col col-12">
+                                <label class="label">銀行代碼(<strong class="red">3</strong>碼)</label>
+                                <label class="input">
+                                   {#  <span class="icon-append fa fa-user"></span> #}
+                                    <input type="text" name="bankCode" placeholder="XXX" />
+                                </label>
+                            </section>
+                            <section class="col col-12">
+                                <label class="label">帳戶末<strong class="red">5</strong>碼</label>
+                                <label class="input">
+                                    {# <span class="icon-append fa fa-envelope-o"></span> #}
+                                    <input type="text" name="bankAccount" placeholder="XXXXX" />
+                                </label>
+                            </section>
+                        </div>
+                    </fieldset>
+                    
+                    <footer>
+                        <button type="submit" name="submit" class="button">確認</button>
+                    </footer>
+
+                    <input type="hidden" name="_method" value="PUT" />
+                    <input type="hidden" name="avenue_token" value="{{ app.session.get('avenue_token') }}">
+                </form>
+            </div>
+            <!--== modal body End ==-->
+
+            <!--== modal footer ==-->
+            <div class="modal-footer">      
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">
+                    <span class="icon-close"></span>關閉
+                </button>
+            </div>
+            <!--== modal footer End ==-->
+        </div>
+    </div>
+</div>

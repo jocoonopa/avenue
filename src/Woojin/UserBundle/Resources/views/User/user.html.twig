@@ -1,0 +1,70 @@
+{% extends 'WoojinUserBundle:User:user.layout.html.twig' %}
+
+{% block library_css %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('/css/user.css') }}" />
+{% endblock %}
+
+{% block body %}
+
+<div id="users">
+	<ul>
+		{# <li><a href="#users-history" data-icon="m">操作記錄</a></li> #}
+		<li><a href="#users-manage" data-icon="q">使用者管理</a></li>
+		<li><a href="#role-manage" data-icon="a">職務管理</a></li>
+		<li><a href="#store-holiday" data-icon="c">排假管理</a></li>
+	</ul>
+	{# <div id="users-history">{% include('WoojinUserBundle:User:user.record.history.html.twig') with {'users': users} %}</div> #}
+	
+	<div id="users-manage">{% include('WoojinUserBundle:User:user.manage.html.twig') with {'users': users} %}</div>
+	
+	{% if app.user|has_auth('ROLE_MANAGE') %}
+	<div id="role-manage">
+		<a href="{{ path('admin_role_index') }}" target="_blank">前往職務管理</a>
+	</div>
+	{% endif %}
+
+	<div id="store-holiday">
+		<a href="{{ path('admin_store_holiday_list')}}" target="_blank">前往排假</a>
+	</div>
+</div>
+
+{% if app.user|has_auth('USER_ALL_MANAGE') %}
+<div class="add_user_dialog" title="新增使用者" >
+	<form  method="POST">
+		<label>帳號:</label>
+		<input type="text" name="sUsername" />
+		<label>手機:</label>
+		<input type="text" name="sMobil" class="numeric" />
+		<label>信箱:</label>
+		<input type="text" name="sEmail" />
+		<label>密碼:</label>
+		<input type="password" name="sUserPassword" placeholder="至少八個字元" />
+		<label>再次確認:</label>
+		<input type="password" name="sUserPasswordConfirm" placeholder="確認您的密碼" />
+	</form>
+</div>
+{% endif %}
+
+{% if app.user|has_auth('USER_SELF_MANAGE') %}
+<div class="edit_user_password" title="修改密碼" >
+	<label>新密碼:</label>
+	<input type="password" name="sUserPassword" placeholder="至少八個字元" />
+	<label>再次確認:</label>
+	<input type="password" name="sUserPasswordConfirm" placeholder="確認您的密碼" />
+</div>
+{% endif %}
+
+
+{% endblock %}
+{% block library_javascript %}
+
+{{ parent() }}
+
+ <script src="{{ asset('/js/user.js') }}"></script>
+<script>
+	$(function() {
+    $( "#users" ).tabs();
+  });
+</script>
+{% endblock %}

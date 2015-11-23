@@ -1,0 +1,144 @@
+{% import 'WoojinFrontBundle:Widget/Custom/Form:schema.html.twig' as formSchemaWidget %}
+
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+       {{ flashMessage }}
+   </div> 
+{% endfor %}
+
+{{ form_start(form) }}
+
+<a href="{{ getFBLoginUrl() }}" class="btn-u btn-u-md btn-u-fb btn-block avenue-fb-login"><span class="fa fa-facebook"></span> Facebook註冊</a>
+<p>&nbsp;</p>
+<h2>香榭會員註冊</h2>
+
+<div class="login-input reg-input">
+
+    {{ form_errors(form.name) }}
+
+    {% if isFb is not defined or isFb is empty %}
+    {{ formSchemaWidget.input(
+        form_widget(form.name,{
+        'required': true,
+        'attr': {
+            'placeholder': '請輸入您的姓名',
+            'class': 'form-control'
+        }
+    }) ) }}
+    {% else %}
+    {{ formSchemaWidget.input(
+        form_widget(form.name,{
+        'read_only': true,
+        'required': true,
+        'attr': {'class': 'form-control'}
+    }) ) }}
+    {% endif %}
+    
+    <div class="select margin-bottom-15">
+    {% if isFb is not defined or isFb is empty %}
+        {{ form_widget(form.sex, {'attr': {'class': 'form-control'}}) }}
+    {% else %}
+        {{ form_widget(form.sex, {
+        'read_only': true,
+        'attr': {'class': 'form-control'}}) 
+        }}
+    {% endif %}
+    </div>
+
+    {{ form_errors(form.email) }}
+
+    {% if isFb is not defined or isFb is empty  %}
+    {{ formSchemaWidget.input(form_widget(form.email,{
+        'required': true,
+        'attr': {
+            'placeholder': '請輸入您的電子信箱(信箱即為您的登入帳號)',
+            'class': 'form-control'
+        }
+    }) ) }}
+    {% else %}
+    {{ formSchemaWidget.input(form_widget(form.email,{
+        'read_only': true,
+        'required': true,
+        'attr': {'class': 'form-control'}
+    }) ) }}
+    {% endif %}
+
+    {{ formSchemaWidget.input(form_widget(form.bkemail,{
+        'required': true,
+        'attr': {
+            'placeholder': '備用電子信箱',
+            'class': 'form-control'
+        }
+    }) ) }}
+
+    {{ formSchemaWidget.input(form_widget(form.birthday,{
+        'attr': {
+            'class': 'form-control'
+        }
+    }) ) }}
+
+    {{ form_errors(form.mobil) }}
+    {{ formSchemaWidget.input(form_widget(form.mobil,{
+        'required': true,
+        'attr': {
+            'placeholder': '請輸入您的手機',
+            'class': 'form-control'
+        }
+    }) ) }}
+
+    {% set county = (county) ? 'data-value="' ~ county ~ '"' : '' %}
+    {% set district = (district) ? 'data-value="' ~ district ~ '"': '' %}
+
+    {{ formSchemaWidget.input('<div id="twzipcode"><div data-style="pull-left" data-role="county" ' ~ county  ~ '></div><div data-style="pull-left" data-role="district" ' ~ district ~ '></div><div data-style="hidden" data-role="zipcode"></div></div>') }}
+
+    {{ form_errors(form.address) }}
+    {{ formSchemaWidget.input(form_widget(form.address,{
+        'required': true,
+        'attr': {
+            'placeholder': '@example: 興南路3號1F',
+            'class': 'form-control'
+        }
+    }) ) }}
+
+    {{ form_errors(form.password.first) }}
+    {{ formSchemaWidget.input(form_widget(form.password.first,{
+        'required': true,
+        'attr': {
+            'placeholder': '請輸入密碼, 至少各一位英文字母、數字,長度 6 ~ 25 個字元',
+            'class': 'form-control'
+        }
+    }) ) }}
+    
+    {{ form_errors(form.password.second) }}
+    {{ formSchemaWidget.input(form_widget(form.password.second,{
+        'required': true,
+        'attr': {
+            'placeholder': '請確認密碼',
+            'class': 'form-control'
+        }
+    }) ) }}
+
+    {{ form_errors(form.captcha) }}
+    {{ formSchemaWidget.input(form_widget(form.captcha,{
+        'attr': {
+            'placeholder': '請輸入驗證碼',
+            'class': 'form-control'
+        }
+    }) ) }}
+</div>
+
+<div class="checkbox margin-bottom-20">
+    <input class="left-0 ml-0" type="checkbox" name="isAgree" value="1" checked/>
+    我已經閱讀且同意<a href="{{ path('front_manual_privacy') }}">隱私政策</a>以及<a href="{{ path('front_manual_terms')}}">服務條款</a>
+</div>
+
+{% if isFb is not defined or isFb is empty %}
+<input type="hidden" name="isFb" value="1">
+{% endif %}
+
+<button class="btn-u btn-u-sea-shop btn-block margin-bottom-20" type="submit">確認加入會員</button>
+{{ form_end(form) }}
+

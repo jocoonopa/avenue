@@ -1,0 +1,18 @@
+{% extends ':Mobile:base.html.twig' %}
+
+{% block header%}
+    {% include 'WoojinGoodsBundle:Mobile/index:_header.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <div id="product-container"><!-- Filled Content With Mustache --></div>   
+    <div id="product-mason" class="hidden"><!-- Filled Content With Mustache --></div> 
+{% endblock %}
+
+{% block extra %}
+    {% include 'WoojinGoodsBundle:Mobile/index:_modal.html.twig' %}
+    {% include 'WoojinGoodsBundle:Mobile/index:_fixedComponent.html.twig' %}
+    {% include 'WoojinGoodsBundle:Mobile/index:_unit.html.twig' %}
+    {% include 'WoojinGoodsBundle:Mobile/index:_order.html.twig' %}
+    {% include 'WoojinGoodsBundle:Mobile/index:_item.html.twig' %}
+{% endblock %}

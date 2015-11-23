@@ -1,0 +1,40 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body %}
+{% if app.user|has_auth('COLOR') %}
+
+{% for color in colors %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ color.name }} <span class="badge">{{ color.goodsPassports|length }}</span></h3>
+    </div>
+
+    <div class="panel-body">
+        <table class="table table-striped">
+            {% for product in color.goodsPassports %}
+                
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.brand.name }}</td>
+                <td>{{ product.status.name }}</td>
+                <td>#{{ product.sn }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.model }}</td>
+                <td>
+                    {% if product.parent %}
+                        {% if product.parent.id != product.id %}
+                        <p>{{ product.parent.id ~ ':' ~ product.parent.sn }}</p>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

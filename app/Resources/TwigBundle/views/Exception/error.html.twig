@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->  
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
+<!--[if !IE]><!--> <html lang="zh-TW"> <!--<![endif]-->  
+<head>
+    <title>香榭國際精品 | {{ status_code }} 錯誤</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- CSS Global Compulsory -->
+    <link rel="stylesheet" href="/bundles/woojinfront/assets/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bundles/woojinfront/assets/css/style.css">
+
+    <!-- CSS Implementing Plugins -->
+    <link rel="stylesheet" href="/bundles/woojinfront/assets/plugins/line-icons/line-icons.css">
+    <link rel="stylesheet" href="/bundles/woojinfront/assets/plugins/font-awesome/css/font-awesome.min.css">
+
+    <!-- CSS Page Style -->    
+    <link rel="stylesheet" href="/bundles/woojinfront/assets/css/pages/page_error3_404.css">
+
+    <!-- CSS Theme -->    
+    <link rel="stylesheet" href="/bundles/woojinfront/assets/css/theme-colors/default.css">
+
+    <!-- CSS Customization -->
+    <link rel="stylesheet" href="/bundles/woojinfront/assets/css/custom.css">
+</head> 
+
+<body style="background-color: #000;">
+
+    <!--=== Error V3 ===-->
+    <div class="container content">     
+        <!-- Error Block -->
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="error-v3">
+                    <h2>{{ status_code }}</h2>
+                    <p>{{ status_text }}</p>
+                </div>
+            </div>
+        </div>
+        <!-- End Error Block -->
+
+        <!-- Begin Service Block V2 -->
+        <div class="row service-block-v2">
+            <div class="col-md-4">
+                <div class="service-block-in service-or">
+                    <div class="service-bg"></div>
+                    <i class="icon-bulb"></i>
+                    <h4>找不到想要的商品嘛?</h4>
+                    <p>麻煩請回到搜尋頁，重新針對條件進行搜尋</p>                        
+                    <a class="btn-u btn-brd btn-u-light" href="{{ path('front_allcat_filter') }}">前往搜尋頁</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="service-block-in service-or">
+                    <div class="service-bg"></div>
+                    <i class="icon-directions"></i>
+                    <h4>憑證失效了嘛?</h4>
+                    <p>請點擊下方按鈕前往會員登入頁重新登入</p>
+                    {# <p>The page you requested could not be found. However, the requested resource may be available again in the future.</p> #}
+                    <a class="btn-u btn-brd btn-u-light" href="{{ path('front_custom_login')}}">會員登入</a>
+                </div>
+            </div>  
+            
+            <div class="col-md-4">
+                <div class="service-block-in service-or">
+                    <div class="service-bg"></div>
+                    <i class="icon-users"></i>
+                    <h4>聯絡我們</h4>
+                    <p>如果您的問題無法排除，請聯絡我們，將會有專人為您服務</p>
+                    <p class="text-left">客服電話:&nbsp;<a href="tel: 02-2992-6616">02-2992-6616</a></p>
+                    <p class="text-left">客服信箱:&nbsp;<a href="mailto:alanchen200@gmail.com">alanchen200@gmail.com</a></p>
+                </div>
+            </div>
+        </div>    
+        <!-- End Service Block V2 -->
+    </div>  
+    <!--=== End Error-V3 ===-->
+
+    <!--=== Sticky Footer ===-->
+    <div class="container sticky-footer">
+        <p class="copyright-space">
+            {{ '2014 - ' ~ 'now'|date('Y') }} &copy; 香榭國際精品 | 版權所有
+        </p>  
+    </div>
+    <!--=== End Sticky-Footer ===-->
+
+<!-- JS Global Compulsory -->           
+<script type="text/javascript" src="/bundles/woojinfront/assets/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/bundles/woojinfront/assets/plugins/jquery/jquery-migrate.min.js"></script>
+<script type="text/javascript" src="/bundles/woojinfront/assets/plugins/bootstrap/js/bootstrap.min.js"></script> 
+<!-- JS Implementing Plugins -->           
+<script type="text/javascript" src="/bundles/woojinfront/assets/plugins/back-to-top.js"></script>
+<script type="text/javascript" src="/bundles/woojinfront/assets/plugins/backstretch/jquery.backstretch.min.js"></script>
+<script type="text/javascript">
+    $.backstretch([
+      "/img/woojin-logo-footer.png"
+      ])
+</script>
+<!-- JS Customization -->
+<script type="text/javascript" src="/bundles/woojinfront/assets/js/custom.js"></script>
+<!-- JS Page Level -->           
+<script type="text/javascript" src="/bundles/woojinfront/assets/js/app.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        App.init();      
+    });
+</script>
+<!--[if lt IE 9]>
+    <script src="/bundles/woojinfront/assets/plugins/respond.js"></script>
+    <script src="/bundles/woojinfront/assets/plugins/html5shiv.js"></script>
+    <script src="/bundles/woojinfront/assets/js/plugins/placeholder-IE-fixes.js"></script>
+<![endif]-->
+
+</body>
+</html> 

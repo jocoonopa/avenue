@@ -1,0 +1,52 @@
+{% macro with() %}
+
+{% verbatim %}
+<ul ng-show="goodses.length > 0;" class="list-inline clear-both">
+    <!-- <li class="grid-list-icons"> -->
+        <!-- <a href="shop-ui-filter-list.html"><i class="fa fa-th-list"></i></a> -->
+        <!--<a><i class="fa fa-th active"></i></a> -->
+    <!-- </li> -->
+    <li class="sort-list-btn pull-left">
+        <h3>排序:</h3>
+        <div class="btn-group" ng-cloak>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+             {{ sortLabel }}<span class="caret"></span>
+            </button>
+
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <a href="" ng-click="orderBy.sort = 'gd.id'; orderBy.order = 'DESC'; sortLabel='預設'; fetch();">預設</a>
+                </li>
+                <li>
+                    <a href="" ng-click="orderBy.sort = 'l.id'; orderBy.order = 'DESC'; sortLabel='新->舊'; fetch();">新->舊</a>
+                </li>
+                <li>
+                    <a href="" ng-click="orderBy.sort = 'l.id'; orderBy.order = 'ASC'; sortLabel='舊->新'; fetch();">舊->新</a>
+                </li>
+                
+                <li>
+                    <a href="" ng-click="orderBy.sort = 'gd.price'; orderBy.order = 'Desc';  sortLabel='售價[高->低]'; fetch();">售價[高->低]</a>
+                </li>
+                <li>
+                    <a href="" ng-click="orderBy.sort = 'gd.price'; orderBy.order = 'ASC'; sortLabel='售價[低->高]'; fetch();">售價[低->高]</a>
+                </li>
+            </ul>
+        </div>
+    </li>
+    
+    <li class="sort-list-btn pull-left">
+        <h3>顯示 :</h3>
+        <div class="btn-group" ng-cloak>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                {{ perPage }}<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="javascript: void(0);" ng-click="perPage=30; currentPage=1;  fetch();">30</a></li>
+                <li><a href="javascript: void(0);" ng-click="perPage=60; currentPage=1; fetch();">60</a></li>
+                <li><a href="javascript: void(0);" ng-click="perPage=120; currentPage=1; fetch();">120</a></li>
+            </ul>
+        </div>
+    </li>
+</ul>
+{% endverbatim %}
+{% endmacro %}

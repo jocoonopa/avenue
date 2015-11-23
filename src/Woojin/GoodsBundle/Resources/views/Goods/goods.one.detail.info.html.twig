@@ -1,0 +1,191 @@
+{% set GoodsPassport = oGoodsPassport %}
+{% set Brand = oGoodsPassport.brand %}
+{% set Orders = GoodsPassport.orders %}
+{% set GoodsId = GoodsPassport.id %}
+
+{% if 
+	(app.user|has_auth('READ_PRODUCT_OWN') and app.user|is_own(GoodsPassport))
+	or app.user|has_auth('READ_PRODUCT_ALL')
+%}
+<div id="ResTabs{{ GoodsId }}" class="goodsResTabs">
+	<ul>
+		<li>
+			<a href="#ResTabs{{ GoodsId }}-0">商品資訊</a>
+			{% set nGoodsStatusId = GoodsPassport.status.id %}
+			
+			{% if nGoodsStatusId == constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') %}
+				{% set src = SalePng %}
+			{% elseif nGoodsStatusId == constant('Woojin\\Utility\\Avenue\\Avenue::GS_SOLDOUT') %}
+				{% set src = SoldOutPng %}
+			{% elseif nGoodsStatusId == constant('Woojin\\Utility\\Avenue\\Avenue::GS_MOVING') %}
+				{% set src = MovingPng %}
+			{% elseif nGoodsStatusId == constant('Woojin\\Utility\\Avenue\\Avenue::GS_OFFSALE') %}
+				{% set src = CancelPng %}
+			{% else %}
+				{% set src = OtherStorePng %}
+			{% endif %}
+			
+			<img class="goodsStatusImg img-{{ GoodsId }}" src="{{ src }}" />
+		</li>
+
+		{% for theOrder in Orders %}
+		<li>
+			{% set nOrdersStatusId = theOrder.status.id %}
+
+			{% if nOrdersStatusId == constant('Woojin\\Utility\\Avenue\\Avenue::OS_HANDLING')  %}
+				{% set src = ProcessPng %}
+			{% elseif nOrdersStatusId == constant('Woojin\\Utility\\Avenue\\Avenue::OS_COMPLETE') %}
+				{% set src = CheckroundPng %}
+			{% else %}
+				{% set src = CancelPng %}
+			{% endif %}
+
+			<a href="#ResTabs{{ GoodsId }}-{{ loop.index }}">{{ loop.index }}.{{ theOrder.kind.name }}</a>
+			<img class="ordersStatusImg ResTabs{{ GoodsId }}-{{ loop.index }} ordersImg-{{theOrder.id}}" src="{{ src }}" />
+		</li>
+		{% endfor %}
+	</ul>
+	
+	<div id="ResTabs{{ GoodsId }}-0">
+		<ul class="goods_list">
+			{% include 'WoojinGoodsBundle:Goods/Detail:info.html.twig' with {product: GoodsPassport} %}
+			
+			{% if rGoodsSnHistory[0] is defined %}
+				<li>
+					<p>
+						<span class="preWord">轉店歷程:</span><br/>
+						{% for sHistory in rGoodsSnHistory[0] %}
+							{% set color = (GoodsPassport.sn|slice(0,1) == sHistory|slice(0,1)) ? '#1a8a2c': 'red' %}
+							<span style="color: {{ color }};">{{ sHistory }}</span>
+							{% if loop.last %}
+								<span></span>
+							{% else %}
+								<br/><span>-></span>
+							{% endif %}
+						{% endfor %}
+					</p>
+				</li>
+			{% endif %}
+		</ul>	
+		{% if GoodsPassport.img %}
+		<img src="{{ GoodsPassport.img.path }}" style="max-width: 300px;"/>
+		{% endif %}
+	</div>
+
+	{# 訂單 #}
+	{% if 
+		(app.user|has_auth('READ_ORDER_OWN') and
+		app.user|is_own(GoodsPassport)) or app.user|has_auth('READ_ORDER_ALL')
+	%}
+		{% for theOrder in Orders %}
+			{% set orderIndex = loop.index %}
+			<div id="ResTabs{{ GoodsId }}-{{ loop.index }}" >
+				<ul class="orders_list">
+					<li class="orders_kind">
+						<p>
+							<span class="preWord">訂單種類:</span>{{ theOrder.kind.name }}
+						</p>
+					</li>
+					<li class="orders_status" data-id="{{ theOrder.status.id }}">
+						<p>
+							<span class="preWord">訂單狀態:</span>{{ theOrder.status.name }}
+						</p>
+					</li>
+					<li>
+						<p>
+							<span class="preWord">
+								{% if theOrder.kind.id in [
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_EXCHANGE_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_TURN_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_MOVE_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_CONSIGN_IN')
+								] 
+								%}
+								成本:
+								{% elseif theOrder.kind.id == constant('Woojin\\Utility\\Avenue\\Avenue::OK_FEEDBACK') %}
+								寄賣金額:
+								{% else %}
+								賣價:
+								{% endif %}
+								
+							</span>
+								{% if theOrder.kind.id in [
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_EXCHANGE_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_TURN_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_MOVE_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_MOVE_OUT'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_CONSIGN_IN')
+								]  and not ((app.user|has_auth('READ_COST_OWN') and app.user|is_own(GoodsPassport)) or app.user|has_auth('READ_COST_ALL')) %}
+								您的權限不足
+							{% else %}
+								{{ theOrder.required|number_format }}元
+							{% endif %}
+						</p>
+					</li>
+					<li>
+						<p>
+							<span class="preWord">已付:</span>
+							{% set nOrdersPaid = theOrder.paid < 0 ? 0 : theOrder.paid  %}
+
+							{% if theOrder.kind.id in [
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_EXCHANGE_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_TURN_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_MOVE_IN'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_MOVE_OUT'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_CONSIGN_IN')
+								] and not ((app.user|has_auth('READ_COST_OWN') and app.user|is_own(GoodsPassport)) or app.user|has_auth('READ_COST_ALL')) %}
+								您的權限不足
+							{% else %}
+								{{ theOrder.paid|number_format }}元
+							{% endif %}
+						</p>
+					</li>
+					
+					{% if theOrder.memo %}
+						<li><p><span class="preWord">訂單備註:</span>{{ theOrder.memo }}</p></li>
+					{% endif %}
+
+					{% if theOrder.custom %}
+						<li>
+							<p>
+								<span class="preWord">客戶:</span>{{ theOrder.custom.name }}{{ theOrder.custom.sex }}
+							</p>
+						</li>
+					{% endif %}
+				</ul>
+				{% set Opes = theOrder.opes %}
+				
+				<table class="ope_list">
+				{% for theOpe in Opes %}
+					{% if loop.first %}
+						<thead>
+							<tr>
+								<th>動作</th>
+								<th>操作人員</th>
+								<th>操作時間</th>
+								<th>店家</th>
+							</tr>
+						</thead>
+					{% endif %}
+					<tbody>
+						<tr>
+							<td>{{ theOpe.act }}</td>
+							<td>{{ theOpe.user.username }}</td>
+							<td>{{ theOpe.datetime|date('Y-m-d H:i:s') }}</td>
+							<td>{{ theOpe.user.store.name }}</td>
+						</tr>
+					</tbody>
+				{% endfor %}
+				</table>		
+			</div>
+		{% endfor %}
+	{% else %}
+    	{% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+	{% endif %}
+</div>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}

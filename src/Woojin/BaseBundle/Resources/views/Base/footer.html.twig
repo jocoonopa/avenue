@@ -1,0 +1,9 @@
+<footer>
+    <span data-icon="x">目前登入者: [{{ app.user.store.name }}][{{ app.user.role.name}}][{{ app.user.username }}]</span>
+    
+    {% if app.user|has_auth('ROLE_MANAGE') %}
+        {% include 'WoojinBaseBundle:Ajax:store.select.html.twig' with {stores: stores} %}
+    {% endif %}
+    {# {{ render( controller('WoojinBaseBundle:Base:getStoreSelect') ) }} #}
+    <img src="/img/_logo_footer.jpg" style="width: 100%;" />
+</footer>

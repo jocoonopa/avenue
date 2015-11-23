@@ -1,0 +1,23 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+{% if app.user|has_auth('COLOR') %}
+
+    <h1><small>
+        <a href="{{ path('color') }}" class="btn btn-info">
+            回到列表
+        </a>
+    </small></h1>
+
+    {{ form(form) }}
+
+<script>
+$(function () {
+    $('input#woojin_goodsbundle_color_code').attr('type', 'color');
+});
+
+</script>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

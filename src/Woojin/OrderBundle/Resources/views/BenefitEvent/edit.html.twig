@@ -1,0 +1,134 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%} 
+    {% if app.user|has_auth('BENEFIT_MANAGE') %}
+        {% for flash in app.session.flashbag.get('success') %}
+        <div class="alert alert-success alert-dismissible fade in mt-10" role="alert">      
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <span>{{ flash }}</span>       
+        </div>
+        {% endfor %}
+        
+        <h1>購物金活動編輯 
+            <a class="btn btn-info" href="{{ path('benefitevent') }}">
+                <i class="glyphicon glyphicon-list"></i>回購物金活動列表
+            </a>
+        </h1>
+        <hr>
+
+        <div role="tabpanel">
+          <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#detail" aria-controls="detail" role="tab" data-toggle="tab">購物金活動</a>
+                </li>
+                <li role="presentation" class="isRule">
+                    <a href="#rule" aria-controls="rule" role="tab" data-toggle="tab">規則</a>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="detail">
+                    {{ form(edit_form) }}
+                    <div class="row">
+                    <div class="col-md-12">
+                        {{ form(delete_form) }}
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane rule" id="rule">
+                <div class="row mt-10">
+                    {% for rule in event.rules %}
+                    <div class="col-md-4 block">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">規則{{ loop.index }}</div>
+                            <div class="panel-body">
+                                <form action="{{ path('admin_benefitRule_update', {id: rule.id}) }}" method="POST" role="form">
+                                    <div class="form-group">
+                                        <label for="sill">滿額門檻</label>
+                                        <input id="sill" class="form-control" type="text" name="sill" placeholder="滿額門檻" value="{{ rule.sill }}" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="ceiling">最高範圍(0表示不設定上限)</label>
+                                        <input id="ceiling" class="form-control" type="text" name="ceiling" placeholder="最高範圍" value="{{ rule.ceiling }}"/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="gift">贈送金額</label>
+                                        <input id="gift" class="form-control" type="text" name="gift" placeholder="贈送金額" value="{{ rule.gift }}"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="is_stack">是否累加計算</label>
+                                        <input id="is_stack" type="checkbox" name="is_stack" value="1" {% if rule.isStack %}checked{% endif %}/>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="hidden" name="_method" value="PUT"/>
+                                        <button class="btn btn-default pull-left">確認</button>
+                                    </div>
+                                </form>
+                                
+                                <form action="{{ path('admin_benefitRule_delete', {id: rule.id}) }}" method="POST" role="form">
+                                    <input type="hidden" name="_method" value="DELETE" />
+                                    <button class="btn btn-danger pull-right">刪除</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="col-xs-12">
+                        <a class="btn btn-primary" href="javascript: void(0);" data-toggle="modal" data-target="#newRule">新增活動規則</a>
+                    </div>
+                </div>
+                <hr>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="newRule" tabindex="-1" role="dialog" aria-labelledby="newRuleLabel" aria-hidden="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                        <h4 id="newRuleLabel" class="modal-title"><span class="glyphicon  glyphicon-warning-sign"> 新增活動規則</span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <form name="newRule" action="{{ path('admin_benefitRule_new') }}" method="POST" role="form">
+                            <div class="form-group">
+                                <label for="sill">滿額門檻</label>
+                                <input id="sill" class="form-control" type="text" name="sill" placeholder="滿額門檻" value="10000"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ceiling">最高範圍(0表示不設定上限)</label>
+                                <input id="ceiling" class="form-control" type="text" name="ceiling" placeholder="最高範圍" value="0"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="gift">贈送金額</label>
+                                <input id="gift" class="form-control" type="text" name="gift" placeholder="贈送金額" value="1000" />
+                            </div>
+                            <div class="form-group">
+                                <label for="is_stack">是否累加計算</label>
+                                <input id="is_stack" type="checkbox" name="is_stack" value="1" />
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" name="event_id" value="{{ event.id }}" />
+                                <button class="btn btn-success">確認</button>
+                            </div>
+                        </form>
+                    </div>
+                  </div>
+            </div>
+        </div> 
+
+        <script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+        <script src="{{ asset('/js/jquery.form.js')}}"></script>
+        <script>
+        {% if isRule is defined and isRule %}
+            $('li.isRule').eq(0).find('a').click();
+        {% endif %}
+        </script>
+    {% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+{% endblock %}

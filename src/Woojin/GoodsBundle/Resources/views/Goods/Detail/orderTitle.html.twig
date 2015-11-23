@@ -1,0 +1,16 @@
+{% for order in product.orders %}
+    <li>
+        {% if order.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::OS_HANDLING') %}
+            {% set src = ProcessPng %}
+        {% elseif order.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::OS_COMPLETE') %}
+            {% set src = CheckroundPng %}
+        {% else %}
+            {% set src = CancelPng %}
+        {% endif %}
+
+        <a href="#ResTabs{{ product.id }}-{{ loop.index }}">
+            {{ loop.index }}.{{ order.kind.name }}
+        </a>
+        <img class="ordersStatusImg ResTabs{{ product.id }}-{{ loop.index }} ordersImg-{{order.id}}" src="{{ src }}" />
+    </li>
+{% endfor %}

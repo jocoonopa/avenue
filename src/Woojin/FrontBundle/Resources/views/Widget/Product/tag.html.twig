@@ -1,0 +1,49 @@
+{% macro with(goods) %}
+
+<p class="wishlist-category">
+    {% for category in goods.categorys %}
+        {% if loop.first %}
+            <strong>分類:&nbsp;</strong> 
+        {% endif %}
+       
+        <a href="{{ path('front_filter', {id: category.id }) }}">{{ category.name }}</a>&nbsp;&nbsp;
+    {% endfor %}
+
+    {% if goods.promotion %}
+        <br>
+        <strong>活動:&nbsp;</strong>
+        <a href="{{ path('front_promotion_filter', {id: goods.promotion.id}) }}">{{ goods.promotion.name }}</a>
+    {% endif %}
+    
+    {% if goods.categorys and goods.categorys|length > 0 %}
+        {% if goods.brand %}
+            <br>
+            <strong>品牌:&nbsp;</strong>
+            
+            <a href="{{ path('front_filter', {
+                    id: goods.categorys.first.id,
+                    entityName: 'brand',
+                    entityId: goods.brand.id,
+                }) }}">{{ goods.brand.name }}</a>
+        {% endif %}
+        
+        {% if goods.pattern %}
+            <br>
+            <strong>款式:&nbsp;</strong>
+
+            <a href="{{ path('front_filter', {
+                    id: goods.categorys.first.id,
+                    entityName: 'pattern',
+                    entityId: goods.pattern.id,
+                }) }}">{{ goods.pattern.name }}</a>
+        {% endif %} 
+    {% endif %}
+
+    {% if goods.model %}
+        <br>
+        <strong>型號:&nbsp;</strong>
+
+        <a href="{{ path('front_text_filter', {val: goods.model}) }}">{{ goods.model }}</a>
+    {% endif %}
+</p>
+{% endmacro %}

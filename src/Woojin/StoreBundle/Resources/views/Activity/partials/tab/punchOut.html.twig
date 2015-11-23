@@ -1,0 +1,42 @@
+{% verbatim %}
+<div ng-controller="PunchOutCtrl" class="tab-pane fade" id="punch-out">
+  <p>&nbsp;</p>
+
+  <div ng-show="hasSuccessPunchOut();">
+    <h4> 成功刷出: {{ successPunchOutBarcodes.length }}件 </h4>
+    <div ng-repeat="successPunchOutBarcode in successPunchOutBarcodes" class="alert alert-success text-left">
+      {{ successPunchOutBarcode.sn }}
+      <button ng-click="emptySuccessPunchOutBarcodes($index);" type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    </div>
+  </div>
+
+  <div ng-show="hasFailPunchOut();">
+    <h4> 刷出失敗: {{ failPunchOutBarcodes.length }}件 </h4>
+    <div ng-repeat="failPunchOutBarcode in failPunchOutBarcodes" class="alert alert-danger text-left">
+       {{ failPunchOutBarcode }}
+      <button ng-click="emptyFailPunchOutBarcodes($index);" type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    </div>
+  </div>
+
+  <form role="form">
+    <div class="form-group">
+    <input type="text" class="form-control" placeholder="條碼" 
+      ng-enter="addPunchOutList();" 
+      ng-model="punchOutBarcode"
+    />
+    </div>
+    <button ng-click="savePunchOutList();" type="submit" class="btn btn-primary">SAVE</button>
+  </form>
+
+  <p>&nbsp;</p>
+  <h4>從活動刷回店內<small>目前: {{ punchOutBarcodes.length }}件</small></h4>
+
+  <table class="table">
+    <tr ng-repeat="barcode in punchOutBarcodes">
+      <td>{{ $index+1 }}</td>
+      <td>{{ barcode.sn }}</td>
+      <td><button type="button" class="close" ng-click="removePunchOutList( $index );">×</button></td>
+    </tr>
+  </table>
+</div>
+{% endverbatim %}

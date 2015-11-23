@@ -1,0 +1,32 @@
+{% if not promotions is empty %}
+<div class="row">
+    
+    {% if promotions|length == 1 %}
+        {% set mdNum = 12 %}
+    {% elseif promotions|length > 1 %}
+        {% set mdNum = 3 %}
+    {% endif %}
+
+    {% for promotion in promotions %}
+{#         <div class="col-md-{{ mdNum }} promotion-area mb-10 pl-5 pr-5">
+            <div class="overflow-h">
+                <a href="{{ path('front_promotion_filter', {id: promotion.id }) }}" class="illustration-v1 illustration-img2" style="background-image: url({{ promotion.webPath }});">
+                </a>
+            </div>    
+        </div> #}
+
+        <div class="col-md-{{ mdNum }} promotion-area mb-10 pl-5 pr-5">
+            <div class="overflow-h">
+                <div class="illustration-v1 illustration-img1" style="background-image: url({{ promotion.webPath }});">
+                    <div class="illustration-bg">
+                        <div class="illustration-ads ad-details-v1">
+                            <h3>{{ promotion.name }}</h3>
+                            <a class="btn-u btn-brd btn-brd-hover btn-u-light" href="{{ path('front_promotion_filter', {id: promotion.id }) }}" >前往活動</a>
+                        </div>    
+                    </div>    
+                </div>
+            </div>    
+        </div>
+    {% endfor %}
+</div>
+{% endif %}

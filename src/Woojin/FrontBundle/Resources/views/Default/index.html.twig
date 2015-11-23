@@ -1,0 +1,56 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+  
+{% block og %}
+    <meta property="og:title" content="香榭國際精品" />
+    <meta property="og:site_name" content="香榭國際精品購物官網" />
+    <meta property="fb:app_id" content="1020506801308818" />
+    <meta property="og:description" content="全台最大連鎖二手精品，專業鑑定/收購/寄賣，終身保養" />
+    <meta property="og:url" content="{{ url('front_index') }}" />
+    <meta property="og:image" content="http://img05-tw1.uitoximg.com/A/deploy/AWC000890/1418895222_201412A1100031.jpg" />
+{% endblock %}
+
+{% block body %}
+    <!--=== Slider ===-->
+        {% include 'WoojinFrontBundle:Default/common/component:slider.html.twig' %}
+    <!--=== End Slider ===-->
+
+    <!--=== Product Content ===-->
+    <div class="container content-md padding-top-30">
+        {% include 'WoojinFrontBundle:Default/common/component:tls.html.twig' with {tls: tls} %}
+
+        <!--=== Illustration v1 ===-->
+        {% include 'WoojinFrontBundle:Default/common/component:promotion.html.twig' with {promotions: promotions} %}
+        <!--=== End Illustration v1 ===-->
+
+        <!--=== Illustration v2 ===-->
+        {# {% include 'WoojinFrontBundle:Default/common/component:horizantal.slide.html.twig' with {goodses: goodses|slice(0, 12)} %} #}
+        <!--=== End Illustration v2 ===-->
+
+        <!--=== Illustration v3 ===-->
+        {% include 'WoojinFrontBundle:Default/common/component:categoryIntro.html.twig' %}
+        <!--=== End Illustration v3 ===-->
+        
+        {% include 'WoojinFrontBundle:Default/common/component:timeliness.html.twig' with {promotion: latestPromotion} %}
+        <!--=== End Product Content ===-->
+
+        <div class="margin-bottom-60"></div>
+
+        <div class="container">
+            {% include 'WoojinFrontBundle:Default/common/component:introThreeColumns.html.twig' with {goodses: goodses|slice(12)} %}
+            
+            {% include 'WoojinFrontBundle:Default/common/component:service.html.twig' %}
+        </div><!--/end cotnainer-->
+
+    </div>
+
+    <!--=== Content Part ===-->
+   {#  {% include 'WoojinFrontBundle:Default:partial/mason.html.twig' %} #}
+    <!--=== End Content Part ===-->
+    
+    <!--=== Collection Banner ===-->
+   {#  {% include 'WoojinFrontBundle:Default:partial/staffGroup.html.twig' %} #}
+    <!--=== End Collection Banner ===-->
+{% endblock %}
+
+{% block jsExec %}
+    <script src="/bundles/woojinfront/js/front.index.js"></script>{% endblock %}

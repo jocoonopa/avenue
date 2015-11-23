@@ -1,0 +1,38 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    {% if app.user|has_auth('PATTERN') %}
+        <h1>款式列表
+            <small>
+                {% if app.user.store.id == 6 %}
+                <a href="{{ path('pattern_new') }}" class="btn btn-primary">
+                    新增
+                </a>
+                {% endif %}
+            </small>
+        </h1>
+
+        <table class="records_list table">
+            <thead>
+                <tr>
+                    <th>列表</th>
+                    <th>名稱</th>
+                    <th>Uitox對應</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for entity in entities %}
+                <tr>
+                    <td><a href="{{ path('pattern_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                    <td>{{ entity.name }}</td>
+                    <td>{{ entity.uitoxName }}</td>
+                    <td>
+                        <a href="{{ path('pattern_edit', { 'id': entity.id }) }}">編輯</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+{% endblock %}

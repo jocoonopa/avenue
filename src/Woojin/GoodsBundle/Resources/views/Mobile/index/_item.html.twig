@@ -1,0 +1,35 @@
+<script id="mason-template" type="x-tmpl-mustache">
+    {% verbatim %}
+    <div class="item square-50">
+        <span class="sn label label-danger">{{ sn }}</span>
+        <img class="img-responsive width-100-per item-image lazy" data-toggle="modal" data-target="#masonItem_2" data-original="{{ img.path }}" />
+
+        <table class="table hidden">
+            <tr>
+                <td>品名:&nbsp;</td>
+                <td>{{ name }}</td>
+            </tr>
+            <tr>
+                <td>屬性:&nbsp;</td>
+                <td>{{ brand.name }}，{{ pattern.name }}，{{ color.name }}，{{ level.name }}，{{ mt.name }}</td>
+            </tr>
+            <tr>
+                <td>型號:&nbsp;</td>
+                <td>{{ model }}</td>
+            </tr>
+            <tr>
+                <td>成本:&nbsp;</td>
+                <td>{{ cost }}</td>
+            </tr>
+            <tr>
+                <td>售價:&nbsp;</td>
+                <td>{{ price }}</td>
+            </tr>
+            <tr>
+                <td>網價:&nbsp;</td>
+                <td>{{ web_price }}</td>
+            </tr>
+        </table>
+    </div>
+    {% endverbatim %}
+</script>

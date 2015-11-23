@@ -1,0 +1,11 @@
+{% macro input(widget) %}
+
+<div class="row">
+    <div class="col-sm-12 mb-10">
+        <div class="input">
+            {% autoescape false %}{{ widget}}{% endautoescape %}
+        </div>
+    </div>
+</div>
+
+{% endmacro %}

@@ -1,0 +1,68 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block header %}
+<style>
+.form-group {
+    overflow: auto;
+}
+.margin-only-left-10 {
+    margin: 0 0 0 10px !important;
+}
+</style>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+
+{% endblock %}
+
+{% block body %}
+
+{% if (app.user|is_own(goods) and app.user|has_auth('READ_PRODUCT_OWN')) or app.user|has_auth('READ_PRODUCT_ALL') %}
+    {% if goods.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') %}
+        {% include 'WoojinGoodsBundle:Goods/v2:virtualize.html.twig' with {goods: goods} %}
+    {% endif %}
+
+    {% include 'WoojinGoodsBundle:Yahoo:uploadModal.html.twig' with {goods: goods} %}
+
+    <div class="row mt-10">
+        {% include 'WoojinGoodsBundle:Goods/v2:navbar.html.twig' with {goods: goods} %}
+    </div>
+
+    {% include 'WoojinGoodsBundle:Goods/v2:flashbag.html.twig' %}
+
+    <div class="row mt-30">
+        <div class="col-md-12">
+            {% include 'WoojinGoodsBundle:Goods/v2:productForm.html.twig' with {goods: goods} %}
+        </div>
+
+        <div class="col-md-12">
+            {% include 'WoojinGoodsBundle:Goods/v2:moveout.html.twig' with {goods: goods} %}
+        </div>
+
+        <div class="col-md-12">
+            {% include 'WoojinGoodsBundle:Goods/v2:orders.html.twig' with {goods: goods} %}
+        </div>
+    </div>    
+
+<script src="{{ asset('/js/jquery.form.js')}}"></script>
+<script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+<script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+<script src="{{ asset('/js/jquery-ui-1.10.3.min.js') }}"></script>
+<script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="/bundles/woojingoods/js/ckeditor/ckeditor.js"></script>
+<script src="{{ asset('/js/editV2.js') }}"></script>
+<script src="{{ asset('/js/editv2/yahoosdk.js')}}"></script>
+
+{% if goods.yahooId %}
+<script>
+var yahooSdk = new YahooApiSDK({{ goods.id }});
+</script>
+{% else %}
+<script>
+yahooTriggerBind();
+</script>
+{% endif %}
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

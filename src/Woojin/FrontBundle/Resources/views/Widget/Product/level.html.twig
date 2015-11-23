@@ -1,0 +1,35 @@
+{% macro with(goods, placement, isProductPage) %}
+
+{% import _self as ul %}
+
+<ul class="pull-left list-inline product-ratings max-width-300{% if isProductPage %} margin-bottom-30 {% endif %}" data-toggle="tooltip" data-placement="{{ placement|default('left') }}" title="{% if goods.level %}{{ '商品狀況:   ' ~ goods.level.name }}{% endif %}" >
+    {% if goods.level %}
+        {% if goods.level.id >= 19 %}
+            {{ ul.li(5) }}
+        {% elseif goods.level.id >= 15 %}
+            {{ ul.li(4) }}
+        {% elseif goods.level.id >= 11 %}
+            {{ ul.li(3) }}
+        {% elseif goods.level.id >= 9 %}
+            {{ ul.li(2) }}
+        {% else %}
+            {{ ul.li(1) }}
+        {% endif %}
+    {% endif %}
+</ul>
+{% endmacro %}
+
+{% macro li(starNum) %}
+    {% set selectedNum = starNum %}
+    {% set remainNum = 5 - starNum %}
+
+    {% for i in 1..starNum %}
+        <li><span class="rating-selected fa fa-star"></span></li>
+    {% endfor %}
+    
+    {% if remainNum > 0 %}
+        {% for i in 1..remainNum %}
+            <li><span class="rating fa fa-star"></span></li>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}

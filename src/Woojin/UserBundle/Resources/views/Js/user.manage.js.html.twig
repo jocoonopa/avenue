@@ -1,0 +1,407 @@
+<script>
+$(function () {
+
+	var oUserTableApp = (function () {
+	
+		var 
+			// Handle user's motion on DOM
+			controller = {
+
+				showInput: function( e ) {
+
+					var $td = e.parent(),
+						$input = $( '<input value="'+e.text()+'">' );
+
+					if ( (e.attr( 'class' ) == 'sMobil') ) {
+						$input.numeric();
+					}
+						
+					$td.append( $input );
+					e.hide();
+					view.$input = view.$table.find( 'input' );
+					return this.onBlurEvents( e );
+				},
+
+				// Edit User's info via ajax request 
+				ajaxEdit: function( e ) {
+					ajaxLoaded();
+					
+					$.post( model.editUrl, model, function( res ) {
+						if ( (res != 'ok') ) {
+							e.text( model.rollback );
+						}
+							
+						$.unblockUI();
+					});
+					
+					return this.dynamicModelClean();
+				},
+
+				// Set model to it should be
+				refreshEditModel: function( e ) {
+					model.sUserName = e.parent().find( '.sUserName' ).text();
+					model.sMobil = e.parent().find( '.sMobil' ).text();
+					model.sEmail = e.parent().find( '.sEmail' ).text();
+					model.nId = e.closest( 'tr' ).data( 'id' );
+					return this;
+				},
+
+				// Put tablesorter on table
+				tableSorter: function ( e ) {
+					view.$table.tablesorter();
+					return this;
+				},
+
+				// Bind events when input blur
+				// When blur, should do info update
+				onBlurEvents: function( e ) {
+					view.$input.on( 'blur', function () {	
+						var $this = $( this ),
+							sValue = $this.val();
+
+						model.rollback = e.text();	
+						if ( (e.attr( 'class' ) == 'sEmail') ) {
+							if ( !model.reEmail.test( sValue ) ) {
+								$this.val( model.rollback );
+								sValue = model.rollback;
+							}							
+						}
+
+						if ( (sValue == '') ) {
+							sValue = model.rollback;
+						}
+							
+						e.text( sValue ).show();
+						$this.remove();	
+						if ( (model.rollback != sValue) ) {
+							controller.refreshEditModel( e ).ajaxEdit( e );
+						}
+							
+					}).focus();
+
+					return this.dynamicModelClean();
+				},
+
+				//On role change events
+				onRoleChangeEvents: function ( e ) {
+					e.on( 'click', function () {
+						var $this = $( this );
+						
+						if ( ( ($this.text() != '小幫手') && ($this.text() != '資深專員') ) ) {
+							return false;
+						}
+							
+						model.nId = $(this).closest( 'tr' ).data('id');
+						bootbox.confirm( '確定更改權限嘛?', function ( res ) {
+							if ( res ) {
+								$.post( model.changeRoleUrl, { id: model.nId }, function ( res ) {
+									$this.text( res );
+									controller.dynamicModelClean();
+								});
+							}
+							controller.dynamicModelClean();
+						}); 
+					});
+
+					return this;
+				},
+
+				// When span click, show input
+				onEvents: function( e ) {
+					e.on( 'click', function () {
+						var $this = $( this );
+						
+						controller.showInput( $this );
+					});
+
+					return this;
+				},
+
+				// When specific button click, open dialog
+				onOpenPasswordDialog: function( e ) {
+					e.on( 'click', function () {
+						view.$editDialog.dialog( 'open' );
+						model.nId = $( this ).data( 'id' );
+					});
+
+					return this;
+				},
+
+				// Check whether password value is illegal or not
+				checkPasswordVal: function () {
+					var $inputFirst = view.$editDialog.find( '[name="sUserPassword"]' ),
+						$inputSecond = view.$editDialog.find( '[name="sUserPasswordConfirm"]' );
+					
+					if ( ($inputFirst.val().length < model.nPasswordMinLength) ) {
+						model.errMsg = '密碼長度不足';
+					} else if ( ($inputSecond.val() != $inputFirst.val()) ) {
+						model.errMsg = '密碼兩次輸入不同';
+					} else {
+						model.sPassword = $inputFirst.val();
+						model.errMsg = '';
+					}
+					return this;	
+				},
+
+				// Set model to it should be before password update process
+				beforePassSend: function () {
+					model.sUserName = '';
+					model.sMobil = '';
+					model.sEmail = '';
+					model.sActive = '';
+
+					return this;
+				},
+
+				// When specific button click, do password update process
+				passwordPressSend: function( e ) {
+					this.checkPasswordVal().beforePassSend();
+					
+					if ( (model.errMsg != '') ) {
+						alert( model.errMsg );
+					} else {
+						ajaxLoaded();
+
+						$.post( model.editUrl, model, function ( res ) {
+							model.sPassword = '';
+							model.nId = '';
+							e.dialog( 'close' ).find( 'input' ).val('');
+							$.unblockUI();
+						});
+					}	
+					
+					return this.dynamicModelClean();
+				},
+
+				// Close password update dialog, and set model and input
+				// to init state
+				passwordPressCancel: function( e ) {
+					e.dialog( 'close' ).find( 'input' ).val('');					
+					return this.dynamicModelClean();
+				},
+
+				// When specific Img click, update User's is_active value
+				clickImgActive: function ( e ) {
+					e.on( 'click', function () {
+						var $this = $( this ),
+							sSrc = $this.attr( 'src' );
+
+						model.sActive = 'do';
+						model.nId = $this.data( 'id' );
+
+						$.post( model.activeUrl, model, function ( res ) {
+							if ( (sSrc == '{{ CancelPng }}') ) {
+								$this.attr( 'src', '{{ UserActivePng }}' );
+							} else {
+								$this.attr( 'src', '{{ CancelPng }}' );
+							}
+														
+							$this.closest( 'tr' ).find( '.stoptime' ).text( res );
+						});
+					});
+				
+					return this.dynamicModelClean();
+				},
+
+				// When specific button click, open add dialog
+				onOpenAddDialog: function ( e ) {
+					e.on( 'click', function () {
+						view.$addDialog.dialog( 'open' );
+					});
+
+					return this;
+				},
+
+				// handling response and setup view
+				resHandling: function ( e ) {
+					// Trim space in response
+					e = e.replace( /^\s*|\s*$/g, "" ),
+
+					// Put jQuery on response
+					$tr = $( e ),
+					$span = $tr.find( 'span' ).not( '.user_password' ).not( '.sRoleName' );
+					$roleSpan = $tr.find( 'span.sRoleName' );
+	        		$password = $tr.find( '.password' );
+	        		$imgPassword = $tr.find( 'img.editPassword' );
+	        		$imgActive = $tr.find( 'img.activeUser' );
+
+	        		return this.appendTR( $tr )
+	        			.onEvents( $span )
+	        			.onRoleChangeEvents( $roleSpan )
+						.onOpenPasswordDialog( $imgPassword )
+						.clickImgActive( $imgActive );	
+				},
+
+				// Append new tr to tbody
+				appendTR: function ( e ) {
+					view.$table.find( 'tbody' ).append( e );
+					return this;
+				},
+				
+				// Setup add dialog
+				initAddDialog: function ( e ) {
+					e.find( 'form' ).ajaxForm({
+
+						url: model.addUrl,
+						success: function ( res ) {							 
+							controller.resHandling( res );
+						},
+						error: function () {
+							alert( '資料重複或其他問題, 請重新檢查!' );
+						}
+					});
+
+					e.find( '.numeric' ).numeric();
+					return this;
+				},
+
+				// Submit form to add new User
+				formSubmitAdd: function ( e ) {					
+					e.find( 'form' ).submit();
+					return this;
+				},
+
+				// Before add user request send, set model to it should be
+				beforeAddSend: function () {
+					model.sUserName = view.$addDialog.find( '[name="sUsername"]' ).val();
+	                model.sMobil = view.$addDialog.find( '[name="sMobil"]' ).val();
+	                model.sEmail = view.$addDialog.find( '[name="sEmail"]' ).val();
+	                model.sPassword = view.$addDialog.find( '[name="sUserPassword"]' ).val();
+	                model.rollback = view.$addDialog.find( '[name="sUserPasswordConfirm"]' ).val();
+	                
+	                return this;
+				},
+
+				// Add new user process
+				addPressSend: function ( e ) {
+					this.beforeAddSend();
+
+	                if ( (model.sUserName.length < model.nUsernameMinLength) ) {
+	                	return alert( '帳號過短!' );
+	                }
+			            
+	                if ( !model.reMobil.test( model.sMobil ) ) {
+	                	return alert( '手機號碼格式錯誤' );  
+	                }
+						 
+	                if ( ( !model.reEmail.test( model.sEmail ) || (model.sEmail.length == 0) ) ) {
+	                	return alert( '信箱格式錯誤' );
+	                }
+	                	
+	                if ( (model.sPassword.length < model.nPasswordMinLength) ) {
+	                	return alert( '密碼過短' );
+	                }
+	                	
+	                if ( (model.sPassword != model.rollback) ) {
+	                	return alert( '兩次輸入密碼不同' );
+	                }
+	                			
+					this.formSubmitAdd( view.$addDialog ).dynamicModelClean();
+					return e.dialog( 'close' ).find( 'input' ).val( '' );
+				},
+
+				// When add dialog's cancel been clicked, 
+				addPressCancel: function ( e ) {		
+					e.dialog( 'close' ).find( 'input' ).val( '' );
+					return this.dynamicModelClean();
+				},
+
+				// Set dynamic model to init
+				dynamicModelClean: function () {
+					model.sUserName = '';
+          model.sMobil = '';
+          model.sEmail = '';
+          model.sPassword = '';
+          model.rollback = '';
+          model.nId = '';
+          model.sActive = '';
+          model.errMsg = '';
+          
+          return this;
+				}
+			},
+
+			// DOM init and setup
+			view = {
+				setup: function ( table ) {
+					view.$table = table;
+					view.$span = view.$table.find( 'span' ).not( '.user_password' ).not( '.sRoleName' );
+		        	view.$password = view.$table.find( '.password' );
+		        	view.$imgPassword = view.$table.find( 'img.editPassword' );
+		        	view.$imgActive = view.$table.find( 'img.activeUser' );
+		        	view.$addButton = $( '.add_user_button' ).find( 'button' );
+		        	view.$roleSpan = view.$table.find( 'span.sRoleName' );
+
+		        	// Add jQuery UI on add user dialog       	
+		        	view.$addDialog = $( '.add_user_dialog' ).dialog({
+						autoOpen: false,
+	                    height: 450,
+	                    width: 400,
+	                    modal: true,
+						buttons: {
+							'確定': function () {
+								controller.addPressSend( $( this ) );
+							},
+							'取消': function () {
+								controller.addPressCancel( $( this ) );
+							}
+						}
+					});
+
+					// Add jQuery UI on edit user dialog
+		        	view.$editDialog = $( '.edit_user_password' ).dialog({
+	                    autoOpen: false,
+	                    height: 300,
+	                    width: 400,
+	                    modal: true,
+						buttons: {
+							'確定': function () {
+								controller.passwordPressSend( $( this ) );
+							},
+							'取消': function () {
+								controller.passwordPressCancel( $( this ) );
+							}
+						}
+					});
+				}
+			},
+
+			// Data of business logic
+			model = {
+	            'sUserName': '',
+	            'sMobil': '',
+	            'sEmail': '',
+	            'sPassword': '',
+	            'nId': '',
+	            'sActive': '',
+	            'rollback': '',
+	            'errMsg': '',
+	            'reEmail': /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
+	            'reMobil': /^[09]{2}[0-9]{8}$/,
+	            'addUrl': Routing.generate( 'user_ajax_add' ),
+		        'editUrl': Routing.generate( 'user_ajax_edit' ),
+		        'activeUrl': Routing.generate( 'user_ajax_active' ),
+		        'changeRoleUrl': Routing.generate( 'user_ajax_change_role' ),
+		        'nPasswordMinLength': 8,
+		        'nUsernameMinLength': 2
+			};
+
+		return {
+	        initialize: function ( table ) {
+	            view.setup( table );
+
+	            // Bind events on DOM
+	            controller.onEvents( view.$span )
+	            .onOpenPasswordDialog( view.$imgPassword )
+	            .onOpenAddDialog( view.$addButton )
+	            .clickImgActive( view.$imgActive )
+	            .initAddDialog( view.$addDialog )
+	            .tableSorter( view.$table )
+	            .onRoleChangeEvents( view.$roleSpan );
+	        }
+	    };
+	});
+
+	oUserTableApp().initialize( $( '#users' ).find( '.userManage' ) );
+});
+</script>

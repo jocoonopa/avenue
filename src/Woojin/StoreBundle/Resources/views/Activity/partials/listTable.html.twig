@@ -1,0 +1,33 @@
+{% verbatim %}
+<table class="table table-hover">
+
+  <tr>
+    <td ng-click="orderProp='name'; reverse=!reverse;" class="pointer" >活動名稱</td>
+    <td>簡介</td>
+    <td ng-click="orderProp='startAt'; reverse=!reverse;" class="pointer" >起始</td>
+    <td ng-click="orderProp='endAt'; reverse=!reverse;" class="pointer" >終止</td>
+    <td>操作</td>
+  </tr>
+  
+  <tr ng-repeat="activity in activitys | filter:query | orderBy:orderProp:reverse" class="activity-listing">
+    <td class="#editName">
+      <a href="#/activity/{{ activity.id }}" class="no-underline">
+        {{ activity.name }}
+        <span class="badge">{{ activity.count }}</span>
+      </a>
+    </td>
+    <td ng-bind-html="activity.description" class="#editDescription text-left"></td>
+    <td class="#editStartAt">
+      {{ activity.startAt }}
+    </td>
+    <td class="#editEndAt">
+      {{ activity.endAt }}
+    </td>
+    <td>
+      <button ng-click="edit(activity.id); emptyErrorMsg();" class="btn btn-info" data-toggle="modal" data-target="#theActivity">編輯</button>
+      <button ng-click="remove(activity.id);" href="#" class="btn btn-danger #remove">刪除</button>
+    </td>
+  </tr>
+  
+</table>  
+{% endverbatim %}

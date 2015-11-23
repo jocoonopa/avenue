@@ -1,0 +1,35 @@
+{% macro panel(title, products, position) %}
+
+{% import _self as panel %}
+
+{% if products|length > 0 %}
+    <div class="{{ position }}-main side-container position-fixed">
+        {{ panel.title(title, position) }}
+
+        <div class="visible-lg-block text-center {{ position }}-10 side-board">
+            {{ panel.gallery(products, position) }}
+        </div>
+    </div>
+{% endif %}
+
+{% endmacro %}
+
+{% macro title(title, position) %}
+
+<div class="visible-lg-block text-center font-12 {{ position }}-10 side-board-title">
+    <button class="left-fixed-empty btn-u btn-u-dark width-100-per">清空記錄</button>
+</div>
+
+{% endmacro %}
+
+{% macro gallery(products, position) %}
+    {% for product in products %}
+    <div class="{{ position }}-fixed position-rel display-block gallery-block">
+        <button type="button" class="close left-fixed-remove position-abs right-0 top-0" data-id="{{ product.id }}">×</button>
+
+        <a href="{{ path('front_product_show', {id: product.id }) }}">
+            <img class="img-responsive width-100 height-100" src="{{ product.img.path }}" alt="{{ product.name }}" />
+        </a>
+    </div>
+    {% endfor %}
+{% endmacro %}

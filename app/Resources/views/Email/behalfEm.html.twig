@@ -1,0 +1,52 @@
+<!-- 
+ * Template Name: Unify - Responsive Bootstrap Template
+ * Description: Business, Corporate, Portfolio and Blog Theme.
+ * Version: 1.6
+ * Author: @htmlstream
+ * Website: http://htmlstream.com
+ -->
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>香榭官網出貨通知信</title>
+                                                                                                                                                                                                                                                                                                                                                                                                        
+<style type="text/css">
+    .ReadMsgBody {width: 100%; background-color: #ffffff;}
+    .ExternalClass {width: 100%; background-color: #ffffff;}
+    body     {width: 100%; background-color: #ffffff; margin:0; padding:0; -webkit-font-smoothing: antialiased;font-family: Arial, Helvetica, sans-serif}
+    table {border-collapse: collapse;}
+    
+    @media only screen and (max-width: 640px)  {
+                    body[yahoo] .deviceWidth {width:440px!important; padding:0;}    
+                    body[yahoo] .center {text-align: center!important;}  
+            }
+            
+    @media only screen and (max-width: 479px) {
+                    body[yahoo] .deviceWidth {width:280px!important; padding:0;}    
+                    body[yahoo] .center {text-align: center!important;}  
+            }
+</style>
+</head>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" yahoo="fix" style="font-family: Arial, Helvetica, sans-serif">
+
+<h4>{{ behalf.want.name }}代購通知，編號:&nbsp; {{ behalf.id|str_pad_left }}</h4>
+
+<p>
+{% if behalf.status.id == 1 %}
+{{ behalf.custom.name }}發出代購請求，請致電{{ behalf.custom.mobil }} 或是mail {{ behalf.custom.email }}聯絡客戶
+{% elseif behalf.status.id == 3 %}
+{{ behalf.custom.name }}已經支付訂金，請準備批貨作業。
+{% elseif behalf.status.id == 4 %}
+{{ behalf.custom.name }}已經入庫，請致電{{ behalf.custom.mobil }} 或是mail {{ behalf.custom.email }}告知客戶結清尾款
+{% elseif behalf.status.id == 5 %}
+{{ behalf.custom.name }}已經收到款項，請準備出貨作業
+{% elseif behalf.status.id == 7 %}
+{{ behalf.custom.name }}已經取消代購請求
+{% else %}
+{% endif %}
+</p>
+
+<!-- End Wrapper -->
+</body>
+</html>

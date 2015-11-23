@@ -1,0 +1,51 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+
+{% block title %}結帳{% endblock %}
+
+{% block preExt %} 
+<link rel="stylesheet" href="/bundles/woojinfront/plugins/jquery-steps/css/custom-jquery.steps.css">
+{% endblock %}
+
+{% block body %}
+    <!--=== Breadcrumbs v4 ===-->
+    <div class="breadcrumbs-v4">
+        <div class="container">
+            <span class="page-name">結帳</span>
+
+            <ul class="breadcrumb-v4-in">
+                <li><a href="{{ path('front_index') }}">首頁</a></li>
+                <li class="active">購物車結帳</li>
+            </ul>
+        </div><!--/end container-->
+    </div> 
+    <!--=== End Breadcrumbs v4 ===-->
+
+    <!--=== Content Medium Part ===-->
+    <div class="content-md margin-bottom-30">
+        <div id="product-container" class="container">
+            {% if products|length > 0 %}
+                {% include 'WoojinFrontBundle:Payment/Form:form.html.twig' with {products: products, custom: custom} %}
+            {% endif %}
+        </div>
+    </div>
+    <!--=== End Content Medium Part ===-->  
+
+    {% include 'WoojinFrontBundle:Payment/Frag:notfound.html.twig' %}
+{% endblock %}  
+
+{% block jsExec %}
+    <script src="/bundles/woojinfront/js/front.checkout.js"></script>
+    <script>
+    {% if custom.county != '未填寫' %}
+    $('.twzipcode').twzipcode({
+        'countySel': '{{ custom.county }}',
+        'districtSel': '{{ custom.district }}'
+    });
+    {% else %}
+    $('.twzipcode').twzipcode({
+        'detect': true // 預設為 false
+    });
+    {% endif %}
+
+    </script>
+{% endblock %}

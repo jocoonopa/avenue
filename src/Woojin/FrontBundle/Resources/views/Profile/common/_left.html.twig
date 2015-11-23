@@ -1,0 +1,47 @@
+<ul class="list-group sidebar-nav-v1 margin-bottom-40" id="sidebar-nav-1">
+    <li class="list-group-item {% if _active == 'settingsAction' %}active{% endif %}">
+        <a href="{{ path('front_profile_settings') }}"><i class="fa fa-user"></i>個人資訊</a>
+    </li>  
+    {% if custom.is_active == 1 %}
+    <li class="list-group-item {% if _active == 'cartAction' %}active{% endif %}">
+        <a href="{{ path('front_payment_checkout') }}"><i class="glyphicon glyphicon-shopping-cart"></i>購物車</a>
+    </li>                                  
+    {% endif %}
+    <li class="list-group-item {% if _active == 'whishlistAction' %}active{% endif %}">
+        <a href="{{ path('front_profile_whishlist') }}"><i class="glyphicon glyphicon-heart"></i>願望清單</a>
+    </li>
+    <li class="list-group-item {% if _active == 'ordersAction' %}active{% endif %}">
+        <a href="{{ path('front_profile_orders') }}"><i class="glyphicon glyphicon-record"></i>訂單記錄</a>
+    </li>                                   
+    <li class="list-group-item {% if _active == 'behalfAction' %}active{% endif %}">
+        <a href="{{ path('front_profile_behalf') }}"><i class="glyphicon glyphicon-briefcase"></i>代購記錄</a>
+    </li>     
+    <li class="list-group-item {% if _active == 'passwordModificationAction' %}active{% endif %}">
+        <a href="{{ path('front_profile_passwordModification') }}"><i class="glyphicon glyphicon-edit"></i>修改密碼</a>
+    </li>
+</ul>   
+
+{% if not isMobile() %}
+<div class="counters col-md-12 col-sm-12 hidden-xs">
+    <span class="counter-icon">
+        <i class="fa fa-gift rounded"></i>
+    </span>
+   
+    <span class="counter big-red">{{ custom.dividend|number_format }}</span>元
+    <h4>紅利累計</h4>
+</div>
+{% endif %}
+
+{# <div class="panel-heading-v2 overflow-h">
+    <h2 class="heading-xs pull-left"><i class="fa fa-bell-o"></i> Notification</h2>
+    <a href="#"><i class="fa fa-cog pull-right"></i></a>
+</div>
+<ul id="scrollbar5" class="list-unstyled contentHolder margin-bottom-20">
+    <li class="notification">
+        <i class="icon-custom icon-sm rounded-x icon-bg-red icon-line icon-envelope"></i>
+        <div class="overflow-h">
+            <span><strong>Albert Heller</strong> has sent you email.</span>
+            <small>Two minutes ago</small>
+        </div>    
+    </li>
+</ul>   #}  

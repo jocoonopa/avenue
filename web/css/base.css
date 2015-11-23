@@ -1,0 +1,266 @@
+@charset "UTF-8";
+.ui-widget {
+  font-family: '微軟正黑體'; }
+
+.hidden {
+  display: none; }
+
+body {
+  background-color: white; }
+  body .black {
+    color: #000; }
+  body .white {
+    color: #fff; }
+
+div.openBackOrder {
+  position: absolute;
+  float: right;
+  right: 0px;
+  width: 40px;
+  display: none;
+  z-index: 22;
+  top: 600px; }
+div #orders, div #tabs, div #users {
+  height: 1600px; }
+div.openConsign {
+  position: absolute;
+  float: right;
+  right: 0px;
+  width: 40px;
+  display: none;
+  z-index: 22;
+  top: 110px; }
+div.ui-widget-content li {
+  list-style: none; }
+  div.ui-widget-content li span.preWord {
+    display: block;
+    float: left;
+    width: 90px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #f57d05; }
+div.pageNext {
+  margin: 15px 0 0 0;
+  cursor: pointer; }
+div.pagePrev {
+  margin: 10px 0 0 10px;
+  cursor: pointer; }
+div#body {
+  font-size: 16px;
+  width: 100%;
+  min-height: 1600px;
+  margin: 79px auto 0 auto;
+  padding: 0; }
+  div#body li {
+    list-style: none; }
+    div#body li span.preWord {
+      display: block;
+      float: left;
+      width: 90px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #f57d05; }
+
+img.ordersStatusImg {
+  width: 24px;
+  height: 24px;
+  margin: 7px 5px 0 -5px; }
+img.goodsStatusImg {
+  width: 24px;
+  height: 24px;
+  margin: 7px 5px 0 -5px; }
+
+#AjaxMsgConsign {
+  position: absolute;
+  width: 1021px;
+  height: 400px;
+  float: right;
+  right: -1021px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 30;
+  top: 110px; }
+  #AjaxMsgConsign button {
+    width: 50px; }
+  #AjaxMsgConsign ul.consignInformRes {
+    margin: 5px 0 0 5px;
+    float: left; }
+    #AjaxMsgConsign ul.consignInformRes li {
+      float: left;
+      list-style: none;
+      width: 135px;
+      text-align: center;
+      border: 1px #dedede solid;
+      height: 30px;
+      line-height: 30px;
+      font-size: 12px;
+      vertical-align: middle;
+      background-color: #000;
+      color: #fff; }
+      #AjaxMsgConsign ul.consignInformRes li:last-of-type {
+        width: 90px; }
+      #AjaxMsgConsign ul.consignInformRes li button {
+        width: 80px;
+        font-size: .8em; }
+  #AjaxMsgConsign ul.confirmFeedOth {
+    margin: 5px 0 0 5px;
+    float: left; }
+    #AjaxMsgConsign ul.confirmFeedOth li {
+      float: left;
+      list-style: none;
+      width: 135px;
+      text-align: center;
+      border: 1px #dedede solid;
+      height: 30px;
+      line-height: 30px;
+      font-size: 12px;
+      vertical-align: middle; }
+  #AjaxMsgConsign ul.sendFeedOth {
+    margin: 5px 0 0 5px;
+    float: left; }
+    #AjaxMsgConsign ul.sendFeedOth li {
+      float: left;
+      list-style: none;
+      width: 135px;
+      text-align: center;
+      border: 1px #dedede solid;
+      height: 30px;
+      line-height: 30px;
+      font-size: 12px;
+      vertical-align: middle; }
+
+#AjaxMsgBackOrder {
+  position: absolute;
+  width: 1021px;
+  height: 400px;
+  float: right;
+  right: -1021px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 30;
+  top: 600px; }
+  #AjaxMsgBackOrder ul.backOrderOut {
+    margin: 5px 0 0 5px;
+    float: left; }
+    #AjaxMsgBackOrder ul.backOrderOut li {
+      float: left;
+      list-style: none;
+      text-align: center;
+      border: 1px #fff solid;
+      height: 30px;
+      line-height: 30px;
+      font-size: 12px;
+      vertical-align: middle;
+      color: #fff;
+      background-color: #000; }
+      #AjaxMsgBackOrder ul.backOrderOut li:first-of-type {
+        width: 90px; }
+      #AjaxMsgBackOrder ul.backOrderOut li:nth-of-type(2) {
+        width: 100px; }
+      #AjaxMsgBackOrder ul.backOrderOut li:nth-of-type(3) {
+        width: 100px; }
+      #AjaxMsgBackOrder ul.backOrderOut li:nth-of-type(4) {
+        width: 90px; }
+      #AjaxMsgBackOrder ul.backOrderOut li:nth-of-type(5) {
+        width: 110px; }
+      #AjaxMsgBackOrder ul.backOrderOut li:nth-of-type(6) {
+        width: 140px; }
+      #AjaxMsgBackOrder ul.backOrderOut li:last-of-type {
+        width: 140px; }
+      #AjaxMsgBackOrder ul.backOrderOut li button {
+        width: 140px;
+        font-size: .8em; }
+  #AjaxMsgBackOrder ul.backOrderIn {
+    margin: 5px 0 0 5px;
+    float: left; }
+    #AjaxMsgBackOrder ul.backOrderIn li {
+      float: left;
+      list-style: none;
+      text-align: center;
+      border: 1px #dedede solid;
+      height: 30px;
+      line-height: 30px;
+      font-size: 12px;
+      vertical-align: middle;
+      color: #fff;
+      background-color: #000; }
+      #AjaxMsgBackOrder ul.backOrderIn li:first-of-type {
+        width: 90px; }
+      #AjaxMsgBackOrder ul.backOrderIn li:nth-of-type(2) {
+        width: 100px; }
+      #AjaxMsgBackOrder ul.backOrderIn li:nth-of-type(3) {
+        width: 100px; }
+      #AjaxMsgBackOrder ul.backOrderIn li:nth-of-type(4) {
+        width: 90px; }
+      #AjaxMsgBackOrder ul.backOrderIn li:nth-of-type(5) {
+        width: 110px; }
+      #AjaxMsgBackOrder ul.backOrderIn li:nth-of-type(6) {
+        width: 140px; }
+      #AjaxMsgBackOrder ul.backOrderIn li:nth-of-type(7) {
+        width: 140px; }
+      #AjaxMsgBackOrder ul.backOrderIn li:last-of-type {
+        width: 110px; }
+      #AjaxMsgBackOrder ul.backOrderIn li button {
+        width: 110px;
+        font-size: .8em; }
+  #AjaxMsgBackOrder button {
+    width: 50px; }
+
+header {
+  background-color: #000;
+  color: #fff;
+  position: fixed;
+  width: 100%;
+  height: 96px;
+  top: 0;
+  margin: 0 auto 0 auto;
+  line-height: 35px;
+  vertical-align: middle;
+  z-index: 999; }
+  header ul {
+    font-family: '微軟正黑體';
+    font-size: 20px; }
+    header ul li {
+      width: 16.4%;
+      text-align: center;
+      list-style: none;
+      height: 36px;
+      line-height: 35px;
+      vertical-align: middle;
+      float: left;
+      border: solid #dedede 1px;
+      border-width: 1px;
+      cursor: pointer;
+      z-index: 999; }
+    header ul li:last-of-type {
+      border-width: 1px; }
+
+footer {
+  background-color: #000;
+  color: #fff;
+  width: 100%;
+  bottom: 0;
+  height: 150px;
+  line-height: 150px;
+  vertical-align: middle;
+  text-align: center;
+  border-top: 1px solid #dedede; }
+  footer div {
+    display: inline;
+    width: 145px; }
+    footer div select {
+      width: 145px; }
+    footer div button.delete_parent_div {
+      display: none; }
+
+.ui-corner-all {
+  font-size: .8em; }
+
+.ui-autocomplete-loading {
+  background: black url("../img/ui-anim_basic_16x16.gif") right center no-repeat; }
+
+.ui-dialog {
+  z-index: 999; }
+
+.ajaxResLeft img {
+  max-width: 100%; }

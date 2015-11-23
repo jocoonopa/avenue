@@ -1,0 +1,237 @@
+#tabs-search .condition_add, #tabs-batch .condition_add {
+  margin: 6px 0 0 20px; }
+  #tabs-search .condition_add .goods_search_open, #tabs-batch .condition_add .goods_search_open {
+    margin: 0 0 0 15px; }
+  #tabs-search .condition_add p, #tabs-batch .condition_add p {
+    cursor: pointer; }
+#tabs-search .condition_set div, #tabs-batch .condition_set div {
+  width: 410px;
+  margin: 5px 0 0 -2px; }
+#tabs-search .div_right_bottom, #tabs-batch .div_right_bottom {
+  position: fixed;
+  float: left;
+  left: 0px;
+  width: 50px;
+  bottom: 0px;
+  z-index: 20; }
+  #tabs-search .div_right_bottom button, #tabs-batch .div_right_bottom button {
+    margin: 0; }
+#tabs-search .noValue, #tabs-batch .noValue {
+  border: red 2px solid; }
+#tabs-search .ajaxResMsgRight, #tabs-batch .ajaxResMsgRight {
+  float: right;
+  margin: 0;
+  width: 50%; }
+  #tabs-search .ajaxResMsgRight em, #tabs-batch .ajaxResMsgRight em {
+    display: none; }
+  #tabs-search .ajaxResMsgRight table, #tabs-batch .ajaxResMsgRight table {
+    margin: 30px 0 50px 0; }
+    #tabs-search .ajaxResMsgRight table.ope_list th, #tabs-batch .ajaxResMsgRight table.ope_list th {
+      text-align: center;
+      width: 180px;
+      border: #dedede solid 1px;
+      background-color: #D57200;
+      color: #fff; }
+    #tabs-search .ajaxResMsgRight table.ope_list td, #tabs-batch .ajaxResMsgRight table.ope_list td {
+      text-align: center;
+      height: 40px;
+      line-height: 40px;
+      vertical-align: middle;
+      width: 180px;
+      border-bottom: #dedede solid 1px; }
+#tabs-search .ajaxResMid, #tabs-batch .ajaxResMid {
+  float: right;
+  width: 7%; }
+#tabs-search .pageTotal, #tabs-batch .pageTotal {
+  margin: 0 2px 0 0;
+  font-size: 16px;
+  width: 100px; }
+#tabs-search .pageBar, #tabs-batch .pageBar {
+  float: right;
+  width: 80px;
+  font-size: 18px;
+  text-align: center;
+  border-radius: 7px;
+  margin: 0; }
+  #tabs-search .pageBar .scrollBar, #tabs-batch .pageBar .scrollBar {
+    width: 70px;
+    max-height: 583px;
+    overflow-x: hidden;
+    margin: 0 auto 0 auto; }
+    #tabs-search .pageBar .scrollBar .pageButton, #tabs-batch .pageBar .scrollBar .pageButton {
+      color: #000;
+      width: 50px;
+      height: 26px;
+      line-height: 26px;
+      vertical-align: middle;
+      margin: 10px 0 0 0;
+      cursor: pointer; }
+      #tabs-search .pageBar .scrollBar .pageButton span, #tabs-batch .pageBar .scrollBar .pageButton span {
+        color: #fff; }
+#tabs-search .ajaxResLeft, #tabs-batch .ajaxResLeft {
+  float: right;
+  width: 13%;
+  margin: 50px 0 0 0; }
+
+#tabs-source div {
+  width: 270px; }
+  #tabs-source div ul {
+    width: 270px;
+    opacity: .5; }
+    #tabs-source div ul li {
+      text-align: center;
+      height: 30px;
+      line-height: 30px;
+      vertical-align: bottom;
+      margin: 0 0 10px 0;
+      list-style: none;
+      float: left;
+      background-color: #7fffff;
+      border-right: 1px #fff solid; }
+      #tabs-source div ul li:first-of-type {
+        width: 45px; }
+      #tabs-source div ul li.ajax_goods_source_name {
+        width: 150px; }
+        #tabs-source div ul li.ajax_goods_source_name input {
+          width: 100px;
+          display: none; }
+      #tabs-source div ul li:last-of-type {
+        width: 58px; }
+    #tabs-source div ul:hover {
+      opacity: 1; }
+  #tabs-source div button.add_goods_source_button {
+    position: relative;
+    float: left; }
+  #tabs-source div button.del_goods_source_button {
+    width: 58px; }
+
+#tabs-level div {
+  width: 270px; }
+  #tabs-level div ul {
+    width: 270px;
+    opacity: .5; }
+    #tabs-level div ul li {
+      text-align: center;
+      height: 30px;
+      line-height: 30px;
+      vertical-align: bottom;
+      margin: 0 0 10px 0;
+      list-style: none;
+      float: left;
+      background-color: #7fffff;
+      border-right: 1px #fff solid; }
+      #tabs-level div ul li:first-of-type {
+        width: 45px; }
+      #tabs-level div ul li.ajax_goods_level_name {
+        width: 150px; }
+        #tabs-level div ul li.ajax_goods_level_name input {
+          width: 100px;
+          display: none; }
+      #tabs-level div ul li:last-of-type {
+        width: 58px; }
+    #tabs-level div ul:hover {
+      opacity: 1; }
+  #tabs-level div button.add_goods_level_button {
+    position: relative;
+    float: left; }
+  #tabs-level div button.del_goods_level_button {
+    width: 58px; }
+
+.ajaxEditGoodsDialog form {
+  float: left; }
+  .ajaxEditGoodsDialog form input, .ajaxEditGoodsDialog form select {
+    clear: both;
+    text-align: center;
+    width: 130px; }
+  .ajaxEditGoodsDialog form textarea {
+    width: 300px;
+    height: 120px; }
+  .ajaxEditGoodsDialog form .delete_parent_div {
+    display: none; }
+
+div.operatePanel {
+  position: absolute;
+  float: left;
+  width: 27%;
+  left: -440px;
+  height: 1500px;
+  padding: 0 10px 0 0;
+  z-index: 20;
+  background-color: #fff;
+  color: #000; }
+  div.operatePanel .goods_search_submit {
+    top: -4px;
+    left: 5px; }
+  div.operatePanel .goods_search_open {
+    float: right;
+    top: -4px;
+    width: 32px;
+    height: 40px; }
+  div.operatePanel .panelSwitch {
+    display: none; }
+  div.operatePanel .woojinForm {
+    float: left;
+    margin: 0 0 0 20px; }
+    div.operatePanel .woojinForm .delete_parent_div {
+      top: -4px;
+      left: 10px;
+      display: none; }
+    div.operatePanel .woojinForm div {
+      width: 470px;
+      margin: 5px 0 0 0; }
+  div.operatePanel input, div.operatePanel select {
+    width: 120px;
+    font-size: 13px; }
+    div.operatePanel input.goods_search_store, div.operatePanel select.goods_search_store {
+      width: 150px; }
+  div.operatePanel label {
+    vertical-align: top; }
+  div.operatePanel form {
+    margin: 0 0 0 20px; }
+  div.operatePanel .goods_search_condition {
+    overflow: hidden;
+    display: inline-block;
+    width: 150px;
+    height: 20px;
+    border-radius: 10px;
+    border: #dedede outset 1px;
+    background-color: #000;
+    color: #fff;
+    margin-left: 10px; }
+    div.operatePanel .goods_search_condition p {
+      font-size: 14px;
+      line-height: 15px;
+      padding: 3px 0 3px 3px; }
+      div.operatePanel .goods_search_condition p.Phidden {
+        display: none; }
+
+.ui-accordion {
+  width: 50%;
+  font-size: 13px; }
+  .ui-accordion h4 {
+    color: #054a05;
+    font-size: 20px;
+    padding: 16px 0 8px 0; }
+  .ui-accordion h2 {
+    font-size: 17px;
+    color: #e08787; }
+  .ui-accordion h1 {
+    font-size: 13px;
+    color: #4545f5; }
+  .ui-accordion .accordion_left {
+    float: left; }
+  .ui-accordion .accordion_right {
+    float: left;
+    margin: 0 0 0 40px; }
+  .ui-accordion .goodsResTabs {
+    width: 100%; }
+    .ui-accordion .goodsResTabs div.button {
+      font-size: 12px;
+      height: 20px;
+      margin: 0; }
+      .ui-accordion .goodsResTabs div.button button {
+        margin: 0 0 0 15px; }
+    .ui-accordion .goodsResTabs ul.goods_list {
+      width: 100%; }
+      .ui-accordion .goodsResTabs ul.goods_list li {
+        width: 100%; }

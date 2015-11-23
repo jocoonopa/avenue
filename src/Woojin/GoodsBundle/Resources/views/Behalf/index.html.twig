@@ -1,0 +1,57 @@
+{% extends '::bootstrap.html.twig' %}
+
+
+{% block external %}
+<style>
+span.label-light, span.badge-light {
+  color: #777;
+  background: #ecf0f1;
+}
+
+span.label-dark, span.badge-dark {
+  background: #555;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+{% if app.user|has_auth('BEHALF_MANAGE') %}
+
+    {% import 'WoojinGoodsBundle:Behalf/Macro:widget.html.twig' as behalfWidget %}
+
+    <h1>代購列表</h1><hr>
+
+    <table class="records_list table table-striped">
+        <thead>
+            <tr>
+                <th>商品</th>
+                <th>建立時間</th>
+                <th>最後更新時間</th>
+                <th>狀態</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for behalf in entities %}
+            <tr>
+                <td>
+                    <img src="{{ behalf.want.img.path }}" style="width: 150px;" />
+                    <p><b>品名:</b>&nbsp;{{ behalf.want.name }}</p>
+                    <p><b>產編:</b>&nbsp;{{ behalf.want.sn }}</p>
+                    <p><b>型號:</b>&nbsp;{{ behalf.want.model }}</p>
+                    <p><b>應付:</b>&nbsp;NT.&nbsp;{{ behalf.want.promotionPrice(true)|number_format }}</p>
+                </td>
+                <td>{% if behalf.createAt %}{{ behalf.createAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if behalf.updateAt %}{{ behalf.updateAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>
+                    {{ behalfWidget.label(behalf) }}
+                </td>
+                <td>
+                    <a href="{{ path('behalf_edit', {id: behalf.id }) }}" class="btn btn-default">詳情</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

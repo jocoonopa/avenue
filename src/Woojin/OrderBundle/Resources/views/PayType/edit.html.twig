@@ -1,0 +1,12 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    <h1>編輯付費方式</h1>
+
+    {{ form(edit_form) }}
+
+    <a href="{{ path('paytype') }}">
+        回到付費方式列表
+    </a>
+    {{ form(delete_form) }}
+{% endblock %}

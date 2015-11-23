@@ -1,0 +1,29 @@
+{% macro with(goods) %}
+
+{% if goods.description %}
+    <div class="mb-30"></div>
+    <div class="row">
+        <div class="col-md-1 col-xs-0"></div>
+        <div class="col-md-10 col-xs-12 text-center">       
+            {% if goods.desimg %}  
+            <img src="{{ goods.desimg.path }}" alt="{{ goods.name }}" class="width-100-per max-width-600">
+            {% endif %}
+
+            {% autoescape false %}{{ goods.description.content }}{% endautoescape %}
+        </div>
+        <div class="col-md-1 col-xs-0"></div>
+    </div>    
+{% else %}
+    <div class="service-block service-block-grey">
+        <span class="icon-2x color-light fa fa-bell-o"></span>
+        <h2 class="heading-md">--施工中--</h2>
+        <p>非常抱歉! 文案建置中，若需要進一步商品資訊請來電{% if goods.store %}{{ goods.store.phone }}{% endif %}詢問，我們將有專人為您服務，亦可於下方留言處留言，我們會儘快回覆您。</p>
+
+        <p>若不忙，亦歡迎您親自來店裡走走
+           {% if goods.store %} <a class="color-black" href="https://www.google.com.tw/maps/place/{{ goods.store.address }}" target="_blank"><span class="glyphicon glyphicon-map-marker"></span>地圖</a>
+           {% endif %}
+        </p>                 
+    </div>
+{% endif %}
+
+{% endmacro %}

@@ -1,0 +1,35 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    {% if app.user|has_auth('PROMOTION_MANAGE') %}
+        <h1>編輯修改官網促銷活動 {{ entity.name }} 
+            <a class="btn btn-default" href="{{ path('promotion') }}">
+                <i class="glyphicon glyphicon-arrow-left"></i>回到列表
+            </a>
+
+            <a class="btn btn-info" href="{{ path('promotion_relate', {id: entity.id })}}">
+                <i class="glyphicon glyphicon-arrow-right"></i>設定關連商品
+            </a>
+        </h1>
+
+        {% for flash in app.session.flashbag.get('error') %}
+        <div class="alert alert-danger alert-dismissible fade in" role="alert">      
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <span>{{ flash }}</span>       
+        </div>
+        {% endfor %}
+        
+        {% if entity.webPath %}
+
+        <div class="row">
+            <div class="col-xs-12">
+                <img src="{{ entity.webPath }}" width="300" height="300"/>
+            </div>
+        </div>
+        {% endif %}
+
+        {{ form(edit_form) }}
+
+        {{ form(delete_form) }}
+    {% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+{% endblock %}

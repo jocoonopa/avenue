@@ -1,0 +1,20 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+{% if app.user|has_auth('BEHALF_MANAGE') %}
+
+    <h1>Behalf creation</h1>
+
+    {{ form(form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('behalf') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

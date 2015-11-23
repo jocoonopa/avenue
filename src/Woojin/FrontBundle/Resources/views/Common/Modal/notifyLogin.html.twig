@@ -1,0 +1,23 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg hidden nofifyLogin" data-toggle="modal" data-target="#notifyLogin">
+  提示登入按鈕
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="notifyLogin" tabindex="-1" role="dialog" aria-labelledby="notifyLoginLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="notifyLoginLabel">您尚未登入香榭會員</h4>
+      </div>
+      <div class="modal-body">
+        請登入會員已使用願望清單功能！<a href="{{ path('front_custom_login') }}">按此登入</a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+        {# <button type="button" class="btn btn-primary">Save changes</button> #}
+      </div>
+    </div>
+  </div>
+</div>

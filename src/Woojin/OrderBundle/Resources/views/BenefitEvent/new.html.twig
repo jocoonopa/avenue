@@ -1,0 +1,14 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    {% if app.user|has_auth('BENEFIT_MANAGE') %}
+        <h1>購物金活動列表</h1>
+        <hr>
+
+        {{ form(form) }}
+
+        <a href="{{ path('benefitevent') }}">
+            <i class="glyphicon glyphicon-list"></i>回到購物金活動列表
+        </a>
+    {% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+<div ng-repeat="good in goods track by $index" data-role="collapsible" data-content-theme="false" data-collapsed="true">
+  <h4 ng-click="getGoodsDetail(good.id, $index);">{{ good.goods_name }}</h4>
+	<ul ng-show="goodsDetail[$index]" data-role="listview">
+    <li>
+    	<div class="wo-left">品名:</div>
+    	<div class="wo-right">{{ goodsDetail[$index].name }}</div>
+    </li>
+    <li>
+    	<div class="wo-left">產編:</div>
+    	<div class="wo-right">{{ goodsDetail[$index].sn }}</div>
+    </li>
+    <li>
+    	<div class="wo-left">品牌:</div>
+    	<div class="wo-right">{{ goodsDetail[$index].brand }}</div>
+    </li>
+    <li>
+    	<div class="wo-left">新舊:</div>
+    	<div class="wo-right">{{ goodsDetail[$index].level }}</div>
+    </li>
+    <li>
+    	<div class="wo-left">狀態:</div>
+    	<div class="wo-right">{{ goodsDetail[$index].status }}</div>
+    </li>
+    <li>
+    	<div class="wo-left">售價:</div>
+    	<div class="wo-right">{{ goodsDetail[$index].price }}</div>
+    </li>
+    <li>
+    	<div class="wo-left">成本:</div>
+    	<div class="wo-right">{{ goodsDetail[$index].cost }}</div>
+    </li>
+    <li>
+    	<div class="wo-left">備註:</div>
+    	<div class="wo-right">{{ goodsDetail[$index].memo }}</div>
+    </li>	
+	</ul>
+	<img ng-show="goodsDetail[$index]" ng-src="{{ goodsDetail[$index].imgURL }}" width="200" height="200"/>
+</div>

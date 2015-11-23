@@ -1,0 +1,43 @@
+{% extends '::activity.html.twig' %}
+
+{% block title %}匯率設定{% endblock %}
+
+{% block head %} 
+
+{{ parent() }}
+
+<script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+
+<script src="/bundles/woojinstore/js/angular/angular-cookies.js"></script>
+
+<script src="/bundles/woojinstore/js/exchange_rate/app.js"></script>
+
+<script src="/bundles/woojinstore/js/exchange_rate/directive.js"></script>
+	
+<script src="/bundles/woojinstore/js/exchange_rate/service.js"></script>
+
+<script src="/bundles/woojinstore/js/exchange_rate/controller.js"></script>
+
+<style>
+
+input {
+	color: #ffffff;
+	background-color: #222222;
+	text-align: center;
+}
+
+input:focus {
+	color: #222222;
+	background-color: #ffffff;
+}
+
+</style>
+
+{% endblock %}
+
+{% block body -%}
+
+<div ng-controller="exchangeRateCtrl">
+{% include 'WoojinStoreBundle:ExchangeRate:list.html.twig' %}
+</div>
+{% endblock %}

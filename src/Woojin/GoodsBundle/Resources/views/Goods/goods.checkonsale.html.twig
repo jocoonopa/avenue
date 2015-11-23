@@ -1,0 +1,117 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block external %}
+<link rel="stylesheet" href="/bundles/woojinfront/css/plugins/jquery.sidr.light.css">
+{% endblock %}
+
+{% block body %}
+<audio id="alert-long" src="http://www.mcjh.kl.edu.tw/usr/wdh/techedu/wavsound/warning.wav" preload="auto"></audio>
+
+<audio id="alert-nothere" src="http://www.mcjh.kl.edu.tw/usr/wdh/techedu/wavsound/carhorntwice.wav" preload="auto"></audio>
+
+<audio id="alert-repeat" src="http://www.mcjh.kl.edu.tw/usr/wdh/techedu/wavsound/radarping.wav" preload="auto"></audio>
+
+<audio id="alert-ok" src="http://www.mcjh.kl.edu.tw/usr/wdh/techedu/wavsound/CAMERALENS.wav
+" preload="auto"></audio>
+
+
+{% if app.user|has_auth('CHECK_STOCK') %}
+    <header class="navbar navbar-static-top bs-docs-nav">
+		<h1>
+			盤點&nbsp; 
+			
+			<button id="save-record" class="btn btn-success pull-right ml-5">
+				<i class="glyphicon glyphicon-floppy-save"></i>儲存記錄
+			</button>
+
+			<button id="trash-record" class="btn btn-danger pull-right">
+				<i class="glyphicon glyphicon-trash"></i>清除記錄
+			</button>
+
+			<a id="left-menu" class="btn btn-primary" href="#left-menu">
+				<i class="glyphicon glyphicon-th-list"></i>已盤點
+			</a> 
+		</h1><hr />
+		
+		<input type="text" class="form-control" placeholder="刷條碼" />
+		
+		<p class="text-left">
+			產編有錯誤或是非庫存狀態:&nbsp;&nbsp;
+			<span class="label label-warning not_here"></span>
+		</p>
+		
+		<p class="text-left">
+			沒盤到:&nbsp;&nbsp;
+			<span class="label label-default not_found"></span>
+		</p>
+
+		<p class="text-left">
+			已盤點:&nbsp;&nbsp;
+			<span class="label label-success has_checked"></span>
+		</p>
+	</header>
+	
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table to-check-list">
+				<thead>
+					<tr>
+						<th>流水號</th>
+						<th>產編</th>
+						<th>品牌</th>
+						<th>品名</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for key,goods in rGoods %}
+					<tr class="{{ goods.sn }}">
+						<td>{{ key + 1 }}</td>
+						<td>
+							<a href="{{ path('goods_edit_v2', {id: goods.id}) }}" target="_blank">{{ goods.sn }}</a>
+						</td>
+						<td>{% if goods.brand %}{{ goods.brand.name }}{% endif %} <span class="badge">{{ goods.customSn }}</span></td>
+						<td>{{ goods.name }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+{% else %}
+	{% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+
+<div id="sidr-left">
+	<!-- Your content -->
+	<table class="table table-striped be-checked-list">
+		<tbody>
+			{# {% for i in 0..100 %}
+			<tr class="success">
+				<td class="X009038100280 target">X009038100280</td>
+				<td>
+					<i class="cancel-checked glyphicon glyphicon-share-alt"></i>
+				</td>
+			</tr>
+			{% endfor %} #}
+		</tbody>
+	</table>
+</div>
+
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="/bundles/woojinfront/js/plugins/jquery.sidr.min.js"></script>
+<script src="/js/jquery.blockUI.js"></script>
+<script src="/js/stock_checker.js" ></script>
+<script>
+$(function () {
+	var iStockChecker = new StockChecker();
+});
+
+$('#left-menu').sidr({
+  	name: 'sidr-left',
+  	side: 'left' // By default
+});
+</script>
+{% endblock %}
+

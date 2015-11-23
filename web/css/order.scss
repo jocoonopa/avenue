@@ -1,0 +1,933 @@
+$add-goods-operate-width     : 460px;
+$font-size                   : 13px;
+
+#orders
+{
+	font-size 	: $font-size;
+	input, select{
+    	text-align  : center;
+    	width       : 120px;
+    	font-size   : 12px;
+    	&#tabs_purchase_goods_name
+    	{
+    		width : 150px;
+    	}
+    	&#tabs_purchase_org_sn
+    	{
+    		width : 150px;
+    	}
+
+	}
+
+	.hidden
+	{
+		display: none;
+	}
+
+	span.addCustom{
+		img{
+			width : 20px;
+			height : 20px;
+		}
+	}
+
+	textarea {
+		width 	: 200px;
+		height 	: 150px;
+	}
+
+	label {
+		&.vader{
+			color: #000;
+		}
+		&.checkbox {
+			input {
+				width: 60px;
+			}
+		}
+	}
+
+	table{
+		&.customHistoryTable
+		{
+			tr{
+				border: #dedede 1px solid;
+
+				td{
+          width : 130px;
+          text-align  : center;
+				}
+				th{
+          width : 130px;
+          background-color: #D57200;
+				}
+			}
+		}
+
+		&.customInfo{
+			margin : 0 0 20px 0;
+			tr{
+				border: #dedede 1px solid;
+
+				td{
+					width: 130px;
+					text-align: center;
+				}
+				th{
+					width : 130px;
+					background-color: #000;
+					color: #fff;
+				}
+			}
+		}
+
+		&.instore_report{
+			min-width : 900px;
+			margin : 0 0 0 -250px;
+			tr{
+				border-bottom: #dedede 1px solid;
+				th{
+					text-align 		: center;
+					height 			: 30px;
+					line-height 	: 30px;
+					vertical-align 	: middle; 
+					background-color: #D57200;
+				}
+
+				td{
+					text-align: center;
+					&.goodsCost{
+              background-color    : #007f00;
+              color               : #fff;
+					}
+				}
+			}
+		}
+
+		&.move_report{
+			min-width : 1000px;
+			margin : 0 0 0 -313px;
+			tr{
+				border-bottom: #dedede 1px solid;
+				th{
+					text-align 		: center;
+					height 			: 30px;
+					line-height 	: 30px;
+					vertical-align 	: middle; 
+					background-color: #D57200;
+				}
+
+				td{
+					text-align: center;
+					&.orderReq{
+                        background-color    : red;
+                        color               : #fff;
+					}
+
+					&.orderPaid{
+						background-color    : green;
+                        color               : #fff;
+					}
+
+					&.orderBalance{
+						background-color    : blue;
+                        color               : #fff;
+					}
+				}
+			}
+		}
+	}
+
+	button{
+		&.edit_custom{
+            font-size   : .3em;
+            margin      : 5px 0 15px 0;
+		}
+
+		&.detail_goods{
+            font-size   : .3em;
+            margin      : 4px;
+		}
+
+		&.hideCondition{
+            display     : none;
+            margin      : -8px 0 0 8px;
+		}
+	}
+
+
+	#orders-purchase
+	{
+		#tabs_purchase_goods_memo
+		{
+            width   : 296px;
+            height  : 80px;
+		}
+
+		.step_2, .step_4, .brand_hidden, .brand_type_hidden
+		{
+			display 	: none;
+		}
+
+		.step_3
+		{
+			display 	: none;
+
+			img{
+        width   : 20px;
+        height  : 20px;
+			}
+		}
+
+		.purType{
+			margin 	: 0 0 20px 0;
+		}
+
+		.customMobil
+		{
+			display 	: none;
+			input{
+				width 	: 150px;
+			}
+		}
+
+		div{
+			&.purchaseShell{
+                position    : absolute;
+                height      : 1100px;
+                width       : 400px;
+                margin      : 0 0 0 13px;
+			}
+		}
+	}	
+
+	.ajaxResMsgRight
+	{
+        float   : right;
+        margin  : 0;
+        width 	: 50%;
+
+        em 
+        {
+        	display : none;
+        }
+	}	
+
+	.ajaxResMid
+	{
+		float : right;
+		width : 7%;
+	}
+
+	.ajaxResLeft
+	{
+		float 			: right;
+		width 			: 16%;
+        margin          : 0 0 0 30px;
+        height 			: $add-goods-operate-width  + 40px;
+        line-height 	: $add-goods-operate-width  + 40px;
+        font-size 		: $font-size;
+        text-align      : center;
+        vertical-align  : middle;
+	}
+
+	.operatePanel
+	{
+		position    : absolute;
+        float       : left;
+        width 		: 27%; 
+        left        : -$add-goods-operate-width + 20px;
+        background-color  : #fff;
+        height      : 1500px;
+        padding 	: 0 10px 0 0;
+        z-index 	: 20;
+
+        .panelSwitch
+		{
+			float 	: right;
+			top 	: -4px;
+            width   : 32px;
+            height  : 40px;
+            opacity : .6;
+		}
+
+		label{
+			vertical-align: top;
+		}	
+
+		form
+		{
+			margin : 0 0 0 20px;
+
+			.step_1
+			{
+				.numeric
+				{
+					width: 80px;
+				}
+			}
+
+			div.customSearch{
+		    	float : left;
+		    	width : $add-goods-operate-width;
+		    }
+		}
+	}
+
+	#orders-payType
+	{
+		div{
+			width : 380px;
+			
+			ul{
+                width   : 370px;
+				opacity : .5;
+
+				li{
+					width 				: 72px;
+		            text-align          : center;
+		            height              : 30px;
+		            line-height         : 30px;
+		            vertical-align      : bottom;
+		            margin              : 0 0 10px 0;
+		            list-style          : none;
+		            float               : left;
+		            background-color    : #fff;
+		            border-right        : 1px #dedede solid;
+		            
+
+		            &.ajax_pay_type_name
+		            {
+						width 	: 150px;
+
+						input{
+                            width       : 100px;
+                            display     : none;
+						}
+		            }
+
+		            &.ajax_pay_type_discount
+		            {
+		            	width 	: 60px;
+
+		     			input{
+                            width       : 40px;
+                            display     : none;
+		     			}
+		            }
+				}
+				
+				&:hover{
+		            opacity : 1;
+		        }
+			}
+
+			button
+			{
+				&.add_pay_type_button{
+					position    : relative;
+                	float       : left;
+				}
+         
+                &.del_pay_type_button{
+                	width 	: 72px;
+                }
+			}
+		}
+	}
+
+	#orders-custom
+	{
+		label{
+			vertical-align: top;
+		}	
+
+		form
+		{
+			margin : 10px 0 0 20px;
+		}
+
+		div{
+			&.pageTotal{
+				margin 		: 0 2px 0 0;
+				font-size 	: 16px;
+				width 		: 100px;
+			}
+
+			&.pageBar{
+				float   			: right;
+				width 				: 80px; 	
+				font-size 			: 18px;
+				text-align 			: center;
+				border-radius 		: 7px;
+				opacity 			: .7;  
+				margin 				: 0;
+				.scrollBar{
+          width       		: 70px;
+          max-height	 		: 583px;
+					overflow-x 			: hidden;
+					margin 				: 0 auto 0 auto;
+					.pageButton 
+					{
+            color           : #000;
+            width           : 50px;
+            height 			: 26px;
+            line-height     : 26px;
+            vertical-align  : middle;
+            margin          : 10px 0 0 0;
+            cursor          : pointer;
+						
+						span {
+							color: #000;
+						}
+					}
+				}
+			}
+		}
+
+		#orders_custom_custom_memo
+		{
+            width   : 296px;
+            height  : 150px;
+		}
+
+		.custom_search
+		{
+			display 			: none;
+			margin  			: -10px 0 0 10px;	
+			background 			: #f21a1a;		
+		}	
+
+		#orders_custom_ajax_message
+		{
+            float   : right;
+            margin  : 0;
+
+            em 
+            {
+            	display : none;
+            }
+		}	
+
+		.custom_email{
+			input{
+				width 	:  180px;
+			}
+		}
+
+		.custom_address{
+			input{
+				width 	:  180px;
+			}
+		}
+
+		#orders_custom_ajax_load_memo
+		{
+			position        : absolute;
+			width 			: $add-goods-operate-width  - 60px;
+	        margin          : 0 0 0 30px;
+	        height 			: $add-goods-operate-width  + 40px;
+	        line-height 	: $add-goods-operate-width  + 40px;
+	        text-align      : center;
+	        vertical-align  : middle;
+		}
+
+		.step2, .step3 
+		{
+			display 	: none;
+		}
+	}
+
+	#orders-sale, #orders-specialSell{
+
+		.sellStart{
+			margin : 0 0 0 36px;
+
+			.goodsSn{
+				button{
+					margin 	: -7px 0 0 8px;
+				}
+			}
+
+			.sellsType{
+				display : none;
+			}
+		}
+		
+		.addExchangeGoods, .sellFlow{
+		
+		    display             : none;
+		    height 				: 1100px;
+		    overflow-x 			: scroll;  
+		    margin              : 20px 0 50px 0;
+		    padding 			: 0 0 50px 10px;
+		    background-color    : #fff;
+
+			h2{
+		        font-size   : 24px;
+		        color       : #000;
+			}
+
+			input{
+		    	text-align  : center;
+		    	width       : 80px;
+		    	font-size   : .8em;
+
+		    	&.sGoodsName{
+		    		width 	: 150px;
+		    	}
+
+		    	&.sGoodsOrgSn{
+		    		width 	: 150px;
+		    	}
+			}
+			select{
+		    	text-align  : center;
+		    	width       : 120px;
+		    	font-size   : .8em;
+			}
+
+			img.imgContainer{
+				opacity : 1;
+			}
+
+			.goods_memo
+			{
+		        width   : 296px;
+		        height  : 80px;
+			}
+
+			.step2, .step4, .step5, .step6, .brand_hidden, .brand_type_hidden
+			{
+				display 	: none;
+			}
+
+			.step3
+			{
+				display 	: none;
+
+				img{
+		            width   : 20px;
+		            height  : 20px;
+				}
+			}
+		}
+	}
+
+	#orders-turnchange
+	{
+		.step2, .step3, .step4{
+			display: none;
+		}
+	}
+
+	#orders-financial
+	{
+		select{
+			&.financial_select{
+                margin  : 10px 0 0 7px;
+			}
+		}
+
+		table{
+			&.financialReportTable{
+				width: 100%;
+			}
+			
+			tr{
+				border-bottom: #dedede 1px solid;
+				th{
+					background-color: #000;
+					text-align 		: center;
+					height 			: 30px;
+					line-height 	: 30px;
+					vertical-align 	: middle; 
+				}
+
+				td{
+					text-align: center;
+					&.goods_cost{
+                        background-color    : #e00808;
+                        color               : #fff;
+					}
+
+					&.achievement{
+                    	background-color    : #0f750f;
+                        color               : #fff;
+                    }
+
+					&.profit{
+						background-color    : #ff9d30;
+                        color               : #fff;
+					}
+
+					&.profit_now{
+						background-color    : #f5cd05;
+                        color               : #fff;
+					}
+
+					&.orders_kind{
+						background-color    : #0000bf;
+						color 				: #fff;
+					}
+				}
+
+				&.foot_tr{
+					height 			: 30px;
+					line-height 	: 30px;
+					vertical-align 	: middle; 
+					td{
+						border 	: #dedede 1px solid;
+					} 
+				}
+			}
+		}
+
+		span{
+			&.selectSpan{
+        display     : block;
+        margin      : 18px 0 0 0;
+        float       : left;
+			}
+		}
+
+		div{
+			&.ajaxResMsgRight{
+				width : 70%;
+			}
+
+			&.financial_button{
+                float   : left;
+                margin  : 15px 15px 0 0;				
+			}
+
+			&.store_button{
+				margin-left : 40px; 
+			}
+			
+		}
+
+		ul{
+            margin          : 10px 10px 0 20px;
+			&.foot_tr{
+				li{
+                    float           : right;
+                    right 			: 0;
+                    list-style      : none;
+                    font-size       : 13px;
+                    border-bottom   : #dedede 1px solid;
+                    border-right    : #dedede 1px solid;
+                    width           : 150px;
+                    text-align      : center;
+                    height          : 25px;
+            		line-height     : 25px;
+            		vertical-align  : middle;
+
+                    &.goods_cost{
+						background-color    : #e00808;
+                        color               : #fff;
+                    }
+
+                    &.achievement{
+                    	background-color    : #0f750f;
+                        color               : #fff;
+                    }
+
+                    &.profit{
+						background-color    : #ff9d30;
+                        color               : #fff;
+                    }
+
+                    &.profit_now{
+						background-color    : #f5cd05;
+                        color               : #fff;
+                    }
+
+                    &.count_soldout{
+                        background-color    : #0505f5;
+                        color               : #fff;
+                    }
+				}
+			}
+			
+		}
+	}
+
+	#orders-instore{
+		form{
+			div{
+				&.report_form_select{
+					float 	: left;
+					left 	: 20px;
+					margin 	: 10px 0 0 0;
+	                width  	: 30%;
+
+	                select{
+	                	margin 	: 0 0 15px 20px;
+	                	width 	: 100%
+	                }
+		    	}
+
+				&.submit_button{
+					float : left;
+					margin : 10px 0 0 40px;
+					width : 25%;
+					button{
+			    		&.submit{
+
+			    		}
+			    	}
+				}
+
+				&.export_button{
+					float 	: left;
+					margin 	: 10px 0 0 0;
+				}
+			}
+		}
+
+		div{
+			&.instore_total{
+                float               : left;
+                background-color    : red;
+                color               : #fff;
+                margin              : 10px 0 0 0;
+                padding 			: 0 6px 0 6px;
+                height 				: 50px;
+                line-height 		: 50px;
+                vertical-align 		: middle; 
+				span{
+					font-size: 16px;
+				}
+			}
+
+			&.ajaxResLeft{
+				width: 0;
+			}
+		}
+	}
+
+	#orders-move{
+		form{
+			div{
+				&.submit_button{
+					float : left;
+					margin : 10px 15px 0 20px;
+					width : 65px;
+					button{
+			    		&.submit{
+
+			    		}
+			    	}
+				}
+
+				&.export_button{
+					width 	: 65px;
+					float 	: left;
+					margin 	: 10px 0 0 0;
+				}
+			}
+		}
+
+		div{
+			&.move_total{
+				display: none;
+				float               : left;
+                background-color    : red;
+                color               : #fff;
+                margin              : 10px 0 0 0;
+                padding 			: 0 6px 0 6px;
+                height 				: 50px;
+                line-height 		: 50px;
+                vertical-align 		: middle; 
+				span{
+					font-size: 16px;
+				}
+				&:nth-of-type(2){
+					background-color    : green;
+                	color               : #fff;
+				}
+				&:nth-of-type(3){
+					background-color    : blue;
+                	color               : #fff;
+				}          
+			}
+
+			&.pager{
+				float 	: left;
+				margin 	: 20px 100px 0 -220px;
+			}
+
+			&.ajaxResLeft{
+				width: 0;
+			}
+		}
+	}
+}
+
+.addCustomDialog{
+
+	display 	: none;
+
+	label{
+		vertical-align: top;
+	}	
+
+	form
+	{
+		margin : 0 0 0 20px;
+	}
+
+	.custom_search
+	{
+		display 			: none;
+		margin  			: -10px 0 0 10px;	
+		background 			: #f21a1a;		
+	}	
+
+	.custom_email{
+		input{
+			width 	:  180px;
+		}
+	}
+
+	.custom_address{
+		input{
+			width 	:  180px;
+		}
+	}
+
+	.step2, .step3 
+	{
+		display 	: none;
+	}
+}
+
+.add_new_custom{
+	.step2, .step3 
+	{
+		display 	: none;
+	}
+}
+
+.ajaxEditGoodsDialog{
+	form{
+        float : left;
+        input, select{
+        	clear 		: both;
+            text-align  : center;
+            width       : 130px;
+        }
+        textarea{
+        	width : 300px;
+        	height: 120px;
+        }
+        .delete_parent_div{
+        	display:none;
+        }
+	}
+}
+
+.ui-accordion
+{
+	width 	: 50%;
+
+	h4
+	{
+        color       : #054a05;
+        font-size   : 20px;
+        padding     : 16px 0 8px 0;
+	}
+
+	h2{
+		font-size : 17px;
+		color: #e08787;
+	}
+
+	h1{
+		font-size: 13px;
+		color: #4545f5;
+	}
+
+	.accordion_left
+	{
+		float : left;
+	}
+
+	.accordion_right
+	{
+		float : left;
+		margin: 0 0 0 40px;
+	}
+
+	.goodsResTabs{
+		width : 100%;
+		div.button{
+            float       : right;
+            font-size   : .8em;
+            margin      : -16px -20px 0 0;
+			button{
+				margin : 0 6px 0 6px;
+			}
+		}
+		ul.goods_list{
+			width: 100%;
+			li{
+				width: 100%;
+			}
+		}
+	}
+}
+
+#customSearchCondition{
+    position : relative;
+    overflow : hidden;
+    width : 150px;
+    height : 20px;
+    background-color : #000;
+    color: #fff;
+    border-radius : 10px; 
+    border : #dedede outset 1px;
+
+    p{
+    	font-size : 14px;
+      line-height : 15px;
+      padding : 3px 0 3px 3px;
+
+    	&.Phidden{
+    		display : none;
+    	}
+    }
+}
+
+table{
+	&.ope_list
+	{
+		margin: 30px 0 50px 0;
+		th{
+      text-align : center;
+      width : 180px;
+      border : #dedede solid 1px;
+      background-color: #D57200;
+      color : #fff;
+		}
+		td{
+      text-align      : center;
+      height          : 40px;
+      line-height     : 40px;
+      vertical-align  : middle;
+      width           : 180px;
+      border-bottom   : #dedede solid 1px;
+		}
+	}	
+
+	&.table-bordered {
+		thead{
+			tr{
+				th{
+					background-color: #D57200;
+				}
+			}
+		}
+	}
+}

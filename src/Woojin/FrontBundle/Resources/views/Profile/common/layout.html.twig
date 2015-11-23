@@ -1,0 +1,38 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+
+{% block header %}{% if not isMobile() %}{{ parent() }}{% endif %}{% endblock %}
+{% block footer %}{% if not isMobile() %}{{ parent() }}{% endif %}{% endblock %}
+
+{% block body %}
+{% set _custom = app.session.get('custom')|json_decode %}
+<div class="profile container content">
+    <div class="row">
+        <div class="col-md-3 md-margin-bottom-40">
+            {% if isMobile() %}
+                <a href="javscript:" class="btn-u btn-u-dark" onclick="window.history.back();"><span class="glyphicon glyphicon-chevron-left"></span></a>
+            {% endif %}
+            {% include 'WoojinFrontBundle:Profile/common:_left.html.twig' with {custom: _custom} %}
+        </div>
+        
+        <div class="col-md-9">
+            {% block profileBody %}{% endblock %}
+        </div>
+    </div>
+
+    {% if isMobile() %}
+        <div class="row">
+            <div class="counters col-xs-12">
+                <span class="counter-icon">
+                    <i class="fa fa-gift rounded"></i>
+                </span>
+               
+                <span class="counter big-red">{{ _custom.dividend|number_format }}</span>元
+                <h4>紅利累計</h4>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block jsExec %}<script>App.initCounter();</script>{% endblock %}

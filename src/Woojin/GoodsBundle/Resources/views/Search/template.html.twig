@@ -1,0 +1,65 @@
+<script id="checkbox-template" type="x-tmpl-mustache">
+    {% spaceless %}{% verbatim %}
+    {{#items}}
+    <div class="col-lg-2">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="{{ _name }}[]" value="{{ id }}" >{{ name }}
+            </label>
+        </div>
+    </div>
+    {{/items}}
+    {% endverbatim %}{% endspaceless %}
+</script>
+
+<script id="cc-template" type="x-tmpl-mustache">
+    {% spaceless %}
+        <div class="col-lg-2 min-height-40">
+            <button type="button" class="btn btn-primary check-all">
+                <i class="glyphicon glyphicon-ok-circle"></i>
+            </button>
+            <button type="button" class="btn btn-default cancel-all">
+                <i class="glyphicon glyphicon-remove-circle"></i>
+            </button>
+        </div>
+    {% endspaceless %}
+</script>
+
+<script id="com-template" type="x-tmpl-mustache">
+    <div class="col-lg-2 min-height-40"><label>&nbsp;</label></div>
+</script>
+
+<script id="multi-select-template" type="x-tmpl-mustache">
+    {% verbatim %}
+    <select multiple name="{{ name }}[]" class="form-control min-height-300">
+        <option value="">請選擇</option>
+        {{#items}}
+        <option value="{{ id }}">{{ name }}</option>
+        {{/items}}
+    </select>
+    {% endverbatim %}
+</script>
+
+<script id="item-template" type="x-tmpl-mustache">
+    {% verbatim %}
+        {{#items}}
+        <div class="item square visible-hidden">
+            <a href="{{ url }}" rel="prettyPhoto[iframes]">
+                <img class="width-100-per height-100-per min-width-100 min-height-100 max-width-300 max-height-300 lazy" data-original="{{ img.path }}">
+            </a>
+            <span data-id="{{ id }}" class="item-sn label label-success position-abs top-0 display-inline-block width-50-per">{{ sn }}</span>  
+        </div>
+        {{/items}}
+    {% endverbatim %}
+</script>
+
+<script id="alert-error-template" type="x-tmpl-mustache">
+    {% spaceless %}
+        <div class="alert alert-danger alert-dismissible fade in" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            查詢發生異常!
+        </div>
+    {% endspaceless %}
+</script>

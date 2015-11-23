@@ -1,0 +1,116 @@
+<!--=== WHOLE Search Panel ===-->
+{% macro with(category) %}
+    {% import _self as panel %}
+
+    {% block sperator %}
+        <div stlye="position:relative; height: 10px;">&nbsp;</div>
+    {% endblock %}
+
+<button type="button" class="btn-u btn-brd btn-brd-hover btn-u-lg btn-u-sea-shop btn-block" ng-click="resetCondition();">重設條件</button>
+
+{{ block('sperator') }}
+
+<button type="button" class="btn-u btn-brd btn-brd-hover btn-u-lg btn-u-dark btn-block" ng-click="fetch()" cg-busy="{promise:goodsPromise,message:'處理中...'}" >送出查詢</button>
+
+{{ block('sperator') }}
+
+{{ panel.widget(category, '促銷活動', 'checklist', 1, 'promotion', 'gd') }}
+
+{{ panel.widget(category, '品牌', 'checklist', 2, 'brand', 'gd') }}
+
+{{ panel.widget(category, '款式', 'checklist', 3, 'pattern', 'gd') }}
+
+{# {{ panel.widget('材質', 'checklist', 4, 'mt', 'gd')}} #}
+
+{{ panel.widget(category, '新舊', 'checklist', 5, 'level', 'gd') }}
+
+{# {{ panel.widget('所在門市', 'checklist', 6, 'store', 'gd')}} #}
+
+{{ panel.widget(category, '售價', 'priceSlider', 7, 'price', 'gd') }}
+
+{# {{ panel.widget('顏色', 'checklist', 8, 'color', 'gd') }} #}
+
+{{ panel.widget(category, '品名/型號', 'input', 9, 'name', 'gd') }}
+
+<button type="button" class="btn-u btn-brd btn-brd-hover btn-u-lg btn-u-dark btn-block" cg-busy="{promise:goodsPromise,message:'處理中...'}" ng-click="fetch()">送出查詢</button>
+
+{{ block('sperator') }}
+
+<button type="button" class="btn-u btn-brd btn-brd-hover btn-u-lg btn-u-sea-shop btn-block" ng-click="resetCondition();">重設條件</button>
+
+{% endmacro %}
+<!--=== End WHOLE Search Panel ===-->
+
+<!--=== Pangel Group ===-->
+{% macro widget(category, title, type, index, name, alias) %}
+
+{% import _self as widget %}
+<div class="panel-group" id="accordion-v{{ index }}" cg-busy="{promise:{{ name }}Promise,message:'處理中...'}">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion-v{{ index }}" href="#collapse-{{ index }}">
+                    {{ title }}
+                    <span class="fa fa-angle-down"></span>
+                </a>
+            </h2>
+        </div>
+        
+        <div id="collapse-{{ index }}" class="panel-collapse collapse">
+            <div class="panel-body">
+            {% if type == 'checklist' %}
+                {{ widget.checklist(category, name, alias) }}
+            {% elseif type == 'input' %}
+                {{ widget.input(name) }}
+            {% elseif type == 'priceSlider' %}
+                {{ widget.priceSlider(index) }}
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div><!--/end panel group-->
+{% endmacro %}
+<!--=== End Pangel Group ===-->
+
+{% macro checklist(category, name, alias) %}
+
+{% if category == false %}
+    {% set attribute = '.count' %}
+{% elseif category.id == 1 %}
+    {% set attribute = '.women_count' %}
+{% elseif category.id == 2 %}
+    {% set attribute = '.men_count' %}
+{% elseif category.id == 3 %}
+    {% set attribute = '.secondhand_count' %}
+{% endif %}
+
+<ul class="list-unstyled checkbox-list">
+    <li {% if name != 'level' %}ng-if="{{ name ~ attribute }} > 0"{% endif %} ng-repeat="{{ name }} in conditionContainer.{{ alias }}.{{ name }}">
+        <label class="checkbox">
+            <input type="checkbox" name="{{ name }}" ng-model="{{ name }}.isChecked" ng-change="fetch();"/>
+            <i></i>
+
+            {# {% verbatim %}{{ {% endverbatim %}{{ name }}.name{% verbatim %} }}&nbsp;&nbsp;<span class="badge rounded-2x {{ getBadgeColor({% endverbatim %}{{ name ~ attribute }}{% verbatim %}
+            ) }}">{{{% endverbatim %} {{ name ~ attribute }} {% verbatim %}}}{% endverbatim %}</span> #}
+
+            <span>{% verbatim %}{{ {% endverbatim %}{{ name }}.name{% verbatim %} }}{% endverbatim %}</span>
+            
+            {% if name == 'color' %}
+                <span ng-show="{{ name }}.code" class="span-small-block" style="background-color: {% verbatim %}{{{% endverbatim %}{{ name }}.code{% verbatim %}}}{% endverbatim %}">&nbsp;&nbsp;</span>
+            {% endif %}
+        </label>
+    </li>
+</ul>     
+{% endmacro %}
+
+{% macro input(name) %}
+<input ng-enter="fetch();" type="text" ng-model="{{ name }}" name="{{ name }}" placeholder="ex:機車包 02105612 中夾" class="form-group"/> 
+{% endmacro %}
+
+{% macro priceSlider(index) %}
+<div class="slider-snap"></div>
+<p class="slider-snap-text">
+    <span class="slider-snap-value-lower"></span>
+    <span class="slider-snap-value-upper"></span>
+</p>    
+{% endmacro %}

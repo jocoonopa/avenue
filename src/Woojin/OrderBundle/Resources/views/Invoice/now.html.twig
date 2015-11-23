@@ -1,0 +1,15 @@
+<table class="table" style="color: rgba(63, 53, 53, 0.55);">
+	<tr>
+		<td>品項</td>
+		<td>售價</td>
+		<td>訂金</td>
+	</tr>
+
+	{% for orders in orderses %}
+	<tr>
+		<td>{{ orders.goodsPassport.name }}</td>
+		<td>{{ orders.orgRequired }}</td>
+		<td>{{ orders.orgPaid }}</td>
+	</tr>
+	{% endfor %}
+</table>

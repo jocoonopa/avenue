@@ -1,0 +1,23 @@
+{% extends ':Email:base.html.twig' %}
+
+{% block title %}香榭操作記錄通知報告{% endblock %}
+
+{% block body %}
+
+<tr>
+    <td style="font-size: 12px; color: #000; text-align: left; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 0 20px 20px 40px; ">
+        {% for clue in clues %}
+            <b>{{ clue.user.username ~ '@' ~ clue.createAt|date('Y-m-d H:i:s') }} </b>
+            <p>
+                {% if clue.content.product.sn != "" %}
+                    <a href="{{ url('goods_edit_v2_from_sn', {sn: clue.content.product.sn}) }}" target="_blank">{{ clue.content.product.sn }}</a>
+                {% endif %}
+                
+                {{ clue.hTMLContent }}
+            </p>
+            <hr>
+        {% endfor %}
+    </td>
+</tr>
+
+{% endblock %}

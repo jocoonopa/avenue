@@ -1,0 +1,32 @@
+{% for gd in rGd %}
+	<tr>
+		<td><input type="text" value="{{ gd.sn }}" name="rGoodsSn[]" readonly /></td>
+		<td>{{ gd.name }}</td>
+		<td>
+			{% if 
+				(app.user|has_auth('READ_COST_OWN') and app.user|is_own(gd))
+				or app.user|has_auth('READ_COST_ALL')
+			%}
+				<span>{{ gd.cost }}</span>
+			{% else %}
+				<span class="label label-warning">您的權限不足</span>
+			{% endif %}
+		</td>
+		<td>
+			<input type="number" name="rOrdersRequired[]" value="{{ gd.price }}"
+			{% if 
+				(app.user|has_auth('EDIT_PRICE_OWN') and app.user|is_own(gd))
+				or app.user|has_auth('EDIT_PRICE_ALL')
+			%}
+			{% else %}
+				readonly
+			{% endif %}
+			/>
+		</td>
+		<td>
+			<input type="hidden" name="rId[]" value="{{ gd.id }}" />
+			<input type="checkbox" name="isCheck" value="1" />
+		</td>
+		<td><i class="icon-remove glyphicon glyphicon-remove"></i></td>
+	</tr>
+{% endfor %}

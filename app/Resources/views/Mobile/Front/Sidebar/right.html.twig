@@ -1,0 +1,87 @@
+<div class="snap-drawer snap-drawer-right">
+    <!--Sidebar Close Button-->
+    <a href="#" class="sidebar-close right-sidebar-close"><i class="fa fa-times"></i></a>
+    <div class="clear"></div>
+
+    {% if app.session.get('custom') %}
+    <div class="deco"></div>
+    <a href="{{ path('front_custom_logout') }}" class="social-item">
+        <i id="#MBH_logout" class="fa fa-sign-out"></i>
+    </a>
+    {% else %}
+    <div class="deco"></div>
+    <a href="{{ path('mobile_front_login') }}" class="social-item">
+        <i id="MBH_login" class="fa fa-sign-in"></i>
+    </a>
+    {% endif %}
+
+    <div class="deco"></div>
+    <a href="{{ path('mobile_front_cart')}}" class="social-item">
+        <i id="MBH_shopping-cart" class="fa fa-shopping-cart"></i>
+    </a>
+
+    <div class="deco"></div>
+    <!-- Social Item -->
+    <a class="social-item" href="tel: 02-2992-6616">
+        <i class="fa fa-phone"></i>
+    </a>
+    
+    {# <div class="deco"></div> #}
+    {# <!-- Social Item -->
+    <a class="social-item" href="+1 234 567 890">
+        <i class="fa fa-comments"></i>
+        Text Us
+    </a> #}
+    <div class="deco"></div>
+    <!-- Social Item -->
+    <a class="social-item" href="mailto: avenue16882@gmail.com">
+        <i class="fa fa-envelope"></i>
+    </a>
+    <div class="deco"></div>
+    <!-- Social Item -->
+     <a class="social-item" href="https://www.facebook.com/avenue2003">
+        <i class="fa fa-facebook"></i>
+    </a>
+    <div class="deco"></div>
+    <!-- Social Item -->
+    <a class="social-item" href="https://plus.google.com/u/0/117154043026933371211">
+        <i class="fa fa-google-plus"></i>
+    </a>
+    {#<div class="deco"></div>  
+    <!-- Social Item -->
+    <a class="social-item" href="https://twitter.com/iEnabled">
+        <i class="fa fa-twitter"></i>
+        Twitter
+    </a>
+    
+    <div class="deco"></div>
+    <!-- Social Item -->
+    <a class="social-item" href="#">
+        <i class="fa fa-linkedin"></i>
+        LinkedIn
+    </a>
+    <div class="deco"></div>       
+    <a class="social-item" href="#">
+        <i class="fa fa-instagram"></i>
+        Instagram
+    </a>
+    <div class="deco"></div>
+    <!-- Social Item -->
+    <a class="social-item" href="http://www.pinterest.com/enableds/">
+        <i class="fa fa-pinterest"></i>
+        Pinterest
+    </a>
+    <div class="deco"></div>
+    <!-- Social Item -->
+    <a class="social-item" href="#">
+        <i class="fa fa-youtube-play"></i>
+        YouTube
+    </a>
+    <div class="deco"></div>  
+    <!-- Social Item -->
+    <a class="social-item" href="#">
+        <i class="fa fa-skype"></i>
+        Skype
+    </a> #}
+    <div class="deco"></div>       
+</div>

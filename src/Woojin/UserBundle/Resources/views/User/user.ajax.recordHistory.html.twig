@@ -1,0 +1,49 @@
+<div>
+	<table class="userRecordHistory-1">
+
+		{% for ope in rOpe %}
+
+			{% if loop.first %}
+			<thead>
+				<tr class="head_title_1">
+					<th>{{ OpeActLabel }}</th>
+					<th>{{ OpeDatetimeLabel }}</th>
+					<th>{{ GoodsNameLabel }}</th>
+					<th>{{ GoodsSnLabel }}</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% endif %}
+			<tr class="history">
+				<td>{{ ope.act }}</td>
+				<td class="act_time">{{ ope.datetime|date('Y-m-d H:i:s') }}</td>
+				<td>{{ ope.orders.goodsPassport.name }}</td>
+				<td>{{ ope.orders.goodsPassport.sn }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+<div>
+	<table class="userRecordHistory-2">
+	
+		{% for oMetaRecord in rMetaRecord %}
+
+		{% if loop.first %}
+		<thead>
+			<tr class="head_title_2">
+				<th>{{ OpeActLabel }}</th>
+				<th>{{ OpeDatetimeLabel }}</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% endif %}
+			<tr class="record">
+				<td>{{ oMetaRecord.act }}</td>
+				<td class="act_time">{{ oMetaRecord.datetime|date('Y-m-d H:i:s') }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>

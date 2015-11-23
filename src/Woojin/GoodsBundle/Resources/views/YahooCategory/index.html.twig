@@ -1,0 +1,65 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    <h1>YahooCategory list</h1>
+
+    {% for flashMessage in app.session.flashbag.get('success') %}
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+
+    <table class="records_list table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Yahooid</th>
+                <th>綁定品牌</th>
+                <th>綁定款式</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('yahoocategory_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.name }}</td>
+                <td>{{ entity.yahooId }}</td>
+                <td>
+                    {% if entity.brand %}
+                        {{entity.brand.name}}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if entity.pattern %}
+                        {{ entity.pattern.name }}
+                    {% endif %}
+                </td>
+                <td></td>
+                <td>
+                <ul>
+                    {# <li>
+                        <a href="{{ path('yahoocategory_show', { 'id': entity.id }) }}">show</a>
+                    </li> #}
+                    <li>
+                        <a class="btn btn-primary" href="{{ path('yahoocategory_edit', { 'id': entity.id }) }}">編輯</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+       {#  <ul>
+        <li>
+            <a href="{{ path('yahoocategory_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul> #}
+    {% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+
+{% block title %}帳號驗證成功{% endblock %}
+
+{% block metaDescription %}帳號驗證成功{% endblock %}
+
+{% block metaAuthor %}香榭國際精品{% endblock %}
+
+{% block header %}{% if not isMobile() %}{{ parent() }}{% endif %}{% endblock %}
+{% block footer %}{% if not isMobile() %}{{ parent() }}{% endif %}{% endblock %}
+    
+{% block body %}
+{% for flashMessage in app.session.flashbag.get('success') %}
+   <div class="alert alert-success hidden" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+       {{ flashMessage }}
+   </div> 
+{% endfor %}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="service-block service-block-u">            
+            <span class="icon-custom icon-color-light rounded-x fa fa-thumbs-o-up"></span>
+            <h2 class="heading-md">帳號驗證成功！</h2>
+            <p>
+                您的帳號已經完成驗證，結帳功能已經開通，請回到&nbsp;<a href="{{ path('front_index') }}" class="white">香榭國際精品</a> &nbsp;繼續瀏覽您喜愛的商品。
+            </p>
+
+            <strong class="seconds"></strong>秒後自動重新導向
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block jsExec %}
+
+{{ parent() }}
+
+<script>
+window.seconds = 5;
+
+var recount = function () {
+    $('strong.seconds').text(window.seconds);
+    
+    window.seconds --;
+
+    setTimeout(function () {
+        return (window.seconds >= 0) 
+            ? recount()
+            : window.location.href = Routing.generate('front_index'); 
+    }, 1000);  
+};
+
+recount();
+</script>
+
+{% endblock %}

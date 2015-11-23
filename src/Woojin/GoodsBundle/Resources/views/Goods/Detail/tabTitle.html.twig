@@ -1,0 +1,22 @@
+<ul>
+    <li>
+        <a href="#ResTabs{{ product.id }}-0">商品資訊</a>
+        {% if product.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') %}
+            {% set src = SalePng %}
+        {% elseif product.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_SOLDOUT') %}
+            {% set src = SoldOutPng %}
+        {% elseif product.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_MOVING') %}
+            {% set src = MovingPng %}
+        {% elseif product.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_OFFSALE') %}
+            {% set src = CancelPng %}
+        {% else %}
+            {% set src = OtherStorePng %}
+        {% endif %}
+
+        <img class="goodsStatusImg img-{{ product.id }}" src="{{ src }}" />
+    </li>
+    
+    {% if (app.user|has_auth('READ_ORDER_OWN') and (app.user|is_own(product) or product.activity)) or app.user|has_auth('READ_ORDER_ALL') %}
+        {% include 'WoojinGoodsBundle:Goods/Detail:orderTitle.html.twig' with {product: product} %}
+    {% endif %}
+</ul>

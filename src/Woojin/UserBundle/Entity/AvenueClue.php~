@@ -1,0 +1,52 @@
+<?php
+
+namespace Woojin\UserBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * AvenueClue
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
+ */
+class AvenueClue
+{
+    /**
+    * @ORM\ManyToOne(targetEntity="User", inversedBy="clues")
+    * @var User
+    */
+    private $user;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="create_at", type="datetime")
+     */
+    private $createAt;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="content", type="json_array")
+     */
+    private $content;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function autoSetCreateAt()
+    {
+        $this->setCreateAt(new \Datetime());
+    }
+}

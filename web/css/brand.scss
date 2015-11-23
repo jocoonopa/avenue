@@ -1,0 +1,129 @@
+$body-background-color          : #ffffe3;
+$li-width                       : 62px;
+$li-wider-width                 : $li-width * 2.5;
+$ul-width                       : $li-width * 4.6;
+$brand-background-color         : #7fffff;
+$brand-type-background-color    : #4fa4b5;
+$brand-sn-background-color      : #7fff7f;
+$li-height                      : 30px;
+$each-block-distance            : $ul-width + 15px;
+$font-size                      : 12px;
+
+#brand_list
+{
+    width       : 100%;
+    font-size   : $font-size;
+    margin      : 0;
+
+	ul
+	{
+		width: $ul-width;
+
+		li
+		{
+            width               : $li-wider-width;
+            text-align          : center;
+            height              : $li-height;
+            line-height         : $li-height;
+            vertical-align      : bottom;
+            margin              : 0 0 $li-height * .1 0;
+            list-style          : none;
+            float               : left;
+            background-color    : $brand-background-color;
+            border-right        : 1px #fff solid;
+            opacity  			: .5;
+
+            input.ajax_brand_name
+            {
+				width: 120px;
+            }
+
+            &.sub_list, &.sub_list_sub
+			{
+	            
+	            display             : none;
+	            background-color    : #fff;
+	            border              : 0;
+	            margin              : -$li-height - 4px 0 0 $each-block-distance;
+
+	            ul
+	            {
+	            	width : $ul-width;
+
+	            	li.sub_list_sub
+	            	{
+	            		ul
+	            		{
+	            			width: $ul-width + $li-wider-width;
+	            		}
+	            	}
+	            }
+			}
+
+			&:first-of-type, &:nth-of-type(3)
+			{
+				width: 60px;
+				cursor: pointer;
+			}
+
+			&[class^="add_"]
+			{
+                background-color    : $body-background-color;
+                border              : 0;
+                float               : left;
+                margin              : 0;
+                opacity : 1;
+			}
+		}
+
+		&[class^="brand_type_"]
+		{
+			li
+			{
+				background-color: $brand-type-background-color;
+
+				&.sub_list_sub
+				{
+		            background-color    : #fff;
+		            border              : 0;
+				}
+
+				&[class^="add_"]
+				{
+	                background-color    : $body-background-color;
+	                border              : 0;
+	                float               : left;
+	                margin              : 0;
+				}
+			}	
+		}
+
+		&[class^="brand_sn_"]
+		{
+			li
+			{
+				background-color: $brand-sn-background-color;
+
+				&:nth-of-type(3)
+				{
+					width: $li-wider-width;
+				} 
+
+				&:nth-of-type(4)
+				{
+					width: $li-width;
+				} 
+			}
+		}
+	}
+}
+
+.brand
+{
+	margin: 0 0 0 $li-width;
+}
+
+.ui-button-text
+{
+	font-size: $font-size;
+}

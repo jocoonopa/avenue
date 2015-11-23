@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>手機版查貨頁</title>
+    
+    <link rel="stylesheet" href="/bundles/woojingoods/css/bootstrap.readable.min.css" />
+    <link rel="stylesheet" href="/bundles/woojingoods/css/bootstrap.extend.css" />
+    <link rel="stylesheet" href="/bundles/woojingoods/css/mobile.custom.css" />
+    <link rel="stylesheet" href="/bundles/woojinfront/css/custom.css">
+
+    {# <link rel="stylesheet" href="/prettyPhoto/css/prettyPhoto.css"> #}
+</head>
+<body>
+
+{% block header %}{% endblock %}
+
+<div class="row">
+    <div class="col-xs-12">
+        {% block body %}{% endblock %}
+    </div>
+</div><!-- Full Site Container Outer End -->
+
+<div class="spacer50"></div>
+<div class="spacer50"></div>
+
+{% block extra %}{% endblock %}
+
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="/js/jquery.form.js"></script>
+<script src="/js/jquery.blockUI.js"></script>
+<script src="{{ asset('/bower_components/masonry/dist/masonry.pkgd.min.js')}}"></script>
+{# <script src="{{ asset('/prettyPhoto/js/jquery.prettyPhoto.js') }}"></script> #}
+<script src="/bundles/woojingoods/plugin/jquery.scrollstop.js"></script>
+<script src="/bundles/woojingoods/plugin/mustache.min.js"></script>
+<script src="/bundles/woojinfront/js/plugins/jquery.lazyload.min.js"></script>
+<script src="/bundles/woojingoods/js/custom.js"></script>
+</body>
+</html>

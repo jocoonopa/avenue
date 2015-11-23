@@ -1,0 +1,338 @@
+<!-- 
+ * Template Name: Unify - Responsive Bootstrap Template
+ * Description: Business, Corporate, Portfolio and Blog Theme.
+ * Version: 1.6
+ * Author: @htmlstream
+ * Website: http://htmlstream.com
+ -->
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>{% block title %}香榭國際註冊通知信{% endblock %}</title>
+                                                                                                                                                                                                                                                                                                                                                                                                        
+<style type="text/css">
+    .ReadMsgBody {width: 100%; background-color: #ffffff;}
+    .ExternalClass {width: 100%; background-color: #ffffff;}
+    body     {width: 100%; background-color: #ffffff; margin:0; padding:0; -webkit-font-smoothing: antialiased;font-family: Arial, Helvetica, sans-serif}
+    table {border-collapse: collapse;}
+    
+    @media only screen and (max-width: 640px)  {
+                    body[yahoo] .deviceWidth {width:440px!important; padding:0;}    
+                    body[yahoo] .center {text-align: center!important;}  
+            }
+            
+    @media only screen and (max-width: 479px) {
+                    body[yahoo] .deviceWidth {width:280px!important; padding:0;}    
+                    body[yahoo] .center {text-align: center!important;}  
+            }
+</style>
+</head>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" yahoo="fix" style="font-family: Arial, Helvetica, sans-serif">
+
+<!-- Wrapper -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+    <tr>
+        <td width="100%" valign="top" bgcolor="#ffffff" style="padding-top:20px">
+
+        <!--Start Header-->
+        <table width="700" bgcolor="#fff" border="0" cellpadding="0" cellspacing="0" align="center" class="deviceWidth">
+            <tr>
+                <td style="padding: 6px 0px 0px">
+                    <table width="650" border="0" cellpadding="0" cellspacing="0" align="center" class="deviceWidth">
+                        <tr>
+                            <td width="100%" >
+                                <!--Start logo-->
+                                <table  border="0" cellpadding="0" cellspacing="0" align="left" class="deviceWidth">
+                                    <tr>
+                                        <td class="center" style="padding: 20px 0px 10px 0px">
+                                            <a href="{{ url('front_index') }}"><img src="{{ app.request.schemeAndHttpHost }}/img/香榭LOGO-header.png" width="150" height="50" style="margin-top: -18px;"></a>
+                                            &nbsp; &nbsp;
+                                            <a href="{{ FACEBOOK_URL }}" style="text-decoration: none; color: #3b3b3b;"><img src="{{ url('front_index') }}/img/facebook.png"></a>
+                                        </td>
+                                    </tr>
+                                </table><!--End logo-->
+                                <!--Start nav-->
+                            </td>
+                        </tr>
+                    </table>
+               </td>
+            </tr>
+        </table> 
+        <!--End Header-->
+
+            <!-- Start Headliner-->
+            <table width="700" border="0" cellpadding="0" cellspacing="0" align="center" class="deviceWidth">
+                <tr>
+                    <td width="100%" valign="top" style="padding: 0px " class="center">
+                        {# <a href="#"><img class="deviceWidth" width="700" hight="350" src="/img/香榭LOGO-header.png"></a> #}
+                    </td>
+                </tr>
+            </table>
+            <!-- End Headliner-->
+
+            <!--Start Discount-->
+            {# <table width="700" border="0" cellpadding="0" cellspacing="0" align="center" class="deviceWidth">
+                <tr>
+                    <td width="100%" style=" padding: 20px 0;" align="center" bgcolor="#f7f7f7">
+                        <!--Left Box-->
+                        <table   border="0" cellpadding="0" cellspacing="0" align="center" class="deviceWidth">
+                            <tr>
+                                <td valign="top" class="left" style="font-size: 16px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 0 20px 10px 20px;">
+                                    -北台灣最大連鎖精品，竭誠為您服務-                         
+                                </td>
+                            </tr>
+                        </table><!--End Left Box-->
+                        <table>
+                            <tr>
+                                <td  valign="top" style="padding: 7px 15px;  background-color: #8D8D8D; " class="center">
+                                    <a style="color: #fff; font-size: 14px; font-weight: bold; text-decoration: none; font-family: Arial, sans-serif; text-alight: center;" href="{{ url('front_index') }}">立即前往官網</a>
+                                </td>                                   
+                             </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table> #}
+            <!--End Discount-->
+
+            <!--Start Left Picture-->
+            {# {% if custom is defined and custom %} #}
+            <table width="700" border="0" cellpadding="0" cellspacing="0" align="center" class="deviceWidth">
+                <tr>
+                    <td width="100%" bgcolor="#fff">
+                        <!--Right box-->
+                        <table width="100%" align="center" border="0" cellpadding="0" cellspacing="0"  class="deviceWidth">
+                            <tr>
+                                <td style="font-size: 16px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 20px; 20px 0px 1 ">
+                                    &nbsp;                       
+                               </td>
+                            </tr>
+                            {% block body %}
+
+                            {% endblock %}
+                        </table><!--End right box-->
+                    </td>
+                </tr>
+            </table>
+            <!--End Left Picture-->
+            {# {% endif %} #}
+            
+            <!--Start Two Texts-->
+            <table width="700" border="0" cellpadding="0" cellspacing="0" align="center" class="deviceWidth">
+                <tr>
+                    <td width="100%" bgcolor="#f7f7f7" >
+                        <!--Left box-->
+                        <table width="33%"  border="0" cellpadding="0" cellspacing="0" align="left" class="deviceWidth">
+                            <tr>
+                                <td class="center">
+                                    <table  border="0" cellpadding="0" cellspacing="0" align="center"> 
+                                        <tr>
+                                            <td  class="center" style="font-size: 18px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 30px 20px 10px;">同行批發                             
+                                           </td>
+                                        </tr>
+                                        <tr>
+                                            <td  class="center deviceWidth" style="font-size: 14px; color: #8D8D8D; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 10px 20px 20px; " >
+                                                歐系名牌皮件及服飾批發，輔佐銷售經營 <br>
+
+                                                <a style="color: #5B5A5A; font-size: 14px; font-weight: bold; text-decoration: none; font-family: Arial, sans-serif; text-alight: center;" href="#">+Read More</a>
+                                           </td>
+                                        </tr>
+                                    </table>                                
+                                </td>
+                            </tr>
+                        </table><!--End Left box-->
+                         <!-- Right box  -->
+                        <table width="33%"  border="0" cellpadding="0" cellspacing="0" align="right" class="deviceWidth">
+                            <tr>
+                                <td class="center">
+                                    <table  border="0" cellpadding="0" cellspacing="0" align="center"> 
+                                        <tr>
+                                            <td class="center" style="font-size: 18px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 30px 20px 10px; ">各類精品終身保養                             
+                                           </td>
+                                        </tr>
+                                        <tr>
+                                            <td  class="center" style="font-size: 14px; color: #8D8D8D; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 10px 20px 20px; " >
+                                                凡於香榭國際精品購買之任何商品 即享有終身免費保養之服務  
+                                           </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table> <!--End Right box-->    
+                        <table width="33%"  border="0" cellpadding="0" cellspacing="0" align="right" class="deviceWidth">
+                            <tr>
+                                <td class="center">
+                                    <table  border="0" cellpadding="0" cellspacing="0" align="center"> 
+                                        <tr>
+                                            <td  class="center" style="font-size: 18px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 30px 20px 10px; ">
+                                                免費鑑定                             
+                                           </td>
+                                        </tr>
+                                        <tr>
+                                            <td  class="center" style="font-size: 14px; color: #8D8D8D; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 10px 20px 20px; " >
+                                                由專業鑑定團隊幫您免費鑑定    
+                                           </td>
+                                        </tr>
+                                    </table>
+                            </tr>
+                        </table> <!--End Right box-->   
+                    </td>
+                </tr>
+            </table>
+            <!--End Two Texts-->
+            <br>
+            <!--Start Two Texts-->
+            <table width="700" border="0" cellpadding="0" cellspacing="0" align="center" class="deviceWidth">
+                <tr>
+                    <td width="100%" bgcolor="#f7f7f7" >
+                        <!--Left box-->
+                        <table width="33%"  border="0" cellpadding="0" cellspacing="0" align="left" class="deviceWidth">
+                            <tr>
+                                <td class="center">
+                                    <table  border="0" cellpadding="0" cellspacing="0" align="center"> 
+                                        <tr>
+                                            <td  class="center" style="font-size: 18px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 30px 20px 10px;">
+                                                商品全面免運                      
+                                           </td>
+                                        </tr>
+                                        <tr>
+                                            <td  class="center deviceWidth" style="font-size: 14px; color: #8D8D8D; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 10px 20px 20px; " >
+                                                全館商品一律免運費    
+                                           </td>
+                                        </tr>
+                                    </table>                              
+                                </td>
+                            </tr>
+                        </table><!--End Left box-->
+                         <!-- Right box  -->
+                        <table width="33%"  border="0" cellpadding="0" cellspacing="0" align="right" class="deviceWidth">
+                            <tr>
+                                <td class="center">
+                                    <table border="0" cellpadding="0" cellspacing="0" align="center"> 
+                                        <tr>
+                                            <td class="center" style="font-size: 18px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 30px 20px 10px; ">
+                                                購物流程                           
+                                           </td>
+                                        </tr>
+                                        <tr>
+                                            <td  class="center" style="font-size: 14px; color: #8D8D8D; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 10px 20px 20px; " >
+                                                線上選購，不用出門也能買到香榭優質精品
+                                                
+                                                <a style="color: #5B5A5A; font-size: 14px; font-weight: bold; text-decoration: none; font-family: Arial, sans-serif; text-alight: center;" href="#">購物流程說明</a>  
+                                           </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table> <!--End Right box-->    
+                        <table width="33%"  border="0" cellpadding="0" cellspacing="0" align="right" class="deviceWidth">
+                            <tr>
+                                <td class="center">
+                                    <table border="0" cellpadding="0" cellspacing="0" align="center">                                     
+                                        <tr>
+                                            <td  class="center" style="font-size: 18px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 30px 20px 10px; ">
+                                                七天鑑賞無條件退貨                            
+                                           </td>
+                                        </tr>
+                                        <tr>
+                                            <td  class="center" style="font-size: 14px; color: #8D8D8D; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 10px 20px 20px; " >
+                                                收到商品七日內 如不滿意商品 請保持原包裝即破壞條未拆剪之狀態 即可辦理無條件退貨退款服務 
+
+                                                <a style="color: #5B5A5A; font-size: 14px; font-weight: bold; text-decoration: none; font-family: Arial, sans-serif; text-alight: center;" href="#">退貨流程說明</a>    
+                                           </td>
+
+                                        </tr>
+                                    </table>                                   
+                                </td>
+                            </tr>
+                        </table> <!--End Right box-->   
+                    </td>
+                </tr>
+            </table>
+            <!--End Two Texts-->
+            
+            <br>
+
+            <!--Start Two Texts-->
+            <table width="700" border="0" cellpadding="0" cellspacing="0" align="center" class="deviceWidth">
+                <tr>
+                    <td width="100%" bgcolor="#f7f7f7" >
+                        <!--Left box-->
+                        <table width="33%"  border="0" cellpadding="0" cellspacing="0" align="left" class="deviceWidth">
+                            <tr>
+                                <td class="center">
+                                    <table  border="0" cellpadding="0" cellspacing="0" align="center">                                    
+                                        <tr>
+                                            <td  class="center" style="font-size: 18px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 30px 20px 10px;">
+                                                100%原廠正品                             
+                                           </td>
+                                        </tr>
+                                        <tr>
+                                            <td  class="center deviceWidth" style="font-size: 14px; color: #8D8D8D; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 10px 20px 20px; " >
+                                                本公司所有商品皆由專業鑑定團隊嚴格把關 以最實惠的價格入手高貴而不貴的名牌精品 
+                                           </td>
+                                        </tr>
+                                    </table>                         
+                                </td>
+                            </tr>
+                        </table><!--End Left box-->
+                         <!-- Right box  -->
+                        <table width="33%"  border="0" cellpadding="0" cellspacing="0" align="right" class="deviceWidth">
+                            <tr>
+                                <td class="center">
+                                    <table  border="0" cellpadding="0" cellspacing="0" align="center">                                    
+                                        <tr>
+                                            <td  class="center" style="font-size: 18px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 30px 20px 10px; ">
+                                                快速到貨                            
+                                           </td>
+                                        </tr>
+                                        <tr>
+                                            <td  class="center" style="font-size: 14px; color: #8D8D8D; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 10px 20px 20px; " >
+                                                現貨商品快速送達     
+                                           </td>
+                                        </tr>
+                                    </table>                               
+                                </td>
+                            </tr>
+                        </table> <!--End Right box-->    
+                        <table width="33%"  border="0" cellpadding="0" cellspacing="0" align="right" class="deviceWidth">
+                            <tr>
+                                <td class="center">
+                                    <table  border="0" cellpadding="0" cellspacing="0" align="center"> 
+                                        <tr>
+                                            <td class="center" style="font-size: 18px; color: #303030; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 30px 20px 10px; ">
+                                                線上寄賣買斷                             
+                                           </td>
+                                        </tr>
+                                        <tr>
+                                            <td  class="center" style="font-size: 14px; color: #8D8D8D; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 10px 20px 20px; " >
+                                                專人至府上取件 高價寄賣收購    
+                                           </td>
+                                        </tr>
+                                    </table>                                 
+                                </td>
+                            </tr>
+                        </table> <!--End Right box-->   
+                    </td>
+                </tr>
+            </table>
+            <!--End Two Texts-->
+           
+            
+            <!-- Footer -->
+            <table width="700"  border="0" cellpadding="0" cellspacing="0" align="center" class="deviceWidth">
+                  <tr>
+                    <td class="center" style="font-size: 12px; color: #687074; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 20px 50px 0px 50px; ">
+                        {{ '2014 - ' ~ 'now'|date('Y') }} ©香榭國際                        
+                    </td>
+                </tr>
+            </table>
+            <!--End Footer-->
+
+            <div style="height:15px">&nbsp;</div><!-- divider-->
+        </td>
+    </tr>
+</table> 
+<!-- End Wrapper -->
+</body>
+</html>

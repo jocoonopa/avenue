@@ -1,0 +1,259 @@
+{% if (app.user|has_auth('READ_ORDER_OWN') and app.user|is_own(goods))
+    or app.user|has_auth('READ_ORDER_ALL') or goods.activity %}
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+    {% for order in goods.orders %}
+        <li role="presentation" class="{% if loop.first %}active{% endif %}">
+            <a href="#order_{{ order.id }}" role="tab" data-toggle="tab">
+                <span class="label 
+                {% if order.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_SOLDOUT') %}
+                    label-success
+                {% endif %}
+                {% if order.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') %}
+                    label-default
+                {% endif %}
+                {% if order.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_MOVING') %}
+                    label-danger
+                {% endif %}">{{ order.status.name }}</span>
+                {{ order.kind.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+{% if 
+    (app.user|has_auth('READ_ORDER_OWN') and app.user|is_own(goods))
+    or app.user|has_auth('READ_ORDER_ALL') or goods.activity
+%}
+    {% for order in goods.orders %}
+        <div role="tabpanel" class="tab-pane {% if loop.first %}active{% endif %}" id="order_{{ order.id }}">
+            <div class="row margin-only-left-10">
+                <ul class="list-unstyled">
+                    {% if order.kind.id in [
+                        constant('Woojin\\Utility\\Avenue\\Avenue::OK_IN'), 
+                        constant('Woojin\\Utility\\Avenue\\Avenue::OK_EXCHANGE_IN'), 
+                        constant('Woojin\\Utility\\Avenue\\Avenue::OK_TURN_IN'), 
+                        constant('Woojin\\Utility\\Avenue\\Avenue::OK_MOVE_IN'), 
+                        constant('Woojin\\Utility\\Avenue\\Avenue::OK_CONSIGN_IN'), 
+                        constant('Woojin\\Utility\\Avenue\\Avenue::OK_MOVE_OUT'), 
+                        constant('Woojin\\Utility\\Avenue\\Avenue::OK_FEEDBACK')
+                    ] and not ((app.user|has_auth('READ_COST_OWN') and app.user|is_own(goods))
+    or app.user|has_auth('READ_COST_ALL')) %}
+                    <li>權限不足無法查看此訂單應付及已付金額</li>
+                    {% else %}
+
+                    <li>應付: {{ order.required }}</li>
+                    <li>已付: {{ order.paid }}</li>
+                    
+                    {% endif %}
+
+                    <li class="custom-alter">客戶: 
+                        {% if order.custom %}
+                        <span class="label label-info">{{ order.custom.name }}</span>
+                        {% else %}
+                        <span class="label label-warning">未指定客戶</span>
+                        {% endif %}
+
+                        {% if (order.kind.id not in [
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_MOVE_IN'), 
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_MOVE_OUT')
+                        ] and app.user|has_auth('SELL') and app.user|is_own(goods))
+                        or (
+                            order.kind.id in [
+                                constant('Woojin\\Utility\\Avenue\\Avenue::OK_IN'),
+                                constant('Woojin\\Utility\\Avenue\\Avenue::OK_CONSIGN_IN')
+                            ] and
+                            (app.user|has_auth('EDIT_COST_ALL') or (app.user|has_auth('EDIT_COST_OWN') and app.user|is_own(goods)))
+                        )
+
+                         %}
+                            <input type="text" class="custom-mobil-update numeric" name="custom_mobil" value="{% if order.custom %}{{ order.custom.mobil }}{% endif %}"/>
+                            <button data-id="{{ order.id }}" data-loading-text="處理中..." data-complete-text="修改完成!" class="btn btn-primary custom-mobil-update">確認修改</button>
+                        {% endif %}
+                    </li>
+                    <li>備註: {{ order.memo }}</li>
+                    {% if order.payType %}<li>付費方式(第一次): {{ order.payType.name }}</li>{% endif %}
+
+                    {% if 
+                        order.kind.id in [
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_OUT'),
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_EXCHANGE_OUT'),
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_TURN_OUT'),
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_WEB_OUT'),
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_SPECIAL_SELL'),
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_SAME_BS'),
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_OFFICIAL')
+                        ]
+                    %}
+                        <div class="col-xs-12">
+                            {% if order.status.id != constant('Woojin\\Utility\\Avenue\\Avenue::OS_CANCEL') %}
+                                {% set invoiceId = (order.invoice) ? order.invoice.id : 0 %}
+
+                                {% if invoiceId != 0 %}
+                                    {% for row in order.invoice.orders|batch(10) %}
+                                        {# {% for relateOrder in row %} #}
+                                        <button class="print_sale_list btn btn-default" onclick="window.open('{{ path('invoice_print', {'id': order.invoice.id, 'page': loop.index }) }}')">
+                                            <i class="icon-print"></i>銷貨單列印第{{ loop.index }}張
+                                        </button>
+                                        {# {% endfor %} #}
+                                    {% endfor %}
+                                {% endif %}
+                                
+                                {% if app.user|has_auth('CANCEL_ORDER') and app.user|is_own(goods) %}
+                                    <button class="btn btn-danger pull-right cancel-order" data-id="{{ order.id }}">取消訂單</button>
+                                {% endif %}
+                            {% else %}
+                                {% if app.user|has_auth('CANCEL_ORDER') and app.user|is_own(goods) %}
+                                    <button class="btn btn-success pull-right reverse-cancel" data-id="{{ order.id }}">還原訂單</button>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endif %}
+
+                    {% if 
+                        order.kind.id in [
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_IN'), 
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_CONSIGN_IN'),
+                            constant('Woojin\\Utility\\Avenue\\Avenue::OK_MOVE_IN')
+                        ] and loop.first
+                    %}
+                        <div class="col-xs-12">
+                            <div class="row">
+                                {% if 
+                                    order.status.id != constant('Woojin\\Utility\\Avenue\\Avenue::OK_TURN_IN')
+                                %}
+                                    {% if goods.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') and 
+                                    app.user|has_auth('CANCEL_IN_TYPE_ORDER')
+                                    %}
+                                    <div class="col-xs-12">
+                                        <button class="btn btn-danger pull-left cancel-order" data-id="{{ order.id }}">
+                                            <i class="glyphicon glyphicon-remove-circle"></i>
+                                            下架商品
+                                        </button>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if order.kind.id == constant('Woojin\\Utility\\Avenue\\Avenue::OK_CONSIGN_IN') %}
+                                    <div class="col-xs-12 mt-5">
+                                        {% if goods.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') %}
+                                        <form class="mt-5" action="{{ path('orders_v2_getback', {id: order.id }) }}" method="post">
+                                            <input type="hidden" name="_method" value="PUT">
+                                            <button type="submit" id="custom-getback" class="btn btn-default">
+                                                <i class="glyphicon glyphicon-chevron-right"></i>
+                                                客寄取回</button>
+                                        </form>
+                                        {% endif %}
+
+                                        <div class="input-group mt-5">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-inverse pull-right inverse-order" data-id="{{ order.id }}">
+                                                    <i class="glyphicon glyphicon-chevron-left"></i>
+                                                    轉店內</button>
+                                            </span>
+                                            <input type="text" name="inverse-price" class="form-control" placeholder="請輸入議價">
+                                        </div><!-- /input-group -->
+                                    </div>
+
+                                    {% endif %}
+                                {% elseif 
+                                    order.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::OS_CANCEL') and 
+                                    goods.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_OFFSALE') and
+                                    app.user|has_auth('CANCEL_ORDER') and app.user|is_own(goods)
+                                %}
+                                    <div class="col-xs-5">
+                                        <button class="btn btn-success pull-left reverse-cancel" data-id="{{ order.id }}">還原訂單</button>
+                                    </div>
+                                {% endif %}
+                            </div>    
+                        </div>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <br>
+            <br>
+
+            <div class="row margin-only-left-10">
+                {% if 
+                    order.kind.type == constant('Woojin\\Utility\\Avenue\\Avenue::OKT_OUT') and 
+                    order.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::OS_HANDLING') and
+                    app.user|has_auth('SELL') and (
+                        app.user|is_own(goods) or goods.activity
+                    )
+                %}
+                <h1>訂單付款</h1>
+                <hr>
+                <form action="{{ path('orders_v2_update', {id: order.id }) }}" class="orders-update" method="POST">
+                    <div class="form-group">
+                        <label class="col-md-2">尚餘應付金額</label>
+
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" readonly name="remain" value="{{ order.required - order.paid }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-2">預付訂金/付清</label>
+
+                        <div class="col-md-10">
+                           <input type="text" class="form-control numeric" name="paid_org" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-2">實收金額</label>
+
+                        <div class="col-md-10">
+                           <input type="text" class="form-control numeric" readonly name="paid" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-2">付費方式</label>
+
+                        <div class="col-md-10">
+                            <select name="pay_type" class="form-control">
+                                {% for payType in payTypes %}
+                                    <option value="{{ payType.id }}" data-discount="{{ payType.discount }}">{{ payType.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-2">&nbsp;</label>
+
+                        <div class="col-md-10">
+                            <button type="button" class="btn btn-primary pull-right">儲存</button>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+
+            <div class="row margin-only-left-10">
+                <h1>操作記錄</h1>
+                <table class="table">
+                    {% for ope in order.opes %}
+                    <tr class="_ope_ ope_{{ ope.id }}">
+                        <td>{{ ope.act }}</td>
+                        <td>
+                            {% if app.user|has_auth('EDIT_OPE_DATETIME') and app.user|is_own(goods) %}
+                                <input type="text" name="ope_datetime" class="form-control" readonly value="{{ ope.dateTime|date('Y-m-d H:i:s') }}" data-id="{{ ope.id }}" />
+                            {% else %}
+                                <span>{{ ope.dateTime|date('Y-m-d H:i:s') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{% if ope.user %}{{ ope.user.username }}{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+</div>
+{% endif %}

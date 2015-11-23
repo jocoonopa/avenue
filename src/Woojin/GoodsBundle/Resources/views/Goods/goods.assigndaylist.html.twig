@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-tw">
+<head>
+	<meta charset="UTF-8">
+	<title>調貨明細</title>
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" /> 
+	<link rel="stylesheet" href="{{ asset('/css/ui-darkness/jquery-ui-1.10.3.custom.min.css') }}" />
+	
+	<script>'use strict';</script>		
+	<script src="{{ asset('/js/jquery-1.9.1.min.js') }}"></script>
+	<script src="{{ asset('/js/jquery-ui-1.10.3.min.js') }}"></script>
+	<script src="{{ asset('/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('/js/jquery-migrate.js') }}"></script>
+	<script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+	<script src="{{ asset('/js/tablesorter.js') }}"></script>
+	<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+	<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+	<style>
+	.hidden {
+		display:none;
+	}
+
+	#container table.table {
+		font-size: .1em;
+	}
+
+	@media print {
+		header {
+			display: none !important;
+		}
+
+		button.print {
+			display: none !important;
+		}
+
+		#container {
+			width: 20cm;
+		}
+
+		body {
+			width: 21cm;
+		}
+
+		button {
+			display: none !important;
+		}
+	}
+
+  header div {
+  	display: inline-block !important;
+  }
+
+	</style>
+</head>
+<body style="text-align: center; ">
+{% if app.user|has_auth('MOVE_RELATE') %}
+	<button class="pull-left print" onclick="window.print();">列印</button>
+	<header>
+		<form class="form-inline">
+		
+		<p>&nbsp;</p>
+
+		<label>店家:</label>
+		{{ render( controller("WoojinBaseBundle:Base:getStoreSelect") ) }}
+		
+		<label>起始時間:</label>
+		<input type="text" class="date" name="sStartTime" value="{{ "now"|date("Y-m-d")}}" readonly />
+		
+		<label>結束時間:</label>
+		<input type="text" class="date" name="sEndTime" value="{{ "now"|date("Y-m-d")}}" readonly />
+		
+		<button type="button" class="hide_print btn btn-default">查詢</button>
+		</form>
+	</header>
+	<div id="container" style="position:relative; margin: 0 auto;">
+		
+	</div>
+	<script>
+	$(function () {
+		$('.delete_parent_div').addClass('hidden');
+
+		var _url = Routing.generate('goods_ajax_assignday_list');
+		
+		$('button.btn-default').click(function () {
+			$.blockUI({ message: '處理中...'});
+
+			$.post(_url, { 
+				store_id: $('select').val(),
+				sStartTime: $('input[name="sStartTime"]').val(),
+				sEndTime: $('input[name="sEndTime"]').val()
+			})
+			.done(function (res) {
+				$('#container').html(res);
+
+				$('button.remove-item').click(function () {
+					var index = $('table').eq(0).find('tr').index($(this).closest('tr'));
+
+					$(this).closest('tr').remove();
+
+					$('table').eq(1).find('tr').eq(index).remove();
+				});
+
+				$.unblockUI();
+			})
+			.fail(function () {
+				$('#container').html('無商品');
+				$.unblockUI();
+			});
+		});
+
+		$('button.btn-danger').click(function () {
+			$('header').children().not('.btn-danger').toggle();
+		});
+
+		$('input.date').datepicker({
+			dateFormat: "yy-mm-dd"
+		});
+
+		$('form').find('button.btn').click(function () {
+			return false;
+		})
+	});	
+	</script>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+</body>
+</html>

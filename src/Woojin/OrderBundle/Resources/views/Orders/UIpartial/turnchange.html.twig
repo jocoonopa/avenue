@@ -1,0 +1,515 @@
+{% extends 'WoojinBaseBundle:Base:woojin.layout.html.twig' %}
+{% block form %}
+
+{% if app.user|has_auth('SELL') %}
+
+<script>
+window.fix_rate = 100
+</script>
+
+
+<h4 class="black" style="color:red;">換購(出)訂單取消不會連動取消換購(進)訂單,請特別注意!</h4>
+<hr/>
+<div class="step1 goodsTurnSn">
+	<label class="vader">退貨產編:</label>
+	<input type="text" name="sGoodsTurnSn" value="{{ app.user.store.sn }}" placeholder="請輸入產編" />
+</div>
+
+<div class="step2 goodsChangeSn">
+	<label class="vader">換貨產編:</label>
+	<input type="text" name="sGoodsChangeSn" value="{{ app.user.store.sn }}" placeholder="請輸入產編" /><input type="hidden" name="nGoodsChangeId">
+</div>
+
+<div class="step3 balance">
+		<label class="vader">商品訂價:</label>
+		<input type="text" name="nGoodsCost" readonly />
+	<label class="vader">商品賣價:</label>
+	<input type="text" name="nBalance" />
+		<label class="vader">付費方式:</label>
+		<select name="nPayTypeId">{# {{ render(controller('WoojinBaseBundle:Base:getPayTypeSelect') ) }} #}
+			{% for paytype in paytypes %}
+			<option data-discount="{{ paytype.discount }}" value="{{ paytype.id }}">
+				{{ paytype.name }}
+			</option>
+			{% endfor %}
+		</select>
+		<label class="vader">預付訂金/付清:</label>
+		<input type="text" name="nOrdersPaidReal" value="0"/>
+		<label class="vader">實收金額:</label>
+		<input type="text" name="nOrdersPaid" readonly  value="0"/>
+</div>
+
+<div class="step3 ordersMemo">
+	<label class="vader">訂單備註:</label>
+	<textarea name="sOrdersMemo" class="orders_memo" placeholder="可不填寫"></textarea>
+</div>
+
+<div class="step4">
+	<button onkeydown="preventEnterSubmit();" class="btn btn-default" >
+		<span><i class="icon-play"></i>確定</span>
+	</button>
+</div>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}
+
+{% block js %}
+
+<script>
+$(function () {
+	var 
+		$tab = $('#orders-turnchange'),
+		$resRightDiv = $tab.find('.ajaxResMsgRight'),
+		$resLeftDiv = $tab.find('.ajaxResLeft'),
+		$form = $tab.find('form'),
+		$ordersEditFormDialog = $('.ordersEditFormDialog'),
+		$sGoodsTurnSnInput = $form.find('[name="sGoodsTurnSn"]'),
+		$sGoodsChangeSnInput = $form.find('[name="sGoodsChangeSn"]'),
+		$nGoodsChangeIdInput = $form.find('[name="nGoodsChangeId"]'),
+		$nBalanceInput = $form.find('[name="nBalance"]'),
+		$nGoodsCostInput = $form.find('[name="nGoodsCost"]'),
+		$nOrdersPaidInput = $form.find('[name="nOrdersPaid"]'),
+		$nOrdersPaidRealInput = $form.find('[name="nOrdersPaidReal"]'),
+		$nPayTypeSelect = $form.find('[name="nPayTypeId"]'),
+		$sOrdersMemoText = $form.find('[name="sOrdersMemo"]'),
+		$button = $form.find('button'),
+		$step1 = $tab.find('.step1'),
+		$step2 = $tab.find('.step2'),
+		$step3 = $tab.find('.step3'),
+		$step4 = $tab.find('.step4'),
+		$cleanInput = $form.find('input').not('[name="form[_token]"]'),
+		sToken = $tab.find('[name="form[_token]"]').val(),
+		sTurnchangeUrl = Routing.generate('orders_new_turnchange'),
+		sAutoGoodsSnUrl = Routing.generate('order_autoComplete_goodsSn'),
+		sAutoGoodsSnSelledUrl = Routing.generate('order_autoComplete_goodsSn_selled'),
+		sSearchByGoodsSnUrl = Routing.generate('order_search_by_goodsSn'),
+		sSearchByGoodsSnSelledUrl = Routing.generate('order_search_by_goodsSn_selled'),
+		sSelledOrdersUrl = Routing.generate('order_selled_search_by_goodsSn'),
+		sFormLoadedUrl = Routing.generate('goods_edit_form_loaded'),
+		sFixUrl = Routing.generate('goods_fix_res_show'),
+		nSpeed = 500;
+
+	function specialOrdersRefresh ($ordersUl) {
+		if ($ordersUl.find('.orders_kind').data('id') == 5) {
+			var
+				$refreshTarget = $ordersUl.next(),
+				nOrdersId = $refreshTarget.find('.button').data('id'),
+				sImgClass = $refreshTarget.attr('id'),
+				sOrdersRefreshUrl = Routing.generate('orders_ajax_one_info');
+
+			$refreshTarget.html('<img src="{{ AjaxLoadingGif }}" style="margin: 15px;"/>');
+			$.post( sOrdersRefreshUrl, {'nOrdersId' : nOrdersId }, function(res){
+				$refreshTarget.html(res);
+			});
+
+			$('img.'+sImgClass).attr('src', '{{ CancelPng }}');
+		} else if ($ordersUl.find('.orders_kind').data('id') == 9) {
+			var 
+				$refreshTarget = $ordersUl.prev(),
+				nOrdersId = $refreshTarget.find('.button').data('id'),
+				sImgClass = $refreshTarget.attr('id'),
+				sOrdersRefreshUrl = Routing.generate('orders_ajax_one_info');
+			$refreshTarget.html('<img src="{{ AjaxLoadingGif }}" style="margin: 15px;"/>');
+			$.post( sOrdersRefreshUrl, {'nOrdersId' : nOrdersId }, function(res){
+				$refreshTarget.html(res);
+			});
+			$('img.'+sImgClass).attr('src', '{{ CancelPng }}');
+		}
+		return;
+	}
+
+	function editDialogRefresh ( nCustomId ) {
+		var 
+			sEditFormUrl = Routing.generate('orders_custom_edit_form'),
+			sCheckExistUrl = Routing.generate('admin_custom_checkExist'),
+      sUpdateCustomUrl = Routing.generate('admin_custom_update');
+
+    $.post(sEditFormUrl, { 'nCustomId' : nCustomId }, function(res){
+      $editDialog.html(res);
+      var 
+      	$form = $('.editCustomForm'),
+        sOrgCustomEmail = $form.find('[name="sCustomEmail"]').val(),
+        sOrgCustomMobil = $form.find('[name="sCustomMobil"]').val();
+        
+      $form.find('.datepicker').datepicker({
+        changeYear      : true,
+        dateFormat      : "yy-mm-dd",
+        yearRange       : "1901:2013",
+        defaultDate     : "-30y",
+      });
+
+      $form.find('[name="sCustomEmail"]').on('blur', function(){
+        var 
+        	$this = $(this),
+          sEmail = $this.val();
+        if ( !reEmail.test(sEmail) && sEmail != '' ) {
+          $this.val('').attr('title', '信箱格式有誤').tooltip().focus(); //這邊可能會發生信箱重複
+        } else if (sEmail == '') {
+        	$this.attr('title', '');
+        } else {
+          if (sOrgCustomEmail != sEmail ) {
+            $.post(sCheckExistUrl, {'custom_email' : sEmail}, function(res){
+              if (res != '') {
+                alert('電子信箱已存在');
+                $this.val('');
+              }         
+            });
+          }
+        }
+      });
+      $form.find('[name="sCustomMobil"]').numeric().on('blur', function(){
+        var 
+        	$this = $(this),
+          sMobil = $this.val();
+        if (sOrgCustomMobil != sMobil && sMobil != '') {
+          $.post(sCheckExistUrl, {'custom_mobil' : sMobil}, function (res) {
+            if (res != '') {
+              alert('電話號碼已存在');
+              $this.val(sOrgCustomMobil);
+            }         
+          });
+        }
+      });
+
+      $form.ajaxForm({
+        url : sUpdateCustomUrl,
+        error: function(){
+          $.unblockUI();
+          alert('ajax error!');
+        },
+        success: function (res) {
+          $('.thisTarget').closest('tr').html(res);
+          $('.thisTarget').button().on('click', function(){
+              var $this = $(this);
+
+              $this.addClass('thisTarget');
+              editDialogRefresh( $this.data('id') );
+              $editDialog.dialog('open');
+          }).button().removeClass('thisTarget');
+          $editDialog.dialog('close');
+          $.unblockUI();
+        }
+      }).on('submit', function(){
+        ajaxLoaded();
+      });
+    });
+  };
+
+	$resRightDiv.accordion();
+	$nBalanceInput.add($nOrdersPaidInput).add($nOrdersPaidRealInput).numeric();
+	$nBalanceInput.on('change', function () {
+		var 
+			$this = $(this),
+			nBVal = parseInt( $nBalanceInput.val() );
+		if ($this.val()<0)
+			$this.val(0);
+	});
+	$nPayTypeSelect.on('change', function () {
+		var 
+			$this = $(this),
+			fDiscount = $this.find('option:selected').data('discount');
+		$nOrdersPaidInput.val( Math.ceil( parseInt($nOrdersPaidRealInput.val()) * fDiscount) );
+		if ($this.val() == 'NaN')
+			$this.val(0);
+	});
+	$nOrdersPaidInput.on('change', function () {
+		var 
+			$this = $(this),
+			fDiscount = $nPayTypeSelect.find('option:selected').data('discount'),
+			nRealPaid = Math.ceil( parseInt($this.val())/fDiscount );
+		$nOrdersPaidRealInput.val(nRealPaid);
+		if ( parseInt(nRealPaid)>parseInt( $nBalanceInput.val() ) )
+				$nOrdersPaidRealInput.val( $nBalanceInput.val() ).change();
+		if ($this.val() == 'NaN')
+				$this.val(0);
+	});
+	$nOrdersPaidRealInput.on('change', function () {
+		var 
+			$this = $(this),
+			fDiscount = $nPayTypeSelect.find('option:selected').data('discount');
+		$nOrdersPaidInput.val( Math.ceil(parseInt($this.val() * fDiscount) ) );
+	 	if ( parseInt($this.val())>parseInt( $nBalanceInput.val() ) )
+			$nOrdersPaidRealInput.val( $nBalanceInput.val() ).change();
+		if ($this.val() == 'NaN')
+			$this.val(0);
+	});
+	$sGoodsTurnSnInput.on('blur', function(){
+		var 
+			$this = $(this),
+			sJudge = '{{ app.user.store.sn }}',
+			nRequired = 0,
+			sGoodsTurnSn = $this.val();
+		$this.attr('title', '');
+		if (sGoodsTurnSn.substr(0,1) !== sJudge) {
+			$this.val(sJudge).focus();
+			$this.attr('title', '非本店店碼');
+		} else if (sGoodsTurnSn.length < 10) {
+			$this.attr('title', '未達產編長度').focus();
+			$resRightDiv.html('');
+			$resLeftDiv.html('<img src="{{ NothingPng }}" />');
+		} else {
+			$resRightDiv.html('<img src="{{ AjaxLoadingGif }}" style="margin: 150px;">');
+			$.post(
+				sSearchByGoodsSnSelledUrl, 
+				{
+					'sGoodsSn' 		: sGoodsTurnSn, 
+					'form[_token]'	: sToken
+				}
+			)
+			.done(function (res) {
+				$resRightDiv.html( res ).accordion( 'destroy' ).accordion();
+				if ($resRightDiv.find('h3').length < 1) {
+					$resLeftDiv.html('<img src="{{ NothingPng }}" />');
+					$step2.add( $step3 ).add( $step4 ).fadeOut( nSpeed );
+				} else {
+					balanceCalculate();
+					attachEventOnAjaxResponse();
+					var 
+						$ajaxTabs = $('.goodsResTabs'),
+						$ajaxButton = $ajaxTabs.find('button'),
+						$ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog');					
+					$ajaxTabs.tabs({
+							collapsible: true
+					}).find('button').button();
+					$ajaxButton.filter('.edit_goods').on('click', function () {
+						var 
+							$this = $(this),
+							nGoodsPassportId = $this.parent().data('id');
+						ajaxLoaded();
+						$.post(sFormLoadedUrl, { 'nGoodsPassportId' : nGoodsPassportId })
+						.done(function (res) {
+							$ajaxEditGoodsDialog.html( res );
+							$ajaxEditGoodsDialog.dialog('open');
+							$.unblockUI();
+						})
+						.fail(function (xhr, textStatus, errorThrown) {
+							alert('ajax error');
+							$.unblockUI();
+						});
+					})
+					.end().filter('.change_order_custom, .back_order').hide();
+					$nBalanceInput.val();
+					$step2.fadeIn( nSpeed );
+				}
+			})
+			.fail(function () {
+				alert('ajax_error!');
+			});
+		}
+	}).autocomplete({
+		source : sAutoGoodsSnSelledUrl,
+		minLength : 2
+	}).tooltip();
+
+	$sGoodsChangeSnInput.on('blur', function(){
+		var 
+			$this = $(this),
+			sJudge = '{{ app.user.store.sn }}',
+			sGoodsChangeSn = $this.val();
+		$this.attr('title', '');
+		if (sGoodsChangeSn.substr(0,1) !== sJudge) {
+			$this.val(sJudge).focus();
+			$this.attr('title', '非本店店碼');
+			$resRightDiv.html('');
+			$step3.add( $step4 ).fadeOut( nSpeed );
+		} else if (sGoodsChangeSn.length < 10) {
+			$this.attr('title', '未達產編長度').focus();
+			$resRightDiv.html('');
+			$step3.add( $step4 ).fadeOut( nSpeed );
+			$resLeftDiv.html('<img src="{{ NothingPng }}" />');
+		} else {
+			$resRightDiv.html('<img src="{{ AjaxLoadingGif }}" style="margin: 150px;">');
+			$.post(
+				sSearchByGoodsSnUrl, 
+				{
+					'sGoodsSn' 		: sGoodsChangeSn, 
+					'form[_token]'	: sToken
+				}
+			)
+			.done(function (res) {
+				$resRightDiv.html(res).accordion('destroy').accordion();
+				if ($resRightDiv.find('h3').length<1) {
+					$resLeftDiv.html('<img src="{{ NothingPng }}" />');
+					$step3.add($step4).fadeOut(nSpeed);
+				} else {
+					var 
+						nId = $resRightDiv.children('h3').children('p').data('id');
+					$nGoodsChangeIdInput.val(nId);
+					balanceCalculate();
+					attachEventOnAjaxResponse();
+					var 
+						$ajaxTabs = $('#orders-turnchange').find('.goodsResTabs'),
+						$ajaxButton = $ajaxTabs.find('button'),
+						$ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog');					
+					$ajaxTabs.tabs({
+							collapsible: true
+					}).find('button').button();
+					$ajaxButton.filter('.edit_goods, .edit_orders, .change_order_custom, .back_order, .cancel_orders').hide();
+					$step3.add( $step4 ).fadeIn( nSpeed );
+				}			
+			})
+			.done(function () {
+				// Get selled price and type
+				var 
+					_url = Routing.generate('turngoods_get_sellprice'),
+					_sn = $('#orders-turnchange').find('input[name="sGoodsTurnSn"]').val();
+				$.post( _url, {sn: _sn})
+				.done(function (data) {
+					$nPayTypeSelect.val(parseInt(data.payTypeId)).change();
+					$nBalanceInput.val(parseInt(data.price)).change();
+				})
+				.fail(function () {
+					alert('取得賣出商品賣價錯誤');
+				});
+			})
+			.fail(function () {
+				alert('ajax_error!');
+			});
+		}
+	}).autocomplete({source: sAutoGoodsSnUrl, minLength: 2}).tooltip();
+
+	$form.on('submit', function(){
+		ajaxLoaded();
+	});
+
+	$form.ajaxForm({
+		url : sTurnchangeUrl,
+		dataType: 'json',
+		success: function (res) {
+			var 
+				//oRes = JSON.parse(res),
+				oRes = res,
+				nIdIn = oRes.purIn,
+				nIdOut = oRes.sellOut,
+				$goodsSearchAjaxLoadImg = $('#orders-turnchange').find('.ajaxResLeft'),
+				$h3 = $('h3').not('.hasAttachedAjaxEvent');
+		
+			$.post(sFixUrl, {'nGoodsPassportId': nIdOut, 'bGoods': 1})
+			.done(function (response) {
+				var sFirstResponse = response;
+				$.post( sFixUrl, { 'nGoodsPassportId' : nIdIn })
+				.done(function (response) {
+					$resRightDiv.html( sFirstResponse ).append( response ).accordion('destroy')
+						.accordion({ 'heightStyle' : 'content' })
+					;
+					attachEventOnAjaxResponse();
+					var 
+						$ajaxTabs = $('.goodsResTabs'),
+						$ajaxButton = $ajaxTabs.find('button'),
+						$ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog');					
+					$ajaxTabs.tabs({
+							collapsible: true
+					}).find('button').button();
+					$ajaxButton.filter('.edit_goods').on('click', function () {
+						var 
+							$this = $(this),
+							nGoodsPassportId = $this.parent().data('id');
+						ajaxLoaded();
+						$.post(sFormLoadedUrl, { 'nGoodsPassportId' : nGoodsPassportId })
+						.done(function (res) {
+							$ajaxEditGoodsDialog.html( res );
+							$ajaxEditGoodsDialog.dialog('open');
+							$.unblockUI();
+						})
+						.fail(function (xhr, textStatus, errorThrown) {
+							alert('ajax error');
+							$.unblockUI();
+						});
+					})
+					.end().filter('.edit_orders').on('click', function () {
+			    })
+			    .end().filter('.cancel_orders').on('click', function () {
+			    	cancelOrdersEvent( $(this) );
+			    })
+			    .end().filter('.change_order_custom, .back_order').hide();
+				})
+				.fail(function () {
+					alert('ajax error of trun in goods');
+				});
+			})
+			.fail(function () {
+				alert('ajax error of turn out goods show');
+			});
+			$h3.on('click', function () {
+					$goodsSearchAjaxLoadImg.html( '<img src="'+$(this).data('imgpath')+'" />'  );
+			}).eq(0).click();
+
+			$cleanInput.val('');
+			$sGoodsTurnSnInput.val('{{ app.user.store.sn }}');
+			$sGoodsChangeSnInput.val('{{ app.user.store.sn }}');
+			$sOrdersMemoText.val('');
+			$step2.add($step3).add($step4).fadeOut(nSpeed);
+			$.unblockUI();
+			scrollToPageTop();
+		}
+	});
+
+	balanceCalculate = function () {
+		var 
+			sTurnGoodsSn = $sGoodsTurnSnInput.val(),
+			sGoodsChangeSn = $sGoodsChangeSnInput.val(),
+			nGoodsChangeCost = parseInt( sGoodsChangeSn.substr( -4, 4), 10)*window.fix_rate;
+		$.post( sSelledOrdersUrl, {'sGoodsSn' : sTurnGoodsSn})
+		.done(function (nPaid) {
+			$nBalanceInput.val( nGoodsChangeCost ).change();
+			$nGoodsCostInput.val( nGoodsChangeCost );
+		})
+		.fail(function () {
+			alert('ajax error of balanceCalculate');
+		});
+	};
+
+	attachEventOnAjaxResponse = function () {
+		var	
+			$goodsSearchAjaxLoadImg = $('#orders-turnchange').find('.ajaxResLeft'),
+			$h3 = $('h3').not('.hasAttachedAjaxEvent'),
+			$ajaxTabs = $('.goodsResTabs'),
+			$ajaxButton = $ajaxTabs.find('button'),
+			$ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog');
+
+		$h3.on('click', function(){
+			var 
+				$this = $(this),
+				$em = $this.find('em'),
+				nImgId = $em.text(),
+				sUrl = Routing.generate('goods_search_ajax_img');
+			$this.addClass('.hasAttachedAjaxEvent');
+			$goodsSearchAjaxLoadImg.html('<img src="{{ AjaxLoadingGif }}" />');
+			if (nImgId != '') {
+				$.post(sUrl, {'img_id' : nImgId})
+				.done(function (res) {
+					$goodsSearchAjaxLoadImg.delay(3000).find('img').attr('src', res);
+				})
+				.fail(function () {
+					alert('ajax error of atta')
+				});
+			} else {
+				$goodsSearchAjaxLoadImg.html('<img src="{{ NothingPng }}" />');
+			}
+		}).eq(0).click();
+
+		$ajaxTabs.tabs({
+			collapsible: true
+		}).find('button').button();
+
+		$ajaxButton.filter('.edit_goods').on('click', function () {
+			var 
+				$this = $(this),
+				nGoodsPassportId = $this.parent().data('id');
+			ajaxLoaded();
+			$.post(sFormLoadedUrl, { 'nGoodsPassportId' : nGoodsPassportId })
+			.done(function (res) {
+				$ajaxEditGoodsDialog.html(res);
+				$ajaxEditGoodsDialog.dialog('open');
+				$.unblockUI();
+			})
+			.fail(function(xhr, textStatus, errorThrown) {
+					alert('ajax error of edit goods');
+					$.unblockUI();
+			});
+		});
+	};
+});	
+</script>
+{% endblock %}

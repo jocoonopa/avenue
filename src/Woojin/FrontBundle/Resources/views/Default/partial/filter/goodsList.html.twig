@@ -1,0 +1,96 @@
+{% if brand %}<input type="hidden" name="defaultBrand" value="{{ brand.id }}">{% endif %}
+{% if pattern %}<input type="hidden" name="defaultPattern" value="{{ pattern.id }}">{% endif %}
+
+{% verbatim %}
+
+<!-- 查無商品時的顯示區塊 -->
+<div class="row hidden not-found" ng-show="goodses.length === 0 && displayNotFound">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="service-block service-block-default">
+            <span class="icon-custom icon-color-dark rounded-x fa fa-lightbulb-o"></span>
+            <h2 class="heading-md">很抱歉，我們目前沒有符合您搜尋條件的商品</h2> 
+            <br> 
+            <span class="text-left">您可以透過以下幾種方式諮詢更詳細的資訊:</span>
+            <hr class="mt-20 mb-20">    
+            <ul class="list-unstyled text-left">
+                <li>
+                    <span class="fa fa-check"></span> 來信:&nbsp;&nbsp;<a href="mailto:avenue16882@gmail.com">avenue16882@gmail.com</a>
+                </li>
+                <li>
+                    <span class="fa fa-check"></span> 電洽:&nbsp;&nbsp;02-2992-6616
+                </li>
+                <li>
+                    <span class="fa fa-check"></span> Line:&nbsp;&nbsp;avenue2003
+                </li>
+            </ul>
+            <hr class="mt-20 mb-20">
+            <p>香榭將有專人為您服務，謝謝!</p>                                 
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+<!-- END 查無商品時的顯示區塊 -->
+
+<!-- 商品呈現區塊 -->
+<!-- Row Level -->
+<div class="row illustration-v2 margin-bottom-30" ng-repeat="rows in goodses track by $index">
+    <!-- Product Block -->
+    <div class="col-md-4" ng-repeat="goods in rows" on-finish-render="ngRepeatFinished" ng-cloak> 
+        <!-- Image -->
+        <div class="product-img">
+            <div class="thumbnails thumbnail-style thumbnail-store">   
+                <div class="thumbnail-img"> 
+                    <div class="overflow-hidden"> 
+                    {% endverbatim %}{% if isMobile() %}{% verbatim %}
+                            <a href="{{ generateUrl(goods) }}" target="_blank">
+                    {% endverbatim %}{% endif %}{% verbatim %}
+                        <img ng-if="goods.img" class="full-width img-responsive" ng-src="{{ goods.img.path }}" alt="{{ goods.name }}">
+                        
+                        <img ng-if="!goods.img" ng-src="/img/nothing.png" alt="{{ goods.name }}">
+                        {% endverbatim %}{% if isMobile() %}</a>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            {% if not isMobile() %}{% verbatim %}
+            <a class="product-info" href="{{ generateUrl(goods) }}" target="_blank">
+                <h4 class="white font-18">{{ seoName(goods) }}&nbsp;&nbsp;({{ transLevel(goods) }})</h4>
+                <span class="white font-16">NT.&nbsp;{{ promotionPrice(goods)|number }}</span>
+                
+                <!--<span class="glyphicon glyphicon-search white center-i"></span>-->
+            </a> 
+            
+            <a class="behalf-request" ng-if="allowBehalf(goods);" href="javascript: void(0)" data-id="{{ goods.id }}" data-name="{{ goods.name }}"><span class="icon-briefcase"></span>代購</a>
+
+            <a class="add-to-cart" ng-if="allowAddToCart(goods) && goods.is_allow_credit_card" href="javascript: void(0)" data-id="{{ goods.id }}"><span class="icon-basket"></span>未選購</a>
+
+            <a class="not-allowed-creditcard" ng-if="!goods.is_allow_credit_card" href="javascript: void(0)" data-toggle="modal" data-target="#notAllowCreditCard"><span class="icon-info"></span>說明</a>
+
+            <a class="add-to-whishlist" href="javascript: void(0)" data-id="{{ goods.id }}">
+                <span class="fa fa-heart-o"></span>未收藏
+            </a>
+            {% endverbatim %}{% endif %}{% verbatim %}
+            
+            <div ng-if="goods.promotion && (promotionRemainDays(goods.promotion) >= 0)" class="tag-promotion shop-rgba-dark-green rgba-banner right-18"><a href="#" class="color-white">促銷中</a></div>
+        </div>
+        <!-- End Image -->  
+
+        <div class="row">
+            <div ng-if="promotionPrice(goods) < goods.price" class="col-xs-12 product-widget-price">
+                <span class="td-lt font-12">售價&nbsp;&nbsp;NT.&nbsp;{{ goods.price|number }}元</span>
+                &nbsp;&nbsp;
+                <span class="red">NT.&nbsp;{{ promotionPrice(goods)|number }}元</span>
+            </div>
+            
+            <div ng-if="promotionPrice(goods) >= goods.price" class="col-xs-12 product-widget-price">
+                <span>售價&nbsp;&nbsp;NT.&nbsp;{{ promotionPrice(goods)|number }}元</span>
+            </div>
+        </div>
+    </div>
+    <!-- End Product Block -->
+</div>
+<!-- End Row Level -->
+<!-- End 商品呈現區塊 -->
+{% endverbatim %}

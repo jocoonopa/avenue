@@ -1,0 +1,27 @@
+{% if app.user|has_auth('STOCK_REPORT_OWN') %}
+	{% for product in products %}
+		<tr>
+			<td>{{ product.createdAt|date('Y-m-d H:i:s') }}</td>
+			<td>{{ product.name }}</td>
+			<td>{{ product.sn }}</td>
+			<td>{% if product.brand %}{{ product.brand.name }}{% endif %}</td>
+			<td>{% if product.pattern %}{{ product.pattern.name }}{% endif %}</td>
+			<td>{{ product.model }}</td>
+			<td>
+				{{ product.price|number_format }}
+			</td>
+			<td class="productCost" data-cost="{{ product.cost }}" >
+				{% if (app.user|has_auth('READ_COST_OWN') and app.user|is_own(product)) or app.user|has_auth('READ_COST_ALL') %}
+					{{ product.cost|number_format }}
+				{% else %}
+					<span class="label label-warning">權限不足</span>
+				{% endif %}
+			</td>
+			<td>
+				<button class="btn btn-default" data-id="{{ product.id }}"><i class="icon-eye-open"></i>查看</button>
+			</td>
+		</tr>
+	{% endfor %}
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}

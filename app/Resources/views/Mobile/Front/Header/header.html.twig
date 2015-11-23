@@ -1,0 +1,14 @@
+<div class="header">
+    <a class="open-nav" href="#"><i class="fa fa-navicon"></i></a>
+    <a class="my-header-icon" href="javascript:;" onclick="window.history.back();">
+        <i class="fa fa-chevron-left"></i>
+    </a>
+    
+    <!--<a class="header-logo" href="#"></a>-->
+    <a class="header-message my-text-center" href="#">
+        {% block headerMessage %}
+            <img src="{{ getBackCacheImage('http://www.avenue2003.com/img/%E9%A6%99%E6%A6%ADLOGO_w.png', 121, 75)}}" class="mobile-logo-image" alt="香榭">
+        {% endblock %}
+        </a>
+    <a class="open-socials" href="#"><i class="fa fa-ellipsis-v"></i></a>
+</div>

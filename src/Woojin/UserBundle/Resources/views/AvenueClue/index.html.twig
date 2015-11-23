@@ -1,0 +1,40 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    <h1>AvenueClue list</h1>
+
+    <table class="records_list table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Createat</th>
+                <th>Content</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('avenueclue_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{% if entity.createAt %}{{ entity.createAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ entity.content['product']['name'] }}
+
+                    原本: {{ entity.content['product']['before_price'] }}<br/>
+                        {{ entity.content['product']['before_cost'] }}
+                    <br/>
+                    之後: {{ entity.content['product']['after_price'] }}<br/>
+                    {{ entity.content['product']['after_cost'] }}
+                </td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('avenueclue_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% endblock %}

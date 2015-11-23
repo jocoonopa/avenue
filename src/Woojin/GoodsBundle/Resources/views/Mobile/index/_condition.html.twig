@@ -1,0 +1,40 @@
+{% import 'WoojinGoodsBundle:Mobile/Widget:panel.html.twig' as panel %}
+
+<form id="search" action="{{ path('admin_goods_mobile_fetch') }}" method="POST" >
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        {{ panel.checkbox('品牌', brands, 'brands', 6) }}
+
+        {{ panel.checkbox('款式', patterns, 'patterns', 6) }}
+        
+        {{ panel.checkbox('材質', mts, 'mts', 6) }}
+        
+        {{ panel.checkbox('顏色', colors, 'colors', 6) }}
+        
+        {{ panel.checkbox('店鋪', stores, 'stores', 6) }}
+
+        {{ panel.checkbox('狀態', statuses, 'statuses', 6) }}
+        
+        {{ panel.checkbox('新舊', levels, 'levels', 6) }}
+
+        {{ panel.checkbox('活動', activitys, 'activitys', 12) }}
+    
+        {{ panel.text('品名/序號/型號/產編', 'name') }}
+    </div>    
+
+    <div class="row">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-primary pull-left">送出</button>
+            <button type="button" class="btn btn-default pull-left ml10 reset">重設</button>
+
+            <button type="button" class="mason-trigger pull-right btn btn-success ml5"><i class="glyphicon glyphicon-th-large"></i></button>
+            
+            <button type="button" class="default-trigger pull-right btn btn-success">
+                <i class="glyphicon glyphicon-th-list"></i>
+            </button>
+        </div>
+    </div>
+
+    <input type="hidden" name="page" value="1">
+</form>
+
+<div class="spacer20"></div>

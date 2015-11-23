@@ -1,0 +1,36 @@
+{% extends ':Mobile/Front:base.html.twig' %}
+
+{% block content %}
+
+<div class="full-bottom"></div>
+
+<div class="content">
+    <div class="container no-bottom"></div>
+    
+    <ul class="gallery square-thumb">
+        {# 1. 圖片 2. 敘述 3. 連結 #}
+        {% for promotion in promotions %}
+        <li class="width-50-percent">
+            <a href="{{ path('mobile_front_promotion', {id: promotion.id}) }}">
+                <img class="responsive-image mb-0 lazy" data-original="{{ getBackCacheImage(promotion.absolutePath, 300, 300) }}" alt="{{ promotion.name }}" />
+            </a>
+            <p class="my-text-center black">{{ promotion.name }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+    
+    <div class="decoration"></div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

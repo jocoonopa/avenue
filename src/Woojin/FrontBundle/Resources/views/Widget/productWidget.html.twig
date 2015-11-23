@@ -1,0 +1,135 @@
+{% macro owlSlider(goodses) %}
+    {% import _self as owlSlider %}
+
+    <div class="illustration-v2 margin-bottom-60">
+        <div class="customNavigation margin-bottom-25">
+            <a class="owl-btn prev rounded-x"><span class="fa fa-angle-left"></span></a>
+            <a class="owl-btn next rounded-x"><span class="fa fa-angle-right"></span></a>
+        </div>
+
+        <ul class="list-inline owl-slider">
+            {% for goods in goodses %}
+                {% if goods.isValidToShow() %}
+                <li class="item">
+                    {{ owlSlider.unit(goods) }}
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div> 
+{% endmacro %}
+
+{% macro unit(goods) %}
+    {# 目前首頁的新品推薦，限時搶購 以及商品頁的相關商品都是用此 Widget #}
+    {% import _self as unit %}
+    
+    <div class="product-img">
+        <div class="thumbnails thumbnail-style thumbnail-store">
+            <div class="thumbnail-img">
+                <div class="overflow-hidden">
+                    {% if isMobile() %}
+                        <a href="{{ path('front_product_show', {id: goods.id}) }}">
+                    {% endif %}
+                    <img class="lazy full-width img-responsive" data-original="/img/_logo.jpg" src="{% if goods.img %}{{ goods.img.path }}{% else %}http://www.dior.com/couture/var/dior/storage/images/la-maison-dior/3537651-201-chi-TW/dior-%E5%93%81%E7%89%8C.jpg{% endif %}" alt="{{ goods.name }}">
+                    {% if isMobile() %}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if not isMobile() and goods.isValidToShow() %}
+            <a class="product-info" href="{{ path('front_product_show', {id: goods.id}) }}">
+                <h4 class="white font-18">{{ goods.seoName }}</h4>
+                <span class="white font-16">{{ 'NT. ' ~ goods.promotionPrice(true)|number_format }}</span>
+                
+                {# <span class="glyphicon glyphicon-search white center-i"></span> #}
+            </a> 
+            
+            {% if goods.isBehalfAndSold() %}
+                <a class="behalf-request" href="javascript: void(0)" data-id="{{ goods.id }}" data-name="{{ goods.name }}"><span class="icon-briefcase"></span>代購</a>
+            {% else %}
+                {% if not goods.isAllowCreditCard %}
+                    <a href="javascript: void(0)" data-toggle="modal" class="not-allowed-creditcard" data-target="#notAllowCreditCard"><span class="icon-info">說明</span></a>
+                {% else %}
+                    <a class="add-to-cart" href="javascript: void(0)" data-id="{{ goods.id }}"><span class="icon-basket"></span>未選購</a>
+                {% endif %}
+            {% endif %}
+
+            <a class="add-to-whishlist" href="javascript: void(0)" data-id="{{ goods.id }}"><span class="fa fa-heart-o"></span>未收藏</a>
+        {% endif %}
+        
+        {% if goods.promotion and goods.promotion.isValid() %}
+            {# <div class="shop-rgba-red rgba-banner"><a href="#" class="color-white">促銷中</a></div> #}
+            <div class="tag-promotion shop-rgba-dark-green rgba-banner right-18"><a href="#" class="color-white">促銷中</a></div>
+        {% endif %}
+
+        {% if not goods.isValidToShow() %}
+            <div class="tag-promotion shop-rgba-red rgba-banner right-18"><a href="#" class="color-white">已售出</a></div>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        {% if goods.promotionPrice(true) < goods.price %}
+        <div class="col-xs-12 product-widget-price">
+            <span class="td-lt font-12">售價&nbsp;&nbsp;NT.&nbsp;{{ goods.price(true)|number_format }}元</span>
+            &nbsp;&nbsp;
+            <span class="red">NT.&nbsp;{{ goods.promotionPrice(true)|number_format }}元</span>
+        </div>
+        {% else %}
+        <div class="col-xs-12 product-widget-price">
+            <span>售價&nbsp;&nbsp;NT.&nbsp;{{ goods.price(true)|number_format }}元</span>
+        </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro level(goods) %}
+    {% import _self as ul %}
+
+    <ul class="list-inline product-ratings max-width-100 pull-left" data-toggle="tooltip" data-placement="top" title="{% if goods.level %}{{ '商品狀況:   ' ~ goods.level.name }}{% endif %}">
+        {% if goods.level %}
+            {% if goods.level.id >= 19 %}
+                {{ ul.li(5) }}
+            {% elseif goods.level.id >= 15 %}
+                {{ ul.li(4) }}
+            {% elseif goods.level.id >= 11 %}
+                {{ ul.li(3) }}
+            {% elseif goods.level.id >= 9 %}
+                {{ ul.li(2) }}
+            {% else %}
+                {{ ul.li(1) }}
+            {% endif %}
+        {% endif %}
+    </ul>
+{% endmacro %}
+
+{% macro li(starNum) %}
+    {% set selectedNum = starNum %}
+    {% set remainNum = 5 - starNum %}
+
+    {% for i in 1..starNum %}
+        <li><span class="rating-selected fa fa-star"></span></li>
+    {% endfor %}
+    
+    {% if remainNum > 0 %}
+        {% for i in 1..remainNum %}
+            <li><span class="rating fa fa-star"></span></li>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+{% macro li(starNum) %}
+    {% set selectedNum = starNum %}
+    {% set remainNum = 5 - starNum %}
+
+    {% for i in 1..starNum %}
+        <li><span class="rating-selected fa fa-star"></span></li>
+    {% endfor %}
+    
+    {% if remainNum > 0 %}
+        {% for i in 1..remainNum %}
+            <li><span class="rating fa fa-star"></span></li>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}

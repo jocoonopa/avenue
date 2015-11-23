@@ -1,0 +1,62 @@
+<div class="header-tags">
+    <div class="overflow-h">
+        <h2>結帳付費</h2>
+        <p>前往歐付寶完成結帳</p>
+        <i class="rounded-x fa fa-credit-card"></i>
+    </div>    
+</div>
+
+<section>
+    <div class="row">
+        <div class="col-sm-12 mb-10">
+            <label for="creditInstallment">若欲使用信用卡分期請選擇分期期數</label>
+            <select name="creditInstallment" id="creditInstallment" class="form-control">
+                <option value="0">請選擇</option>
+                <option value="3">分3期</option>
+                <option value="6">分6期</option>
+                <option value="12">分12期</option>
+                <option value="18">分18期</option>
+                <option value="24">分24期</option>
+            </select> 
+        </div>
+
+        <div class="col-sm-12">
+            <p>您的訂單資訊已經填寫完畢，請點選右側圖示前往歐付寶結帳！
+                <a href="javascript: void(0);" class="trigger-submit"><img src="/bundles/woojinfront/img/logo_pay200x55.png" /></a></p>
+            {# <a class="btn btn-primary" href="{{ path('front_payment_service') }}">測試結帳</a> #}
+        </div>
+    </div>
+</section>
+<!-- End 付費方式選擇頁面 -->
+    
+<!-- 統計區塊 -->
+<div class="coupon-code">
+    <div class="row">
+        <div class="col-sm-4 col-xs-12 sm-margin-bottom-30 hidden-xs">
+            <img src="/bundles/woojinfront/img/logo300x180.png" class="img-responsive" />
+        </div>
+        <div class="col-sm-3 col-xs-12 col-sm-offset-5">
+            <ul class="list-inline total-result">
+                <li>
+                    <h4>商品總價:</h4>
+                    <div class="total-result-in">
+                        <span></span>
+                    </div>    
+                </li>    
+                <li>
+                    <h4>運費:</h4>
+                    <div class="total-result-in shipping-payment">
+                        <span class="text-right">- - - -</span>
+                    </div>
+                </li>
+                <li class="divider"></li>
+                <li class="total-price">
+                    <h4>總和:</h4>
+                    <div class="total-result-in">
+                        <span></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div> 

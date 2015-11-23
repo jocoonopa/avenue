@@ -1,0 +1,234 @@
+<script>
+
+$(function () {
+
+	var inStoreReportApp = (function () {
+		
+		var 
+
+			// Handle user's motion on DOM
+			controller = {
+
+				// Column div toggle by flow select
+				onShowColumnDecide: function () {
+					view.$flowSelect.on( 'change', function () {
+						if ($( this ).val() == 1) {
+							view.$columnDecide.removeClass( 'hidden' );
+						} else {
+							view.$columnDecide.addClass( 'hidden' );
+						}
+					}).change();
+					return this;
+				},
+
+				// ColumnDecide all check and all cancel event
+				onCheckboxAllOpe: function () {
+					var
+						$checkbox = view.$columnDecide.find( 'input' ),
+						$allCheck = view.$columnDecide.find( '.allCheck' ),
+						$allCancel = view.$columnDecide.find( '.allCancel' );
+
+					$allCheck.on( 'click', function () {
+						$checkbox.prop('checked', true);
+					}).click();
+					$allCancel.on( 'click', function () {
+						$checkbox.prop('checked', false);
+					});
+					return this;
+				},
+
+				// Click specific button to submit form
+				onFormSubmit: function () {
+					view.$submitButton.on( 'click', function () {
+						// Decide which workflow by selected
+						model._dynamic.bExport = view.$flowSelect.val();
+						view.$bExportInput.val( model._dynamic.bExport );
+						view.$form.submit();
+					});	
+					return this;
+				},
+
+				// Bind ajaxForm on assign form
+				onFormAjaxform: function () {
+					view.$form.ajaxForm({
+						url: model._const.sSubmitUrl,
+						success: function ( res ) {
+							if ((model._dynamic.bExport == 0)) {
+								controller.getSearchResponse(res)
+								.countTotalGoodsCost()
+								.updateViewTotalCost()
+								.onTableSorterPager(view.$resRight.find('table'));
+
+								$(window).scrollTop(0);
+							} else {
+								controller.downloadInstoreXls( res );
+							}
+						}
+					});
+
+					return this;
+				},
+
+				// Download the instore xls we search for
+				downloadInstoreXls: function (res) {
+					window.open(res);
+					//return window.location = res;
+				},
+
+				// Refresh the right part with response from ajaxForm
+				getSearchResponse: function ( res ) {
+					// Trim space in response
+					var res = res.replace( /^\s*|\s*$/g, "" );
+					view.$resRight.html( res );
+					return controller.onOpenDetailDialog( view.$resRight.find( 'button' ) );					
+				},
+
+				// Open detail dialog, the dialog is init at orders.financial.html.twig
+				onOpenDetailDialog: function ( e ) {						
+					e.on( 'click', function () {
+						model._dynamic.nGoodsPassportId = $( this ).data( 'id' );	
+						ajaxLoaded();
+						$.post( model._const.sOneGoodsDetailUrl , model._dynamic, function ( res ) {
+							view.$detailGoodsDialog.html( res );
+							view.$detailGoodsDialog.children( 'div' ).tabs({ heightStyle: 'content' });
+							view.$detailGoodsDialog.dialog( 'open' );
+							$.unblockUI();
+						});
+					});
+
+					return this;
+				},
+
+				// Bind tablesorter and tablepager
+				onTableSorterPager: function ( e ) {
+					if ( (e.find('tbody>tr').length == 0) ) {
+						e.siblings().addBack().remove();
+						return this;
+					}
+
+					e.tablesorter().tablesorterPager({
+						container: e.next().next()
+					}).next().next().css({
+						'position': 'static'
+					});
+
+    				return this;
+				},
+
+				// Count the total cost
+				countTotalGoodsCost: function () {
+					var $productCostTd = view.$resRight.find( '.productCost' );
+
+					model._dynamic.nTotalCost = 0;
+					
+					$productCostTd.each( function () {
+						model._dynamic.nTotalCost =  parseInt( $( this ).data( 'cost' ) ) + parseInt( model._dynamic.nTotalCost );
+					});
+
+					return this;
+				},
+
+				// Count Total Goods Numer
+				countTotalGoodsNum: function () {
+					return model._dynamic.nTotalNum = view.$resRight.find( '.productCost' ).length;
+				},
+
+				// Update the span( or other element ) text ,set it be total cost
+				updateViewTotalCost: function () {
+					this.countTotalGoodsCost( view.$resRight ).countTotalGoodsNum();
+					view.$resRight.find( '.nTotalCost' ).text( model._dynamic.nTotalCost )
+					.end().find( '.instore_total' ).append( $('<span>&nbsp;&nbsp;&nbsp;(' + model._dynamic.nTotalNum + '件)</span>') );
+					return this;
+				}
+			},
+				
+			// DOM init and setup
+			view = {
+
+				setup: function ( tab ) {
+					// The tabs where we are 
+					this.$tab = tab;
+
+					// Search response show here, 
+					// and add tabs UI prevent broken when ajax finish later
+					this.$resRight = this.$tab.find( '.ajaxResMsgRight' );
+
+					// The div of set condition to search
+					this.$panel = this.$tab.find( '.operatePanel' );
+
+					// The form of search condition will submit
+					this.$form = this.$panel.find( 'form' );
+
+					// The checkbox to decide column
+					this.$columnDecide = this.$form.find( '.export_column_decide' );
+
+					// The inputs of form
+					this.$input = this.$form.find( 'input' );
+
+					// The bExport input , to decide work flow in controller
+					this.$bExportInput = this.$input.filter( '[name="bExport"]' );
+
+					// The div where render select in
+					this.$selectDiv = this.$form.find( 'div' );
+
+					// The brand about select, contains Brand, BrandType, BrandSn
+					this.$select = this.$selectDiv.find( 'select' );
+
+					// Goods Search Store add Option
+					this.$select.filter('.goods_search_store').prepend('<option value="0">全部</option>');
+
+					// The brand select, and prepend a null option to find all
+					this.$brandSelect = $('[name="brand[]"]').prepend( '<option vale="0" selected>不限</option>' );
+
+					// Flow Decided 
+					this.$flowSelect = this.$select.filter('[name="showOrExport"]');
+
+					// All buttons
+					this.$button = this.$form.find( 'button' );
+
+					// Remove useless Button
+					this.$button.filter('.delete_parent_div').remove();
+
+					// Button clicked to submit form , search 
+					this.$submitButton = this.$button.filter( '.submit' );
+
+					// Goods detail dialog init at order.financia.html.twig
+					this.$detailGoodsDialog = $( '.detail_of_custom_goods' );
+
+					return this;
+				}
+			},
+			
+			// Data of business logic
+			model = {
+				// Constant value
+				'_const': {
+					'sSubmitUrl': Routing.generate( 'admin_store_stock_report' ),
+					'sOneGoodsDetailUrl': Routing.generate( 'goods_one_detail_info' )
+				},
+
+				// Value will change with DOM action
+				'_dynamic': {
+					'nTotalCost': 0,
+					'nTotalNum': 0,
+					'nGoodsPassportId': '',
+					'bExport': 1
+				}
+			};
+
+		return {
+        initialize: function ( tab ) {
+	    		view.setup( tab );
+	    		controller
+	    		.onFormAjaxform()
+	    		.onFormSubmit()
+	    		.onShowColumnDecide()
+	    		.onCheckboxAllOpe();
+        }
+	    };
+	});
+	
+	inStoreReportApp().initialize( $( '#orders-instore' ) );
+});
+
+</script>

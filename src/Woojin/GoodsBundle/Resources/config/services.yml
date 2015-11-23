@@ -1,0 +1,6 @@
+#Acme/AcmeDemoBundle/Resources/config/services.yml
+services:
+    form.type.datePicker:
+        class: Woojin\GoodsBundle\Form\DatetimepickerType
+        tags:
+            - {name: form.type, alias: datePicker}

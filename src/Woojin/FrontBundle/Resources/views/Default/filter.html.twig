@@ -1,0 +1,134 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+
+{% block ngApp %}ng-app="avenueApp"{% endblock %}
+
+{% block title %}
+    {% if category %}
+        {{ category.name }}
+        {% if brand %}&nbsp;&nbsp;{{ brand.name }}{% endif %}
+        {% if pattern %}&nbsp;&nbsp;{{ pattern.name }}{% endif %}
+    {% elseif promotion %}
+        {{ promotion.name }}
+    {% elseif isAll %}
+        所有分類
+    {% elseif val %}
+        {{val}}
+    {% endif %}
+{% endblock %}
+
+{% block metaDescription %}香榭國際精品{% endblock %}
+
+{% block metaAuthor %}香榭國際精品{% endblock %}
+
+{% block body %}
+
+{% import 'WoojinFrontBundle:Widget:sortWidget.html.twig' as sortWidget %}
+{% import 'WoojinFrontBundle:Widget:searchWidget.html.twig' as searchWidget %}
+{% import 'WoojinFrontBundle:Widget:pagerWidget.html.twig' as pagerWidget %}
+
+<div class="wrapper">
+    <!--=== Breadcrumbs v4 ===-->
+    <div class="breadcrumbs-v4">
+        <div class="container">
+            <!-- <span class="page-name">Product Filter Page</span> -->
+            {% if category %}
+                <h1>香榭 <span class="shop-green">{{ category.name }} </span> 專區</h1>
+            {% elseif promotion %}
+                <h1>香榭 <span class="shop-green">{{ promotion.name }} </span> 專區</h1>
+            {% elseif isAll %}
+                <h1>香榭 <span class="shop-green">所有分類</span></h1>
+            {% elseif val %}
+                <h1>搜尋 <span class="shop-green">{{ val }} </span> 結果</h1>
+            {% endif %}
+
+            <ul class="breadcrumb-v4-in">
+                <li><a href="{{ path('front_index') }}">首頁</a></li>
+
+                {% if category %}
+                   <li>{{ category.name }}</li>
+                {% elseif promotion %}
+                   <li class="active">{{ promotion.name }}</li>
+                {% endif %}
+                
+                {% if brand %}<li class="active">{{ brand.name }}</li>{% endif %}
+                {% if pattern %}<li class="active">{{ pattern.name }}</li>{% endif %}
+
+                {% if val %}
+                    <li>搜尋</li>
+                    <li class="active">{{ val }}</li>
+                {% endif %}
+
+                {% if isAll %}
+                    {# <li>所有分類</li> #}
+                {% endif %}
+            </ul>
+        </div><!--/end container-->
+    </div> 
+    <!--=== End Breadcrumbs v4 ===-->
+
+    <!--=== FilterProductCtrl ===-->
+    <div class="content container" ng-controller="FilterProductCtrl">
+        <div class="row">
+            <div class="col-md-3 filter-by-block md-margin-bottom-60">
+                {% if category is empty %}
+                    {% set category = false %}
+                {% endif %}
+                <!--=== 搜尋介面Widget ===-->
+                {{ searchWidget.with(category) }}
+                <!--=== End 搜尋介面Widget ===-->
+            </div>
+            
+            <div class="col-md-9">
+                <!--=== 分類 Header bar ===-->
+                <div class="row margin-bottom-5">
+                    <div class="col-sm-6 col-xs-12 result-category" tooltip-placement="bottom" tooltip="您可以使用左側的工具列指定條件進行查詢">
+                        <h2 id="category">
+                            {% if category %}{{ category.name }}{% endif %}
+
+                            {% if isAll %}{% endif %}
+
+                            {% if jewel %}珠寶{% endif %}
+
+                            {% if promotion %}{{ promotion.name }}{% endif %}
+
+                            {% if brand %}<small>{{ brand.name }}</small>{% endif %}
+
+                            {% if pattern %}<small>{{ pattern.name }}</small>{% endif %}
+
+                            {% if val %}搜尋<small>{{ val }}</small>{% endif %}
+                        </h2>
+                        <small class="shop-bg-red badge-results" ng-cloak>{% verbatim %}{{ totalItems }}{% endverbatim %} 個結果</small>
+                    </div>
+                    <div class="col-sm-6 col-xs-12">
+                        {{ sortWidget.with() }}
+                    </div>    
+                </div>
+                <!--=== End 分類 Header bar ===-->
+
+                <!--=== 商品呈現區 [這邊應該要使用 AngularJS]===-->
+                <div class="filter-results" cg-busy="{promise: goodsPromise, message:'處理中...'}">
+                    {# 原本是用 doctrine 實體去產生得，現在改用Angular取產生 #}
+                    {# {% for goods in goodses %}
+                    <div class="col-md-4">
+                        {{ productUnit.with(goods) }}
+                    </div>
+                    {% endfor %} #}
+                    {% include 'WoojinFrontBundle:Default/partial/filter:goodsList.html.twig' with {brand: brand, pattern: pattern} %}
+                </div>
+                <!--=== End 商品呈現區 ===-->
+
+                <!--=== 頁籤 ===-->
+                <div class="text-center">
+                    {{ pagerWidget.with(category) }}                                  
+                </div>
+                <!--=== End 頁籤 ===-->
+            </div>
+        </div><!--/end row-->
+    </div><!--/end container-->    
+    <!--=== End FilterProductCtrl ===-->
+</div><!--/wrapper-->
+
+{% include 'WoojinFrontBundle:Default/partial/filter:js.html.twig' %}
+{% endblock %}
+
+{% block jsExec %}<script src="/bundles/woojinfront/js/front.filter.js"></script>{% endblock %}

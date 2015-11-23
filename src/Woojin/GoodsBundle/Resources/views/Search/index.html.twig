@@ -1,0 +1,170 @@
+{% extends '::bootstrapdark.html.twig' %}
+
+{% block external %}
+<link rel="stylesheet" href="{{ asset('/css/jquery.newDatetime.css')}}">
+<link rel="stylesheet" href="/prettyPhoto/css/prettyPhoto.css">
+
+{% endblock %}
+
+{% block header %}
+<div class="width-100-per bg-black position-fixed top-0 z-index-999">
+    <div class="bs-component text-center">
+        <div class="col-md-2">
+             <button class="pull-left btn btn-info mt-10 mb-10 ml-10 submit-trigger">
+                <i class="glyphicon glyphicon-search"></i>查詢
+            </button>
+
+            <button class="pull-left btn btn-default mt-10 mb-10 ml-10 cancel-all-global">
+                <i class="glyphicon glyphicon-refresh"></i>還原
+            </button>
+        </div>
+       
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <button id="prev-page" role="prev" class="btn btn-sm btn-default mt-10 mb-10 pull-right">
+                        <i class="glyphicon glyphicon-triangle-left"></i>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <select id="page" class="form-control mt-10 mb-10">
+                        <option value="1">1/1</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button id="next-page" role="next" class="btn btn-sm btn-default mt-10 mb-10 pull-left">
+                        <i class="glyphicon glyphicon-triangle-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+       <div class="col-md-1">
+            <select id="perpage" name="perpage" class="form-control mt-10 mb-100 pull-left">
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="150">150</option>
+                <option value="200">200</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <select id="order" name="order" class="form-control mt-10 mb-10 pull-left">
+                <option value="g.id">索引</option>
+                <option value="g.createAt">建立時間</option>
+                <option value="g.level">新舊</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <select id="dir" name="dir" class="form-control mt-10 mb-10 pull-left">
+                <option value="DESC">降冪</option>
+                <option value="ASC">升冪</option>
+            </select>
+        </div> 
+        
+        <div class="col-md-3">
+            <button id="export-profit" class="pull-right btn btn-primary mt-10 mb-10 mr-5" disabled>
+                <i class="glyphicon glyphicon-download"></i> 
+                毛利</button>
+            <button id="export-stock" class="pull-right btn btn-warning mt-10 mb-10 mr-5" disabled>
+                <i class="glyphicon glyphicon-download"></i>
+                庫存</button>
+            <button id="export-uitox" class="pull-right btn btn-success mt-10 mb-10 mr-5" disabled>
+                <i class="glyphicon glyphicon-download"></i>
+                Uitox</button>
+
+            <button id="export-noborder" class="pull-right btn btn-default mt-10 mb-10 mr-5" disabled>
+                <i class="glyphicon glyphicon-download"></i>
+                無框</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div id="main" class="mt-60 mb-60"></div>
+{% endblock %}
+
+{% block footer %}
+<form id="product-search" name="product-search" class="width-100-per bg-black position-fixed bottom-0 z-index-9999" action="{{ path('admin_search_res') }}" method="post">
+    <input type="hidden" name="perpage" value="50" />
+    <input type="hidden" name="page" value="1" />
+    <input type="hidden" name="order" value="g.id" />
+    <input type="hidden" name="dir" value="DESC" />
+    <input type="hidden" name="exclude" />
+
+    <div role="tabpanel" class="tabs-below">
+        <!-- Tab panes -->
+        <div class="tab-content">
+            {% for key, tab in tabs %}
+                <div role="tabpanel" class="tab-pane" id="{{ key }}">
+                    {% if key == 'textSeries' %}
+                        <div class="col-lg-12 min-height-40 mt-10 mb-10">
+                            <input type="text" class="form-control" name="{{ key }}" placeholder="品名,序號,型號,產編,內碼" />
+                        </div>
+                    {% elseif key == 'customMobil' %}
+                        <div class="col-lg-12 min-height-40 mt-10 mb-10">
+                            <input type="text" class="form-control" name="{{ key }}" placeholder="寄賣客戶電話" />
+                        </div>
+
+                        <div class="col-lg-12 min-height-40 mt-10 mb-10">
+                            <input type="text" class="form-control" name="{{ key ~ 'Sold' }}" placeholder="售出客戶電話" />
+                        </div>
+                    {% elseif key in ['isAllowWeb', 'isYahoo'] %}
+                        <div class="col-lg-12 min-height-40 mt-10 mb-10">
+                            <select class="form-control" name="{{ key }}">
+                                <option value="">不限</option>
+                                <option value="0">無</option>
+                                <option value="1">有</option>
+                            </select>
+                        </div>
+                    {% elseif key == 'opeDatetime' %}
+                        <div class="col-lg-6 min-height-40 mt-10 mb-10">
+                            <input type="text" name="startAt" class="form-control datetime" placeholder="起始時間" />
+                        </div>
+                        <div class="col-lg-6 min-height-40 mt-10 mb-10">
+                            <input type="text" name="endAt" class="form-control datetime" placeholder="結束時間" />
+                        </div>
+                    {% elseif key == 'price' %}
+                        <div class="col-lg-12 min-height-40 mt-10 mb-10">
+                            <input type="text" class="form-control" name="{{ key }}_start" placeholder="售價底限" />
+                        </div>
+
+                        <div class="col-lg-12 min-height-40 mt-10 mb-10">
+                            <input type="text" class="form-control" name="{{ key }}_end" placeholder="售價上限" />
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            {% for key, tab in tabs %}
+                <li role="presentation" class="{{ key }}">
+                    <a href="#{{ key }}" aria-controls="{{ key }}" role="tab" data-toggle="tab">{{ tab }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</form>
+
+{% include 'WoojinGoodsBundle:Search:template.html.twig' %}
+{% include 'WoojinGoodsBundle:Search/Modal:download.html.twig' %}
+
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+<script src="/bundles/woojingoods/plugin/mustache.min.js"></script>
+<script src="{{ asset('/js/jquery.newDatetimepicker.js') }}"></script>
+<script src="{{ asset('/js/jquery.form.js')}}"></script>
+<script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+<script src="{{ asset('/bower_components/masonry/dist/masonry.pkgd.min.js')}}"></script>
+<script src="{{ asset('/prettyPhoto/js/jquery.prettyPhoto.js') }}"></script>
+<script src="/bundles/woojinfront/js/plugins/jquery.lazyload.min.js"></script>
+<script src="/js/admin.search.js"></script>
+
+<script>
+var adminSearch = new AdminSearchUI();
+$('button.submit-trigger').click();
+</script>
+{% endblock %}

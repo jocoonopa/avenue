@@ -1,0 +1,11 @@
+{% macro with(goods) %}
+
+{% if goods.brief %}
+    {% set briefs = goods.brief.content|split("\n") %}
+    
+    {% for brief in briefs %}
+        <p>{{ brief }}</p>
+    {% endfor %}
+{% endif %}
+
+{% endmacro %}

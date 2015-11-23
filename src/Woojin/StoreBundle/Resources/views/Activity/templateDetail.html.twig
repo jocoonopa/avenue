@@ -1,0 +1,32 @@
+<div ng-controller="ActDetailCtrl" class="bs-example bs-example-tabs">
+  
+  {% verbatim %}
+  <h2>
+    <a href="{{ path('activity') }}">活動管理</a><p>&nbsp;</p>
+    <span>{{ activity.name }}</span><small>{{ activity.startAt }} ~ {{ activity.endAt }}</small>
+  </h2>
+  {% endverbatim %}
+  
+  <ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+      <a ng-tab href="#punch-in" data-toggle="tab">刷入活動</a>
+    </li>
+    <li>
+      <a ng-tab href="#punch-out" data-toggle="tab">刷回店內</a>
+    </li>
+    <li>
+      <a ng-tab href="#activity-goods" data-toggle="tab">所有本活動相關商品</a>
+    </li>
+  </ul>
+  
+  <div class="tab-content">
+
+    {% include 'WoojinStoreBundle:Activity/partials/tab:punchIn.html.twig' %}
+    {% include 'WoojinStoreBundle:Activity/partials/tab:punchOut.html.twig' %}
+    {% include 'WoojinStoreBundle:Activity/partials/tab:activityGoods.html.twig' %}
+    
+  </div>
+  
+  {% include 'WoojinStoreBundle:Activity/partials/tab:goodsDetailModal.html.twig' %}
+
+</div>

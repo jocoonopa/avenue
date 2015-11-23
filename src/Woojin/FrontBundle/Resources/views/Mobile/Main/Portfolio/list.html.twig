@@ -1,0 +1,20 @@
+{% for product in products %}
+<div class="adaptive-item mb-60">
+    <a href="{{ path('mobile_front_product', {id: product.id}) }}">
+        {# <img class="responsive-image lazy" data-original="{{ getCacheImage(product.img, 300, 300) }}" alt="{{ product.name ~ '主圖' }}" /> #}
+
+        <img class="responsive-image lazy" data-original="{% if product.img %}{{ product.img.path }}{% endif %}" alt="{{ product.name ~ '主圖' }}" />
+    </a>
+    <div>
+        <h4 class="my-force-word-noshift font-12">{{ product.name }}</h4>
+        <span class="my-force-word-noshift">{{ product.brief.getBriefFillRow(40) }}&nbsp;</span>
+        <br>
+        {% if product.promotionPrice(true) < product.price %}
+            <span class="font-12 td-lt">NT.&nbsp;{{ product.price(true)|number_format }}</span>&nbsp;&nbsp;
+            <span class="font-12 font-bold">NT.&nbsp;{{ product.promotionPrice(true)|number_format }}</span>
+            {% else %}
+            <span class="font-12 font-bold">NT.&nbsp;{{ product.promotionPrice(true)|number_format }}</span>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}

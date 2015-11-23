@@ -1,0 +1,60 @@
+#brand_list {
+  width: 100%;
+  font-size: 12px;
+  margin: 0; }
+  #brand_list ul {
+    width: 285.2px; }
+    #brand_list ul li {
+      width: 155px;
+      text-align: center;
+      height: 30px;
+      line-height: 30px;
+      vertical-align: bottom;
+      margin: 0 0 3px 0;
+      list-style: none;
+      float: left;
+      background-color: #7fffff;
+      border-right: 1px #fff solid;
+      opacity: .5; }
+      #brand_list ul li input.ajax_brand_name {
+        width: 120px; }
+      #brand_list ul li.sub_list, #brand_list ul li.sub_list_sub {
+        display: none;
+        background-color: #fff;
+        border: 0;
+        margin: -34px 0 0 300.2px; }
+        #brand_list ul li.sub_list ul, #brand_list ul li.sub_list_sub ul {
+          width: 285.2px; }
+          #brand_list ul li.sub_list ul li.sub_list_sub ul, #brand_list ul li.sub_list_sub ul li.sub_list_sub ul {
+            width: 440.2px; }
+      #brand_list ul li:first-of-type, #brand_list ul li:nth-of-type(3) {
+        width: 60px;
+        cursor: pointer; }
+      #brand_list ul li[class^="add_"] {
+        background-color: #ffffe3;
+        border: 0;
+        float: left;
+        margin: 0;
+        opacity: 1; }
+    #brand_list ul[class^="brand_type_"] li {
+      background-color: #4fa4b5; }
+      #brand_list ul[class^="brand_type_"] li.sub_list_sub {
+        background-color: #fff;
+        border: 0; }
+      #brand_list ul[class^="brand_type_"] li[class^="add_"] {
+        background-color: #ffffe3;
+        border: 0;
+        float: left;
+        margin: 0; }
+    #brand_list ul[class^="brand_sn_"] li {
+      background-color: #7fff7f; }
+      #brand_list ul[class^="brand_sn_"] li:nth-of-type(3) {
+        width: 155px; }
+      #brand_list ul[class^="brand_sn_"] li:nth-of-type(4) {
+        width: 62px; }
+
+.brand {
+  margin: 0 0 0 62px; }
+
+.ui-button-text {
+  font-size: 12px; }

@@ -1,0 +1,211 @@
+{% extends 'WoojinOrderBundle:Orders:orders.layout.html.twig' %}
+{% if app.user.getTheRoles.getId in [2,3,4,5] %}
+{% block library_css %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('/css/goods.css') }}">
+{% endblock %}
+
+{% block library_javascript %}
+	<script src="{{ asset('/js/jquery-1.9.1.min.js') }}"></script>
+  <script src="{{ asset('/js/bootstrap.min.js') }}"></script>
+  <script src="{{ asset('/js/bootbox.min.js') }}"></script>
+  <script src="{{ asset('/js/jquery-ui-1.10.3.min.js') }}"></script>
+  <script src="{{ asset('/js/hinclude.js') }}"></script>
+  <script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+  <script src="{{ asset('/js/jquery-migrate.js') }}"></script>
+  <script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+  <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+  <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+	<script src="{{ asset('/js/goods.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+{% if app.user|has_auth('LEVEL') %}
+<div id="tabs" style="position:absolute; left: 40px; top: 60px;">
+	<div id="tabs-level">
+		<div>
+			{% for oGoodsLevel in rGoodsLevel %}
+			<ul class="goods_level">
+				<li>
+					<span>{{ loop.index }}.  <input type="hidden" class="goods_level_id" value="{{ oGoodsLevel.id }}"/></span>
+				</li>
+				<li class="ajax_goods_level_name">
+					<span>{{ oGoodsLevel.name }}</span>
+					<input type="text" class="dynamic_update_goods_level_name" value="{{ oGoodsLevel.name }}"/>
+				</li>
+				<li><button class="del_goods_level_button btn btn-warning">刪除</button></li>
+			</ul>
+			{% endfor %}
+			<button class="add_goods_level_button btn btn-primary"><span data-icon="#">新增</span></button>
+		</div>
+		<div class="goods_level_dialog" title="新舊程度">
+			<input type="text" class="dialog_goods_level_name" placeholder="新舊程度" value=""/>
+		</div>
+	</div>
+</div>
+<script>
+
+$(function () {
+  var 
+  	$tab = $('#tabs-level'),
+  	$div = $tab.children('div'),
+    $GoodsLevel = $div.find('ul.goods_level'),
+    $GoodsLevelDialog = $tab.find('.goods_level_dialog'),
+    $GoodsLevelName = $tab.find('.dialog_goods_level_name'),
+    $dialogInput = $GoodsLevelDialog.find('input'),
+    $button = $div.find('button'),
+    $addButton = $('.add_goods_level_button'),
+    $delButton = $('.del_goods_level_button'),
+    sAddUrl = Routing.generate('goods_ajax_add_GoodsLevel'),
+    sGoodsLevelUrl = Routing.generate('base_get_goods_level_select');
+  $dialogInput.css(
+  	{
+  		'float' : 'left',
+  		'width' : '100px'
+  	}
+  ).addClass('fbSubmit');
+	$dialogInput.tooltip();
+	$GoodsLevelDialog.dialog({
+    autoOpen : false,
+    modal : true,
+    width : '270px',
+		buttons: {
+			'確定': function () {
+				var 
+					sGoodsLevelName = $dialogInput.eq(0).val(),
+					nIndex = $('ul.goods_level').length+1;
+				if (sGoodsLevelName == '') {
+					$GoodsLevelName.attr('title', '付費方式不可為空').focus();
+					return;
+				}
+				$dialogInput.attr('title', '');			
+				$.post( sAddUrl, { 'sGoodsLevelName' : sGoodsLevelName })
+				.done(function ( res ) {
+					var $addElement = $('<ul class="goods_level"><li><span>'+nIndex+'</span><input type="hidden" class="goods_level_id" value="'+res+'"/></li><li class="ajax_goods_level_name"><span>'+sGoodsLevelName+'</span><input type="text" class="dynamic_update_goods_level_name" value="'+sGoodsLevelName+'" /></li><li><button class="del_goods_level_button btn btn-warning">刪除</button></li></ul>');
+						$addElement.insertBefore($addButton);
+						attachAjaxEventGoodsLevel();
+						$addElement.addClass('noAjaxEvent');
+						$dialogInput.val('');
+						$GoodsLevelDialog.dialog('close');
+						$.unblockUI();
+
+					// orders-sale GoodsLevel refresh			
+					$('#orders').find('[name="nGoodsLevelId"]').load(sGoodsLevelUrl, function(){
+						$(this).change();
+					});
+				})
+				.fail(function(){
+					alert('ajax error!')
+					$.unblockUI();
+				});
+			},
+			'取消':
+			function(){
+				$GoodsLevelDialog.dialog('close');
+			}
+		}
+	});
+	$addButton.on('click', function () {
+		$GoodsLevelDialog.dialog('open');
+	});
+	attachAjaxEventGoodsLevel();
+});
+
+function attachAjaxEventGoodsLevel () {
+  var 
+  	$tab = $('#tabs-level'),
+  	$div = $tab.children('div'),
+    $GoodsLevel = $div.find('.goods_level').not('.noAjaxEvent'),
+    $GoodsLevelLi = $GoodsLevel.find('.ajax_goods_level_name'),
+    $GoodsLevelInput = $GoodsLevelLi.find('input'),
+    $button = $div.find('button'),
+    $delButton = $GoodsLevel.find('.del_goods_level_button'),
+    $numeric = $('.numeric'),
+    sGoodsLevelUrl = Routing.generate('base_get_goods_level_select');
+
+  $numeric.numeric();    
+	$delButton.on('click', function () {
+		var	
+			$ul = $(this).closest('ul'),
+			nGoodsLevelId	= $ul.find('input').filter('.goods_level_id').val(),
+			sDeleteUrl = Routing.generate('goods_ajax_delete_GoodsLevel');
+		bootbox.confirm( '確定要刪除嘛?', function (result) {
+			if(result !== true)
+				return;
+			$.post( sDeleteUrl, { 'nGoodsLevelId' : nGoodsLevelId })
+			.done(function () {
+				$ul.remove();
+				$('#orders').find('[name="nGoodsLevelId"]').load( sGoodsLevelUrl, function () {
+					$(this).change();
+				});
+			})
+			.fail(function () {
+				alert('ajax error!');
+			});
+		}); 
+	});
+	
+	$GoodsLevelLi.on('click', function () {
+		$(this).find('span').hide().end().find('input').show().eq(0).focus();
+	})
+	.find('input').on('blur', function () {
+		var 
+			$this = $(this).parent(),
+			$GoodsLevelName = $this.find('.dynamic_update_goods_level_name'),
+			sGoodsLevelName = $GoodsLevelName.val(),
+			nGoodsLevelId = $this.parent().find('.goods_level_id').val(),
+			sUpdateUrl = Routing.generate('goods_ajax_update_GoodsLevel'),
+			sGoodsLevelUrl = Routing.generate('base_get_goods_level_select');
+		if (sGoodsLevelName == $GoodsLevelName.prev().text() ) {
+			$this.find('input').hide().end().find('span').show();
+			return;
+		}
+		if (sGoodsLevelName == '') {
+			bootbox.alert('付費方式不可空白喔!', function () {
+				$GoodsLevelName.val( $GoodsLevelName.prev().text() ).focus();
+			});
+			return;
+		}
+		$.post(
+			sUpdateUrl, 
+			{
+				'sGoodsLevelName' : sGoodsLevelName, 
+				'nGoodsLevelId' : nGoodsLevelId
+			}
+		)
+		.done(function () {
+			$this.each(function(){
+				var sVal = $(this).find('input').val();
+				$(this).find('span').text( sVal );
+			});
+			$this.find('input').hide().end().find('span').show();
+			$('#orders').find('[name="nGoodsLevelId"]').load( sGoodsLevelUrl, function () {
+				$(this).change();
+			});
+			$.unblockUI();
+		})
+		.fail(function () {
+			$this.each(function(){
+				var sVal = $(this).find('span').text();
+				$(this).find('input').text( sVal );
+			});
+			$this.find('input').hide().end().find('span').show();
+			$.unblockUI();
+		});
+	});
+}
+</script>
+<script>
+$(function () {
+	$( '#tabs').tabs('destroy');
+	$( '#body').css( 'backgroundColor', '#fff');
+  $( 'header' ).remove();
+});
+</script>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}
+{% endif %}
+

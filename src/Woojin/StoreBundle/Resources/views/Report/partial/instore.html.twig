@@ -1,0 +1,63 @@
+{% extends 'WoojinBaseBundle:Base:woojin.layout.html.twig' %}
+
+{% block form %}
+	{% if app.user|has_auth('STOCK_REPORT_OWN') %}
+		<h4 class="black">若查詢資料筆數過多(超過300筆),<br/>請直接使用匯出功能<h4/><hr/>
+		<div style="width: 150px;">
+			<label class="vader">品牌( 按住 ctrl 可多選)</label>
+			<select class="base_ajax_brand hasPatch" name="brand[]" multiple="multiple">	
+				{% for brand in brands %}
+					<option value="{{ brand.id }}">{{ brand.name }}</option>
+				{% endfor %}
+			</select>
+
+			<label for="" class="vader">商品狀態:</label>
+			<input type="checkbox" name="status[]" value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') }}" checked />
+			<span style="color: #000;">上架</span>
+			<input type="checkbox" name="status[]" value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY') }}" checked />
+			<span style="color: #000;">活動</span>
+			<input type="checkbox" name="status[]" value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::GS_OTHERSTORE') }}"/>
+			<span style="color: #000;">他店</span>
+			
+			<label class="vader">寄賣客戶電話:</label>
+			<input type="text" name="custom_mobil" placeholder="輸入客戶電話" />
+			
+			<label class="vader">指定活動:(可多選)</label>
+			<select class="form-control" name="activity" multiple="multiple">
+				<option value="0">--請選擇活動--</option>
+				
+				{% for activity in activitys %}
+					<option value="{{ activity.id }}">{{ activity.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		{% if app.user|has_auth('STOCK_REPORT_ALL') %}
+			<label class="vader">指定店:(可多選)</label>
+			<select class="goods_search_store" name="store[]" multiple="multiple">
+				{% for store in stores %}
+					<option value="{{ store.sn }}">{{ store.name }}</option>
+				{% endfor %}
+			</select>
+		{% endif %}
+
+		<div>
+			<label class="vader">匯出報表&直接顯示</label>
+			<select name="showOrExport">
+				<option value="1">匯出</option>
+				<option value="0">顯示</option>
+			</select>
+			<button type="button" class="submit btn btn-default" >
+				<span><i class="icon-play"></i>執行</span>
+			</button>
+		</div>
+
+		<input type="hidden" name="bExport" value="0" />
+	{% else %}
+	    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+	{% endif %}
+{% endblock %}
+
+{% block js %}
+	{% include "WoojinStoreBundle:Report/Js:instore.js.html.twig" %}
+{% endblock %}

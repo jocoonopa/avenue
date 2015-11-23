@@ -1,0 +1,189 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body %}
+
+<h3 class="text-center">
+{#     <small class="pull-left">
+        <a class="btn btn-primary" href="{{ path('admin_store_holiday_manage', {date: time|date_modify('-1 month')|date('Y-m')})}}"><i class="glyphicon glyphicon-arrow-left"></i>排上個月假</a>
+    </small> #}
+
+    {{ user.username}} {{ time|date('Y-m') }} 排假
+
+    <small>
+        <a href="{{ path('admin_store_holiday_list') }}" class="btn btn-default"><i class="glyphicon glyphicon-th-list"></i> 回列表</a>
+    </small>
+
+   {#  <small class="pull-right">
+        <a class="btn btn-primary" href="{{ path('admin_store_holiday_manage', {date: time|date_modify('+1 month')|date('Y-m')})}}"><i class="glyphicon glyphicon-arrow-right"></i>排下個月假</a>
+    </small> #}
+</h3>
+<hr>
+
+{% set daysInMonth = time|date('t') %}
+{% set now = 'now'|date('Y-m-d H:i:s') %}
+
+<form action="{{ path('admin_store_holiday_update', {id: holiday.id}) }}" method="post" role="form">
+    <div class="form-group">
+        <div class="col-xd-12">
+            <button type="submit" class="btn btn-success pull-left mb-10">
+                <i class="glyphicon glyphicon-floppy-saved"></i>
+                儲存
+            </button>
+
+            <button id="reset" type="button" class="btn btn-default pull-left ml-10">
+                <i class="glyphicon glyphicon-refresh"></i>
+                還原
+            </button>
+        </div>
+    </div>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr class="info">   
+                {% for day in range(1, daysInMonth) %}
+                    <td>
+                        <div>
+                            <div>{{ day }}</div>
+                            <div>
+                             {# day content here #}
+                            </div>
+                        </div>
+                    </td>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>  
+                {% for day in range(1, daysInMonth) %}
+                    {% set dayDiff = day - 1 %}
+
+                    {% set weekDay = time|date_modify('first day of this month')|date_modify('+' ~ dayDiff ~ ' Day')|date('D')|locale_week %}
+                    <td>
+                        <span class="label {% if weekDay in ['六', '日'] %}label-danger{% else %}label-default{% endif %}">
+                            {{ weekDay }}
+                        </span>
+                    </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                {% for day in range(1, daysInMonth) %}
+                    {% set dayDiff = day - 1 %}
+
+                    {% set _day = time|date_modify('first day of this month')|date_modify('+' ~ dayDiff ~ ' Day')|date('Y-m-d')%}
+                    <td>
+                        <select name="schedule[{{day}}]">
+                            <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_NORMAL')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_NORMAL') %}selected{% endif %}>正常</option>
+                            <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_OFFICIAL')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_OFFICIAL') %}selected{% endif %}>休假</option>
+                            <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_EVENT')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_EVENT') %}selected{% endif %}>事假</option>
+                            <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_SICK')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_SICK') %}selected{% endif %}>病假</option>
+                            <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_YEAR')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_YEAR') %}selected{% endif %}>年假</option>
+                            <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_GLORY')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_GLORY') %}selected{% endif %}>榮譽</option>
+                        </select>
+                    </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <input type="hidden" name="_method" value="PUT" />
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>假別</th>
+            <th>統計</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>休假</td>
+            <td>
+                <span id="hd_1"></span>
+            </td>
+        </tr>
+        <tr class="active">
+            <td>事假</td>
+            <td>
+                <span id="hd_2"></span>
+            </td>
+        </tr>
+        <tr class="danger">
+            <td>病假</td>
+            <td>
+                <span id="hd_3"></span>
+            </td>
+        </tr>
+        <tr class="warning">
+            <td>年假</td>
+            <td>
+                <span id="hd_4"></span>
+            </td>
+        </tr>
+        <tr class="info">
+            <td>榮譽</td>
+            <td>
+                <span id="hd_5"></span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+$('select').change(function () {
+    var hd = {
+        hd_1: 0,
+        hd_2: 0,
+        hd_3: 0,
+        hd_4: 0,
+        hd_5: 0
+    };
+
+    $('select').each(function () {
+        switch ($(this).val())
+        {
+            case '{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_OFFICIAL')}}': 
+                hd.hd_1 ++;
+                break;
+
+            case '{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_EVENT')}}': 
+                hd.hd_2 ++;
+                break;
+
+            case '{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_SICK')}}': 
+                hd.hd_3 ++;
+                break;
+
+            case '{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_YEAR')}}': 
+                hd.hd_4 ++;
+                break;
+
+            case '{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_GLORY')}}': 
+                hd.hd_5 ++;
+                break;
+            default:
+                break;
+        }
+    });
+
+    for (var key in hd) {
+        $('span#' + key).text(hd[key]);
+    }
+}).eq(0).change();
+
+$('#reset').click(function () {
+    $('select').not(':disabled').each(function () {
+        $(this).val(0);
+    }).eq(0).change();
+});
+
+$('button[type="submit"]').click(function () {
+    //$('select').prop('disabled', false);
+    $('form').submit();
+
+    return false;
+});
+
+$('.col-xs-0').remove();
+$('.col-md-10').addClass('col-md-12').removeClass('col-md-10');
+</script>
+{% endblock %}

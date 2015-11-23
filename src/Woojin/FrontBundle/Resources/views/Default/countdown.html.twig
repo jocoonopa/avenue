@@ -1,0 +1,19 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+
+{% block body %}
+<div class="container content">
+    <div class="coming-soon-plugin">
+        <div id="defaultCountdown"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block jsExec %}
+<script type="text/javascript">
+    $(function () {
+        //var austDay = new Date();
+        var austDay = new Date('2015-03-08');
+        $('#defaultCountdown').countdown({until: austDay});
+    });
+</script>
+{% endblock %}

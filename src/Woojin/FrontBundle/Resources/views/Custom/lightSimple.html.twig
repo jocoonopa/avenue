@@ -1,0 +1,61 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+{% import 'WoojinFrontBundle:Widget/Custom/Form:schema.html.twig' as formSchemaWidget %}
+
+{% block title %}會員註冊{% endblock %}
+
+{% block metaDescription %}香榭國際精品{% endblock %}
+
+{% block metaAuthor %}香榭國際精品{% endblock %}
+
+{% block body %}
+
+<div class="log-reg-v3 content-md">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 md-margin-bottom-50">
+                {% include 'WoojinFrontBundle:Custom/Login:notice.html.twig' %}
+            </div>
+
+            <div class="col-md-5">
+                {% for flashMessage in app.session.flashbag.get('error') %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                       {{ flashMessage }}
+                   </div> 
+                {% endfor %}
+
+                <div class="login-input reg-input">
+                {{ form_start(form) }}
+
+                <h2>請填寫您的Email</h2>
+
+                <div class="login-input reg-input">
+                    {{ form_errors(form.email) }}
+                    {{ formSchemaWidget.input(form_widget(form.email,{
+                        'required': true,
+                        'attr': {
+                            'placeholder': '請輸入您的電子信箱(信箱即為您的登入帳號)',
+                            'class': 'form-control'
+                        }
+                    }) ) }}
+
+                    {{ form_errors(form.captcha) }}
+                    {{ formSchemaWidget.input(form_widget(form.captcha,{
+                        'attr': {
+                            'placeholder': '請輸入驗證碼',
+                            'class': 'form-control'
+                        }
+                    }) ) }}
+                </div>
+
+                <button class="btn-u btn-u-sea-shop btn-block margin-bottom-20" type="submit">確認</button>
+                {{ form_end(form) }}
+                </div>
+            </div>
+        </div><!--/end row-->
+    </div><!--/end container-->
+</div>
+
+{% endblock %}

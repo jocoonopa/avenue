@@ -1,0 +1,14 @@
+<div id="ResTabs{{ product.id }}-0">
+    <ul class="goods_list goods_status" data-statusid="{{ product.status.id }}" >
+        {% include 'WoojinGoodsBundle:Goods/Detail:info.html.twig' %}
+    </ul>   
+    <div class="button" data-id="{{ product.id }}" style="width: 300px;">
+        <a class="edit_goods btn btn-default pull-right" href="{{ path('goods_edit_v2', {id: product.id}) }}" target="_blank" style="color: #000">
+            <i class="icon-edit"></i>修改
+        </a>
+    </div>
+</div>
+
+{% if (app.user|has_auth('READ_ORDER_OWN') and (app.user|is_own(product) or product.activity)) or app.user|has_auth('READ_ORDER_ALL') %}
+    {% include 'WoojinGoodsBundle:Goods/Detail:order.html.twig' with {product: product} %}
+{% endif %}

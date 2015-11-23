@@ -1,0 +1,50 @@
+<!-- Mobile Header END -->
+<script id="orders-template" type="x-tmpl-mustache">
+
+{% verbatim %}
+<ul class="nav nav-tabs">
+    {{#orders}}
+    <li><a href="#order_{{ id }}" data-toggle="tab">{{ kind.name }}</a></li>
+    {{/orders}}
+</ul>
+
+<div class="tab-content">
+    {{#orders}}
+    <div class="tab-pane fade" id="order_{{ id }}">
+        <div class="row">
+            <div class="col-xs-12">
+                <ul>
+                    <li>應付:&nbsp;{{ required }}</li>
+                    <li>已付:&nbsp;{{ paid }}</li>
+                    <li>狀態:&nbsp;{{ status.name }}</li>
+                    {{#custom}}
+                        <li>客戶:&nbsp;{{ custom.name }}</li>
+                    {{/custom}}
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table table-striped">
+                    <tr>
+                        <th>動作</th>
+                        <th>時間</th>
+                        <th>人員</th>
+                    </tr>
+                    {{#opes}}
+                    <tr>
+                        <td>{{ act }}</td>
+                        <td>{{ datetime }}</td>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    {{/opes}}
+                </table>
+            </div>
+        </div>
+    </div>
+    {{/orders}}
+</div>
+
+{% endverbatim %}
+</script>

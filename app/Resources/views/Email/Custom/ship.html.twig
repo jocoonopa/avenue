@@ -1,0 +1,83 @@
+{% extends ':Email:base.html.twig' %}
+
+{% block title %}香榭國際精品訂單成立通知信{% endblock %}
+
+{% block body %}
+
+{% set orders = invoice.orders %}
+
+<tr>
+    <td style="font-size: 16px; color: #000; text-align: left; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 0 20px 20px 40px; ">
+    <p>{{ invoice.custom.name }}您好: </p>
+        
+    <br>
+    <p>
+        <span style="color: red;">已經成立您的訂單</span>，我們正儘快為您處理中，<b>香榭國際精品</b> 感謝您的光臨！
+        本通知函只是通知您本系統已經收到您的訂購訊息、並供您再次自行核對之用，不代表交易已經完成。
+
+        提醒您！
+        <b>香榭國際精品</b> &nbsp;不會以電話通知更改付款方式或要求改以 ATM 重新轉帳(代購除外)。
+        亦不會委託廠商以電話通知變更付款方式或要求提供 ATM 匯款帳號。
+    </p>
+    
+    <table width="700" border="1" cellpadding="8" cellspacing="0">
+        <tbody>
+            <tr>
+                <td colspan="2" align="left">您的訂單資訊如下:</td>
+            </tr>
+            <tr>
+                <td>
+                    訂單編號
+                </td>
+                <td>
+                    {{ invoice.sn }}
+                </td>
+            </tr>
+            <tr>
+                <td>訂購日期</td>
+                <td>{{ invoice.updateAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <td>訂購明細</td>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>品名</th>
+                                <th>價格</th>
+                                <th>數量</th>
+                                <th>小計</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>
+                                    {{ order.goods_passport.name }}
+                                </td>
+                                <td>{{ order.goods_passport.promotionPrice(true) }}</td>
+                                <td>x&nbsp;1</td>
+                                <td>{{ order.goods_passport.promotionPrice(true) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>發票處理方式</td>
+                <td>
+                    結帳完成七日之後&nbsp;<b>香榭國際精品</b>會將開立發票寄送給您。
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+    <p>謝謝&nbsp;!</p>
+    <p>香榭國際精品&nbsp;&nbsp;工作團隊</p>
+   </td>
+</tr>
+
+{% endblock %}

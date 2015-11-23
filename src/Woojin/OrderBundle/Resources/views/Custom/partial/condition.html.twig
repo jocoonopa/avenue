@@ -1,0 +1,595 @@
+{% extends 'WoojinBaseBundle:Base:woojin.layout.html.twig' %}
+
+{% block form %}
+
+<script>
+{% if app.user.store.sn == 'C' %}
+	window.phone_length = 11;
+{% else %}
+	window.phone_length = 10;
+{% endif %}
+</script>
+
+<input type="hidden" name="page" value="1" readonly />
+
+{% if app.user|has_auth('READ_CUSTOM') %}
+	<div id="customSearchCondition">
+		<p data-condition="0" style="cursor:pointer;">請選擇條件</p>
+		<p data-condition="1" style="cursor:pointer;">姓名搜尋</p>
+		<p data-condition="2" style="cursor:pointer;">月份壽星搜尋</p>
+		<p data-condition="3" style="cursor:pointer;">生日搜尋</p>
+		<p data-condition="4" style="cursor:pointer;">電話查詢</p>
+	</div>
+
+	<div class="searchSubmit" style="display:inline-block;">
+		<button class="btn btn-default" ><span data-icon="S">查詢</span></button>
+	</div>
+{% endif %}
+
+{% if app.user|has_auth('EDIT_CUSTOM') %}
+	<div id="custom_search_add" style="display:inline-block;">
+		<button type="button" class="openDialog btn btn-default" ><span data-icon="q">新增</span></button>
+	</div>
+{% endif %}
+{% endblock %}
+
+{% block myDiv2 %}
+	{% if app.user|has_auth('EDIT_CUSTOM') %}
+	<div class="add_new_custom" title="新增客戶">
+		<form method="POST" >{% include('WoojinBaseBundle:Block:custom.form.html.twig')  %}
+		</form>
+	</div>
+	{% endif %}
+
+	{% if app.user|has_auth('EDIT_CUSTOM') %}
+		<div class="edit_custom_dialog" title="修改客戶資料"><img src="{{ AjaxLoadingGif }}" /></div>
+	{% endif %}
+
+	<div class="detail_of_custom_goods" title="商品詳細資料"><img src="{{ AjaxLoadingGif }}" /></div>
+{% endblock %}
+
+{% block js %}
+<script>
+$eDiv1 = '<div class="customNameSearch customSearch"><label class="vader">姓名搜尋</label><input type="text" name="customNameSearch[]"/><button type="button" class="hideCondition btn btn-default">x</button></div>';
+$eDiv2 = '<div class="monthSearch customSearch"><label class="vader">生日按月份搜尋</label><select name="monthSearch[]">{% for i in 1..12 %}
+<option value="{{ i }}">{{ i }}月</option>{% endfor %}</select><button type="button" class="hideCondition btn btn-default">x</button></div>';
+$eDiv3 = '<div class="birthdaySearch customSearch"><label class="vader">生日搜尋</label><input type="text" name="birthdaySearchMin[]" class="datepicker addUI" />~<input type="text" name="birthdaySearchMax[]" class="datepicker addUI" /><button type="button" class="hideCondition btn btn-default">x</button></div>';
+$eDiv4 = '<div class="mobileSearch customSearch"><label class="vader">電話搜尋</label><input type="text" name="mobileSearch[]" /><button type="button" class="hideCondition btn btn-default">x</button></div>';
+
+$(function(){
+	var 
+    $tab                    = $('#orders-custom'),
+    $decideFlowButton       = $('#custom_search_add'),
+    $customSearchCondition  = $('#customSearchCondition'),
+    $searchForm             = $decideFlowButton.parent(),
+    $hidden                 = $tab.find('.hidden'),
+    $hideCondition          = $tab.find('button.hideCondition'),
+    $customAjaxRes          = $tab.find('.ajaxResMsgRight'),
+    $addCustomOperateOpen   = $tab.find('.panelSwitch'),
+    $pageBar                = $tab.find('.pageBar'),
+    $searchSubmit           = $tab.find('.searchSubmit').find('button'),
+    $tabAllInput            = $tab.find('input'),
+    $datepicker             = $tab.find('.datepicker'),
+    $addCustomOperate       = $tab.find('.operatePanel'),
+    $addDialog              = $tab.find('.add_new_custom'),
+    $editDialog             = $tab.find('.edit_custom_dialog'),
+    $detailGoodsDialog      = $tab.find('.detail_of_custom_goods'),
+    $openDialog             = $tab.find('.openDialog'),
+    $customForm             = $tab.find('.add_new_custom').find('form'),
+    $customName             = $customForm.find('input[name="custom_name"]'),
+    $customSex              = $customForm.find('select[name="custom_sex"]'),
+    $customMobil            = $customForm.find('input[name="custom_mobil"]'),
+    $customEmail            = $customForm.find('input[name="custom_email"]'),
+    $customBirthday         = $customForm.find('input[name="custom_birthday"]'),
+    $customAddress          = $customForm.find('input[name="custom_address"]'),
+    $customMemo             = $customForm.find('textarea[name="custom_memo"]'),
+    $step1                  = $tab.find('.step1'),
+    $step2                  = $tab.find('.step2'),
+    $step3                  = $tab.find('.step3'),
+    $searchButton           = $tab.find('.custom_search'),
+    $submitButton           = $tab.find('.button').filter('.step3').children('button'),
+    sAddCustomUrl           = Routing.generate('admin_custom_create'),
+    sSearchUrl              = Routing.generate('admin_custom_fetch'),
+    sCheckExistUrl          = Routing.generate('admin_custom_checkExist'),
+    sUpdateCustomUrl        = Routing.generate('admin_custom_update'),
+    sAutoByNameUrl          = Routing.generate('admin_custom_searchByName'),
+    sAutoByMobilUrl         = Routing.generate('admin_custom_searchByMobil'),
+    sAutoByEmailUrl         = Routing.generate('admin_custom_searchName_byEmail'),
+    sEditFormUrl            = Routing.generate('orders_custom_edit_form'),
+    nMinLength              = 2,
+    reMobil                 = /^[09]{2}[0-9]{8}$/,
+    reEmail                 = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
+    nSpeed                  = 700;
+
+	preventEnterSubmit = function () {
+		if (event.keyCode == 13) {
+			event.cancelBubble = true;
+			event.returnValue = false;
+		}
+	};
+
+	searchConditionAdd = function () {
+		var $p = $customSearchCondition.find('p');
+		$p.on('click', function(){
+			var 
+				$this = $(this),
+				nIndex = $this.data('condition'),
+				$newElement ='',
+				sClass = $this.attr('class');
+			switch (nIndex) {
+				case 1:
+					$searchForm.append($eDiv1);
+					break;
+				case 2:
+					$searchForm.append($eDiv2);
+					break;
+				case 3:
+					$searchForm.append($eDiv3);
+					break;
+				case 4:
+					$searchForm.append($eDiv4);
+				default:
+					break;
+			}
+			$searchForm.find('.addUI').datepicker({ 
+				changeYear      : true,
+				dateFormat      : "yy-mm-dd",
+				yearRange       : "1901:2013",
+				defaultDate     : "-30y",
+			}).removeClass('addUI')
+			.end().find('.hideCondition').on('click', function () {
+				var 
+					$this = $(this),
+					$div = $this.parent(),
+					sClass = $div.attr('class');
+				$div.remove();
+			});
+
+			$searchForm.find('.customSearch').hover(
+				function () {
+					$(this).find('.hideCondition').show();
+				},
+				function () {
+					$(this).find('.hideCondition').hide();
+				}
+			);
+		});  
+	};
+
+	editDialogRefresh = function (nCustomId) {
+		$.post(sEditFormUrl, { 'nCustomId' : nCustomId }, function (res) {
+			$editDialog.html(res);
+			var 
+				$form = $('.editCustomForm'),
+				sOrgCustomEmail = $form.find('[name="sCustomEmail"]').val(),
+				sOrgCustomMobil = $form.find('[name="sCustomMobil"]').val();
+			
+			$form.find('.datepicker').datepicker({
+				changeYear      : true,
+				dateFormat      : "yy-mm-dd",
+				yearRange       : "1901:2013",
+				defaultDate     : "-30y",
+			});
+
+			$form.find('[name="sCustomEmail"]').on('blur', function () {
+				var 
+					$this = $(this),
+					sEmail = $this.val();
+
+				if ( !reEmail.test(sEmail) && sEmail != '' ) {
+					$this.val('').attr('title', '信箱格式有誤').tooltip().focus(); //這邊可能會發生信箱重複
+				} else if (sEmail == '')
+					$this.attr('title', '');
+				else {
+					if (sOrgCustomEmail != sEmail ) {
+						$.post(sCheckExistUrl, {'custom_email' : sEmail}, function (res) {
+							if (res != '') {
+								alert('電子信箱已存在');
+								$this.val('');
+							}         
+						});
+					}
+				}
+			});
+
+			$form.find('[name="sCustomMobil"]').numeric().on('blur', function(){
+				var 
+					$this = $(this),
+					sMobil = $this.val();
+				if (sOrgCustomMobil != sMobil && sMobil != '') {
+					$.post(sCheckExistUrl, {'custom_mobil' : sMobil}, function(res){
+						if (res != '') {
+							alert('電話號碼已存在');
+							$this.val(sOrgCustomMobil);
+						}         
+					});
+				}
+			});
+
+			$form.ajaxForm({
+				url : sUpdateCustomUrl,
+				error: function () {
+					$.unblockUI();
+					alert('ajax error!');
+				},
+				success: function (res) {
+					$('.thisTarget').closest('tr').html(res);
+					$('.thisTarget').on('click', function(){
+						var $this = $(this);
+						$this.addClass('thisTarget');
+						editDialogRefresh( $this.data('id') );
+						$editDialog.dialog('open');
+					}).removeClass('thisTarget');
+					$editDialog.dialog('close');
+					$.unblockUI();
+				}
+			}).on('submit', function(){
+				ajaxLoaded();
+			});
+		});
+	};
+
+	refreshPageBar = function(){
+		var 
+			$h3 = $customAjaxRes.find('h3').eq(0),
+			nNowPage = $h3.eq(0).data('nowpage'),
+			nPages = Math.ceil( parseInt( $h3.data('page') ) / 10 ),
+			$pageBar = $('#orders-custom').find('.pageBar'),
+			$pageTotal = $('.pageTotal');
+		
+		if ( $searchForm.hasClass('fromSubmit') ) {
+			var sSpan = '<div class="pageTotal"><span style="color:#fff;">'+nNowPage+'/'+nPages+'</span></div><div class="pagePrev">prev</div><div class="scrollBar">';
+		
+			for (i=1;i<=nPages;i++) {
+				if (i == 1)
+					sSpan += '<div class="pageButton pageIsIt"><span style="font-size: 20px; color:#fff;">'+i+'</span></div>';
+				else
+					sSpan += '<div class="pageButton"><span style="font-size: 12px; color:#fff;">'+i+'</span></div>';
+			}
+			sSpan += '</div><div class="pageNext">next</div>';
+			$searchForm.removeClass('fromSubmit');
+			$pageBar.html(sSpan).fadeIn(700);
+		} 
+
+		$pageBar.html(sSpan).fadeIn(700).find('.pageButton').on('click', function(){
+			var $this       = $(this),
+				nSubmitPage = $this.find('span').text();
+			$this.parent().find('.pageIsIt').removeClass('pageIsIt');
+			$this.addClass('pageIsIt');
+			$('.pageButton').find('span').css({'font-size': '12px'});
+			$this.find('span').css({ 'font-size': '20px'});
+			$searchForm.removeClass('fromSubmit').find('[name="page"]').val(nSubmitPage).end().submit();
+			$('.pageTotal').find('span').text(nSubmitPage+'/'+nPages);
+		}); 
+
+		$pageBar.find('.pagePrev').on('click', function () {
+			if ($pageBar.find('.pageIsIt').prev('.pageButton').length>0)
+				$pageBar.find('.pageIsIt').prev('.pageButton').click();
+			return false;
+		});
+
+		$pageBar.find('.pageNext').on('click', function () {
+			if ($pageBar.find('.pageIsIt').next('.pageButton').length>0 )
+				$pageBar.find('.pageIsIt').next('.pageButton').click();
+			return false;
+		});
+	};
+
+	refreshAccordion = function(response){
+		$customAjaxRes.html(response).accordion('destroy').accordion({heightStyle: "content"}).addClass('isSearch');
+
+		if ( ($customAjaxRes.find( 'h3' ).length == 0) ) {
+			$customAjaxRes.next().fadeOut( '500' );
+			return false;
+		} else {
+			$customAjaxRes.next().fadeIn( '500' );
+		}
+
+		$customAjaxRes.find('.edit_custom').on('click', function () {
+			var $this = $(this);
+
+			$this.addClass('thisTarget');
+			editDialogRefresh( $this.data('id') );
+			$editDialog.dialog('open');
+		});
+		
+		$customAjaxRes.find('.detail_goods').each(function () {
+			var $this = $(this);
+			
+			$this.on('click', function () {
+				var 
+					nGoodsId = $(this).data('id'),
+					sOneGoodsDetailUrl = Routing.generate('goods_one_detail_info');
+
+				ajaxLoaded();
+				$.post(sOneGoodsDetailUrl , { 'nGoodsPassportId' : nGoodsId }, function (res) {
+					$detailGoodsDialog.html(res);
+					$detailGoodsDialog.children('div').tabs({ heightStyle: "content" });
+					$detailGoodsDialog.dialog('open');
+					$.unblockUI();
+				});
+			});
+		});
+
+		// tablepager must put at last or the enevt won't bind in DOM
+		$customAjaxRes.find('.customHistoryTable').each(function () {
+			var $this = $(this);
+
+			if ( $this.find('.customBuyHistory').size() == 0 )
+				$this.add( $this.next() ).hide();
+			else
+				$this.tablesorter().tablesorterPager({ container: $this.next() });
+		});
+
+		$.unblockUI();
+	};
+
+	$searchForm.ajaxForm({
+		url : sSearchUrl,
+		error: function () {
+			alert('ajax error!');
+		},
+		success: function (response) {
+			refreshAccordion(response);
+			refreshPageBar();
+		}
+	}).on('submit', function () {
+		$customAjaxRes.html('<img src="{{ AjaxLoadingGif }}" style="margin:180px;" />');
+		//ajaxLoaded();
+	});
+	searchConditionAdd();
+	$customAjaxRes.accordion();
+	$addDialog.dialog({
+		autoOpen    : false,
+		width       : 500,
+		height      : 450,
+		modal       : true,
+		position: { my: "bottom", at: "bottom", of: window },
+		buttons:{
+			'確定': function () {
+				if ($customName.val().length>1 && $customMobil.val().length>6)
+					$customForm.submit();
+				else
+					alert('手機號碼或是客戶姓名或填寫完整或長度不夠!');
+			},
+			'取消': function () {
+				$customName.add($customMobil).val('');
+				$customName.change();
+				$(this).dialog('close');
+			}
+		}
+	});
+
+	$editDialog.dialog({
+		autoOpen    : false,
+		width       : 500,
+		height      : 600,
+		modal       : true,
+		buttons:{
+			'確定': function () {
+				$('.editCustomForm').submit();
+			},
+			'取消': function () {
+				$(this).dialog('close');
+			},
+			'刪除': function () {
+				var $this = $(this);
+				var $editCustomForm = $('.editCustomForm');
+				var _id = $editCustomForm.find('input[name="nCustomId"]').val();
+				var _token = $editCustomForm.find('input[name="form[_token]"]').val();
+
+				$.ajax({
+					method: 'DELETE',
+					url: Routing.generate('admin_custom_delete', {id: _id}),
+					dataType: 'json',
+					success: function (res) {
+						$('p[data-id="'+ _id +'"]').parent().next().html('已經刪除！');
+						alert('刪除完成');
+						
+						return $this.dialog('close');
+					},
+					error: function () {
+						alert('已經存在記錄不可刪除!!');
+					}
+				});
+			}
+		}
+	});
+
+	$detailGoodsDialog.dialog({
+		autoOpen    : false,
+		width       : 700,
+		height      : 400,
+		modal       : true,
+		buttons:{
+			'關閉': function(){
+				$(this).dialog('close');
+			}
+		}
+	});
+
+	$decideFlowButton.find('button').add($searchSubmit);
+
+	$searchSubmit.on('click', function(){
+		// 修正按完 page 後一般查詢查不到東西的bug
+		$('input[type="hidden"]').filter('[name="page"]').val('');
+		$searchForm.addClass('fromSubmit');
+	});
+
+	$customSearchCondition.find('p').eq(0).on('click', function(){
+		var $this = $(this).parent();
+
+		if ($this.hasClass('extendStatus') === true ) {
+			$this.stop().animate({ 'height' : 20}, 500, function(){
+				$this.removeClass('extendStatus');
+			}); 
+		} else {
+			$this.stop().animate({ 'height' : 130}, 500, function(){
+				$this.addClass('extendStatus');
+			});    
+		}
+	});
+
+	$openDialog.on('click', function(){
+		$addDialog.dialog('open');
+	});
+
+	$searchButton.on('blur', function(){
+		var 
+			$this = $(this),
+			$eInput = $this.prev(),
+			oData = {},
+			sVal = $eInput.val(),
+			sKey = $eInput.attr('name');
+			oData[sKey] = sVal;
+
+		$.post(sCheckExistUrl, oData, function(response){
+			$customAjaxRes.html(response).accordion('destroy').accordion().addClass('isSearch');
+			$.unblockUI();
+			$addCustomOperateOpen.click();
+		});
+	});
+
+	//流程控制
+	$customName.on('change', function(){
+		var 
+			$this = $(this),
+			$displayButton  = $this.next(),
+			oData = {},
+			sKey = $this.attr('name'),
+			sCustomName = $this.val();
+			oData[sKey] = sCustomName;
+
+		if (sCustomName.length>nMinLength-1 ) {
+			$.post(sCheckExistUrl, oData, function(res){
+				if (res != '') {
+					$displayButton.fadeIn(nSpeed);
+				}  
+				$step2.fadeIn(nSpeed);
+				$displayButton.fadeOut(nSpeed);
+				if ($customMobil.val().length>0)
+					$customMobil.blur();  
+			});
+		}
+		else
+			$displayButton.add($step2).add($step3).fadeOut(nSpeed);
+	}).autocomplete({
+		source      : sAutoByNameUrl,
+		minLength   : nMinLength
+	});
+
+	$customMobil.numeric().tooltip().on('blur', function(){
+		var 
+			$this = $(this),
+			$displayButton = $this.next(), 
+			oData = {},
+			sKey = $this.attr('name'),
+			sCustomMobil = $this.val();
+			oData[sKey] = sCustomMobil;
+			
+		$.post(sCheckExistUrl, oData, function(res){
+			if (res != '') {
+				$step3.fadeOut(nSpeed);
+				$displayButton.fadeIn(nSpeed);
+				$this.attr('title', '手機號碼以存在').focus();
+			} else {
+				$step3.fadeIn(nSpeed);
+				$this.attr('title','');
+				$displayButton.fadeOut(nSpeed);
+				$customEmail.focus();
+			}
+		});
+
+	}).autocomplete({
+		source      : sAutoByMobilUrl,
+		minLength   : nMinLength+3
+	})
+	.on('keydown', function(){
+		if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || (event.keyCode == 65 && event.ctrlKey === true) || (event.keyCode >= 35 && event.keyCode <= 39 )) {
+			return;
+		} else if ( $(this).val().length== window.phone_length)
+			event.preventDefault();
+	});
+
+	$customEmail.tooltip().on('blur', function(){
+		var 
+			$this = $(this),
+			$displayButton  = $this.next(),
+			oData = {},
+			sKey = $this.attr('name'),
+			sEmail = $this.val();
+			oData[sKey] = sEmail;
+
+		if ( !reEmail.test(sEmail) && sEmail != '') {
+			$displayButton.fadeOut(nSpeed);
+			$submitButton.fadeOut(nSpeed);
+			$this.attr('title', '信箱格式有誤!').focus();
+		} else if (sEmail == '') {
+			$submitButton.fadeIn(nSpeed);
+			$displayButton.fadeOut(nSpeed);
+			$this.attr('title', '');
+		} else {
+			$.post(sCheckExistUrl, oData, function(res){
+				if (res != '') {
+					$this.attr('title', '信箱已經存在');
+					$submitButton.fadeOut(nSpeed);
+					$displayButton.fadeIn(nSpeed);
+				} else {
+					$this.attr('title', '');
+					$submitButton.fadeIn(nSpeed);
+					$displayButton.fadeOut(nSpeed);
+				}     
+			});         
+		}	
+	}).autocomplete({
+		source      : sAutoByEmailUrl,
+		minLength   : nMinLength+3
+	});
+
+	$customBirthday.datepicker(
+		{
+			changeYear      : true,
+			dateFormat      : "yy-mm-dd",
+			yearRange       : "1901:2013",
+			defaultDate     : "-30y",
+		}
+	);
+
+	//送出表單
+	$tabAllInput.on('keypress', function(){
+		preventEnterSubmit();/*防止Enter送出*/
+	});
+
+	$tab.find('button').not('.openDialog ').not($searchSubmit).on('click', function(){
+		ajaxLoaded();
+	});
+
+	$customForm.ajaxForm(
+		{ 
+			url: sAddCustomUrl,
+			error: function () {
+				$.unblockUI();
+				alert('ajax error!'); 
+			},
+			success: function (response) {
+				if (response.indexOf('exist!') !== (-1)) {
+					return $.unblockUI();
+				}
+
+				refreshAccordion(response);
+				$pageBar.text('');
+
+				//$tabAllInput.not('[name="form[_token]"]').val('');
+				$addDialog.find('input').not('[name="form[_token]"]').val('');
+				$customMemo.val('');
+				$customName.change().focus();
+				$addDialog.dialog('close');
+				$.unblockUI();
+			} 
+		}
+	);
+});
+
+</script>
+
+{% endblock %}

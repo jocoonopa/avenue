@@ -1,0 +1,38 @@
+{% extends 'WoojinFrontBundle:Mobile/Main:portfolio.html.twig' %}
+
+{% block title %}
+    {{ promotion.name }}
+{% endblock %}
+
+{% block header %}
+    {% embed ':Mobile/Front/Header:header.html.twig' %}
+        {% block headerMessage %}{{ promotion.name }}{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block pager %}
+{% if 0 < products|length %}
+<div class="content my-text-center">
+    <a href="
+        {% if app.request.get('page') > 1 %}
+        {{ path('mobile_front_promotion', {id: app.request.get('id'), page: (app.request.get('page') - 1) }) }}
+        {% else %}#{% endif %}" class="button button-grey my-page-button-padding">
+        <i class="fa fa-chevron-left"></i>
+    </a>
+
+    <select name="page" id="page" class="my-page-text" data-promotion-id="{{ app.request.get('id') }}" data-page="{{ app.request.get('page') }}">
+        {% for i in 1 .. (count/perpage)|round(0, 'ceil') %}
+            <option value="{{ i }}" {% if i == page %}selected{% endif %}>
+                {{ i ~ '/' ~ (count/perpage)|round(0, 'ceil') }}
+            </option>
+        {% endfor %}
+    </select>
+    
+    <a href="{% if app.request.get('page') < (count/perpage)|round(0, 'ceil') %}
+        {{ path('mobile_front_promotion', {id: app.request.get('id'), page: (app.request.get('page') + 1) }) }}
+    {% else %}#{% endif %}" class="button button-grey my-page-button-padding">
+        <i class="fa fa-chevron-right"></i>
+    </a>
+</div>
+{% endif %}
+{% endblock %}

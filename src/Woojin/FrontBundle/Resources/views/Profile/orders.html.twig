@@ -1,0 +1,116 @@
+{% extends 'WoojinFrontBundle:Profile/common:layout.html.twig' %}
+
+{% block title %}訂單歷史{% endblock %}
+
+{% block profileBody %}
+
+{% include 'WoojinFrontBundle:Profile/common:gc.html.twig' with {invoices: invoices} %}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-grey margin-bottom-40">
+            <div class="panel-heading white">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-list"></i>訂單記錄</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>訂單編號</th>
+                            <th class="hidden-xs">內容</th> 
+                            {# <th>金額</th> #}
+                            {# <th>狀態</th> #}
+                            <th class="hidden-xs">更新時間</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for invoice in custom.invoices|reverse %}
+                        <tr>
+                            <td>
+                                <a class="rounded" href="javascript: void(0);">{{ invoice.sn }}</a>
+
+                                {% if invoice.status == 0 %}
+                                    <span class="badge badge-light rounded">尚未付款</span>
+                                {% elseif invoice.status == 1 %}
+                                    <span class="badge badge-orange rounded">出貨中</span>
+                                {% elseif invoice.status == 2 %}
+                                    <span class="badge badge-green rounded">已出貨</span>
+                                {% elseif invoice.status == 3 %}
+                                    <span class="badge badge-red rounded">退貨通知</span>
+                                {% elseif invoice.status == 4 %}
+                                    <span class="badge badge-brown rounded">退貨處理中</span>
+                                {% elseif invoice.status == 5 %}
+                                    <span class="badge badge-sea rounded">退貨完成</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="hidden-xs">
+                                <ul>
+                                    {% for order in invoice.orders %}
+                                        <li class="list-style-none {# {% if loop.last %}border-bottom-solid-grey{% endif %} #}">
+                                            <a href="{{ path('front_product_show', {id: order.goodsPassport.id }) }}">{{ order.goodsPassport.name }}</a>
+                                            <span class="pull-right">
+                                                NT.&nbsp;{{ order.required|number_format }}
+                                            </span>
+                                        </li>
+                                    {% endfor %}
+
+                                    <li class="list-style-none">
+                                       <span class="badge rounded badge-dark pull-right">
+                                        總計:&nbsp;NT.&nbsp;{{ invoice.total }}
+                                        </span> 
+                                    </li>
+                                </ul>
+                            </td>
+ 
+                            {# <td>NT. {{ invoice.total }}</td> #}
+                            
+                            {# <td>                                
+                                
+                            </td> #}
+
+                            <td class="hidden-xs">{{ invoice.updateAt|date('Y-m-d H:i:s') }}</td>
+
+                            <td>
+                                {% if invoice.status == 0 %}
+                                    <form class="pull-left" action="{{ path('front_payment_passAllpay') }}" method="POST">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="glyphicon glyphicon-circle-arrow-right"></i>
+                                            付款
+                                        </button>
+                                        <input type="hidden" name="avenue_token" value="{{ csrf_token('invoice') }}" >
+                                        <input type="hidden" name="id" value="{{ invoice.id }}" />
+                                    </form>
+                                    <form class="pull-right" action="{{ path('front_invoice_cancel', {id: invoice.id}) }}" method="POST">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="glyphicon glyphicon-remove-circle"></i>
+                                            取消
+                                        </button>
+                                        <input type="hidden" name="avenue_token" value="{{ csrf_token('invoice') }}" >
+                                        <input type="hidden" name="_method" value="PUT" />
+                                    </form>
+                                {% elseif invoice.status in [
+                                    1, 
+                                    2
+                                ] %}
+                                    {% if invoice.diffNow <= 7 %}
+
+                                        <form class="pull-left" action="{{ path('front_invoice_chargeback', {id: invoice.id}) }}" method="POST">
+                                            <button type="submit" class="btn btn-default glyphicon glyphicon-circle-arrow-left">退款</button>
+                                            <input type="hidden" name="avenue_token" value="{{ csrf_token('invoice') }}" >
+                                            <input type="hidden" name="_method" value="PUT" />
+                                        </form>
+                                    {% endif %}
+                                   
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>                      
+        </div>
+    </div>
+</div>    
+{% endblock %}

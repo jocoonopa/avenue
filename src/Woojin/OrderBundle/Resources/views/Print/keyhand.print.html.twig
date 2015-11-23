@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <title>銷貨單列印</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+
+    <style>
+    div.my{
+        position: absolute;
+    }
+
+    form {
+        border: 1px solid #000;
+        width: 400px;
+        margin-left: 50px;
+        background-color: #dedede;
+    }
+
+    body {
+        font-size: 8pt !important; 
+    }
+
+    .container {
+        position: absolute;
+
+        width: 100%;
+
+        top: -0.5cm;
+
+        left: -0.5cm;
+    }
+    
+    @media print 
+    {
+        .relative {
+            display: none;
+        }
+
+        body {
+            margin: 1cm !important;
+            border: 0 !important;
+            padding: 0 !important;
+        }
+
+        form {
+            display: none;
+        }
+
+        button {
+            display: none !important;
+        }
+    }
+    </style>
+</head>
+<body>
+    <button onclick="window.print();">列印</button>
+    <div class="container">
+    {% set yShift = 0 %}
+    {% for key, row in rows %}
+
+       {#  {% if key % 10 == 0 %}
+
+            {% if key > 9 %}
+
+            {% set yShift = (key / 10|round(1, 'floor')) * 29.3 %}
+
+            {% endif %}
+        {% endif %} #}
+
+        <!--/ 存根聯 -->
+
+        <!-- 銷售號碼 -->
+        <div class="my" style="top: {{ yShift + 2.8 }}cm; left: 11.2cm;">{{ storeSn ~ invoiceId}}</div>
+        
+        <!-- 時間 -->
+        <div class="my" style="top: {{ yShift + 2.6 }}cm; left: 15.4cm;"><!-- 15:20 -->
+            {{ date|date("H:i") }}
+        </div>
+
+        <!-- 銷貨日期 -->
+        <div class="my" style="top: {{ yShift + 3.5 }}cm; left: 11.2cm;">
+            <!-- 2014/07/30 -->
+            {{ date|date("m/d/Y") }}
+        </div>   
+
+        <!-- 店鋪 -->
+        <div class="my" style="top: {{ yShift + 3.1 }}cm; left: 15.4cm;">
+            <!-- 中和 -->
+            {{ storeSn }}
+        </div>
+        <!-- 頁次 -->
+        <div class="my" style="top: {{ yShift + 3.6 }}cm; left: 15.4cm;">
+            {{ currentPage }}
+        </div>
+
+        <!-- 貨號 -->
+        <div class="my" style="top: {{ 5.0 + yShift + (key % 10) * 0.7 }}cm; left: 0.7cm;">{{ row.sn }}
+        </div>
+
+        <!-- 品名/序號 -->
+        <div class="my" style="top: {{ 5.0 + yShift + (key % 10) * 0.7 }}cm; left: 4.7cm;">{{ row.name }}
+        </div>
+
+        <!-- 數量 -->
+        <div class="my" style="top: {{ 5.0 + yShift + (key % 10) * 0.7 }}cm; left: 11.4cm;">1</div>
+
+        <!-- 金額 -->
+        <div class="my" style="top: {{ 5.0 + yShift + (key % 10) * 0.7 }}cm; left: 12.7cm;">
+            NT{{ row.price|number_format(0, '.', ',') }}
+        </div>
+
+        <!-- 備註/附件 -->
+        <div class="my" style="top: {{ 5.0 + yShift + (key % 10) * 0.7 }}cm; left: 15.1cm;">{{ row.memo }}
+        </div>
+
+        <!-- 經手人 -->
+        <div class="my" style="top: {{ yShift + 11.8 }}cm; left: 2.4cm;">
+            <!-- ViVian -->
+           {{ app.user.username }}
+        </div>
+
+        <!-- 總金額 -->
+        <div class="my" style="top: {{ yShift + 11.8 }}cm; left: 11.9cm; font-size: 6pt;">
+            {% if totalRequired - totalPaid > 0 %}{{ totalRequired|number_format(0, '.', ',') }}元,已付{{ totalPaid|number_format(0, '.', ',') }}元,尾款{{ totalRequired - totalPaid }}元{% else %}{{ totalRequired|number_format(0, '.', ',') }}元, 已付清{% endif %}</div>
+        <!-- 存根聯 /-->
+        <!--/ 收執聯 -->
+        
+
+        <!-- 銷售號碼 -->
+        <div class="my" style="top: {{ yShift + 16.8 }}cm; left: 11.2cm;">{{ storeSn ~ invoiceId}}</div>
+        
+        <!-- 時間 -->
+       <div class="my" style="top: {{ yShift + 16.6 }}cm; left: 15.4cm;">{{ date|date("H:i") }}
+        </div>
+
+        <!-- 銷貨日期-->
+        <div class="my" style="top: {{ yShift + 17.5 }}cm; left: 11.2cm;">{{ date|date("m/d/Y") }}
+        </div>
+
+        <!-- 店鋪 -->
+        <div class="my" style="top: {{ yShift + 17.1 }}cm; left: 15.4cm;">{{ storeSn }}
+        </div>
+
+        <!-- 頁次 -->
+        <div class="my" style="top: {{ yShift + 17.6 }}cm; left: 15.4cm;">
+            {{ currentPage }}
+        </div>
+
+        <!-- 貨號 -->
+        <div class="my" style="top: {{ 19.0 + yShift + (key % 10) * 0.7 }}cm; left: 0.7cm;">{{ row.sn }}</div>
+
+    <!-- 品名/序號 -->
+    <div class="my" style="top: {{ 19.0 + yShift + (key % 10) * 0.7 }}cm; left: 4.7cm;">{{ row.name }}
+    </div>
+
+    <!-- 數量 -->
+    <div class="my" style="top: {{ 19.0 + yShift + (key % 10) * 0.7 }}cm; left: 11.4cm;">1</div>
+
+    <!-- 金額 -->
+    <div class="my" style="top: {{ 19.0 + yShift + (key % 10) * 0.7 }}cm; left: 12.7cm;">
+        NT{{ row.price|number_format(0, '.', ',') }}
+    </div>
+
+    <!-- 備註/附件 -->
+    <div class="my" style="top: {{ 19.0 + yShift + (key % 10) * 0.7 }}cm; left: 15.1cm;">{{ row.memo }}</div>
+
+        <!-- 經手人 -->
+        <div class="my" style="top: {{ yShift + 25.8 }}cm; left: 2.4cm;"> {{ app.user.username }}
+        </div>
+
+        <!-- 總金額 -->
+        <div class="my" style="top: {{ yShift + 25.8 }}cm; left: 11.9cm; font-size: 6pt; ">
+            {% if totalRequired - totalPaid > 0 %}{{ totalRequired|number_format(0, '.', ',') }}元,已付{{ totalPaid|number_format(0, '.', ',') }}元,尾款{{ totalRequired - totalPaid }}元{% else %}{{ totalRequired|number_format(0, '.', ',') }}元, 已付清{% endif %}
+        </div>
+    <!-- 收執聯 /-->
+    {% endfor %}
+</div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<script id="unit-template" type="x-tmpl-mustache">
+{% verbatim %}
+
+<div class="row" style="margin: 10px 0;">
+    <div class="col-xs-12 col-md-4">
+        <img class="img-responsive lazy" data-original="{{ img.path }}">
+    </div>
+    <div class="col-xs-12 col-md-8">
+        <h4>{{ name }}<span class="badge">{{ custom_sn }}</span> 
+            <small>{{ status.name }}</small>
+            <p><span class="label label-info">{{ sn }}</span></p>
+        </h4>
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table">
+                    <tr>
+                        <td>屬性:&nbsp;</td>
+                        <td>{{ brand.name }}，{{ pattern.name }}，{{ color.name }}，{{ level.name }}，{{ mt.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>型號:&nbsp;</td>
+                        <td>{{ model }}</td>
+                    </tr>
+                    <tr>
+                        <td>成本:&nbsp;</td>
+                        <td>{{ cost }}</td>
+                    </tr>
+                    <tr>
+                        <td>售價:&nbsp;</td>
+                        <td>{{ price }}</td>
+                    </tr>
+                    <tr>
+                        <td>網價:&nbsp;</td>
+                        <td>{{ web_price }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+            {% endverbatim %} 
+                {% if app.user|has_auth('READ_ORDER_OWN') %}
+                <button class="btn btn-primary btn-sm pull-left view-order" data-id="{% verbatim %} {{ id }}{% endverbatim %} " data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-eye-open"></i>檢視訂單</button>
+                {% else %}
+
+                {% endif %}
+            {% verbatim %} 
+                <a class="btn btn-default btn-sm pull-right" href="http://www.avenue2003.com/product/{{ id }}" target="_blank"><i class="glyphicon glyphicon-new-window"></i>官網檢閱</a>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>      
+
+{% endverbatim %}  
+</script>
+

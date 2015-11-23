@@ -1,0 +1,33 @@
+{% extends ':Email:base.html.twig' %}
+
+{% block title %}香榭國際註冊通知信{% endblock %}
+
+{% block body %}
+
+<tr>
+    <td style="font-size: 16px; color: #000; text-align: left; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 0 20px 20px 40px; ">
+    <p> {{ custom.name }}您好:   </p>
+    <p>歡迎加入香榭國際精品會員，您的註冊帳號為 {{ custom.email }}</p>
+
+    {% if custom.isActive == false %}
+        <p>麻煩請點擊下方驗證按鈕完成帳號驗證，已便開啟購物車結帳功能。</p>
+    {% endif %}
+
+    <br>
+    <p>若您並未在香榭國際精品註冊會員，請無需理會此信件。</p>
+    <br>
+    <p>如有任何問題請來信客服信箱: avenue16882@gmail.com</p>
+    <p>或電洽客服專線: 02-2992-6616</p>
+    <p>將有專人為您服務!</p>
+    
+    {% if custom.isActive == false %}
+        <center><a style="border-radius:3px;color:white;font-size:15px;padding:14px 7px 14px 7px;max-width:210px;font-family:proxima_nova,'Open Sans','lucida grande','Segoe UI',arial,verdana,'lucida sans unicode',tahoma,sans-serif;border:1px #000 solid;text-align:center;text-decoration:none;width:210px;margin:6px auto;display:block;background-color:#646464" href="{{ url('front_custom_active', {activeKey: custom.activeKey, email: custom.email}) }}" target="_blank">驗證確認</a></center>
+    {% endif %}
+    <br>
+    <br>
+    <p>謝謝&nbsp;!</p>
+    <p>香榭國際精品&nbsp;&nbsp;工作團隊</p>
+   </td>
+</tr>
+
+{% endblock %}

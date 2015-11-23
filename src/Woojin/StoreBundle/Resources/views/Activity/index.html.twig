@@ -1,0 +1,33 @@
+{% extends '::activity.html.twig' %}
+
+{% block head %} 
+
+{{ parent() }}
+
+<link rel="stylesheet" href="/bundles/woojinstore/plugin/ngtable/ng-table.css">
+<link rel="stylesheet" href="/bundles/woojinstore/plugin/datetimepicker/css/datepicker3.css">
+<link rel="stylesheet" href="/bundles/woojinstore/js/angular/angular-ui-ng-grid/ng-grid.min.css">
+<script src="/bundles/woojinstore/plugin/datetimepicker/js/bootstrap-datepicker.js"></script>
+<script src="/bundles/woojinstore/plugin/datetimepicker/js/locales/bootstrap-datepicker.zh-TW.js"></script>
+<script src="/bundles/woojinstore/js/app.js"></script>
+	
+<script src="/bundles/woojinstore/js/directive.js"></script>
+	
+<script src="/bundles/woojinstore/js/service.js"></script>
+
+<script src="/bundles/woojinstore/js/controller/controller.js"></script>
+<script src="/bundles/woojinstore/js/controller/list/list_ctrl.js"></script>
+<script src="/bundles/woojinstore/js/controller/detail/detail_ctrl.js"></script>
+<script src="/bundles/woojinstore/js/controller/detail/tab/punch_in.js"></script>
+<script src="/bundles/woojinstore/js/controller/detail/tab/punch_out.js"></script>
+<script src="/bundles/woojinstore/js/controller/detail/tab/activity_goods.js"></script>
+
+{% endblock %}
+
+{% block body -%}
+    {% if app.user|has_auth('ACTIVITY_MANAGE') %}
+        <div ng-view class="slide"></div>
+    {% endif %}
+{% endblock %}
+ 
+

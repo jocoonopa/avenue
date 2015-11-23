@@ -1,0 +1,49 @@
+MerchantID
+廠商編號
+
+MerchantTradeNo
+廠商交易編號
+
+RtnCode
+交易狀態
+1:付款成功。 800:貨到付款訂單建立成功。 其餘代碼為失敗
+
+RtnMsg
+交易訊息
+
+
+是歐付寶那邊的 ￼￼￼￼￼￼￼￼￼
+AllPay 的交易 編號
+請保存 AllPay 的交易編號與 MerchantTradeNo 的關連。
+
+TradeAmt
+交易金額
+若歐付寶會員選擇信用卡分期付 款時,此交易金額會回傳商家在訂 單產生時, InstallmentAmount 所 帶的金額。
+
+PaymentDate
+付款時間
+格式為 yyyy/MM/dd HH:mm:ss
+
+PaymentType
+會員選擇的付 款方式
+請參考回覆付款方式一覽表
+
+PaymentTypeChar geFee
+通路費
+
+TradeDate
+訂單成立時間
+格式為 yyyy/MM/dd HH:mm:ss
+
+SimulatePaid
+是否為模擬付款
+
+￼1-模擬付款/0-非模擬付款
+賣家會員可透過廠商後台網站的 履約保證訂單管理來針對單筆訂 單模擬由歐付寶發動付款通知,以
+￼方便介接 API 的測試。
+當 SimulatePaid的值為1時, RtnCode 也會是 1,表示此筆訂單 是模擬付款,並非是由消費者實際真的付款,所以歐付寶也不會撥款 給廠商,請勿對該筆
+
+CheckMacValue
+檢查碼
+合作特店必須檢查 CheckMacValue 來驗證,請參考 附錄檢查碼機制
+

@@ -1,0 +1,283 @@
+{% extends 'WoojinBaseBundle:Base:woojin.layout.html.twig' %}
+
+{% block form %}
+
+{% if app.user|has_auth('BENEFIT_REPORT_OWN')  %}
+    {% set sDate = "now"|date("Y-m-d") %}
+
+<div>
+	<label class="selectSpan vader" >起始時間:</label>
+	<input type="text" name="startAt" value="{{ sDate }}" />
+</div>
+
+<div>
+	<label class="selectSpan vader" >結束時間:</label>
+	<input type="text" name="stopAt" value="{{ sDate }}" />
+</div>
+
+{% if app.user|has_auth('BENEFIT_REPORT_ALL') %}
+    <label class="vader">指定店:(可多選)</label>
+    <select class="goods_search_store" name="store[]" multiple="multiple">
+        {% for store in stores %}
+            <option value="{{ store.sn }}">{{ store.name }}</option>
+        {% endfor %}
+    </select>
+{% endif %}
+
+<div>
+    <label class="vader">售出客戶電話</label>
+    <input type="text" name="buy_custom_mobil" placeholder="寄賣客戶電話" />
+
+    <label class="vader">售出客戶姓名</label>
+    <input type="text" name="buy_custom_name" placeholder="寄賣客戶姓名" />
+</div>
+
+<div>
+    <label class="vader">寄賣客戶電話</label>
+    <input type="text" name="custom_mobil" placeholder="寄賣客戶電話" />
+
+    <label class="vader">寄賣客戶姓名</label>
+    <input type="text" name="custom_name" placeholder="寄賣客戶姓名" />
+</div>
+
+<div class="activity hidden">
+    <label class="vader">選擇活動:(可多選)</label>
+
+    <select name="activity" multiple="multiple" style="margin: 10px 0 0 0; width: 100%;">
+        <option value="">不限</option>
+
+        {% for activity in activitys %}
+            <option value="{{ activity.id }}">{{ activity.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="select" style="margin: 10px 0 0 0;">
+	<select name="reportKind">
+		<option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::OK_OUT') }}">店內業績</option>
+		<option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::OK_WEB_OUT') }}">網路售出</option>
+		<option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::OK_SPECIAL_SELL') }}">特殊活動</option>
+		<option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::OK_SAME_BS') }}">同行批貨</option>
+	</select>
+	<select name="bExport">
+		<option value="0">顯示</option>
+		<option value="1">匯出</option>
+	</select>
+	<button type="submit" class="btn btn-default" ><i class="icon-play"></i>執行</button>
+</div>
+
+<!-- 付清時間	品牌	款式	型號	顏色	包名	產編	新舊	訂價	寄賣回扣	販售方式	銷售金額	成本	毛利	售出人	備註 -->
+
+<div class="export_column_decide" style="color:#000;">
+	{# <label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox1" value="A">付清時間
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox2" value="B">品牌
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox3" value="C">款式
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox4" value="D">型號
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox5" value="E">顏色
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox6" value="F">包名
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox7" value="G">產編
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox8" value="H">新舊
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox9" value="I">訂價
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox10" value="J">寄賣回扣
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox11" value="K">販售方式
+	</label>
+	<!-- -->
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox12" value="L">銷售金額
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox13" value="M">成本
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox14" value="N">毛利
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox15" value="O">售出人
+	</label>
+	<label class="checkbox">
+	  <input type="checkbox" name="column[]" id="Checkbox16" value="P">備註
+	</label>
+	<div>
+		<button type="button" class="allCheck btn btn-primary"><i class="icon-ok-sign"></i>全部勾選</button>
+		<button type="button" class="allCancel btn btn-inverse"><i class="icon-remove-circle"></i>全部取消</button>
+	</div> #}
+</div>
+
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock form %}
+
+{% block js %}
+<script>
+$(function () {
+	var 
+		$tab = $('#orders-financial'),
+		$resRight = $tab.find('.ajaxResMsgRight'),
+		$form = $tab.find('form'),
+		$columnDecide = $form.find('.export_column_decide'),
+		$input = $form.find('input'),
+		$select = $form.find('select'),
+		$exportSelect = $select.filter( '[name="bExport"]'),
+		$button = $form.find('button'),
+		$checkAllButton = $button.filter('.allCheck'),
+		$cancelAllButton = $button.filter('.allCancel'),
+		$startTime = $input.filter('[name="startAt"]'),
+		$endTime = $input.filter('[name="stopAt"]'),
+		sFinancialUrl = Routing.generate('admin_store_profit_report');
+
+	goodsDetailInfo = function (e) {
+		var 
+			$this = e,
+			$detailGoodsDialog = $('.detail_of_custom_goods');
+
+		$this.on('click', function () {
+			var 
+				nGoodsId = $(this).data('id'),
+				sOneGoodsDetailUrl  = Routing.generate('goods_one_detail_info');
+
+			ajaxLoaded();
+			$.post(sOneGoodsDetailUrl , { 'nGoodsPassportId' : nGoodsId }, function (res) {
+				$detailGoodsDialog.html( res );
+				$detailGoodsDialog.children('div').tabs({ heightStyle: "content" });
+				$detailGoodsDialog.dialog('open');
+				$.unblockUI();
+			});
+		});
+	};
+	
+    $startTime.datepicker({ 
+		changeYear: true,
+		dateFormat: "yy-mm-dd",
+		yearRange: "2013:{{ 'now'|date('Y') }}",
+		defaultDate: "+0y"
+	});
+
+	$endTime.datepicker({ 
+		changeYear: true,
+		dateFormat: "yy-mm-dd",
+		yearRange: "2013:{{ 'now'|date('Y') }}",
+		defaultDate: "+0y"
+	});
+	
+    $button.filter('.delete_parent_div').remove();
+	
+    $select.filter('.goods_search_store').prepend('<option value="0">全部</option>');
+	
+    $resRight.tabs().hide();
+
+	$('.detail_of_custom_goods').dialog({
+        autoOpen: false,
+        width: 1000,
+        height: 700,
+        modal: true,
+        buttons:{
+          '關閉': function () {
+            $(this).dialog('close');
+          }
+        }
+    });
+
+	$exportSelect.on( 'change', function () {
+		if ($( this ).val() == 1) {
+			$columnDecide.removeClass('hidden');
+		} else {
+			$columnDecide.addClass('hidden');
+		}
+	}).change();
+
+	$checkAllButton.on('click', function () {
+		$columnDecide.find('input').prop('checked', true);
+	}).click();
+	$cancelAllButton.on('click', function () {
+		$columnDecide.find('input').prop('checked', false);
+	});
+	
+	$form.ajaxForm({
+		url: sFinancialUrl,
+		success: function (res) {
+				if ( ($form.find('[name="bExport"]').val() == 0) ) {
+					$resRight.html(res).show();
+        	$resRight.tabs('destroy').tabs({ heightStyle: "content" });
+        	$resRight.find('button');
+        	goodsDetailInfo($resRight.find('button'));
+
+        	var $table = $resRight.find('.financialReportTable');
+        	$table.each(function () {
+        		var 
+        			$this = $(this),
+        			nGoodsCost = 0,
+        			nAchievement = 0,
+        			nProfit = 0,
+        			nProfitNow = 0;
+                    nOrgAchievement = 0;
+
+        		if ( ($this.find('tbody>tr').length == 0) ) {
+        			return $this.siblings().addBack().remove();
+        		}
+
+        		if ( ($this.find( '.profit' ).length == 0) ) {	
+        			return $this.hide().next().hide();
+        		}
+
+        		$this.find('tbody').find('tr').each( function ( index ) {
+        			var 
+        				$tr = $(this),
+        				$ul = $tr.closest('table').next(),
+        				nTurns = $this.find('tbody').find('tr').length;
+
+        			nGoodsCost = nGoodsCost + parseInt( $tr.find('.goods_cost').data('money') );
+        			nProfit = nProfit + parseInt( $tr.find('.profit').data('money') );
+        			nAchievement = nAchievement + parseInt( $tr.find('.achievement').data('money') );
+                    nOrgAchievement = nOrgAchievement + parseInt( $tr.find('.org_achievement').data('money') );
+        			
+                    if ( ((nTurns - 1) == index) ) {
+        				$ul.find('.goods_cost').find('span').text(nGoodsCost);
+        				$ul.find('.profit').find('span').text(nProfit);
+        				$ul.find('.achievement').find('span').text(nAchievement);
+                        $ul.find('.org_achievement').find('span').text(nOrgAchievement);
+        				$ul.find( '.count_soldout' ).find( 'span' ).text( nTurns );
+        			}
+        		});
+        		$this.tablesorter()
+        		.tablesorterPager({ container: $this.next().next() });       			
+        	});
+				} else {
+					window.location = res;
+				}			
+			}
+	});
+
+    $('select[name="reportKind"]').change(function () {
+        var special = 13;
+
+        if ($(this).val() == special) {
+            $('.activity').removeClass('hidden');
+        } else {
+            $('.activity').addClass('hidden');
+        }
+    });
+});
+</script>
+{% endblock %}

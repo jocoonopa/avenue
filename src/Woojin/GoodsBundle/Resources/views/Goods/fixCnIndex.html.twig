@@ -1,0 +1,96 @@
+{% extends '::activity.html.twig' %}
+
+{% block title %}大陸店產品資訊調整{% endblock %}
+
+{% block head %}
+{{ parent() }}
+
+<script src="/bundles/woojingoods/js/fixcn/fixcn.js"></script>
+<style>
+
+@media screen and (max-width: 600px)
+{
+  .rwd-hide
+  {
+    display: none;
+  }
+}
+
+</style>
+
+{% endblock %}
+
+{% block body %}
+{% if app.user.store.id == 7 %}
+
+{% verbatim %}
+<div ng-controller="fixcnCtrl" class="col-xs-10" style="position: relative; float: none; margin: 0 auto;">
+{% endverbatim %}
+
+
+	<h3>大陸倉庫應急調整介面 <small><a href="{{ path('goods') }}">回商品查詢</a></small></h3>
+{% verbatim %}
+
+	<div class="row">
+		<input type="text" class="form-control" ng-model="query.sn" placeholder="產編搜尋" />
+	</div>
+
+	<p>&nbsp;</p>
+
+<!-- 	<div class="row">
+		<input type="text" class="form-control" ng-model="query" placeholder="品牌搜尋" />
+	</div>
+
+	<p>&nbsp;</p> -->
+	
+	<div class="row">
+		<input type="text" class="form-control" ng-model="query.name" placeholder="品名搜尋" />
+	</div>
+	
+	<p>&nbsp;</p>
+
+	<div class="row">
+		<input type="text" class="form-control" ng-model="query.brand_sn" placeholder="型號搜尋" />
+	</div>	
+
+	<table class="table table-hover">
+		<tr>
+			<td ng-click="orderProp='goods_sn'; reverse=!reverse;" class="pointer">產編</td>
+			<td ng-click="orderProp='brand'; reverse=!reverse;" class="pointer rwd-hide">品牌</td>
+			<td ng-click="orderProp='goods_name'; reverse=!reverse;"class="pointer rwd-hide">品名</td>
+			<td ng-click="orderProp='brand_sn.brand_sn_name'; reverse=!reverse;" class="pointer rwd-hide">型號</td>
+			<td ng-click="orderProp='goods_cost'; reverse=!reverse;" class="pointer">成本</td>
+			<td ng-click="orderProp='goods_price'; reverse=!reverse;" class="pointer">售價</td>
+		</tr>
+
+		<tr ng-repeat="good in goods | filter:query | orderBy:orderProp:reverse" >
+			<td>{{ good.goods_sn }}</td>
+			<td class="rwd-hide">{{ good.brand.brand_name }}</td>
+			<td class="rwd-hide">{{ good.goods_name }}</td>
+			<td class="rwd-hide">{{ good.model }}</td>
+			<td>
+				<input 
+					ng-focus="pushTmp(good.goods_cost, 0)";
+					ng-blur="good.goods_cost = Math.ceil( good.goods_cost / 10 ) * 10; save($index, good);"
+					ng-model="good.goods_cost" 
+					type="text" 
+					style="background-color: #222222; color: #fff; width: 80%;"
+				/>
+			</td>
+			<td>
+				<input 
+					ng-focus="pushTmp(good.goods_price, 1);"
+					ng-blur="good.goods_cost = Math.ceil( good.goods_cost / 10 ) * 10; save($index, good);" 
+					ng-model="good.goods_price"
+					type="text" 
+					style="background-color: #222222; color: #fff; width: 80%;" 
+				/>
+			</td>
+		</tr>
+	</table>
+
+</div>
+{% endverbatim %}
+
+{% endif %}
+{% endblock %}

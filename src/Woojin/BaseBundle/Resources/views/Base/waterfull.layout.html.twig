@@ -1,0 +1,12 @@
+<div class="res-container">{% block resLeft %}{% endblock %}</div>
+<div class="operatePanel">
+
+    {% block panelOpen %}<span class="panelSwitch itsOpen hidden"><img /></span>{% endblock %}
+
+    <form action="" class="woojinForm" method="POST" enctype="multipart/form-data" style="margin-left: 31px;">
+    <input type="hidden" name="form[_token]" value="{{ _token }}" />
+    {% block form %}{% endblock %}
+    </form> 
+</div>
+
+{% block js %}{% endblock %}

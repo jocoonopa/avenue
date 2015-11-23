@@ -1,0 +1,46 @@
+<div class="financialReport">
+	<table class="financialReportTable">
+		<thead>
+			<tr>
+				<th><span>付清時間</span></th>
+				<th><span>品牌</span></th>
+				<th><span>包名</span></th>
+				<th><span>產編</span></th>
+				<th><span>新舊</span></th>
+				<th><span>訂價</span></th>
+				<th><span>寄賣回扣</span></th>
+				<th><span>販售方式</span></th>
+				<th><span>原銷金額</span></th>
+				<th><span>銷售金額</span></th>
+				<th><span>成本</span></th>
+				<th><span>毛利</span></th>
+				<th><span>詳細資訊</span></th>
+			</tr>
+		</thead>
+		
+		{% include 'WoojinStoreBundle:Report/Tbody:_profit.tbody.html.twig' with {products: products} %}
+	</table>
+	<ul class="foot_tr">		
+		<li class="count_soldout" style="width: 120px;" >共<span></span>件</li>
+		<li class="profit">毛利: <span></span>元</li>
+		<li class="goods_cost">成本: <span></span>元</li>
+		<li class="achievement">業績: <span></span>元</li>
+		<li class="org_achievement">原始業績: <span></span>元</li>
+	</ul>
+	<div class="financial_pager">
+		<form>
+			<img src="{{ PagerFirstPng }}" class="first"/>
+			<img src="{{ PagerPrevPng }}" class="prev"/>
+			<input type="text" class="pagedisplay"/>
+			<img src="{{ PagerNextPng }}" class="next"/>
+			<img src="{{ PagerLastPng }}" class="last"/>
+			<select class="pagesize">
+				<option selected="selected"  value="10">10</option>
+				<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+			</select>
+		</form>
+	</div>
+</div>
+

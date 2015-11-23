@@ -1,0 +1,40 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    <h1>Move</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Createat</th>
+                <td>{{ entity.createAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Updateat</th>
+                <td>{{ entity.updateAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Memo</th>
+                <td>{{ entity.memo }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('move') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('move_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

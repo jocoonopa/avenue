@@ -1,0 +1,29 @@
+{% macro label(behalf) %}
+    {% import _self as widget %}
+
+    {% set status = behalf.status %}
+
+    {% if status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_NOT_CONFIRM') %}
+        {{ widget.span('light', status) }}
+    {% elseif status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_FIRST_CONFIRM') %}
+        {{ widget.span('warning', status) }}
+    {% elseif status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_PAID') %}
+        {{ widget.span('info', status) }}
+    {% elseif status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_SECOND_CONFIRM') %}
+        {{ widget.span('info', status) }}
+    {% elseif status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_PURIN') %}
+        {{ widget.span('info', status) }}
+    {% elseif status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_PUROUT') %}
+        {{ widget.span('success', status) }}
+    {% elseif status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_CANCEL') %}
+        {{ widget.span('dark', status) }}
+    {% elseif status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_AVENUE_CANCEL') %}
+        {{ widget.span('warning', status) }}
+    {% elseif status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_CHARGE_BACK') %}
+        {{ widget.span('success', status) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro span(labelStyle, status) %}
+    <span class="label rounded-2x label-{{ labelStyle }}">{{ status.name }}</span>
+{% endmacro %}

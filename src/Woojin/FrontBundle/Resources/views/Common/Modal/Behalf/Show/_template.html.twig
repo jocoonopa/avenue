@@ -1,0 +1,137 @@
+{% for behalf in custom.behalfs %}
+<script type="text/template" id="behalfShow-modal-body-{{ behalf.id }}">
+<table class="table table-striped">
+    <tr>
+        <th>動作</th>
+        <th>時間</th>
+    </tr>
+    
+    {% if behalf.createAt %}
+        <tr>
+            <td>
+                <span>
+                    建立&nbsp;<b>{{ behalf.want.name }}</b>&nbsp;代購請求
+                </span>
+            </td>
+            <td>
+                <small>@{{ behalf.createAt|date('Y-m-d H:i:s')}}</small>
+            </td>
+        </tr>
+    {% endif %}
+
+    {% if behalf.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_CANCEL') %}
+        <tr>
+            <td>
+                <span>取消&nbsp;<b>{{ behalf.want.name }}</b>&nbsp;代購請求</span>
+            </td>
+            <td>
+                <small>@{{ behalf.createAt|date('Y-m-d H:i:s')}}</small>
+            </td>
+        </tr>
+    {% else %}
+        {% if behalf.confirmFirstAt %}
+            <tr>
+                <td>
+                    <span>香榭來電與您確認&nbsp;
+                        <b>{{ behalf.want.name }}</b>&nbsp;代購請求
+                    </span>
+                </td>
+                <td>
+                    <small>@{{ behalf.confirmFirstAt|date('Y-m-d H:i:s')}}</small>
+                </td>
+            </tr>
+        {% endif %}
+        {% if behalf.payAt %}
+            <tr>
+                <td>
+                    <span>
+                        告知香榭已由帳戶&nbsp;<strong>{{ behalf.bankAccount|mask_account }}</strong>&nbsp;支付款項
+                    </span>
+                </td>
+                <td>
+                    <small>@{{ behalf.payAt|date('Y-m-d H:i:s')}}</small>
+                </td>
+            </tr>
+        {% endif %}
+
+        {% if behalf.confirmSecondAt %}
+            <tr>
+                <td>
+                    <span>
+                        香榭確認款項已經支付
+                    </span>
+                </td>
+                <td>
+                    <small>@{{ behalf.confirmSecondAt|date('Y-m-d H:i:s')}}</small>
+                </td>
+            </tr>
+        {% endif %}
+
+        {% if behalf.inAt %}
+            <tr>
+                <td>
+                    <span>
+                        商品到店
+                    </span>
+                </td>
+                <td>
+                    <small>@{{ behalf.inAt|date('Y-m-d H:i:s')}}</small>
+                </td>
+            </tr>
+        {% endif %}
+
+        {% if behalf.sendAt %}
+            <tr>
+                <td>
+                    <span>
+                        商品出貨，宅配單號為&nbsp;<a href="javascript: void(0);">{{ behalf.deliverySn }}</a>
+                    </span>
+                </td>
+                <td>
+                    <small>@{{ behalf.sendAt|date('Y-m-d H:i:s')}}</small>
+                </td>
+            </tr>
+        {% endif %}
+
+        {% if behalf.cancelAt %}
+            <tr>
+                <td>
+                    <span>
+                        取消代購
+                    </span>
+                </td>
+                <td>
+                    <small>@{{ behalf.cancelAt|date('Y-m-d H:i:s')}}</small>
+                </td>
+            </tr>
+        {% endif %}
+
+        {% if behalf.acancelAt %}
+            <tr>
+                <td>
+                    <span>
+                        香榭取消代購
+                    </span>
+                </td>
+                <td>
+                    <small>@{{ behalf.acancelAt|date('Y-m-d H:i:s')}}</small>
+                </td>
+            </tr>
+        {% endif %}
+
+        {% if behalf.chargeBackAt %}
+            <tr>
+                <td>
+                    <span>
+                        香榭退款
+                    </span>
+                </td>
+                <td>
+                    <small>@{{ behalf.chargeBackAt|date('Y-m-d H:i:s')}}</small>
+                </td>
+            </tr>
+        {% endif %}
+    {% endif %}
+</table>
+</script> 
+{% endfor %}

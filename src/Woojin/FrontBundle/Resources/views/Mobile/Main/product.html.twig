@@ -1,0 +1,114 @@
+{% extends ':Mobile/Front:base.html.twig' %}
+
+{% block title %}{{ product.seoname }}{% endblock %}
+
+{% block header %}
+    {% embed ':Mobile/Front/Header:header.html.twig' %}
+        {% block headerMessage %}{{ product.name }}{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block content %}
+    <div class="full-bottom"></div>
+
+    <div class="content">
+        <div class="portfolio-one">
+            <div class="portfolio-one-item full-bottom">
+                <a href="#" class="next-staff"></a>
+                <a href="#" class="prev-staff"></a>
+                <div class="product-slider" data-snap-ignore="true">
+                    <div>
+                        <div class="staff-item">
+                            <img src="{% if product.img %}{{ product.img.path }}{% endif %}" class="responsive-image max-width-360 border-radius-0" alt="{{ product.name }}">
+                        </div>
+                    </div>
+              
+                    {% if product.desimg %}
+                        {% for i in 0..4 %}
+                        <div>
+                            <div class="staff-item">
+                                <img src="{{ product.desimg.getSplitPath(i) }}" class="responsive-image max-width-360 border-radius-0" alt="{{ product.name }}">
+                            </div>
+                        </div>
+                        
+                        {% endfor %}
+                    {% endif %}     
+                </div>
+
+                <div class="full-bottom"></div>
+
+                <div class="MBP_success-message mt-0 font-16 static-notification-green tap-dismiss-notification hidden">
+                    <p class="center-text uppercase">已加入購物車!</p>
+                </div>
+                
+                <div class="portfolio-one-text width-100-per">
+                    <div class="tabs">
+                        <a href="#" class="tab-but tab-but-1 black tab-active">我要訂購</a>
+                        <a href="#" class="tab-but tab-but-2 black">商品描述</a>    
+                    </div>
+
+                    <div class="tab-content tab-content-1">
+                        <h3 class="title">{{ product.seoName }}</h3>
+                        <br>
+                        {# <em class="subtitle">Awesome one column portfolio</em> #}
+                    
+                        <div class="portfolio-one-details">
+                            {% if product.promotionPrice(true) < product.price %}
+                                <span class="font-12 td-lt">NT.&nbsp;{{ product.price(true)|number_format }}元</span>&nbsp;&nbsp;
+                                <span class="font-12 font-bold">NT.&nbsp;{{ product.promotionPrice(true)|number_format }}元</span>
+                            {% else %}
+                                <span class="font-12 font-bold">NT.&nbsp;{{ product.promotionPrice(true)|number_format }}元</span>
+                            {% endif %}
+                        </div>
+                        <p class="half-bottom">
+                            {% if product.brief %}
+                                {% if product.brief %}
+                                    {% set briefs = product.brief.content|split("\n") %}
+                                    
+                                    {% for brief in briefs %}
+                                        <p>{{ brief }}</p>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+                        </p>            
+                        
+                        <div class="full-bottom"></div>
+
+                        <div class="portfolio-one-links">
+                            <a href="#" id="MBP_add-to-cart" data-id="{{ product.id }}" class="button button-tea white my-float-right">
+                                <i class="fa fa-shopping-cart"></i>
+                                加入購物車
+                            </a>
+
+                            <a href="{{ path('mobile_front_payment') }}" id="MBP_go-to-pay" class="button button-tea white hidden my-float-right"><i class="fa fa-check"></i>結帳</a>
+                        </div> 
+                    </div>
+
+                    <div class="tab-content tab-content-2">
+                        {% if product.desimg %}
+                            {# <div class="width-100-per my-text-center">
+                                <img src="{{ getCacheDesImage(product.desimg, 360, 3313) }}" class="responsive-image max-width-360" alt="商品附圖" />  #}
+
+                                {# <img src="{{ product.desimg.path }}" class="max-width-360 my-desimg-align-center" alt="商品附圖" />  #}
+                            {# </div> #}
+                        {% endif %}
+
+                        {% if product.description %}
+                            {% autoescape false %}{{ product.description.content }}{% endautoescape %}
+                        {% endif %}
+                    </div>
+                </div>       
+            </div>
+            
+            <div class="decoration"></div>
+        </div>
+    </div> 
+{% endblock %}
+
+
+
+
+
+
+
+

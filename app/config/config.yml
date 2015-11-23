@@ -1,0 +1,291 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: utility_service.yml }
+    - { resource: event.yml}
+
+framework:
+    esi: { enabled: true }
+    #translator:      { fallback: %locale% }
+    secret:          %secret%
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+        #assets_version: SomeVersionScheme
+    default_locale:  "%locale%"
+    trusted_proxies: ~
+    session:         
+        cookie_lifetime: 7200
+    fragments: { path: /_fragment }
+    translator: ~
+
+# Twig Configuration
+twig:
+    debug:            %kernel.debug%
+    strict_variables: %kernel.debug%
+    globals:
+      OrdersRequiredLabel: "實收金額"
+      OrdersPaidLabel: "已請款"
+      OrdersMemoLabel: "訂單備註"
+      CustomNameLabel: "客戶姓名"
+      GoodsNameLabel: "商品名稱"
+      GoodsSnLabel: "商品序號"
+      OpeActLabel: "動作內容"
+      OpeDatetimeLabel: "動作時間"
+      ProcessPng: "/img/process.png"
+      CheckroundPng: "/img/checkround.png"
+      CancelPng: "/img/cancel.png"
+      SalePng: "/img/sale.png"
+      SoldOutPng: "/img/sold_out.png"
+      MovingPng: "/img/moving.png"
+      OtherStorePng: "/img/other_store.png"
+      AjaxLoadingGif: "/img/ajax-loader.gif"
+      NothingPng: "/img/nothing.png"
+      PlusPng: "/img/plus.png"
+      GoNextPng: "/img/Actions-go-next-icon.png"
+      UserEditPng: "/img/user_edit.png"
+      UserActivePng: "/img/user_active.png"
+      PagerNextPng: "/img/pager_next.png"
+      PagerLastPng: "/img/pager_last.png"
+      PagerPrevPng: "/img/pager_prev.png"
+      PagerFirstPng: "/img/pager_first.png"
+      # avenue information
+      BOSS_PHONE_NUM: "+886 952-104-510"
+      FACEBOOK_APPID: 704916842938836
+      FACEBOOK_URL: "https://www.facebook.com/avenue2003"
+      YAHOO_SUPERSTORE_URL: "https://tw.mall.yahoo.com/store/avenue2003"
+      ASAP_URL: "http://www.asap.com.tw/market/A12875"
+
+
+# Assetic Configuration
+assetic:
+    debug:          %kernel.debug%
+    use_controller: false
+    bundles:        ['WoojinFrontBundle']
+    node:           /usr/local/bin/node
+    node_paths: [/usr/local/lib/node_modules/]
+    #java: /usr/bin/java
+    filters:
+        uglifyjs2:
+            bin: /usr/local/bin/uglifyjs
+        uglifycss:
+            bin: /usr/local/bin/uglifycss
+        cssrewrite: ~
+        # The apply_to parameter isn’t essential, 
+        # but it does mean that you don’t need to apply the filter manually, 
+        # it’ll automatically apply it to any files ending in .less.
+        less: 
+            apply_to: "\.less$"
+
+        #closure:
+        #    jar: %kernel.root_dir%/Resources/java/compiler.jar
+        #yui_css:
+        #    jar: %kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar
+    assets:
+        mobile_front_css:
+            inputs:
+                - "@WoojinFrontBundle/Resources/public/mobile/styles/style.css"
+                - "@WoojinFrontBundle/Resources/public/mobile/styles/framework.css"
+                - "@WoojinFrontBundle/Resources/public/mobile/styles/owl.theme.css"
+                - "@WoojinFrontBundle/Resources/public/mobile/styles/swipebox.css"
+                - "@WoojinFrontBundle/Resources/public/plugins/sky-forms/version-2.0.1/css/custom-sky-forms.css"
+                - "@WoojinFrontBundle/Resources/public/mobile/styles/font-awesome.css"
+                - "@WoojinFrontBundle/Resources/public/mobile/styles/animate.css"
+                - "@WoojinFrontBundle/Resources/public/css/custom.css"
+        mobile_front_js:
+            inputs: 
+                - "@WoojinFrontBundle/Resources/public/mobile/scripts/jquery.js"
+                - "@WoojinFrontBundle/Resources/public/mobile/scripts/jqueryui.js"
+                - "@WoojinFrontBundle/Resources/public/mobile/scripts/framework.plugins.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/jquery.lazyload.min.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/cookie.js"
+                - "@WoojinFrontBundle/Resources/public/js/avenue-fb.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/twzipcode/twzipcode.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/sky-forms/version-2.0.1/js/jquery.validate.min.js"
+                - "@WoojinFrontBundle/Resources/public/mobile/scripts/mobile.avenue.cart.js"
+                - "@WoojinFrontBundle/Resources/public/mobile/scripts/custom.js"
+        front_js:
+            inputs:
+                # JS Global Compulsory
+                - "@WoojinFrontBundle/Resources/public/plugins/jquery/jquery.min.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/jquery/jquery-migrate.min.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/bootstrap/js/bootstrap.min.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/cookie.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/jquery.form.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/jquery.blockUI.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/jquery.lazyload.min.js"
+                - "@WoojinFrontBundle/Resources/public/js/avenue-cart.js"
+                - "@WoojinFrontBundle/Resources/public/js/avenue-whishlist.js"
+                - "@WoojinFrontBundle/Resources/public/js/avenue-history.js"
+                - "@WoojinFrontBundle/Resources/public/js/avenue-fb.js"
+                - "@WoojinFrontBundle/Resources/public/js/shop.app.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/owl-carousel.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/back-to-top.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/bootstro.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/jquery.sidr.min.js"
+                 # JS Customization
+                - "@WoojinFrontBundle/Resources/public/js/custom.js"
+
+                # Register Page
+                - "@WoojinFrontBundle/Resources/public/plugins/sky-forms/version-2.0.1/js/jquery.validate.min.js"
+                - "@WoojinFrontBundle/Resources/public/js/forms/page_registration.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/twzipcode/twzipcode.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/jquery.numeric.js"
+                # End Register Page
+
+                # Scrollbar
+                - "@WoojinFrontBundle/Resources/public/plugins/scrollbar/src/jquery.mousewheel.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/scrollbar/src/perfect-scrollbar.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/owl-carousel/owl-carousel/owl.carousel.js"
+
+                # Index Page
+                - "@WoojinFrontBundle/Resources/public/plugins/jquery.parallax.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/revolution-slider/rs-plugin/js/jquery.themepunch.tools.min.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/revolution-slider.js"
+                - "@WoojinFrontBundle/Resources/public/assets/plugins/masonry/jquery.masonry.min.js"
+                - "@WoojinFrontBundle/Resources/public/assets/js/pages/blog-masonry.js"
+                # End Index Page
+
+                # Filter Page
+                - "@WoojinFrontBundle/Resources/public/plugins/noUiSlider/jquery.nouislider.full.min.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/bower_components/angular/angular.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/bower_components/angular-sanitize/angular-sanitize.min.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/bower_components/angular-animate/angular-animate.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/bower_components/angular-route/angular-route.min.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/bower_components/angular-resource/angular-resource.min.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/bower_components/angular-busy/dist/angular-busy.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"
+
+                - "@WoojinFrontBundle/Resources/public/js/app.js"
+                - "@WoojinFrontBundle/Resources/public/js/controller.js"
+                - "@WoojinFrontBundle/Resources/public/js/service.js"
+                - "@WoojinFrontBundle/Resources/public/js/directive.js"
+                # End Filter Page
+
+                # Product Page
+                - "@WoojinFrontBundle/Resources/public/plugins/master-slider/quick-start/masterslider/masterslider.min.js"
+                - "@WoojinFrontBundle/Resources/public/plugins/master-slider/quick-start/masterslider/jquery.easing.min.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/master-slider.js"
+                - "@WoojinFrontBundle/Resources/public/js/forms/product-quantity.js"
+                - "@WoojinFrontBundle/Resources/public/assets/plugins/countdown/jquery.countdown.js"
+                - "@WoojinFrontBundle/Resources/public/assets/plugins/countdown/plugin/jquery.countdown-zh-TW.js"
+                # End Product Page
+
+                # Profile
+                - "@WoojinFrontBundle/Resources/public/js/forms/page_login.js"
+                - "@WoojinFrontBundle/Resources/public/assets/plugins/counter/waypoints.min.js"
+                - "@WoojinFrontBundle/Resources/public/assets/plugins/counter/jquery.counterup.min.js"
+                # End Profile 
+                # Payment
+                - "@WoojinFrontBundle/Resources/public/plugins/jquery-steps/build/jquery.steps.js"
+                - "@WoojinFrontBundle/Resources/public/js/plugins/stepWizard.js"
+                # End Payment
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   %database_name%
+        user:     %database_user%
+        password: %database_password%
+        charset:  UTF8
+        # if using pdo_sqlite as your database driver, add the path in parameters.yml
+        # e.g. database_path: %kernel.root_dir%/data/data.db3
+        # path:     %database_path%
+
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        auto_mapping: true
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: %mailer_transport%
+    host:      %mailer_host%
+    username:  %mailer_user%
+    password:  %mailer_password%
+    #spool:     { type: memory }
+
+nelmio_api_doc: ~
+
+gregwar_captcha: ~
+
+gregwar_image:
+    cache_dir:  /img/cache
+
+mobile_detect:
+    redirect:
+        mobile: ~
+        tablet: ~
+    switch_device_view: ~
+
+services:
+    business.stock:
+        class: 'Woojin\Service\Business\Stock'
+        arguments: ['@doctrine.orm.entity_manager']
+
+    logger.custom:
+        class: 'Woojin\Service\Logger\CustomOpeLogger'
+        arguments: ['@doctrine.orm.entity_manager']
+
+    logger.ope:
+        class: Woojin\Service\Logger\AdminOpeLogger
+        arguments: ['@doctrine.orm.entity_manager', '@security.context']
+
+    gd.converter:
+        class: 'Woojin\Service\Converter\GoodsPassport'
+        arguments: ['@doctrine.orm.entity_manager']
+
+    base_method:
+        class: Woojin\BaseBundle\BaseMethod
+        arguments: ['@doctrine.orm.entity_manager', '@security.context']
+
+    ## 一些meta資料的操作記錄服務
+    my_meta_record_method:
+        class: Woojin\StoreBundle\MetaRecordMethod
+        arguments: ['@doctrine.orm.entity_manager', '@security.context']
+
+    files_manager:
+        class: Woojin\StoreBundle\FilesManager
+        arguments: ['@doctrine.orm.entity_manager', '@security.context']
+
+    order_service:
+        class: Woojin\OrderBundle\WoojinOrderBundle
+
+    avenue.twig_extension:
+        class: Woojin\FrontBundle\Twig\Extension\AvenueExtension
+        arguments: ['@service_container']
+        tags:
+            - { name: twig.extension }
+
+    admin.twig_extension:
+        class: Woojin\StoreBundle\Twig\Extension\AdminExtension
+        arguments: ['@service_container']
+        tags:
+            - { name: twig.extension }
+
+    adminlistener:
+        class: 'Woojin\FrontBundle\EventListener\AdminListener'
+        arguments: ['@security.context']
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+
+    customlistener:
+        class: 'Woojin\FrontBundle\EventListener\CustomListener'
+        arguments: ['@security.context']
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+
+    front.tokens.action_listener:
+        class: Woojin\FrontBundle\EventListener\TokenListener
+        arguments: ['@service_container', '@doctrine.orm.entity_manager']
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }

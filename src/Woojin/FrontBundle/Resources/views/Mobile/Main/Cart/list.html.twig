@@ -1,0 +1,5 @@
+<div class="notification-page">
+    {% for product in products %}
+        {% include 'WoojinFrontBundle:Mobile/Main/Cart:row.html.twig' with {products: products} %}
+    {% endfor %}
+</div>

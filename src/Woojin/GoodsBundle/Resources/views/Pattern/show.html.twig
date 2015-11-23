@@ -1,0 +1,30 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    <h1>款式
+        <small>
+            <a href="{{ path('pattern') }}" class="btn btn-info">
+                回到列表
+            </a>
+        </small>
+    </h1>
+
+    <table class="record_properties table">
+        <tbody>
+            <tr>
+                <th>序號</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>名稱</th>
+                <td>{{ entity.name }}</td>
+            </tr>
+        </tbody>
+    </table>
+     
+    <a href="{{ path('pattern_edit', { 'id': entity.id }) }}" class="btn btn-primary pull-right">
+        編輯
+    </a>
+    
+    {{ form(delete_form) }}
+{% endblock %}

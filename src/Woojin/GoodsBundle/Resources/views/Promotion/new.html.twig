@@ -1,0 +1,13 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    {% if app.user|has_auth('PROMOTION_MANAGE') %}
+        <h1>新增促銷活動
+            <a class="btn btn-default" href="{{ path('promotion') }}">
+                <i class="glyphicon glyphicon-arrow-left"></i>回到列表
+            </a>
+        </h1>
+
+        {{ form(form) }}
+    {% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+{% endblock %}

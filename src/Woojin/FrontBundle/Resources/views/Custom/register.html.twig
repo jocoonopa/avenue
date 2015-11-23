@@ -1,0 +1,58 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+
+{% block title %}會員註冊{% endblock %}
+
+{% block metaDescription %}香榭國際精品{% endblock %}
+
+{% block metaAuthor %}香榭國際精品{% endblock %}
+
+{% block cssPlugins %}
+
+<link rel="stylesheet" href="/bundles/woojinfront/css/pages/log-reg-v3.css">
+
+{% endblock %}
+
+{% block header %}{% if not isMobile() %}{{ parent() }}{% endif %}{% endblock %}
+{% block footer %}{% if not isMobile() %}{{ parent() }}{% endif %}{% endblock %}
+
+{% block body %}
+
+{% if not isMobile() %}
+<!--=== Breadcrumbs v4 ===-->
+<div class="breadcrumbs-v4">
+    <div class="container">
+        <span class="page-name">會員註冊</span>
+
+        <ul class="breadcrumb-v4-in">
+            <li><a href="{{ path('front_index') }}">首頁</a></li>
+            <li class="active">註冊</li>
+        </ul>
+    </div><!--/end container-->
+</div> 
+<!--=== End Breadcrumbs v4 ===-->
+{% endif %}
+
+<!--=== Registre ===-->
+<div class="log-reg-v3 content-md margin-bottom-30">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 md-margin-bottom-50">
+                {% if isMobile() %}
+                    <a href="javscript:" class="btn-u btn-u-dark" onclick="window.history.back();"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                {% endif %}
+                {% include 'WoojinFrontBundle:Custom/Register:notice.html.twig' %}  
+            </div>
+
+            <div class="col-md-5">
+                {% include 'WoojinFrontBundle:Custom/Register:form.html.twig' %}
+            </div>
+        </div><!--/end row-->
+    </div><!--/end container-->
+</div>
+<!--=== End Registre ===-->    
+{% endblock %}
+
+{% block jsExec %}
+    <script src="/bundles/woojinfront/js/front.register.js"></script>
+    <script>$('#twzipcode').twzipcode({% if county is empty or district is empty %}{'detect': true}{% endif %});</script>
+{% endblock %}

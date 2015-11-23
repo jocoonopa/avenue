@@ -1,0 +1,47 @@
+<div id="userSelect">
+	<select name="nUserId" >
+			<option value="0">請選擇</option>
+		{% for user in users %}
+			{% if user.getTheRoles.id in [3,5] %}
+			{% else %}
+				<option value="{{ user.id }}">{{ user.username }}</option>
+			{% endif %}
+		{% endfor %}
+	</select>
+</div>
+<div id="userRecordHistory">
+	<ul>
+		<li><a href="#userRecordHistory-1"><span data-icon="j">訂單操作記錄</span></a></li>
+		<li><a href="#userRecordHistory-2"><span data-icon="k">後台設定記錄</span></a></li>
+	</ul>
+	<div id="userRecordHistory-1"></div>
+	<div id="userRecordHistory-2"></div>
+</div>
+<script>
+$(function(){
+	var 
+		$userRecordHistory = $('#userRecordHistory'),
+		$user = $('#users'),
+		$userSelect = $('#userSelect').find('select'),
+		sGetRecordHistoryUrl = Routing.generate('user_ajax_get_recordHistory');
+
+	$userRecordHistory.add($user).tabs({heightStyle: "fill"});
+
+	$userSelect.on('change', function () {
+		$('#userRecordHistory-1').add( $('#userRecordHistory-2') ).html('<img src="{{ AjaxLoadingGif }}" style="margin: 150px;"/>');
+
+		ajaxLoaded();
+
+		$.post(sGetRecordHistoryUrl, {'nId': $userSelect.val()}, function(res){
+			var $res = $(res.replace(/^\s*|\s*$/g,""));
+
+			$('#userRecordHistory-1').html( $res.filter('div').eq(0).html() );
+			$('#userRecordHistory-2').html( $res.filter('div').eq(1).html() );
+			$.unblockUI();
+		}).fail(function (){		
+			$.unblockUI();	
+			console.log('ajax_error for searching history');
+		});
+	});
+});
+</script>

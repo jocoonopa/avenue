@@ -1,0 +1,38 @@
+<div ng-controller="ActlistCtrl">
+  
+  <h2><a href="{{ path('activity') }}">活動管理</a></h2>
+  <div class="row">
+    <input ng-model="query" type="text" name="filter" class="form-control" placeholder="搜尋"/>
+  </div>
+
+  <p>&nbsp;</p>
+  
+  {% verbatim %}
+  <div class="row text-left">
+    <button ng-click="add();" class="btn btn-primary #add" data-toggle="modal" data-target="#theActivity">新增活動</button>
+  </div>
+  {% endverbatim %}
+
+  <p>&nbsp;</p>
+  
+  <div class="row">
+    {% verbatim %}
+    <div ng-show="hasSuccessMsg();" class="alert alert-success">
+      <button ng-click="emptySuccessMsg();" type="button" class="close j-alert-close">&times;</button>
+      {{ successMsg }}
+    </div>
+
+    <div ng-show="hasOrphanMsg();" class="alert alert-danger">
+      <button ng-click="emptyOrphanMsg();" type="button" class="close j-alert-close">&times;</button>
+      {{ orphanMsg }}
+    </div>
+    {% endverbatim %}
+
+    {% include 'WoojinStoreBundle:Activity/partials:listTable.html.twig' %}
+  </div>
+
+  <!-- 新增活動 modal -->
+  {% include 'WoojinStoreBundle:Activity/partials:formModal.html.twig' %}
+  
+</div>
+

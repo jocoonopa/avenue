@@ -1,0 +1,32 @@
+{% for oCustom in rCustom %}
+<h3>
+	{{ oCustom.createtime|date('Y-m-d H:i:s') }}:{{ oCustom.name }}
+</h3>
+<div>
+	<div class="accordion_left">	
+		<table class="customInfo table">
+			<thead>
+				<tr>
+					<th><span>客戶</span></th>
+					<th><span>手機</span></th>
+					<th><span>信箱</span></th>
+					<th><span>地址</span></th>
+					<th><span>備註</span></th>
+				</tr>
+			</thead>			
+			<tbody>
+				<tr class="updateRefreshTr">
+					<td><span>{{ oCustom.name }}{{ oCustom.sex }}</span></td>
+					<td><span>{{ oCustom.mobil }}</span></td>
+					<td><span>{{ oCustom.email }}</span></td>
+					<td><span>{{ oCustom.address }}</span></td>
+					<td><span>{{ oCustom.memo }}</span></td>
+				</tr>
+			</tbody>	
+		</table>
+	</div>
+	<div class="accordion_right">
+		
+	</div>
+</div>
+{% endfor %}

@@ -1,0 +1,14 @@
+{% macro span(hd) %}
+    {% if hd != constant('Woojin\\Utility\\Avenue\\Avenue::HD_NORMAL') %}
+    <span class="label 
+        {% if hd == constant('Woojin\\Utility\\Avenue\\Avenue::HD_NORMAL') %}
+            label-success
+        {% elseif hd == constant('Woojin\\Utility\\Avenue\\Avenue::HD_OFFICIAL')%}
+            label-warning 
+        {% else %}
+            label-info
+        {% endif %}">
+        {{ hd|get_hd_name }}
+    </span>
+    {% endif %}
+{% endmacro %}

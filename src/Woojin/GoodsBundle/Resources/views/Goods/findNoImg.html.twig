@@ -1,0 +1,18 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body %}
+    <h1>共 {{ products|length }} 筆</h1>
+
+    <hr>
+<table class="table table-striped">
+    {% for product in products %}
+    <tr>
+        <td>{{ product.id }}</td>
+        <td>
+            <a href="{{ path('goods_edit_v2', {id: product.id}) }}" target="_blank">{{ product.sn }}</a>
+            {{ product.name }} 
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% import 'WoojinGoodsBundle:Behalf/Macro:widget.html.twig' as behalfWidget %}
+
+{% for behalf in custom.behalfs|reverse %}
+    {% set want = behalf.want %}
+    <tr>
+        <td>
+            <a href="#">{{ behalf.id|str_pad_left }}</a>
+        </td>
+
+        {{ productTableWidget.first(want, 'behalf') }}
+        
+        {{ productTableWidget.second(want) }}
+
+        {{ productTableWidget.third(want) }}
+        
+        <td>
+            {{ behalfWidget.label(behalf) }}
+        </td>
+        
+        <td>
+            <div class="row">
+                <div class="col-md-6">
+                     <a href="javascript: void(0);" class="btn btn-default show-modal-trigger mb-5 pull-right" data-id="{{ behalf.id }}" data-name="{{ behalf.want.name }}">詳情</a>
+                </div>
+
+                <div class="col-md-6">
+                     {% if behalf.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_NOT_CONFIRM') %}
+        {# you should use form here #}
+            
+            <form name="behalf_cancel_{{ behalf.id }}" action="{{ path('front_behalf_delete', {id: behalf.id}) }}" method="POST" role="form" onsubmit="return confirm('您確定要取消{{ behalf.want.name }}的代購請求嘛?');">
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="hidden" name="avenue_token" value="{{ csrf_token('behalf_cancel') }}">
+                <button type="submit" class="btn-u btn-u-default pull-left">取消</button>
+            </form>
+           
+        {% elseif behalf.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_FIRST_CONFIRM') %}
+        {# you should use form here #}
+                <a href="javascript: void(0);" class="btn btn-default bank-modal-trigger pull-left" data-id="{{ behalf.id }}" data-name="{{ behalf.want.name }}">已付款</a>
+        {% endif %}
+                </div>
+            </div>
+        </td>
+    </tr>
+{% endfor %}

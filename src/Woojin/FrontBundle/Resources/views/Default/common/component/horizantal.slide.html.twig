@@ -1,0 +1,11 @@
+{% import 'WoojinFrontBundle:Widget:productWidget.html.twig' as productWidget %}
+
+<div class="heading heading-v1 margin-bottom-20">
+    <h2>新品推薦</h2>
+
+    <div class="index-gradient min-height-100">
+        <p>香榭專業採購團隊每月定期飛歐洲專櫃代購商品，讓喜愛精品的你/妳永遠都能夠和歐洲時尚零距離</p>
+    </div>
+</div>
+        
+{{ productWidget.owlSlider(goodses) }}

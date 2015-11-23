@@ -1,0 +1,39 @@
+{% import 'WoojinFrontBundle:Widget:navbar/category.html.twig' as catBoard %}
+{% import 'WoojinFrontBundle:Widget:navbar/cart.html.twig' as cartBoard %}
+{% import 'WoojinFrontBundle:Widget:navbar/promotion.html.twig' as promotionBoard %}
+
+<div class="navbar navbar-default mega-menu bootstro" role="navigation" data-bootstro-title="導航欄" data-bootstro-content="由此選擇商品分類，前往尋找您喜愛的精品。" data-bootstro-placement="bottom" data-bootstro-nextButtonText="下一步" data-bootstro-step="0">
+    <div class="container">
+        {% include 'WoojinFrontBundle:Common/header/partial:logo.html.twig' %}
+
+        <!--// navbar 的分類連結，促銷活動連結，店面介紹連結，歷史介紹連結 -->
+        <div class="collapse navbar-collapse navbar-responsive-collapse">
+            <!-- Badge -->
+            {{ cartBoard.with('1') }}
+            <!-- End Badge -->
+
+            <ul class="nav navbar-nav">
+                <!--// 女性，男性，二手 -->
+                {% for category in categorys %}
+                    {{ catBoard.with(category, brands, patterns) }}
+                {% endfor %}
+                <!-- 女性，男性，二手 //-->
+
+                <!--// 促銷活動 -->
+                {{ promotionBoard.with(promotions) }}
+                <!-- 促銷活動 //-->
+
+                <li><a href="{{ path('front_storeIntro') }}" class="text-center">門市介紹</a></li>
+
+                <li class="hidden-md"><a href="{{ path('front_timeline') }}" class="text-center">企業沿革</a></li>
+    
+                <!-- user voice -->
+                <li>{% include 'WoojinFrontBundle:Common:uservoice.html.twig' %}</li>
+                <!-- user voice embbed here -->
+ 
+                {# <li class="w-hidden block-991"><a href="#">購物車</a></li> #}
+            </ul>
+        </div>
+         <!-- navbar 的分類連結，促銷活動連結，店面介紹連結，歷史介紹連結 //-->
+    </div>    
+</div>            

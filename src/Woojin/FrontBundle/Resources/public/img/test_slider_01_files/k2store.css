@@ -1,0 +1,147 @@
+/*  set the width and height of cart images here*/
+.itemImgSmall {
+	width: 80px;
+}
+
+.itemImgMedium {
+	width: 100px;
+}
+
+.itemImgLarge {
+	width: 130px;
+}
+
+table#cart a div.k2storeCartRemove {
+	background: url("../images/remove-roll.png") no-repeat scroll 0 0
+		transparent;
+	height: 18px;
+	width: 18px;
+}
+
+table#cart a:hover div.k2storeCartRemove {
+	background: url("../images/remove-over.png") no-repeat scroll 0 0
+		transparent;
+}
+
+.k2store .product_quantity_input input {
+	width: 20px;
+}
+.pao {
+	padding: 5px;
+}
+
+.k2store strike {
+	color: #ff0000;
+}
+
+.k2store .product_price,
+.k2store .product_special_price
+ {
+	display: block;
+ }
+ 
+ .k2store .currency_symbol {
+ margin-right: 2px;
+ }
+
+.k2store .checkout-heading {
+    background: none repeat scroll 0 0 #F8F8F8;
+    border: 1px solid #DBDEE1;
+    color: #555555;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding: 8px;
+}
+.k2store .checkout-heading a {
+    float: right;
+    font-weight: normal;
+    margin-top: 1px;
+    text-decoration: none;
+    cursor:pointer;
+}
+.k2store .checkout-content {
+    display: none;
+    overflow: auto;
+    padding: 0 0 15px;
+}
+
+.k2store .checkout-content .buttons {
+    clear: both;
+}
+
+.k2store.checkout tr, .k2store.checkout td {
+	border: none;
+	padding-right: 10px;
+}
+.k2store #billing-existing select[size],
+.k2store #shipping-existing select[size]
+ {
+	height: auto; 
+}
+.k2store .options .required {
+    color: #FF0000;
+    font-weight: bold;
+}
+
+.k2error,
+div.k2error em.error,
+div.k2storeerror em.error,
+.payment_info input.error,
+.k2store label.error
+
+ {
+	color: #ff0000;
+	font-style: italic;
+}
+
+div.k2error em.success,
+div.k2storeerror em.success,
+.k2store label.success
+{
+	color: #17B500;
+	font-style: italic;
+}
+
+.k2store input.error { border: 1px solid red; }
+.k2store input.valid { border: 1px solid #17B500;	}
+
+.k2storeCartForm1 {
+	position: relative;
+}
+.k2store-notification {
+	background: none repeat scroll 0 0 #FAFAFA;
+    border: 1px solid #DDDDDD;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    cursor: wait;
+    margin-left: 0;
+    margin-top: -30px;
+    padding: 1em;
+    position: absolute;
+    width: 200px;
+}
+.k2store-notification .k2success { float: left; }
+
+.k2store-notification .cart_dialogue_close {
+ background: none repeat scroll 0 0 #FF0000;
+    border-radius: 10px 10px 10px 10px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    text-align: center;
+    width: 18px;
+}
+
+
+.k2store-product-info label {
+display: inline;
+}
+
+.product_quantity_input input {
+width: 20px;
+}

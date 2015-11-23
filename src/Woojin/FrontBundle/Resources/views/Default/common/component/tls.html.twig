@@ -1,0 +1,30 @@
+{% import 'WoojinFrontBundle:Widget:productWidget.html.twig' as productWidget %}
+
+{% if not tls is empty %}
+<div id="defaultCountdown" class="row illustration-v4 bootstro" data-bootstro-title="限時搶購區" data-bootstro-content="香榭不定時推出的低價搶購精品都在這裡，不要錯過囉!" data-bootstro-placement="top" data-bootstro-nextButtonText="下一步" data-bootstro-step="1">
+    <div class="col-md-12 col-xs-12">
+        <div class="heading heading-v1 margin-bottom-20">
+            <h2 class="font-24">
+                <a href="javascript: void(0);">限時搶購</a>
+            </h2>
+        </div>
+    </div>
+
+    {# {% if tls|length == 1 %}
+        {% set mdNum = 12 %}
+    {% elseif tls|length == 2 %}
+        {% set mdNum = 6 %}
+    {% elseif tls|length == 3 %} #}
+        {% set mdNum = 4 %}
+    {# {% else %}
+        {% set mdNum = 3 %}
+    {% endif %} #}
+
+    {% for tl in tls %}
+    <div class="col-md-{{ mdNum }} col-xs-12 illustration-v2">
+       <div class="countdown-tls text-center" data-date="{{ tl.endAt|date('Y-m-d H:i:s') }}"></div>
+        {{ productWidget.unit(tl.product) }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

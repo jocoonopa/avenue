@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>購買憑證</title>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-1">&nbsp;</div>
+
+        <div class="col-md-10">
+            <h4>購買憑證資訊</h4><hr/>
+
+            <form role="form" action="{{ path('orders_printkeybyhand') }}" method="POST" target="_blank">
+                {% if app.user|has_auth('SELL') and invoice is defined and invoice %}
+                    {% set startPos = (page - 1) * 10 %}
+
+                    {% for order in invoice.orders|slice(startPos, 10) %}
+                        {% if loop.first %}
+                            <div class="form-group">
+                                <h1>第{{ page }}頁</h1>
+                                <hr>
+                            </div>
+                        {% endif %}
+                        {% set product = order.goodsPassport %}
+
+                        <div class="my-contain">
+
+                            <div class="form-group org">
+                                <label>貨號:</label>
+
+                                <input type="text" name="sn[]" class="form-control" value="{{ product.sn }}" />
+                            </div><!-- /.col-lg-6 -->
+
+                            <div class="form-group org">
+                                <label>品名:</label>
+
+                                <input type="text" name="name[]" class="form-control" value="{{ product.name ~ product.model ~ product.orgSn }}" />
+                            </div><!-- /.col-lg-6 -->
+
+                            <div class="form-group org">
+                                <label>價格:</label>
+
+                                <input type="text" name="price[]" class="form-control numeric" value="{{ order.orgRequired }}" />
+                            </div><!-- /.col-lg-6 -->
+
+                            <div class="form-group org">
+                                <label>已付:</label>
+
+                                <input type="text" name="paid[]" class="form-control numeric" value="{{ order.orgPaid }}">
+                            </div><!-- /.col-lg-6 -->
+
+                            <div class="form-group org">
+                                <label>備註:</label>
+
+                                <textarea name="memo[]" rows="5" class="form-control">{{ ' [' ~ product.level.convertName ~ ']  ' ~ order.memo }}{% for ope in order.opes %}{% if ope.amount %}{{ ope.payType.name ~ ':' ~ ope.amount|number_format ~ '元' }}&nbsp;{% endif %}{% endfor %}
+                                </textarea>
+                            </div><!-- /.col-lg-6 -->
+
+                            <div class="form-group org">
+                                <button type="button" class="btn btn-danger deleteRow">刪除</button>
+                                <hr/>
+                            </div><!-- /.col-lg-6 -->                
+                        </div>
+
+                    {% endfor %}
+                {% else %}
+                    <div class="my-contain">
+                        <div class="form-group org">
+                            <label>貨號:</label>
+
+                            <input type="text" name="sn[]" class="form-control">
+                        </div><!-- /.col-lg-6 -->
+
+                        <div class="form-group org">
+                            <label>品名:</label>
+
+                            <input type="text" name="name[]" class="form-control">
+                        </div><!-- /.col-lg-6 -->
+
+                        <div class="form-group org">
+                            <label>價格:</label>
+
+                            <input type="text" name="price[]" class="form-control numeric">
+                        </div><!-- /.col-lg-6 -->
+
+                        <div class="form-group org">
+                            <label>已付:</label>
+
+                            <input type="text" name="paid[]" class="form-control numeric">
+                        </div><!-- /.col-lg-6 -->
+
+                        <div class="form-group org">
+                            <label>備註:</label>
+
+                            <textarea name="memo[]" rows="5" class="form-control"></textarea>
+                        </div><!-- /.col-lg-6 -->
+
+                        <div class="form-group org">
+                            <button type="button" class="btn btn-danger deleteRow">刪除</button>
+                            <hr/>
+                        </div><!-- /.col-lg-6 -->                
+                    </div>
+                {% endif %}
+    
+                <div class="form-group time-row">
+                    <label>時間:</label>
+                    
+                    <input type="text" name="date" class="datepicker form-control" value="{{ "now"|date("m/d/Y H:i:s") }}" readonly>
+                </div>
+
+                <input type="hidden" name="invoice_id" value="{{ invoice.id }}" />
+
+                <input type="hidden" name="store_sn" value="{{ invoice.store.sn }}" />
+
+                <input type="hidden" name="current_page" value="{{ page }}" />
+
+                <button type="button" class="btn btn-default addRow">增加</button>
+
+                <button type="submit" class="btn btn-primary pull-right">確認</button>
+            </form>
+        </div>
+
+        <div class="col-md-1">&nbsp;</div>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <script src="{{ asset('/js/jquery-1.9.1.min.js') }}"></script>
+
+    <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+
+    <script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
+
+<script>
+
+$('.numeric').numeric();
+
+$(".datepicker").datetimepicker({
+    timeFormat: "hh:mm:ss"
+});
+
+$('div.org').find('button.deleteRow').hide();
+
+$('button.addRow').click(function () {
+    $div = $(this).parent().find('.my-contain').clone();
+
+    $div.find('input').val('');
+
+    $div.find('textarea').val('');
+
+    $div.find('button.deleteRow').click(function () {
+        $(this).closest('.my-contain').remove();
+
+        return false;
+    }).show();
+
+    $div.find('.org').removeClass('org');
+
+    $('.numeric').numeric();
+
+    $('.time-row').before($div);
+});
+
+</script>
+
+</body>
+</html>

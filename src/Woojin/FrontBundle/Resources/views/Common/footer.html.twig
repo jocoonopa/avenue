@@ -1,0 +1,63 @@
+{% import 'WoojinFrontBundle:Widget:footer/store.html.twig' as storeBlock %}
+
+<div class="footer-v4 bootstro" data-bootstro-title="頁底" data-bootstro-content="這邊有香榭各門市的聯絡資訊，若有任何問題歡迎與我們聯繫。" data-bootstro-placement="top" data-bootstro-nextButtonText="下一步" data-bootstro-step="2">
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <!-- About -->
+                <div class="col-md-12">
+                    {% include 'WoojinFrontBundle:Common:footer/primary.html.twig' %}
+                </div>
+                <!-- End About -->                    
+                          
+                <div class="col-xs-12">
+                    <div class="row">
+                        {% for store in stores %}
+                        <div class="col-md-15 col-sm-3">
+                            {{ storeBlock.with(store) }}   
+                        </div>
+                        {% endfor %} 
+                    </div>
+                </div>
+
+                <div class="col-xs-12 visible-xs-block">
+                    <div class="fb-like-box" data-href="https://www.facebook.com/avenue2003" data-height="70" data-width="200" data-colorscheme="dark" data-show-faces="false" data-header="true" data-stream="false" data-show-border="true"></div>
+                </div>
+                
+                <ul class="list-inline shop-social">
+                    {# <li>
+                        <a href="https://twitter.com/avenue_2003" class="twitter-follow-button" data-show-count="false" data-lang="zh-tw" data-show-screen-name="false">跟隨 @avenue_2003</a>
+                        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                    </li>
+                    <li>
+                        <!-- 在您要顯示「小工具」的位置放上這個標記。 -->
+                        <div class="g-follow" data-annotation="bubble" data-height="20" data-href="//plus.google.com/u/0/117154043026933371211" data-rel="author"></div>
+                        <script type="text/javascript">
+                        window.___gcfg = {
+                          lang: 'zh-TW',
+                          parsetags: 'onload'
+                        };   
+                            (function() {
+                            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+                            po.src = 'https://apis.google.com/js/plusone.js';
+                            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+                            })();
+                        </script>
+                    </li> #}
+
+                    <li><a href="https://www.facebook.com/avenue2003" target="_blank">
+                        <span class="fb rounded-md fa fa-facebook"></span></a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/avenue_2003" target="_blank"><span class="tw rounded-md fa fa-twitter"></span></a>
+                    </li>
+                    <li><a href="https://plus.google.com/u/0/117154043026933371211" target="_blank"><span class="gp rounded-md fa fa-google-plus"></span></a></li>
+                    
+                    {# <li><a href="#"><span class="yt rounded-md fa fa-youtube"></span></a></li> #}
+                </ul>
+            </div><!--/end row-->
+        </div><!--/end continer-->
+    </div><!--/footer-->
+
+    {% include 'WoojinFrontBundle:Common:footer/copyright.html.twig' %}
+</div>

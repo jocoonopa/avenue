@@ -1,0 +1,34 @@
+<?php
+
+ini_set('memory_limit', '128M');
+ini_set('session.cookie_lifetime', 0);
+ini_set('session.gc_maxlifetime', 7200);
+
+use Symfony\Component\ClassLoader\ApcClassLoader;
+use Symfony\Component\HttpFoundation\Request;
+
+$loader = require_once __DIR__.'/app/bootstrap.php.cache';
+
+// Use APC for autoloading to improve performance.
+// Change 'sf2' to a unique prefix in order to prevent cache key conflicts
+// with other applications also using APC.
+/*
+$loader = new ApcClassLoader('sf2', $loader);
+$loader->register(true);
+*/
+
+require_once __DIR__.'/app/AppKernel.php';
+require_once __DIR__.'/app/AppCache.php';
+
+// 註解的部份是因為更新一直抓cache 很煩...之後系統正式上線再重新啟用產品模式
+$kernel = new AppKernel('prod', false);
+//$kernel = new AppKernel('dev', true);
+$kernel->loadClassCache();
+$kernel = new AppCache($kernel);
+
+// 這行千萬不可刪除
+Request::enableHttpMethodParameterOverride();
+$request = Request::createFromGlobals();
+$response = $kernel->handle($request);
+$response->send();
+$kernel->terminate($request, $response);

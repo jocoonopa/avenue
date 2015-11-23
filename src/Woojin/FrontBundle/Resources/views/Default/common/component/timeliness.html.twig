@@ -1,0 +1,17 @@
+{% import 'WoojinFrontBundle:Widget:productWidget.html.twig' as productWidget %}
+
+<div class="heading heading-v1 margin-bottom-40">
+    {% if promotion %}
+        <h2 class="font-24">
+            <a href="{{ path('front_promotion_filter', {id: promotion.id }) }}">{{ promotion.name }}</a>
+        </h2>
+        
+        {# <div class="index-gradient min-height-50">
+            <span class="hidden">{{ promotion.description }}</span>        
+        </div> #}
+    {% endif %}
+</div>
+
+{% if promotion %}
+    {{ productWidget.owlSlider(promotion.goodsPassports) }}
+{% endif %}

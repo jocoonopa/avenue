@@ -1,0 +1,7 @@
+{% for oPayType in rPayType %}
+
+<option data-discount="{{ oPayType.discount }}" value="{{ oPayType.id }}">
+	{{ oPayType.name }}
+</option>
+
+{% endfor %}

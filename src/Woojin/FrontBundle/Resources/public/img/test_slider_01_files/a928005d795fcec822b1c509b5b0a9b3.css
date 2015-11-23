@@ -1,0 +1,564 @@
+/* Wednesday 12th of November 2014 08:18:16 PM*/
+
+
+@font-face {
+    font-family: 'Pacifico';
+    src: url(//www.avenue2003.com.tw/libraries/nextend/assets/fonts/pacifico/400/pacifico-webfont.eot);
+    src: url(//www.avenue2003.com.tw/libraries/nextend/assets/fonts/pacifico/400/pacifico-webfont.eot?#iefix) format('embedded-opentype'),
+         url(//www.avenue2003.com.tw/libraries/nextend/assets/fonts/pacifico/400/pacifico-webfont.svg#pacificoregular) format('svg'),
+         url(//www.avenue2003.com.tw/libraries/nextend/assets/fonts/pacifico/400/pacifico-webfont.woff) format('woff'),
+         url(//www.avenue2003.com.tw/libraries/nextend/assets/fonts/pacifico/400/pacifico-webfont.ttf) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}@font-face {
+    font-family: 'Montserrat';
+    src: url(//www.avenue2003.com.tw/libraries/nextend/assets/fonts/montserrat/400/montserrat-regular-webfont.eot);
+    src: url(//www.avenue2003.com.tw/libraries/nextend/assets/fonts/montserrat/400/montserrat-regular-webfont.eot?#iefix) format('embedded-opentype'),
+         url(//www.avenue2003.com.tw/libraries/nextend/assets/fonts/montserrat/400/montserrat-regular-webfont.svg#montserratregular) format('svg'),
+         url(//www.avenue2003.com.tw/libraries/nextend/assets/fonts/montserrat/400/montserrat-regular-webfont.woff) format('woff'),
+         url(//www.avenue2003.com.tw/libraries/nextend/assets/fonts/montserrat/400/montserrat-regular-webfont.ttf) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.nextend-image {
+    cursor: pointer;
+    z-index: 10;
+    overflow: hidden;
+    position: relative;  
+}
+
+.nextend-image-next-circle-button,
+.nextend-image-next-circle-button-cream{
+  margin-top: -16px;
+}
+
+.nextend-element .nextend-image{
+    margin-top: 0;
+}
+
+.nextend-image-next-circle-button{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/circle-button.png);
+    width: 36px;
+    height: 32px;
+}
+
+.nextend-image-next-circle-button:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/circle-button.png);
+    background-position: 36px 0;
+}
+
+.nextend-image-previous-circle-button{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/circle-button.png);
+    width: 36px;
+    height: 32px;
+}
+
+.nextend-image-previous-circle-button:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/circle-button.png);
+    background-position: 36px 0;
+}
+
+.nextend-image-next-circle-button-vertical{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/circle-button-vertical.png);
+    width: 36px;
+    height: 32px;
+}
+
+.nextend-image-next-circle-button-vertical:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/circle-button-vertical.png);
+    background-position: 36px 0;
+}
+
+.nextend-image-previous-circle-button-vertical{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/circle-button-vertical.png);
+    width: 36px;
+    height: 32px;
+}
+
+.nextend-image-previous-circle-button-vertical:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/circle-button-vertical.png);
+    background-position: 36px 0;
+}
+
+
+.nextend-image-next-circle-button-cream,
+.nextend-image-previous-circle-button-cream{
+  margin-top: -18px;
+}
+
+.nextend-image-next-circle-button-cream{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/circle-button-cream.png);
+    width: 36px;
+    height: 36px;
+}
+
+.nextend-image-next-circle-button-cream:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/circle-button-cream.png);
+    background-position: 36px 0;
+}
+
+.nextend-image-previous-circle-button-cream{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/circle-button-cream.png);
+    width: 36px;
+    height: 36px;
+}
+
+.nextend-image-previous-circle-button-cream:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/circle-button-cream.png);
+    background-position: 36px 0;
+}
+
+
+.nextend-image-next-circle-button-cream-vertical{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/circle-button-cream-vertical.png);
+    width: 36px;
+    height: 32px;
+}
+
+.nextend-image-next-circle-button-cream-vertical:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/circle-button-cream-vertical.png);
+    background-position: 36px 0;
+}
+
+.nextend-image-previous-circle-button-cream-vertical{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/circle-button-cream-vertical.png);
+    width: 36px;
+    height: 32px;
+}
+
+.nextend-image-previous-circle-button-cream-vertical:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/circle-button-cream-vertical.png);
+    background-position: 36px 0;
+}
+
+
+.nextend-image-next-rectangle,
+.nextend-image-previous-rectangle{
+  margin-top: -25px;
+}
+
+.nextend-image-next-rectangle{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/rectangle.png);
+    width: 42px;
+    height: 50px;
+}
+
+.nextend-image-next-rectangle:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/rectangle.png);
+    background-position: 44px 0;
+}
+
+.nextend-image-previous-rectangle{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/rectangle.png);
+    width: 42px;
+    height: 50px;
+}
+
+.nextend-image-previous-rectangle:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/rectangle.png);
+    background-position: 44px 0;
+}
+
+
+.nextend-image-next-half-circle,
+.nextend-image-previous-half-circle{
+  margin-top: -70px;
+}
+
+.nextend-image-next-half-circle{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle.png);
+    width: 60px;
+    height: 120px;
+}
+
+.nextend-image-next-half-circle:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle.png);
+    background-position: 60px 0;
+}
+
+.nextend-image-previous-half-circle{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle.png);
+    width: 60px;
+    height: 120px;
+}
+
+.nextend-image-previous-half-circle:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle.png);
+    background-position: 60px 0;
+}
+
+
+.nextend-image-next-half-circle-cream,
+.nextend-image-previous-half-circle-cream{
+  margin-top: -70px;
+}
+
+.nextend-image-next-half-circle-cream{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-cream.png);
+    width: 65px;
+    height: 140px;
+}
+
+.nextend-image-next-half-circle-cream:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-cream.png);
+    background-position: 70px 0;
+}
+
+.nextend-image-previous-half-circle-cream{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-cream.png);
+    width: 65px;
+    height: 140px;
+}
+
+.nextend-image-previous-half-circle-cream:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-cream.png);
+    background-position: 70px 0;
+}
+
+
+.nextend-image-next-half-circle-small,
+.nextend-image-previous-half-circle-small,
+.nextend-image-next-half-circle-outer-small,
+.nextend-image-previous-half-circle-outer-small{
+  margin-top: -35px;
+}
+
+.nextend-image-next-half-circle-small{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-small.png);
+    width: 40px;
+    height: 70px;
+}
+
+.nextend-image-next-half-circle-small:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-small.png);
+    background-position: 40px 0;
+}
+
+.nextend-image-previous-half-circle-small{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-small.png);
+    width: 40px;
+    height: 70px;
+}
+
+.nextend-image-previous-half-circle-small:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-small.png);
+    background-position: 40px 0;
+}
+
+.nextend-image-next-half-circle-outer-small{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-outer-small.png);
+    width: 40px;
+    height: 70px;
+}
+
+.nextend-image-next-half-circle-outer-small:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-outer-small.png);
+    background-position: 40px 0;
+}
+
+.nextend-image-previous-half-circle-outer-small{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-outer-small.png);
+    width: 40px;
+    height: 70px;
+}
+
+.nextend-image-previous-half-circle-outer-small:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-outer-small.png);
+    background-position: 40px 0;
+}
+
+.nextend-image-next-half-circle-outer-small-cream{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-outer-small-cream.png);
+    width: 40px;
+    height: 74px;
+}
+
+.nextend-image-next-half-circle-outer-small-cream:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-outer-small-cream.png);
+    background-position: 40px 0;
+}
+
+.nextend-image-previous-half-circle-outer-small-cream{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-outer-small-cream.png);
+    width: 40px;
+    height: 74px;
+}
+
+.nextend-image-previous-half-circle-outer-small-cream:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-outer-small-cream.png);
+    background-position: 40px 0;
+}
+
+
+.nextend-image-next-half-circle-small-cream,
+.nextend-image-previous-half-circle-small-cream{
+  margin-top: -35px;
+}
+
+.nextend-image-next-half-circle-small-cream{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-small-cream.png);
+    width: 40px;
+    height: 70px;
+}
+
+.nextend-image-next-half-circle-small-cream:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-small-cream.png);
+    background-position: 40px 0;
+}
+
+.nextend-image-previous-half-circle-small-cream{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-small-cream.png);
+    width: 40px;
+    height: 70px;
+}
+
+.nextend-image-previous-half-circle-small-cream:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-small-cream.png);
+    background-position: 40px 0;
+}
+
+
+.nextend-image-next-simple-white,
+.nextend-image-previous-simple-white{
+  margin-top: -30px;
+}
+
+.nextend-image-next-simple-white{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/simple-white.png);
+    width: 40px;
+    height: 55px;
+}
+
+.nextend-image-next-simple-white:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/simple-white.png);
+    background-position: 40px 0;
+}
+
+.nextend-image-previous-simple-white{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/simple-white.png);
+    width: 40px;
+    height: 55px;
+}
+
+.nextend-image-previous-simple-white:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/simple-white.png);
+    background-position: 40px 0;
+}
+
+
+.nextend-image-next-simple-black,
+.nextend-image-previous-simple-black{
+  margin-top: -30px;
+}
+
+.nextend-image-next-simple-black{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/simple-black.png);
+    width: 40px;
+    height: 55px;
+}
+
+.nextend-image-next-simple-black:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/simple-black.png);
+    background-position: 40px 0;
+}
+
+.nextend-image-previous-simple-black{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/simple-black.png);
+    width: 40px;
+    height: 55px;
+}
+
+.nextend-image-previous-simple-black:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/simple-black.png);
+    background-position: 40px 0;
+}
+
+
+.nextend-image-next-rounded-button-dark,
+.nextend-image-previous-rounded-button-dark{
+  margin-top: -13px;
+}
+
+.nextend-image-next-rounded-button-dark{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/rounded-button-dark.png);
+    width: 28px;
+    height: 26px;
+}
+
+.nextend-image-next-rounded-button-dark:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/rounded-button-dark.png);
+    background-position: 30px 0;
+}
+
+.nextend-image-previous-rounded-button-dark{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/rounded-button-dark.png);
+    width: 28px;
+    height: 26px;
+}
+
+.nextend-image-previous-rounded-button-dark:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/rounded-button-dark.png);
+    background-position: 30px 0;
+}
+
+.nextend-image-next-rounded-button-dark-vertical,
+.nextend-image-previous-rounded-button-dark-vertical{
+  margin-top: -13px;
+}
+
+.nextend-image-next-rounded-button-dark-vertical{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/rounded-button-dark-vertical.png);
+    width: 28px;
+    height: 26px;
+}
+
+.nextend-image-next-rounded-button-dark-vertical:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/rounded-button-dark-vertical.png);
+    background-position: 30px 0;
+}
+
+.nextend-image-previous-rounded-button-dark-vertical{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/rounded-button-dark-vertical.png);
+    width: 28px;
+    height: 26px;
+}
+
+.nextend-image-previous-rounded-button-dark-vertical:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/rounded-button-dark-vertical.png);
+    background-position: 30px 0;
+}
+
+
+.nextend-image-next-rounded-button-light,
+.nextend-image-previous-rounded-button-light{
+  margin-top: -13px;
+}
+
+.nextend-image-next-rounded-button-light{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/rounded-button-light.png);
+    width: 28px;
+    height: 26px;
+}
+
+.nextend-image-next-rounded-button-light:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/rounded-button-light.png);
+    background-position: 30px 0;
+}
+
+.nextend-image-previous-rounded-button-light{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/rounded-button-light.png);
+    width: 28px;
+    height: 26px;
+}
+
+.nextend-image-previous-rounded-button-light:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/rounded-button-light.png);
+    background-position: 30px 0;
+}
+
+.nextend-image-next-rounded-button-light-vertical,
+.nextend-image-previous-rounded-button-light-vertical{
+  margin-top: -13px;
+}
+
+.nextend-image-next-rounded-button-light-vertical{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/rounded-button-light-vertical.png);
+    width: 28px;
+    height: 26px;
+}
+
+.nextend-image-next-rounded-button-light-vertical:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/rounded-button-light-vertical.png);
+    background-position: 30px 0;
+}
+
+.nextend-image-previous-rounded-button-light-vertical{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/rounded-button-light-vertical.png);
+    width: 28px;
+    height: 26px;
+}
+
+.nextend-image-previous-rounded-button-light-vertical:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/rounded-button-light-vertical.png);
+    background-position: 30px 0;
+}
+
+
+.nextend-image-next-half-circle-outer,
+.nextend-image-previous-half-circle-outer{
+  margin-top: -70px;
+}
+
+.nextend-image-next-half-circle-outer{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-outer.png);
+    width: 60px;
+    height: 120px;
+}
+
+.nextend-image-next-half-circle-outer:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/half-circle-outer.png);
+    background-position: 60px 0;
+}
+
+.nextend-image-previous-half-circle-outer{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-outer.png);
+    width: 60px;
+    height: 120px;
+}
+
+.nextend-image-previous-half-circle-outer:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/half-circle-outer.png);
+    background-position: 60px 0;
+}
+
+.nextend-image-next-mini-light,
+.nextend-image-previous-mini-light{
+  margin-top: -70px;
+}
+
+.nextend-image-next-mini-light{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/mini-light.png);
+    width: 11px;
+    height: 16px;;
+}
+
+.nextend-image-next-mini-light:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/mini-light.png);
+    background-position: 11px 0;
+}
+
+.nextend-image-previous-mini-light{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/mini-light.png);
+    width: 11px;
+    height: 16px;
+}
+
+.nextend-image-previous-mini-light:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/mini-light.png);
+    background-position: 11px 0;
+}
+
+.nextend-image-next-mini-dark{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/mini-dark.png);
+    width: 11px;
+    height: 16px;;
+}
+
+.nextend-image-next-mini-dark:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/next/mini-dark.png);
+    background-position: 11px 0;
+}
+
+.nextend-image-previous-mini-dark{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/mini-dark.png);
+    width: 11px;
+    height: 16px;
+}
+
+.nextend-image-previous-mini-dark:HOVER{  
+    background-image: url(//www.avenue2003.com.tw/plugins/nextendsliderwidgetarrow/image/image/previous/mini-dark.png);
+    background-position: 11px 0;
+}
+

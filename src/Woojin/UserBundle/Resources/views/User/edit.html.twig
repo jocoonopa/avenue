@@ -1,0 +1,89 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body %}
+{% if app.user|has_auth('ROLE_MANAGE') %}
+    {% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success mt-10" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+       {{ flashMessage }}
+    </div> 
+    {% endfor %}
+
+    <h3>{{ user.username }}編輯
+        <small>
+            <a href="{{ path('admin_role_index') }}">回到職務列表</a>
+        </small>
+    </h3>
+    <hr>
+    <form action="{{ path('admin_user_update', {id: user.id}) }}" method="POST" role="form">
+        <div class="form-group">
+            <label class="col-md-2 control-label pt-10" for="role">門市</label>
+
+            <div class="col-md-10 pt-10">
+                <select name="store" class="form-control" id="store">
+                    {% for store in stores %}
+                        <option value="{{ store.id }}" {% if store.id == user.store.id %}selected{% endif %}>{{ store.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label pt-10" for="role">職務</label>
+
+            <div class="col-md-10 pt-10">
+                <select name="role" class="form-control" id="role">
+                    {% for role in roles %}
+                        <option value="{{ role.id }}" {% if role.id == user.role.id %}selected{% endif %}>{{ role.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label pt-10" for="username">帳號:</label>
+
+            <div class="col-md-10 pt-10">
+                <input id="username" name="username" type="text" class="form-control" required value="{{ user.username }}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label pt-10" for="email">信箱:</label>
+
+            <div class="col-md-10 pt-10">
+                <input id="email" name="email" type="email" class="form-control" required value="{{ user.email }}" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label pt-10" for="mobil">手機:</label>
+
+            <div class="col-md-10 pt-10">
+                <input id="mobil" name="mobil" type="text" class="form-control" required value="{{ user.mobil }}" />
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="col-md-2 control-label pt-10" for="mobil">是否啟用:</label>
+            <div class="checkbox col-md-10">
+                <label>
+                    <input type="checkbox" value="1" name="is_active" {% if user.isActive %}checked{% endif %}>啟用
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2">
+                <input type="hidden" name="_method" value="PUT" />
+                <button type="submit" class="btn btn-success">確認</button>
+            </div>
+            <div class="col-md-10"></div>
+        </div>
+    </form>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

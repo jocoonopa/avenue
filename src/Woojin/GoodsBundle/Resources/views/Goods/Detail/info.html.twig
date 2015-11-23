@@ -1,0 +1,207 @@
+{# 
+1. 權限
+2. 判斷是否為本店的 extension
+ #}
+
+{% if 
+	(app.user|has_auth('READ_PRODUCT_OWN') and app.user|is_own(product))
+	or (app.user|has_auth('READ_PRODUCT_ALL')) 
+%}
+	<li>
+		<p>
+			<span class="preWord">商品名稱:</span>{{ product.name }}
+		</p>
+	</li>
+
+	{% if product.custom %}
+	<li>
+		<p><span class="preWord">寄賣客戶:</span>{{ product.custom.name }}
+		</p>
+	</li>
+	{% endif %}
+	
+	{% if product.seoSlogan %}
+	<li>
+		<p>
+			<span class="preWord">選擇的關鍵字:</span><span>{{ product.seoSlogan.name }}</span>
+		</p>
+	</li>
+	{% endif %}
+
+	{% if product.seoSlogan2 %}
+	<li>
+		<p>
+			<span class="preWord">選擇的關鍵字2:</span><span>{{ product.seoSlogan2.name }}</span>
+		</p>
+	</li>
+	{% endif %}
+
+	<li>
+		<p>
+			<span class="preWord">手key關鍵字:</span><span>{{ product.seoWord }}</span>
+		</p>
+	</li>
+
+	<li class="li_goods_status" data-statusid="{{ product.status.id }}">
+		<p>
+			<span class="preWord">商品狀態:</span>{{ product.status.name }}
+		</p>
+	</li>
+	{% if product.brand %}
+	<li>
+		<p>
+			<span class="preWord">品牌:</span>{{ product.brand.name }}
+		</p>
+	</li>
+	{% endif %}
+
+	{% if product.pattern is not empty %}
+		<li>
+			<p>
+				<span class="preWord">款式:</span>{{ product.pattern.name }}
+			</p>
+		</li>
+	{% endif %}
+
+	<li>
+		<p>
+			<span class="preWord">型號:</span>{{ product.model }}
+		</p>
+	</li>
+	
+	{% if product.colorSn %}
+	<li>
+		<p>
+			<span class="preWord">色號:</span>{{ product.colorSn }}
+		</p>
+	</li>
+	{% endif %}
+
+	{% if product.customSn %}
+	<li>
+		<p>
+			<span class="preWord">自定義序號:</span>{{ product.customSn }}
+		</p>
+	</li>
+	{% endif %}
+
+	{% if product.color is not empty %}
+		<li>
+			<p>
+				<span class="preWord">顏色:</span>{{ product.color.name }}
+			</p>
+		</li>
+	{% endif %}
+
+	<li>
+		<p>
+			<span class="preWord">成本:</span>
+			{% if (app.user|has_auth('READ_COST_OWN') and app.user|is_own(product))
+				or (app.user|has_auth('READ_COST_ALL')) 
+			%}
+				{{ product.cost|number_format }}元
+			{% else %}
+				<span class="label label-default">沒有權限</span>
+			{% endif %}
+		</p>
+	</li>
+	<li>
+		<p>
+			<span class="preWord">售價:</span>{{ product.price|number_format }}元
+		</p>
+	</li>
+	<li>
+		<p>
+			<span class="preWord">網路售價:</span>{{ product.webPrice|number_format }}元
+		</p>
+	</li>
+	<li>
+		<p>
+			<span class="preWord">新舊程度:</span>{{ product.level.name }}
+		</p>
+	</li>
+
+	{% if product.orgSn %}
+		<li>
+			<p>
+				<span class="preWord">廠牌序號:</span>{{ product.orgSn }}
+			</p>
+		</li>
+	{% endif %}
+
+	{% if product.source %}
+		<li>
+			<p>
+				<span class="preWord">商品來源:</span>
+				{% if app.user|has_auth('PURCHASE') %}
+					{{ product.source.name }}
+				{% else %}
+					<span class="label label-warning">權限不足</span>
+				{% endif %}
+			</p>
+		</li>
+	{% endif %}
+
+	{% if product.activity %}
+		<li>
+			<p>
+				<span class="preWord">活動:</span>{{ product.activity.name }}
+			</p>
+		</li>
+
+	{% endif %}
+
+	{% if product.mT %}
+		<li>
+			<p>
+				<span class="preWord">商品材質:</span>{{ product.mT.name }}
+			</p>
+		</li>
+	{% endif %}
+
+	{% if product.createdAt %}
+		<li>
+			<p>
+				<span class="preWord">進貨時間:</span>
+				{{ product.createdAt|date('Y-m-d') }}
+			</p>
+		</li>
+	{% endif %}
+
+	{% if product.desimg %}
+		<li>
+			<p>
+				<span class="preWord">附圖:</span>
+				<a href="{{ product.desimg.path }}" target="_blank">
+					<img src="{{ product.desimg.path }}" style="width:100px; height: 100px;"/>
+				</a>
+			</p>
+		</li>
+	{% endif %}
+
+	{% if product.memo %}
+		<li>
+			<p>
+				<span class="preWord">商品備註:</span>{{ product.memo }}
+			</p>
+		</li>
+	{% endif %}
+
+	{% if product.inherits|length > 1 %}
+	<li>
+		<p>
+			{% for inherit in product.inherits %}
+				{% set color =  (inherit.id == inherit.parent.id) ? '#1a8a2c': 'red' %}
+				<span style="color: {{ color }};">{{ inherit.sn }}</span>
+				{% if loop.last %}
+					<span></span>
+				{% else %}
+					<span>&nbsp; ~ &nbsp;</span>
+				{% endif %}
+			{% endfor %}
+		</p>
+	</li>
+	{% endif %}
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}

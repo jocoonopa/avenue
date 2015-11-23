@@ -1,0 +1,141 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+  
+{% block title %}購物流程{% endblock %}
+
+{% block preExt %}
+<link rel="stylesheet" href="/bundles/woojinfront/plugins/jquery-steps/css/jquery.steps.css">
+{% endblock %}
+
+{% block body %}
+<div class="row mt-30">
+    <div class="col-md-2 hidden-xs">&nbsp;</div>
+    <div class="col-md-8 col-xs-12">
+        <div class="service-block service-block-dark">            
+            <span class="icon-custom icon-color-light rounded-x icon-line icon-bulb"></span>
+            <h2 class="heading-md">購物須知</h2>
+            <hr>
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>1.</strong>&nbsp;
+                    訂單成立後請於七日內前往歐付寶付款，否則系統將會自動取消訂單。
+                </span> 
+            </div>
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>2.</strong>&nbsp;
+                    圖片顏色會因拍攝燈光或個人螢幕造成部份色差，請以實際商品顏色為準。
+                </span> 
+            </div>
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>3.</strong>&nbsp;
+                    發票將於七日鑑賞期過後寄送至您的訂單地址。
+                </span> 
+            </div>
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>4.</strong>&nbsp;
+                    若訂單內的地址與手機號碼須修正，請務必立即與客服聯繫以便修改。
+                </span> 
+            </div>
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>5.</strong>&nbsp;
+                    若僅將商品加入購物車，不算完成該商品的訂購，若未完成結帳流程，且此商品已售完的狀況下，系統將自動從購物車中移除該商品。
+                </span> 
+            </div>
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>6.</strong>&nbsp;
+                    若訂單內的地址與手機號碼須修正，請務必立即與客服聯繫以便修改。
+                </span> 
+            </div>
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>7.</strong>&nbsp;
+                    當商品送達指定地點若未被領取或拒收，達<strong class="red">３</strong>次以上將關閉該會員之購物功能。
+                </span> 
+            </div>
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>8.</strong>&nbsp;
+                    登入後前往會員中心，點選左側 <a class="btn btn-default" href="{{ path('front_custom_login', {href: 'front_profile_orders'}) }}"><span class="glyphicon glyphicon-record"></span>訂單記錄</a> 即可查詢您的訂單狀態。
+                </span> 
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 hidden-xs">&nbsp;</div>
+</div>
+
+{# <div class="row">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-10">
+        <div id="manual-purchase" class="manual mt-30">
+            <h3>將商品加入購物車</h3>
+            <section>
+                <h2 class="text-center border-bottom-solid-grey">將商品加入購物車</h2>
+                <div class="row">
+                    <div class="col-md-6 col-xs-12 text-center">
+                        <img src="/img/manual-purchase/mp-a-1.jpg" class="img-responsive" alt="購買流程1-1"/>
+                    </div>
+                    <div class="col-md-6 col-xs-12 text-center">
+                        <img src="/img/manual-purchase/mp-a-2.jpg" class="img-responsive" alt="購買流程1-2"/>
+                    </div>
+                </div>
+            </section>
+            <h3>前往訂單頁面</h3>
+            <section>
+                <div class="row">
+                    <h2 class="text-center border-bottom-solid-grey">前往訂單頁面</h2>
+                    <div class="col-md-6 col-xs-12 text-center">
+                        <img src="/img/manual-purchase/mp-b-1.jpg" class="img-responsive" alt="購買流程2-1"/>
+                    </div>
+                    <div class="col-md-6 col-xs-12 text-center">
+                        <img src="/img/manual-purchase/mp-b-2.jpg" class="img-responsive" alt="購買流程2-2"/>
+                    </div>
+                </div>
+            </section>
+            <h3>填寫訂單資訊</h3>
+            <section>
+                <div class="row">
+                    <h2 class="text-center border-bottom-solid-grey">填寫訂單資訊</h2>
+                    <div class="col-md-12 text-center">
+                        <img src="/img/manual-purchase/mp-c.jpg" class="img-responsive" alt="購買流程3"/>
+                    </div>
+                </div>
+            </section>
+            <h3>前往歐付寶結帳</h3>
+            <section>
+                <div class="row">
+                    <h2 class="text-center border-bottom-solid-grey">前往歐付寶結帳</h2>
+                    <div class="col-md-12 text-center">
+                        <img src="/img/manual-purchase/mp-d.jpg" class="img-responsive" alt="購買流程4"/>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="col-md-1">&nbsp;</div>
+</div> #}
+
+{% endblock %}
+
+{% block jsExec %}
+<script>
+$("#manual-purchase").steps({
+    headerTag: "h3",
+    bodyTag: "section",
+    transitionEffect: "slideLeft",
+    transitionEffectSpeed: 500,
+    labels: {
+        cancel: "取消",
+        current: "目前步驟:",
+        pagination: "頁籤",
+        finish: "完成",
+        next: "下一步",
+        previous: "上一步",
+        loading: "處理中 ..."
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,964 @@
+{% extends 'WoojinBaseBundle:Base:woojin.layout.html.twig' %}
+
+{% block panelOpen %}
+{{ parent() }}
+
+<div class="condition_add">
+
+	<div style="position: relative; left: 20px; margin-bottom: 20px;">
+		<a href="{{ path('goods_fix_cn') }}" class="btn btn-primary btn-lg active" role="button">大陸應急修改介面</a>
+	</div>
+
+	<!-- 條件增加區 -->
+	<div class="goods_search_condition">
+		<p class='not_condition' data-condition="0">請選擇查詢條件</p>
+		<p data-condition="1">店鋪</p>
+		<p data-condition="2">品名&序號</p>
+		<p data-condition="3">產品產編</p>
+		<p class="Phidden" data-condition="4">產品成本</p> 
+		<p class="Phidden" data-condition="5">產品價格</p> 
+		<p data-condition="6">操作時間</p>
+		<p class="Phidden" data-condition="7">品牌</p>
+	 	<p data-condition="8">商品新舊</p> 
+		<p data-condition="9">商品狀態</p>
+	 	<p class="Phidden" data-condition="10">有無圖片</p> 
+	 	<p class="Phidden" data-condition="11">有無備註</p> 
+		<p data-condition="12">訂單種類</p>
+		<p data-condition="13">訂單狀態</p>
+	 	<p class="Phidden" data-condition="14">商品來源</p>
+	 	<p class="Phidden" data-condition="15">品牌( 顏色/選單 )</p> 
+	 	<p class="Phidden" data-condition="16">型號搜尋</p>
+	 	<p data-condition="17">材質</p>
+	 	<p data-condition="18">活動</p>
+        <p data-condition="19">顏色</p>  
+        <p data-condition="20">款式</p>
+        <p data-condition="21">品牌</p>
+        <p data-condition="22">色號</p>
+        <p data-condition="23">型號</p>
+	</div>
+	<button class="goods_search_submit btn btn-default"><span data-icon="S">查詢</span></button>
+	(<em>每頁十筆資料</em>)
+		{% if app.user.getId in [34,21] %}
+
+	{% endif %}
+</div>
+{% endblock %}
+{% block form %}
+	<input type="hidden" name="bGoods" value="1" />
+	<div>
+		<select name="orderCondition" style="width: 140px;">
+			<option value="">請選擇排序條件</option>
+			<option value="gd.goods_passport_id">按照建立時間排序</option>
+			<option value="gd.goods_cost">按照成本排序</option>
+			<option value="gd.goods_price">按照價格排序</option>
+			<option value="gd.goods_source_id">按照來源地排序</option>
+			<option value="gd.goods_level_id">按照新舊程度排序</option>
+		</select>
+		<select name="orderSort" >
+			<option value="ASC">正向</option>
+			<option value="DESC">反向</option>
+		</select>
+	</div>
+
+{% endblock %}
+{% block js %}
+<div class="ordersEditFormDialog" title="訂單編輯"></div>
+<div class="div_right_bottom">
+	<button class="btn btn-default">記錄條件</button>
+</div>
+<div class="changeOrdersCustomDialog" title="修改客戶">
+	<input type="text" placeholder="請輸入客戶電話" />
+	<div data-id="0"></div>
+</div>
+<script>
+$(function() {
+	{#{ render( controller("WoojinBaseBundle:Base:getBrandSelect") ) }#}
+	{#{ render( controller("WoojinBaseBundle:Base:getBrandSelectColor") ) }#}
+
+	var 
+		isClickFirst = [],
+		repo = [],
+        brand_str = '',
+        brand_type_option_arr = [],
+        brand_sn_option_arr = [];
+
+    for (var i = 1; i <= 23; i ++ ) {
+    	isClickFirst[i] = true;
+    }
+
+	var 
+        url = Routing.generate('goods_search_ajax'),
+        $tab = $('#tabs-search'),
+		$goodsSearchOperate = $tab.find('.operatePanel'),
+        $goodsSearchOpen = $tab.find('.panelSwitch'),
+        $goodsSearchAjaxResponse = $tab.find('.ajaxResMsgRight'),
+        $goodsSearchAjaxLoadImg = $tab.find('.ajaxResLeft'),
+        $goodsSearchCondition = $tab.find('.goods_search_condition'),
+        $pCondition = $goodsSearchCondition.find('p').not('.not_condition'),
+        $goodsSearchSubmit = $tab.find('.goods_search_submit'),
+        $goodsSearchForm = $tab.find('.woojinForm'),
+        $goodsNameInput = $tab.find('.goods_search_goods_name'),
+        $ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog'),
+        $ordersEditFormDialog = $('.ordersEditFormDialog'),
+        $changeOrdersCustomDialog = $('.changeOrdersCustomDialog'),
+        $recordConditionButton = $tab.find('.div_right_bottom'),
+        sCheckExistUrl = Routing.generate('admin_custom_checkExist'),
+        sAutoByMobilUrl = Routing.generate('admin_custom_searchName_byEmail'),
+        rUsersHabit = [];
+        animateSpeed = 700;
+
+    var bindHoverOnDeleteButton = function () {
+      	$goodsSearchForm.children('div').hover(
+    			function () {
+    				if (!$(this).hasClass('isHoverShow') || $('.isHoverShow').length < 1) {
+    					if ($('.isHoverShow').length>=1) {
+    						$(this).addClass('isHoverShow').find('.delete_parent_div').fadeIn(80);
+    					} else {
+    						$(this).addClass('isHoverShow').find('.delete_parent_div').fadeIn(animateSpeed);
+    					}	
+    				}	
+    			},function () {
+    				if ($('.isHoverShow').length > 0) {
+    					$(this).find('.delete_parent_div').fadeOut(100, function () {
+    						$(this).parent().removeClass('isHoverShow');
+    					});
+    			}	
+    	});
+    };
+
+    var genSelect = function (condition_add, entity, route, appendInput) {
+      	var appendInput = appendInput || '';
+
+      	if (isClickFirst[condition_add]) {
+        	ajaxLoaded();
+
+        	$.get(route, function (res) {
+        		var funName = 'set' + entity + 'Param';
+        		
+                window[funName](res);
+
+        		repo[condition_add] = res;
+
+        		if (typeof window['gen' + entity + 'Select'] == 'function') {
+        			window['gen' + entity + 'Select'](appendInput);
+        		}
+    				
+				onDeleteEvent();
+    				
+				bindHoverOnDeleteButton();
+    				
+				$.unblockUI();
+    				
+				isClickFirst[condition_add] = false;
+        	});			
+        } else {
+        	if (!appendInput) {
+        		window['set' + entity + 'Param'](repo[condition_add]);
+        	} else {
+        		window['gen' + entity + 'Select'](appendInput);
+        	}
+       
+    		onDeleteEvent();
+    			
+    		bindHoverOnDeleteButton();
+        }
+    };
+
+  window.setStoreParam = function (res) {
+  	$goodsSearchForm.append(res + '<button class="delete_parent_div">x</button>');
+  };
+
+  window.setGoodsMTParam = function (res) {
+  	$goodsSearchForm.append( '<div>' + res + '<button class="delete_parent_div">x</button></div>');
+  };
+
+  window.setGoodsLevelParam = function (res) {
+  	$goodsSearchForm.append( res );
+  };
+
+  window.setGoodsStatusParam = function (res) {
+  	$goodsSearchForm.append( res );
+  };
+
+  window.setOrdersKindParam = function (res) {
+  	$goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+  };
+
+  window.setOrdersStatusParam = function (res) {
+  	$goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+  };
+
+  window.setActivityParam = function (res) {
+  	$goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+  };
+
+  window.setColorParam = function (res) {
+    $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+  };
+
+window.setBrandParam = function (res) {
+    $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+  };
+
+  window.setPatternParam = function (res) {
+    $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+  };
+
+	$pCondition.on('click', function () {
+    var $p = $(this);
+    var condition_add = $p.data('condition');
+		var appendInput;
+
+    rUsersHabit.push(condition_add);
+
+		switch (condition_add) {
+			case 1:
+
+				genSelect( condition_add, 'Store' , "{{ path('base_get_store_select') }}", false);
+
+				break;
+
+			case 2:
+				appendInput = '<div><input type="text" class="goods_search_goods_name" name="goods_search_goods_name[]" placeholder="產品名稱"/><button class="delete_parent_div">x</button></div>';
+				$goodsSearchForm.append(appendInput);
+				$('.goods_search_goods_name').not('.hasAutocomplete').autocomplete({
+			        source      : Routing.generate('goods_search_ajax_name'),
+			        minLength   : 2
+			    }).addClass('hasAutocomplete');
+				
+				onDeleteEvent();
+			
+				bindHoverOnDeleteButton();
+				break;
+
+			case 3:
+				appendInput = '<div><input type="text" class="goods_search_goods_sn" name="goods_search_goods_sn[]" placeholder="產品產編" /><button class="delete_parent_div">x</button></div>';
+				$goodsSearchForm.append(appendInput);
+
+				onDeleteEvent();
+			
+				bindHoverOnDeleteButton();
+
+				break;
+
+			case 4:
+				// appendInput = '<div><input type="number" class="goods_search_cost_min numeric" name="goods_search_cost_min[]" placeholder="成本區間[低]" /><span>~</span><input type="number" class="goods_search_cost_max numeric" name="goods_search_cost_max[]" placeholder="成本區間[高]" /><button class="delete_parent_div">x</button></div>';
+				// $goodsSearchForm.append(appendInput);
+				// onNumeric();
+				break;
+
+			case 5:
+				// appendInput = '<div><input type="number" class="goods_search_price_min numeric" name="goods_search_price_min[]" placeholder="價格區間[低]" /><span>~</span><input type="number" class="goods_search_price_max numeric" name="goods_search_price_max[]" placeholder="價格區間[高]" /><button class="delete_parent_div">x</button></div>';
+				// $goodsSearchForm.append(appendInput);
+				// onNumeric();
+				break;
+
+			case 6:
+				appendInput = '<div><input type="text" class="goods_search_create_time_start" name="goods_search_create_time_start[]" placeholder="動作時間" value="{{ "now"|date("Y-m-d") }}" /><span>~</span><input type="text" class="goods_search_create_time_end" name="goods_search_create_time_end[]" placeholder="動作時間" value="{{ "now"|date("Y-m-d") }}" /><button class="delete_parent_div">x</button></div>';
+				$goodsSearchForm.append(appendInput);
+				onDatetimePicker();
+
+				onDeleteEvent();
+			
+				bindHoverOnDeleteButton();
+
+				break;
+
+			case 7:
+                genSelect(condition_add, 'Brand', "{{ path('base_get_onlybrand_select')}}", false);
+
+				break;
+
+			case 8:
+				genSelect(condition_add,  'GoodsLevel',  "{{ path('base_get_goods_level_select')}}", false);
+
+				break;
+
+			case 9:
+				genSelect(condition_add, 'GoodsStatus', "{{ path('base_get_goods_status_select')}}", false);
+
+				break;
+
+			case 10:
+				// var $goodsSearchHasPicture = $('[name^=goods_search_has_picture');
+				// if ($goodsSearchHasPicture.length > 0) {
+				// 	bootbox.alert('選項已經存在！', function(){
+				// 		$goodsSearchHasPicture.effect('shake', 500);
+				// 	});
+				// } else {
+				// 	appendInput = '<div><select name="goods_search_has_picture[]"><option value="1">有圖片</option><option value="2">無圖片</option></select><button class="delete_parent_div">x</button></div>';
+				// 	$goodsSearchForm.append(appendInput);
+				// }
+				// 
+				break;
+
+			case 11:
+				// if ($('[name^=goods_search_has_memo').length > 0) {
+				// 	bootbox.alert('選項已經存在！', function(){
+				// 		$('[name^=goods_search_has_memo').effect('shake', 500);
+				// 	});
+				// } else {
+				// 	appendInput = '<div><select name="goods_search_has_memo[]"><option value="1">有備註</option><option value="2">無備註</option></select><button class="delete_parent_div">x</button></div>';
+				// 	$goodsSearchForm.append(appendInput);
+				// }
+				
+				break;
+
+			case 12:
+				genSelect(condition_add, 'OrdersKind', "{{ path('base_get_ordersKind_select')}}", false);
+
+				break;
+
+			case 13:
+				genSelect(condition_add, 'OrdersStatus', "{{ path('base_get_ordersStatus_select')}}", false);
+
+				break;
+
+			case 14:
+				// var 
+				// 	$target = $('<div></div>').appendTo($goodsSearchForm);
+				// 	appendInput = '{#{ render( controller("WoojinBaseBundle:Base:getGoodsSourceArrSelect") ) }#}';
+				// 	appendInput += '<button class="delete_parent_div">x</button>';
+				// $target.append(appendInput);
+				break;
+
+			case 15:
+    //     appendInput = '<div><select class="base_ajax_brand hasPatch" name="base_ajax_brand_color[]"></select><select class="base_ajax_brand_type" name="base_ajax_brand_type_color[]" ></select><select class="base_ajax_brand_sn" name="base_ajax_brand_sn_color[]"></select><button class="delete_parent_div">x</button></div>';
+    //     $goodsSearchForm.append(appendInput);
+				// var 
+				// 	$brand = $goodsSearchOperate.find('.base_ajax_brand').filter('.hasPatch'),
+	   //      $brand_type = $brand.next(),
+	   //      $brand_sn = $brand_type.next();
+				// $brand.append( oColor.brand_str ).removeClass('hasPatch');
+				// $brand.on('change', function () {
+    //       var 
+    //       	brand_id = $(this).val(),
+    //         brand_name = $(this).find('option:selected').text();
+				// 	$brand_type.find('option').remove();
+				// 	$brand_sn.find('option').remove();
+				// 	$brand_type.append('<option value="0">不限</option>'+oColor.brand_type_option_arr[brand_id]);
+				// 	$brand_type.trigger('change');
+				// }).change();
+				// $brand_type.on('change', function () {
+    //       var 
+    //       	brand_type_id = $(this).val(),
+    //         brand_type_name = $(this).find('option:selected').text();
+				// 	$brand_sn.find('option').remove();
+				// 	$brand_sn.append('<option value="0">不限</option>'+oColor.brand_sn_option_arr[brand_type_id]);
+				// 	$brand_sn.trigger('change');
+				// }).change();
+				
+				break;
+
+			case 16:
+				appendInput = '<div><input type="text" class="goods_search_brandSn_name" name="goods_search_brandSn_name[]" placeholder="型號名稱"/><button class="delete_parent_div">x</button></div>';
+				$goodsSearchForm.append(appendInput);
+
+				onDeleteEvent();
+			
+				bindHoverOnDeleteButton();
+
+				break;
+			
+			case 17:
+
+				genSelect(condition_add, 'GoodsMT', "{{ path('base_get_goodsMT_select')}}", false);
+
+				break;
+			
+			case 18:
+				
+				genSelect(condition_add, 'Activity', "{{ path('base_get_activity_select')}}", false);
+
+				break;
+
+            case 19:
+                
+                genSelect(condition_add, 'Color', "{{ path('base_get_color_select')}}", false);
+
+                break;
+
+            case 20:
+                
+                genSelect(condition_add, 'Pattern', "{{ path('base_get_pattern_select')}}", false);
+
+                break;
+
+            case 21:
+                
+                genSelect(condition_add, 'Brand', "{{ path('base_get_onlybrand_select')}}", false);
+
+                break;
+
+            case 22:
+
+                appendInput = '<div><input type="text" class="colorSn" name="colorSn[]" placeholder="色號"/><button class="delete_parent_div">x</button></div>';
+                $goodsSearchForm.append(appendInput);
+
+                onDeleteEvent();
+            
+                bindHoverOnDeleteButton();
+
+                break;
+
+            case 23:
+
+                appendInput = '<div><input type="text" class="model" name="model[]" placeholder="型號"/><button class="delete_parent_div">x</button></div>';
+                $goodsSearchForm.append(appendInput);
+
+                onDeleteEvent();
+            
+                bindHoverOnDeleteButton();
+
+                break;
+
+			default:
+				break;
+		}
+	});
+
+  $goodsSearchForm.append('<input type="hidden" name="page" value="1">');
+  
+  $ajaxEditGoodsDialog.dialog({
+    autoOpen : false,
+    modal : true,
+    height : 800,
+    width : 500,
+  	buttons : {
+			'確定': function () {
+				ajaxLoaded();
+  			$(this).find('form').submit();
+  			$(this).dialog('close');
+  		},
+    	'取消': function () {
+    			$(this).dialog('close');
+  		}
+  	}		
+  });
+
+  $ordersEditFormDialog.dialog({
+    autoOpen : false,
+    modal : true,
+    height : 500,
+    width : 500,
+  	buttons : {
+  		'確定': function () {
+  			ajaxLoaded();
+  			$(this).find('form').submit();
+  			$(this).dialog('close');
+  		},
+  		'取消': function () {
+  			$(this).dialog('close');
+  		}
+  	}		
+  });
+
+  $goodsSearchCondition.find('.not_condition').on('click', function () {
+    if ( !$goodsSearchCondition.hasClass('isSlideDown') ) {
+    	$goodsSearchCondition.stop().animate(
+	    	{
+          'height'            : '350px',
+          'margin-bottom'     : '15px'
+	    	}, animateSpeed+200).addClass('isSlideDown');
+    } else {
+  		$goodsSearchCondition.stop().animate(
+    	{
+        'height'            : '20px',
+        'margin-bottom'     : '0'
+    	}, animateSpeed+300).removeClass('isSlideDown');	
+  	}  
+  });
+
+  $recordConditionButton.on('click', function () {
+    var 
+    	$form = $( '.woojinForm' ),
+      url = Routing.generate( 'user_ajax_record_habit' ),
+      record = JSON.stringify( rUsersHabit );
+    ajaxLoaded();
+  	$.post(
+  		url, 
+  		{ 
+  			'users_habit_name'	: 'goods_search', 
+  			'users_habit_value'	: record
+  		}
+  	)
+  	.done(function () {
+			alert('以儲存您的使用習慣');
+			$.unblockUI();
+  	})
+  	.fail(function(xhr, textStatus, errorThrown) {
+    	alert('ajax error!');
+			$.unblockUI();
+  	});
+  });
+
+	$goodsSearchForm.ajaxForm({ 
+    url : url,
+    error : function () {
+	    alert('ajax error!'); 
+    },
+    success : function (response) { 
+    	if (response == '') {
+    		$goodsSearchAjaxLoadImg.html( '' );
+    		$goodsSearchAjaxResponse.html( '' );
+    		$tab.find('.pageBar').html( '' );
+    		return false;
+    	}
+    	$goodsSearchAjaxLoadImg.html('<img src="{{ AjaxLoadingGif }}" />');
+    	$goodsSearchAjaxResponse.html(response);
+    	attachOnNewElement_goodsSearch();
+    	backOrderRequest();
+    	if ($goodsSearchForm.hasClass('fromSubmit'))
+    		$goodsSearchOpen.click();
+    } 
+	});
+
+	$goodsSearchSubmit.on('click', function () {
+		var 
+			$input = $goodsSearchForm.find('input'),
+			hasValue = true;
+		$input.each(function () {
+			var 
+				$this = $(this),
+				thisValue = $this.val();
+			if (thisValue == '') {
+				hasValue = false;
+				$this.addClass('noValue');
+			}
+		});
+		if ($input.length>0 && hasValue == false) {
+			bootbox.dialog({
+        message : '請將空白欄位刪除或是輸入內容',
+        title : '您有欄位未填寫喔!',
+        buttons : {
+					'danger': {
+            label : '確定',
+            className : 'btn-danger'
+					},
+					main: {
+	          label : "繼續",
+	          classNam : "btn-default",
+	          callback : function () {
+							$('.noValue').parent().remove();
+							$goodsSearchAjaxLoadImg.html('<img src="{{ AjaxLoadingGif }}" />');
+							$goodsSearchAjaxResponse.html('<img src="{{ AjaxLoadingGif }}" style="margin: 200px 500px 0 0; float:right;" />');
+							setTimeout(function(){
+								if ($goodsSearchForm.hasClass('fromSubmit'))
+									$goodsSearchForm.removeClass('fromSubmit');
+
+								$goodsSearchForm.find('[name="page"]').val(1);
+								$goodsSearchForm.addClass('fromSubmit').submit();
+							}, 300);
+						}
+					}
+				}
+			});
+		} else {
+			$goodsSearchAjaxLoadImg.html('<img src="{{ AjaxLoadingGif }}" />');
+			$goodsSearchAjaxResponse.html('<img src="{{ AjaxLoadingGif }}" style="margin: 200px 500px 0 0; float:right;" />');
+			if ($goodsSearchForm.hasClass('fromSubmit'))
+				$goodsSearchForm.removeClass('fromSubmit');
+			$goodsSearchForm.find('[name="page"]').val(1);
+			$goodsSearchForm.addClass('fromSubmit').trigger('submit');
+		}
+	});
+	$tab.tabs({ heightStyle: "fill"});
+	initSearchCondition();
+	$goodsSearchAjaxResponse.accordion();
+	function backOrderRequest() {
+		var 
+			$button = $('button.back_order').not('.hasAttatch'),
+			token = $('.woojinForm').find('[name="form[_token]"]').val(),
+			sRefreshUrl = Routing.generate('goods_search_ajax'),
+			sBackOrderRequestUrl = Routing.generate('order_backOrder_request'),
+			$ordersEditFormDialog = $('.ordersEditFormDialog'),
+			$ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog'),
+			sFormLoadedUrl = Routing.generate('goods_edit_form_loaded'),
+			sOrdersFormLoadedUrl = Routing.generate('orders_edit_form_loaded'),
+			sOrdersCancelUrl = Routing.generate('orders_cancel');
+
+		$button.addClass('hasAttatch').on('click', function () {
+			var 
+				$this = $(this),
+				nGoodsPassportId = $this.data('id'),
+				_str = '',
+				_arr = [],
+				$goodsImg = $('img.img-'+nGoodsPassportId);
+
+			{% for store in rStore %} 
+			_str += '{{store.storeSn }},';
+			_arr.push( '{{store.storeSn }}' );
+			{% endfor %}
+
+			bootbox.prompt('調貨至哪間店?(請輸入店碼['+ _str +'])', function (sStoreSn) {
+				if (sStoreSn === null)
+					return;
+				if ( $.inArray(sStoreSn, _arr )<0)
+					return;
+				if (sStoreSn == '{{ app.user.getStore.getStoreSn }}')
+					return;
+				$.post(
+					sBackOrderRequestUrl, 
+					{
+						'nGoodsPassportId' : nGoodsPassportId, 
+						'sStoreSn' : sStoreSn,
+						'form[_token]' : token
+					}
+				)
+				.done(function (res) {
+					$this.fadeOut(500);
+					$this.closest('.accordion_left').html('<img src="{{ AjaxLoadingGif }}" class="accTarget" style="margin:10px;" />');
+					$.post(
+						sRefreshUrl, 
+						{
+							'goods_passport_id[]' 	: nGoodsPassportId, 
+							'bGoods' 				: 1,
+							'form[_token]' 			: token
+						}
+					)
+					.done(function ( res ) {
+						res = res.replace(/^\s*|\s*$/g,"");
+						var 
+							$res = $(res),
+							$insertElement = $res.find('div.goodsResTabs'),
+							$div = $('.accTarget').parent();
+						$insertElement.tabs({heightStyle: "content"});
+						$div.append($insertElement);
+						$div.find('.edit_orders').on('click', function () {
+				    	editOrdersEvevnt($(this));
+				    });
+					  $div.find('.cancel_orders').on('click', function () {
+							cancelOrdersEvent($(this));
+				    });
+						$('.accTarget').remove();
+					})
+					.fail(function () {
+						alert('refresh fail');
+					});
+				})
+				.fail(function () {
+					console.log('ajax_error_backorder')
+				});
+			});
+		});
+	}
+
+	function initSearchCondition () {
+		{% if users_habit %}
+			{% autoescape false %}
+        var usersHabitValue = $.parseJSON('{{ users_habit.getUsersHabitValue }}');
+			{% endautoescape %}
+		 	$.each(usersHabitValue, function(key, value){
+		 		$('.goods_search_condition').find('p').eq(value).click();
+		 	});
+		 	$('.goods_search_goods_name').autocomplete({
+        source : Routing.generate('goods_search_ajax_name'),
+        minLength : 2
+	    }).addClass('hasAutocomplete');
+		{% endif %}
+	}
+
+	function onDeleteEvent () {
+		var $deleteParentDiv = $('.delete_parent_div');
+		$deleteParentDiv.not('.hasOnEvent').on('click', function () { 
+      var 
+      	$element = $(this).closest('div'),
+        $goodsSearchOperate = $element.parent().find('div'),
+        index_ = $goodsSearchOperate.index($element);
+			rUsersHabit.splice(index_-1, 1);
+			$element.remove(); 
+		}).addClass('hasOnEvent').button()
+		.parent().on('keydown', function(e){ 
+			//if (e.keyCode == 27) $(this).remove(); 
+			if (e.keyCode == 13) {
+				$('.goods_search_submit').click();
+				return false;
+			}
+		})
+		.find('input').on('change', function(){
+			var $input = $(this); 
+			if ($input.hasClass('noValue'))
+				$input.removeClass('noValue');
+			else if($input.val() == '')
+				$input.addClass('noValue');
+		});
+	}
+
+	function onDatetimePicker () {
+    var $dateTimeTarget = $('[class^=goods_search_create_time]').not('.hasOnEvent');
+		$dateTimeTarget.datepicker(
+			{ 
+				'dateFormat' : 'yy-mm-dd'
+			}
+		).addClass('hasOnEvent');
+		return false;
+	}
+
+	function onNumeric () {
+		var $numericTarget = $('.numeric');
+		$numericTarget.not('hasOnEvent').numeric().addClass('hasOnEvent');
+		return false;
+	}
+
+	function specialOrdersRefresh ($ordersUl) {
+		if ($ordersUl.find('.orders_kind').data('id') == 5) {
+			var 
+				$refreshTarget = $ordersUl.next(),
+				nOrdersId = $refreshTarget.find('.button').data('id'),
+				sImgClass = $refreshTarget.attr('id'),
+				sOrdersRefreshUrl = Routing.generate('orders_ajax_one_info');
+			$refreshTarget.html('<img src="{{ AjaxLoadingGif }}" style="margin: 15px;"/>');
+			$.post( sOrdersRefreshUrl, {'nOrdersId' : nOrdersId }, function(res){
+				$refreshTarget.html(res);
+			});
+			$('img.'+sImgClass).attr('src', '{{ CancelPng }}');
+		} else if ($ordersUl.find('.orders_kind').data('id') == 9) {
+			var 
+				$refreshTarget = $ordersUl.prev(),
+				nOrdersId = $refreshTarget.find('.button').data('id'),
+				sImgClass = $refreshTarget.attr('id'),
+				sOrdersRefreshUrl = Routing.generate('orders_ajax_one_info');
+			$refreshTarget.html('<img src="{{ AjaxLoadingGif }}" style="margin: 15px;"/>');
+			$.post( sOrdersRefreshUrl, {'nOrdersId' : nOrdersId }, function(res){
+				$refreshTarget.html(res);
+			});
+			$('img.'+sImgClass).attr('src', '{{ CancelPng }}');
+		}
+		return;
+	}
+
+	function editOrdersEvevnt (e) {
+		var 
+			$this = e,
+			nOrdersId = $this.parent().data('id'),
+			sTabsId = $this.parent().parent().attr('id'),
+			sOrdersFormLoadedUrl = Routing.generate('orders_edit_form_loaded');
+
+		ajaxLoaded();
+		$.post(sOrdersFormLoadedUrl, { 'nOrdersId' : nOrdersId , 'sTabsId': sTabsId })
+		.done(function (res) {
+			$ordersEditFormDialog.html( res );
+			$ordersEditFormDialog.dialog('open');
+			$.unblockUI();
+		})
+		.fail(function (xhr, textStatus, errorThrown) {
+			alert('ajax error');
+			$.unblockUI();
+		});
+	}
+
+	function cancelOrdersEvent (e) {
+		var 
+			$this = e,
+	    nOrdersId = $this.parent().data('id'),
+	    $ordersImg = $('img.ordersImg-'+nOrdersId),
+	    sOrdersCancelUrl = Routing.generate('orders_cancel');		
+		bootbox.confirm('確定取消此訂單嗎?', function (res) {
+			if (res === false)
+				return;
+			ajaxLoaded();
+			$.post(
+				sOrdersCancelUrl, 
+				{ 
+					'nOrdersId' : nOrdersId, 
+					'form[_token]' : $('#tabs-search').find('.woojinForm').find('[name="form[_token]"]').val() 
+				}
+			)
+			.done(function (res) {
+				var	
+					nGoodsPassportId = $this.parent().data('goodsid'),
+					$div = $('#ResTabs'+nGoodsPassportId),
+					$goodsImg = $('img.img-'+nGoodsPassportId),
+					$ul = $div.find('.goods_list'),
+					$h3 = $div.parent().parent().prev(),
+					$ordersUl = $this.parent().parent(),
+					sRefreshAjaxTabUrl = Routing.generate('goods_ajax_refresh_goods_info');
+
+				$ordersUl.html( res );
+				$ordersImg.attr('src', '{{ CancelPng }}');
+				specialOrdersRefresh($ordersUl);
+				$this.parent().parent().find('.button').fadeOut(700);
+   			$.post( sRefreshAjaxTabUrl, { 'nGoodsPassportId' : nGoodsPassportId })
+   			.done(function (res) {
+   				$ul.html(res);
+   				var 
+   					nGoodsStatusId = $ul.find('.li_goods_status').data('statusid'),
+   					src = '';
+   				switch (nGoodsStatusId) {
+   					case 1:
+	   					src = '{{ SalePng }}';
+	   					break;
+   					case 2:
+	   					src = '{{ SoldOutPng }}';
+	   					break;
+   					case 3:
+	   					src = '{{ MovingPng }}';
+	   					break;
+   					case 4:
+	   					src = '{{ CancelPng }}';
+	   					break;
+   					case 5:
+	   					src = '{{ OtherStorePng }}';
+	   					break;
+   				}
+   				$goodsImg.attr('src', src);
+   				$h3.click();
+   				$.unblockUI();
+   				$ajaxEditGoodsDialog.dialog('close');
+   			})
+   			.fail(function (xhr, textStatus, errorThrown) {
+   				$.unblockUI();
+   			});
+			})
+    	.fail( function (xhr, textStatus, errorThrown) {
+    		alert('ajax error');
+    		$.unblockUI();
+    	});
+		});
+		return;
+	}
+
+	function attachOnNewElement_goodsSearch () {
+		var	
+			$tab = $('#tabs-search'),
+			$goodsSearchForm = $tab.find('.woojinForm'),
+			$goodsSearchAjaxLoadImg = $tab.find('.ajaxResLeft'),
+			$ajaxSearchDiv = $tab.find('.ajaxResMsgRight'),
+			$pageBar = $tab.find('.pageBar'),
+			$ajaxTabs = $('.goodsResTabs'),
+			$ajaxButton = $ajaxTabs.find('button'),
+			$ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog'),
+			$ordersEditFormDialog = $('.ordersEditFormDialog'),
+			$h3 = $tab.find('h3'),
+			sFormLoadedUrl = Routing.generate('goods_edit_form_loaded');
+
+		$ajaxSearchDiv.accordion('destroy').accordion({ 'heightStyle' : 'content' });
+
+		$h3.on('click', function(){
+			$goodsSearchAjaxLoadImg.html( '<img src="'+$(this).data('imgpath')+'" />'  );
+		}).eq(0).click();
+		
+		$ajaxTabs.tabs({
+			collapsible: true
+	  });
+
+    $ajaxButton.filter('.edit_goods').on('click', function(){
+    	var $this = $(this),
+    		nGoodsPassportId = $this.parent().data('id');
+
+    	ajaxLoaded();
+
+    	$.post(sFormLoadedUrl, { 'nGoodsPassportId' : nGoodsPassportId, 'bGoods' : 1 }, function(res){
+    		$ajaxEditGoodsDialog.html(res);
+    		$ajaxEditGoodsDialog.dialog('open');
+    		$.unblockUI();
+    	})
+    	.fail(function(xhr, textStatus, errorThrown) {
+    		alert('ajax error');
+    		$.unblockUI();
+    	});
+    });
+
+    $ajaxButton.filter('.change_order_custom').on('click', function () {
+			var 
+				$this = $(this),
+				$refreshDiv = $this.parent(),
+    		nOrdersId = $refreshDiv.data('id'),
+    		$changeOrdersCustomDialog = $('.changeOrdersCustomDialog'),
+    		$div = $changeOrdersCustomDialog.find('div');
+
+    	G_sTabsId = $refreshDiv.parent().attr('id');
+    	$changeOrdersCustomDialog.dialog('open');
+    	$div.data('id', nOrdersId);
+		});
+    
+    $ajaxButton.filter('.edit_orders').on('click', function(){
+    	editOrdersEvevnt( $(this) );
+    });
+    
+    $ajaxButton.filter('.cancel_orders').on('click', function(){
+    	cancelOrdersEvent( $(this) );
+    });
+
+    $('.opeDatetime').not('.has_attach .hasDatepicker').datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "hh:mm:ss",
+			onSelect: function () { 
+				var $this = $(this);
+
+				$.ajax({
+			    url: Routing.generate('update_ope_datetime', {id: $this.data('id')}),
+			    type: 'PUT',
+			    data: {update_at: $(this).val()},
+			    success: function(res) {
+			    	if (res.length > 0) {
+			    		alert(res);
+			    	}
+		        //alert('操作修改完成');
+			    },
+			    error: function () {
+			    	alert('ajax error');
+			    }
+				});
+			}
+		}).addClass('has_attach');
+
+    if ( $goodsSearchForm.hasClass( 'fromSubmit' ) ) {
+			var 
+				nCountTotal = $h3.eq(0).data('page'),
+				nNowPage = $h3.eq(0).data('nowpage'),
+				nPerPage = 10,
+				nPages = Math.ceil(nCountTotal/nPerPage),
+				sSpan = '<div class="pageTotal"><span>'+nNowPage+'/'+nPages+'</span></div><div class="pagePrev">prev</div><div class="scrollBar">';
+			
+			for (i = 1; i <= nPages; i ++) {
+				if (i == 1)
+					sSpan += '<div class="pageButton pageIsIt"><span style="font-size: 20px;">'+ i +'</span></div>';
+				else
+					sSpan += '<div class="pageButton"><span style="font-size: 12px;">'+ i +'</span></div>';
+			}
+
+			sSpan += '</div><div class="pageNext">next</div>';
+			
+			$pageBar.html(sSpan).fadeIn(700)
+			.find('.pageButton').on('click', function () {
+				var 
+					$this = $(this).find('span'),
+					nSubmitPage = $(this).find('span').text(),
+					$pageTotal 	= $tab.find('.pageTotal');
+
+				$this.parent().parent().find('.pageIsIt').removeClass('pageIsIt');
+				$this.parent().addClass('pageIsIt');
+				$pageTotal.find('span').text(nSubmitPage+'/'+nPages);
+				$goodsSearchForm.removeClass('fromSubmit').find('[name="page"]').val(nSubmitPage).submit();
+			});
+
+			$pageBar.find('.pagePrev').on('click', function(){
+				if ($pageBar.find('.pageIsIt').prev('.pageButton').length>0)
+					$pageBar.find('.pageIsIt').prev('.pageButton').click();
+
+				return false;
+			});
+
+			$pageBar.find('.pageNext').on('click', function(){
+				if ($pageBar.find('.pageIsIt').next('.pageButton').length>0 )
+					$pageBar.find('.pageIsIt').next('.pageButton').click();
+
+				return false;
+			});
+		} else {
+			var 
+				nCountTotal = $h3.eq(0).data('page'),
+				nNowPage = $h3.eq(0).data('nowpage'),
+				nPerPage = 10,
+				nPages = Math.ceil(nCountTotal/nPerPage);
+
+			$('.pageButton').find('span').css({'font-size': '12px'});
+			$('.pageButton').eq(nNowPage-1).find('span').css({ 'font-size': '20px'});
+		}
+
+		return false;
+	}
+});	
+</script>
+{% endblock %}

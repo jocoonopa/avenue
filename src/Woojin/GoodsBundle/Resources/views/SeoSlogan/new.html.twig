@@ -1,0 +1,11 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    <h1>新增關鍵字</h1>
+
+    {{ form(form) }}
+
+    <a href="{{ path('seoslogan') }}">
+        回到列表
+    </a>
+{% endblock %}

@@ -1,0 +1,8 @@
+.item {
+    position: relative;
+    width: 33%;
+}
+
+.sn {
+    position: absolute;
+}

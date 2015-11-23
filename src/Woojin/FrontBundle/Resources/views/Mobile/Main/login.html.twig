@@ -1,0 +1,47 @@
+{% extends ':Mobile/Front:base.html.twig' %}
+
+{% block title %}會員登入{% endblock %}
+
+{% block header %}
+    {% embed ':Mobile/Front/Header:header.html.twig' %}
+        {% block headerMessage %}{{ 'Sign In 會員登入' }}{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block content %}
+
+<div class="inner-main" style="height: auto;">
+    <div class="login-content">
+        <form action="{{ path('front_custom_verifyLogin') }}" role="form" method="post">
+            <button class="button button-blue avenue-fb-login my-text-center width-100-per mb-10"><i class="fa fa-facebook-square"></i>Facebook 登入/註冊</button> 
+
+            <h4 class="login-title"></h4>
+            <label for="username" class="login-email">電子信箱/帳號 E-mail/account</label>
+            <input type="email" id="username" name="email" />
+            <label for="password" class="login-password">密碼 Password</label>
+            <input type="password" id="password" name="password" />
+            <div class="login-signin">
+                <button type="submit" class="button button-dark my-text-center width-100-per mb-10">登入 Signin</button> 
+            </div>
+
+            <a href="{{ path('front_custom_passwordMail') }}" class="forgtten my-text-center width-100-per mb-10">
+                忘記密碼？ forgotten password？
+            </a>  
+
+            <a href="{{ path('front_custom_register') }}" class="button button-light my-text-center width-100-per mb-10">
+                <i class="fa fa-user-plus"></i>註冊 Register
+            </a> 
+
+            <input type="hidden" name="avenue_token" value="{{ csrf_token('custom_login') }}" />
+        </form>
+    </div>
+</div>
+
+{% block pageFooter %}{% endblock %}
+
+{% endblock %}
+
+{% block pagejs %}
+    {% include 'WoojinFrontBundle:Common:fbsdk.html.twig' %}
+    <script src="/bundles/woojinfront/js/front.login.js"></script>
+{% endblock %}

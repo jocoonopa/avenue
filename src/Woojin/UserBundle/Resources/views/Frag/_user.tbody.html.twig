@@ -1,0 +1,30 @@
+{% for user in users %}
+	{% if 
+	 	app.user|has_auth('USER_ALL_MANAGE') 
+	 	or (app.user|has_auth('USER_OWN_MANAGE') and app.user.store.id == user.store.id)
+	 	or (app.user|has_auth('USER_SELF_MANAGE') and app.user.id == user.id)
+	%}
+		{% set sActiveImg = user.getIsActive == 1 ?  UserActivePng : CancelPng %}
+		
+		<tr data-id="{{ user.id }}">
+			<td><span class="sRoleName">{{ user.role.name }}</span></td>
+			<td><span class="sUserName">{{ user.username }}</span></td>
+			<td><span class="sMobil">{{ user.mobil }}</span></td>
+			<td><span class="sEmail">{{ user.email }}</span></td>
+			<td>{{ user.createtime|date('Y-m-d') }}</td>
+			<td class="stoptime">
+				{% if user.isActive == 0 %}
+					{{ user.stoptime|date('Y-m-d') }}
+				{% endif %}
+			</td>
+			<td>
+				<img class="editPassword" src="{{ UserEditPng }}" data-id="{{ user.id }}" style="width: 16px; height: 16px;" />
+			</td>
+			<td>
+				{% if app.user|has_auth('USER_ALL_MANAGE') or app.user|has_auth('USER_OWN_MANAGE')  %}
+					<img class="activeUser" src="{{ sActiveImg }}" data-id="{{ user.id }}" style="width: 16px; height: 16px;" />
+				{% endif %}
+			</td>
+		</tr>
+	{% endif %}
+{% endfor %}

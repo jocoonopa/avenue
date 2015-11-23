@@ -1,0 +1,63 @@
+<!-- 
+ * Template Name: Unify - Responsive Bootstrap Template
+ * Description: Business, Corporate, Portfolio and Blog Theme.
+ * Version: 1.6
+ * Author: @htmlstream
+ * Website: http://htmlstream.com
+ -->
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>香榭官網退款通知信</title>
+                                                                                                                                                                                                                                                                                                                                                                                                        
+<style type="text/css">
+    .ReadMsgBody {width: 100%; background-color: #ffffff;}
+    .ExternalClass {width: 100%; background-color: #ffffff;}
+    body     {width: 100%; background-color: #ffffff; margin:0; padding:0; -webkit-font-smoothing: antialiased;font-family: Arial, Helvetica, sans-serif}
+    table {border-collapse: collapse;}
+    
+    @media only screen and (max-width: 640px)  {
+                    body[yahoo] .deviceWidth {width:440px!important; padding:0;}    
+                    body[yahoo] .center {text-align: center!important;}  
+            }
+            
+    @media only screen and (max-width: 479px) {
+                    body[yahoo] .deviceWidth {width:280px!important; padding:0;}    
+                    body[yahoo] .center {text-align: center!important;}  
+            }
+</style>
+</head>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" yahoo="fix" style="font-family: Arial, Helvetica, sans-serif">
+
+{% set orders = invoice.orders %}
+
+<h4>訂單編號: {{ invoice.sn }}, 歐付寶交易編號: {{ invoice.tradeNo }}, 退款時間: {{ invoice.updateAt|date('Y-m-d H:i:s') }}，請儘快進行退款作業</h4>
+<!-- Wrapper -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+    {% for order in orders %}
+    <tr>
+        {% set product = order.goodsPassport %}
+        <td width="100%" valign="top" bgcolor="#ffffff" style="padding-top:20px">
+            <ul>
+                <li>
+                    <a href="{{ url('front_product_show', {id: product.id}) }}" target="_blank">{{ product.name }}</a>
+                    {% if product.brand %}&nbsp;&nbsp;{{ product.brand.name }}{% endif %}
+                    {% if product.pattern %}&nbsp;&nbsp;{{ product.pattern.name }}{% endif %}
+                    {% if product.mt %}&nbsp;&nbsp;{{ product.mt.name }}{% endif %}
+                </li>
+                <li>型號:&nbsp;{{ product.model }}</li>
+                <li>產編:&nbsp;{{ product.sn }}</li>
+                <li>內碼:&nbsp;{{ product.customSn }}</li>
+                <li>售價(網路價):&nbsp;NT.&nbsp;{{ product.promotionPrice(true)|number_format }}</li>
+             </ul> 
+
+             <a href="http://vendor-stage.allpay.com.tw" target="_blank">歐付寶後台</a>
+             <a href="{{ url('admin_invoice_web_index') }}#{{ invoice.sn }}" target="_blank">香榭官網訂單管理後台</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table> 
+<!-- End Wrapper -->
+</body>
+</html>

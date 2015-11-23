@@ -1,0 +1,37 @@
+#users div.add_user_button {
+  width: 70px;
+  margin: 20px 0 0 15px; }
+#users table.userManage {
+  width: 90%;
+  text-align: center; }
+  #users table.userManage thead tr {
+    background-color: #D57200;
+    border-bottom: #dedede 1px solid;
+    color: #fff;
+    height: 30px;
+    line-height: 30px;
+    vertical-align: middle; }
+  #users table.userManage tbody tr {
+    border-bottom: #dedede 1px solid;
+    height: 24px;
+    line-height: 24px;
+    vertical-align: middle;
+    background-color: #000; }
+#users #userRecordHistory {
+  float: right;
+  width: 70%;
+  margin: -40px 0 0 40px; }
+  #users #userRecordHistory table thead tr {
+    background: #000;
+    border-bottom: #dedede 1px solid;
+    color: #fff;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: middle; }
+  #users #userRecordHistory table tbody tr {
+    border-bottom: #dedede 1px solid; }
+    #users #userRecordHistory table tbody tr td {
+      text-align: center;
+      padding: 5px 0 5px 0; }
+      #users #userRecordHistory table tbody tr td.act_time {
+        width: 150px; }

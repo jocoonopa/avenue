@@ -1,0 +1,20 @@
+{% set GoodsPassport = oGoodsPassport %}
+{% set Brand = GoodsPassport.brand %}
+
+{% include 'WoojinGoodsBundle:Goods/Detail:info.html.twig' %}
+{% if rGoodsSnHistory[0] is defined %}
+	<li>
+		<p>
+			<span class="preWord">轉店歷程:</span><br/>
+			{% for sHistory in rGoodsSnHistory[0] %}
+				{% set color =  (GoodsPassport.sn|slice(0,1) == sHistory|slice(0,1)) ? '#1a8a2c': 'red' %}
+				<span style="color: {{ color }};">{{ sHistory }}</span>
+				{% if loop.last %}
+					<span></span>
+				{% else %}
+					<br/><span>-></span>
+				{% endif %}
+			{% endfor %}
+		</p>
+	</li>
+{% endif %}

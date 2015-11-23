@@ -1,0 +1,21 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body %}
+
+<style>
+body {
+    background-color: #C5C5C5;
+}
+</style>
+
+<div class="panel panel-default mt-30">
+    <!-- Default panel contents -->
+    <div class="panel-heading">請選擇前往的頁面</div>
+    <div class="panel-body">
+        <a href="{{ path('admin_goods_mobile_index') }}" class="btn btn-primary pull-left">手機查貨頁</a>
+
+        <a href="{{ path('order') }}" class="btn btn-default pull-right">訂單管理</a>
+    </div>
+</div>
+
+{% endblock %}

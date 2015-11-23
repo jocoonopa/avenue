@@ -1,0 +1,24 @@
+<form class="editCustomForm" method="POST">
+	{% if app.user|has_auth('EDIT_CUSTOM') %}
+		<input type="hidden" name="form[_token]" value="{{ _token }}" />
+		<input type="hidden" name="nCustomId" value="{{ custom.id }}" />
+		<label>客戶姓名:</label>
+		<input type="text" name="sCustomName" value="{{ custom.name }}" />
+		<label>性別:</label>
+		<select name="sCustomSex">
+			<option value="" 	{% if custom.sex == "" 	%}selected{% endif %} >不確定</option>
+			<option value="先生" {% if custom.sex == "先生" %}selected{% endif %} >先生</option>
+			<option value="小姐" {% if custom.sex == "小姐" %}selected{% endif %}>小姐</option>
+		</select>
+		<label>電話號碼:</label>
+		<input type="text" name="sCustomMobil" value="{{ custom.mobil }}" />
+		<label>電子信箱:</label>
+		<input type="text" name="sCustomEmail" value="{{ custom.email }}" />
+		<label>生日:</label>
+		<input type="text" name="sCustomBirthday" class="datepicker" value="{% if custom.birthday != '' %}{{ custom.birthday|date('Y-m-d') }}{% endif %}" readonly />
+		<label>住址:</label>
+		<input type="text" name="sCustomAddress" value="{{ custom.address }}" />
+		<label>備註:</label>
+		<textarea name="sCustomMemo">{{ custom.memo }}</textarea>
+	{% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+</form>

@@ -1,0 +1,29 @@
+{% extends ':Email:base.html.twig' %}
+
+{% block title %}香榭密碼取回通知信{% endblock %}
+
+{% block body %}
+
+<tr>
+    <td style="font-size: 16px; color: #000; text-align: left; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 0 20px 20px 40px; ">
+    <p> {{ custom.name }}您好:   </p>
+    
+    <p>
+        最近有人要求更改您的香榭帳戶密碼。如果是您提出的請求，您可以從 
+        <a href="{{ url('front_custom_forgot_nosession', {activeKey: custom.activeKey, email: custom.email}) }}" target="_blank">這裡</a> 設定新密碼：
+    </p>
+
+    <center><a style="border-radius:3px;color:white;font-size:15px;padding:14px 7px 14px 7px;max-width:210px;font-family:proxima_nova,'Open Sans','lucida grande','Segoe UI',arial,verdana,'lucida sans unicode',tahoma,sans-serif;border:1px #000 solid;text-align:center;text-decoration:none;width:210px;margin:6px auto;display:block;background-color:#646464" href="{{ url('front_custom_forgot_nosession', {activeKey: custom.activeKey, email: custom.email}) }}" target="_blank">重設密碼</a></center>
+    
+    <p>
+        若您不想變更密碼，或者這不是您提出的要求，請忽略並刪除此訊息。
+    </p>
+    
+    <br>
+    <br>
+    <p>謝謝&nbsp;!</p>
+    <p>香榭國際精品&nbsp;&nbsp;工作團隊</p>
+   </td>
+</tr>
+
+{% endblock %}

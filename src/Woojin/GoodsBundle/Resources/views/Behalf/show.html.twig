@@ -1,0 +1,57 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+{% if app.user|has_auth('BEHALF_MANAGE') %}
+
+    <h1>Behalf</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Paid</th>
+                <td>{{ entity.paid }}</td>
+            </tr>
+            <tr>
+                <th>Required</th>
+                <td>{{ entity.required }}</td>
+            </tr>
+            <tr>
+                <th>Deposit</th>
+                <td>{{ entity.deposit }}</td>
+            </tr>
+            <tr>
+                <th>Memo</th>
+                <td>{{ entity.memo }}</td>
+            </tr>
+            <tr>
+                <th>Createat</th>
+                <td>{{ entity.createAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Updateat</th>
+                <td>{{ entity.updateAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('behalf') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('behalf_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

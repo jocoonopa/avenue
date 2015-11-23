@@ -1,0 +1,513 @@
+#orders {
+  font-size: 13px; }
+  #orders input, #orders select {
+    text-align: center;
+    width: 120px;
+    font-size: 12px; }
+    #orders input#tabs_purchase_goods_name, #orders select#tabs_purchase_goods_name {
+      width: 150px; }
+    #orders input#tabs_purchase_org_sn, #orders select#tabs_purchase_org_sn {
+      width: 150px; }
+  #orders .hidden {
+    display: none; }
+  #orders span.addCustom img {
+    width: 20px;
+    height: 20px; }
+  #orders textarea {
+    width: 200px;
+    height: 150px; }
+  #orders label.vader {
+    color: #000; }
+  #orders label.checkbox input {
+    width: 60px; }
+  #orders table.customHistoryTable tr {
+    border: #dedede 1px solid; }
+    #orders table.customHistoryTable tr td {
+      width: 130px;
+      text-align: center; }
+    #orders table.customHistoryTable tr th {
+      width: 130px;
+      background-color: #D57200; }
+  #orders table.customInfo {
+    margin: 0 0 20px 0; }
+    #orders table.customInfo tr {
+      border: #dedede 1px solid; }
+      #orders table.customInfo tr td {
+        width: 130px;
+        text-align: center; }
+      #orders table.customInfo tr th {
+        width: 130px;
+        background-color: #000;
+        color: #fff; }
+  #orders table.instore_report {
+    min-width: 900px;
+    margin: 0 0 0 -250px; }
+    #orders table.instore_report tr {
+      border-bottom: #dedede 1px solid; }
+      #orders table.instore_report tr th {
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        vertical-align: middle;
+        background-color: #D57200; }
+      #orders table.instore_report tr td {
+        text-align: center; }
+        #orders table.instore_report tr td.goodsCost {
+          background-color: #007f00;
+          color: #fff; }
+  #orders table.move_report {
+    min-width: 1000px;
+    margin: 0 0 0 -313px; }
+    #orders table.move_report tr {
+      border-bottom: #dedede 1px solid; }
+      #orders table.move_report tr th {
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        vertical-align: middle;
+        background-color: #D57200; }
+      #orders table.move_report tr td {
+        text-align: center; }
+        #orders table.move_report tr td.orderReq {
+          background-color: red;
+          color: #fff; }
+        #orders table.move_report tr td.orderPaid {
+          background-color: green;
+          color: #fff; }
+        #orders table.move_report tr td.orderBalance {
+          background-color: blue;
+          color: #fff; }
+  #orders button.edit_custom {
+    font-size: .3em;
+    margin: 5px 0 15px 0; }
+  #orders button.detail_goods {
+    font-size: .3em;
+    margin: 4px; }
+  #orders button.hideCondition {
+    display: none;
+    margin: -8px 0 0 8px; }
+  #orders #orders-purchase #tabs_purchase_goods_memo {
+    width: 296px;
+    height: 80px; }
+  #orders #orders-purchase .step_2, #orders #orders-purchase .step_4, #orders #orders-purchase .brand_hidden, #orders #orders-purchase .brand_type_hidden {
+    display: none; }
+  #orders #orders-purchase .step_3 {
+    display: none; }
+    #orders #orders-purchase .step_3 img {
+      width: 20px;
+      height: 20px; }
+  #orders #orders-purchase .purType {
+    margin: 0 0 20px 0; }
+  #orders #orders-purchase .customMobil {
+    display: none; }
+    #orders #orders-purchase .customMobil input {
+      width: 150px; }
+  #orders #orders-purchase div.purchaseShell {
+    position: absolute;
+    height: 1100px;
+    width: 400px;
+    margin: 0 0 0 13px; }
+  #orders .ajaxResMsgRight {
+    float: right;
+    margin: 0;
+    width: 50%; }
+    #orders .ajaxResMsgRight em {
+      display: none; }
+  #orders .ajaxResMid {
+    float: right;
+    width: 7%; }
+  #orders .ajaxResLeft {
+    float: right;
+    width: 16%;
+    margin: 0 0 0 30px;
+    height: 500px;
+    line-height: 500px;
+    font-size: 13px;
+    text-align: center;
+    vertical-align: middle; }
+  #orders .operatePanel {
+    position: absolute;
+    float: left;
+    width: 27%;
+    left: -440px;
+    background-color: #fff;
+    height: 1500px;
+    padding: 0 10px 0 0;
+    z-index: 20; }
+    #orders .operatePanel .panelSwitch {
+      float: right;
+      top: -4px;
+      width: 32px;
+      height: 40px;
+      opacity: .6; }
+    #orders .operatePanel label {
+      vertical-align: top; }
+    #orders .operatePanel form {
+      margin: 0 0 0 20px; }
+      #orders .operatePanel form .step_1 .numeric {
+        width: 80px; }
+      #orders .operatePanel form div.customSearch {
+        float: left;
+        width: 460px; }
+  #orders #orders-payType div {
+    width: 380px; }
+    #orders #orders-payType div ul {
+      width: 370px;
+      opacity: .5; }
+      #orders #orders-payType div ul li {
+        width: 72px;
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        vertical-align: bottom;
+        margin: 0 0 10px 0;
+        list-style: none;
+        float: left;
+        background-color: #fff;
+        border-right: 1px #dedede solid; }
+        #orders #orders-payType div ul li.ajax_pay_type_name {
+          width: 150px; }
+          #orders #orders-payType div ul li.ajax_pay_type_name input {
+            width: 100px;
+            display: none; }
+        #orders #orders-payType div ul li.ajax_pay_type_discount {
+          width: 60px; }
+          #orders #orders-payType div ul li.ajax_pay_type_discount input {
+            width: 40px;
+            display: none; }
+      #orders #orders-payType div ul:hover {
+        opacity: 1; }
+    #orders #orders-payType div button.add_pay_type_button {
+      position: relative;
+      float: left; }
+    #orders #orders-payType div button.del_pay_type_button {
+      width: 72px; }
+  #orders #orders-custom label {
+    vertical-align: top; }
+  #orders #orders-custom form {
+    margin: 10px 0 0 20px; }
+  #orders #orders-custom div.pageTotal {
+    margin: 0 2px 0 0;
+    font-size: 16px;
+    width: 100px; }
+  #orders #orders-custom div.pageBar {
+    float: right;
+    width: 80px;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 7px;
+    opacity: .7;
+    margin: 0; }
+    #orders #orders-custom div.pageBar .scrollBar {
+      width: 70px;
+      max-height: 583px;
+      overflow-x: hidden;
+      margin: 0 auto 0 auto; }
+      #orders #orders-custom div.pageBar .scrollBar .pageButton {
+        color: #000;
+        width: 50px;
+        height: 26px;
+        line-height: 26px;
+        vertical-align: middle;
+        margin: 10px 0 0 0;
+        cursor: pointer; }
+        #orders #orders-custom div.pageBar .scrollBar .pageButton span {
+          color: #000; }
+  #orders #orders-custom #orders_custom_custom_memo {
+    width: 296px;
+    height: 150px; }
+  #orders #orders-custom .custom_search {
+    display: none;
+    margin: -10px 0 0 10px;
+    background: #f21a1a; }
+  #orders #orders-custom #orders_custom_ajax_message {
+    float: right;
+    margin: 0; }
+    #orders #orders-custom #orders_custom_ajax_message em {
+      display: none; }
+  #orders #orders-custom .custom_email input {
+    width: 180px; }
+  #orders #orders-custom .custom_address input {
+    width: 180px; }
+  #orders #orders-custom #orders_custom_ajax_load_memo {
+    position: absolute;
+    width: 400px;
+    margin: 0 0 0 30px;
+    height: 500px;
+    line-height: 500px;
+    text-align: center;
+    vertical-align: middle; }
+  #orders #orders-custom .step2, #orders #orders-custom .step3 {
+    display: none; }
+  #orders #orders-sale .sellStart, #orders #orders-specialSell .sellStart {
+    margin: 0 0 0 36px; }
+    #orders #orders-sale .sellStart .goodsSn button, #orders #orders-specialSell .sellStart .goodsSn button {
+      margin: -7px 0 0 8px; }
+    #orders #orders-sale .sellStart .sellsType, #orders #orders-specialSell .sellStart .sellsType {
+      display: none; }
+  #orders #orders-sale .addExchangeGoods, #orders #orders-sale .sellFlow, #orders #orders-specialSell .addExchangeGoods, #orders #orders-specialSell .sellFlow {
+    display: none;
+    height: 1100px;
+    overflow-x: scroll;
+    margin: 20px 0 50px 0;
+    padding: 0 0 50px 10px;
+    background-color: #fff; }
+    #orders #orders-sale .addExchangeGoods h2, #orders #orders-sale .sellFlow h2, #orders #orders-specialSell .addExchangeGoods h2, #orders #orders-specialSell .sellFlow h2 {
+      font-size: 24px;
+      color: #000; }
+    #orders #orders-sale .addExchangeGoods input, #orders #orders-sale .sellFlow input, #orders #orders-specialSell .addExchangeGoods input, #orders #orders-specialSell .sellFlow input {
+      text-align: center;
+      width: 80px;
+      font-size: .8em; }
+      #orders #orders-sale .addExchangeGoods input.sGoodsName, #orders #orders-sale .sellFlow input.sGoodsName, #orders #orders-specialSell .addExchangeGoods input.sGoodsName, #orders #orders-specialSell .sellFlow input.sGoodsName {
+        width: 150px; }
+      #orders #orders-sale .addExchangeGoods input.sGoodsOrgSn, #orders #orders-sale .sellFlow input.sGoodsOrgSn, #orders #orders-specialSell .addExchangeGoods input.sGoodsOrgSn, #orders #orders-specialSell .sellFlow input.sGoodsOrgSn {
+        width: 150px; }
+    #orders #orders-sale .addExchangeGoods select, #orders #orders-sale .sellFlow select, #orders #orders-specialSell .addExchangeGoods select, #orders #orders-specialSell .sellFlow select {
+      text-align: center;
+      width: 120px;
+      font-size: .8em; }
+    #orders #orders-sale .addExchangeGoods img.imgContainer, #orders #orders-sale .sellFlow img.imgContainer, #orders #orders-specialSell .addExchangeGoods img.imgContainer, #orders #orders-specialSell .sellFlow img.imgContainer {
+      opacity: 1; }
+    #orders #orders-sale .addExchangeGoods .goods_memo, #orders #orders-sale .sellFlow .goods_memo, #orders #orders-specialSell .addExchangeGoods .goods_memo, #orders #orders-specialSell .sellFlow .goods_memo {
+      width: 296px;
+      height: 80px; }
+    #orders #orders-sale .addExchangeGoods .step2, #orders #orders-sale .addExchangeGoods .step4, #orders #orders-sale .addExchangeGoods .step5, #orders #orders-sale .addExchangeGoods .step6, #orders #orders-sale .addExchangeGoods .brand_hidden, #orders #orders-sale .addExchangeGoods .brand_type_hidden, #orders #orders-sale .sellFlow .step2, #orders #orders-sale .sellFlow .step4, #orders #orders-sale .sellFlow .step5, #orders #orders-sale .sellFlow .step6, #orders #orders-sale .sellFlow .brand_hidden, #orders #orders-sale .sellFlow .brand_type_hidden, #orders #orders-specialSell .addExchangeGoods .step2, #orders #orders-specialSell .addExchangeGoods .step4, #orders #orders-specialSell .addExchangeGoods .step5, #orders #orders-specialSell .addExchangeGoods .step6, #orders #orders-specialSell .addExchangeGoods .brand_hidden, #orders #orders-specialSell .addExchangeGoods .brand_type_hidden, #orders #orders-specialSell .sellFlow .step2, #orders #orders-specialSell .sellFlow .step4, #orders #orders-specialSell .sellFlow .step5, #orders #orders-specialSell .sellFlow .step6, #orders #orders-specialSell .sellFlow .brand_hidden, #orders #orders-specialSell .sellFlow .brand_type_hidden {
+      display: none; }
+    #orders #orders-sale .addExchangeGoods .step3, #orders #orders-sale .sellFlow .step3, #orders #orders-specialSell .addExchangeGoods .step3, #orders #orders-specialSell .sellFlow .step3 {
+      display: none; }
+      #orders #orders-sale .addExchangeGoods .step3 img, #orders #orders-sale .sellFlow .step3 img, #orders #orders-specialSell .addExchangeGoods .step3 img, #orders #orders-specialSell .sellFlow .step3 img {
+        width: 20px;
+        height: 20px; }
+  #orders #orders-turnchange .step2, #orders #orders-turnchange .step3, #orders #orders-turnchange .step4 {
+    display: none; }
+  #orders #orders-financial select.financial_select {
+    margin: 10px 0 0 7px; }
+  #orders #orders-financial table.financialReportTable {
+    width: 100%; }
+  #orders #orders-financial table tr {
+    border-bottom: #dedede 1px solid; }
+    #orders #orders-financial table tr th {
+      background-color: #000;
+      text-align: center;
+      height: 30px;
+      line-height: 30px;
+      vertical-align: middle; }
+    #orders #orders-financial table tr td {
+      text-align: center; }
+      #orders #orders-financial table tr td.goods_cost {
+        background-color: #e00808;
+        color: #fff; }
+      #orders #orders-financial table tr td.achievement {
+        background-color: #0f750f;
+        color: #fff; }
+      #orders #orders-financial table tr td.profit {
+        background-color: #ff9d30;
+        color: #fff; }
+      #orders #orders-financial table tr td.profit_now {
+        background-color: #f5cd05;
+        color: #fff; }
+      #orders #orders-financial table tr td.orders_kind {
+        background-color: #0000bf;
+        color: #fff; }
+    #orders #orders-financial table tr.foot_tr {
+      height: 30px;
+      line-height: 30px;
+      vertical-align: middle; }
+      #orders #orders-financial table tr.foot_tr td {
+        border: #dedede 1px solid; }
+  #orders #orders-financial span.selectSpan {
+    display: block;
+    margin: 18px 0 0 0;
+    float: left; }
+  #orders #orders-financial div.ajaxResMsgRight {
+    width: 70%; }
+  #orders #orders-financial div.financial_button {
+    float: left;
+    margin: 15px 15px 0 0; }
+  #orders #orders-financial div.store_button {
+    margin-left: 40px; }
+  #orders #orders-financial ul {
+    margin: 10px 10px 0 20px; }
+    #orders #orders-financial ul.foot_tr li {
+      float: right;
+      right: 0;
+      list-style: none;
+      font-size: 13px;
+      border-bottom: #dedede 1px solid;
+      border-right: #dedede 1px solid;
+      width: 150px;
+      text-align: center;
+      height: 25px;
+      line-height: 25px;
+      vertical-align: middle; }
+      #orders #orders-financial ul.foot_tr li.goods_cost {
+        background-color: #e00808;
+        color: #fff; }
+      #orders #orders-financial ul.foot_tr li.achievement {
+        background-color: #0f750f;
+        color: #fff; }
+      #orders #orders-financial ul.foot_tr li.profit {
+        background-color: #ff9d30;
+        color: #fff; }
+      #orders #orders-financial ul.foot_tr li.profit_now {
+        background-color: #f5cd05;
+        color: #fff; }
+      #orders #orders-financial ul.foot_tr li.count_soldout {
+        background-color: #0505f5;
+        color: #fff; }
+  #orders #orders-instore form div.report_form_select {
+    float: left;
+    left: 20px;
+    margin: 10px 0 0 0;
+    width: 30%; }
+    #orders #orders-instore form div.report_form_select select {
+      margin: 0 0 15px 20px;
+      width: 100%; }
+  #orders #orders-instore form div.submit_button {
+    float: left;
+    margin: 10px 0 0 40px;
+    width: 25%; }
+  #orders #orders-instore form div.export_button {
+    float: left;
+    margin: 10px 0 0 0; }
+  #orders #orders-instore div.instore_total {
+    float: left;
+    background-color: red;
+    color: #fff;
+    margin: 10px 0 0 0;
+    padding: 0 6px 0 6px;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle; }
+    #orders #orders-instore div.instore_total span {
+      font-size: 16px; }
+  #orders #orders-instore div.ajaxResLeft {
+    width: 0; }
+  #orders #orders-move form div.submit_button {
+    float: left;
+    margin: 10px 15px 0 20px;
+    width: 65px; }
+  #orders #orders-move form div.export_button {
+    width: 65px;
+    float: left;
+    margin: 10px 0 0 0; }
+  #orders #orders-move div.move_total {
+    display: none;
+    float: left;
+    background-color: red;
+    color: #fff;
+    margin: 10px 0 0 0;
+    padding: 0 6px 0 6px;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle; }
+    #orders #orders-move div.move_total span {
+      font-size: 16px; }
+    #orders #orders-move div.move_total:nth-of-type(2) {
+      background-color: green;
+      color: #fff; }
+    #orders #orders-move div.move_total:nth-of-type(3) {
+      background-color: blue;
+      color: #fff; }
+  #orders #orders-move div.pager {
+    float: left;
+    margin: 20px 100px 0 -220px; }
+  #orders #orders-move div.ajaxResLeft {
+    width: 0; }
+
+.addCustomDialog {
+  display: none; }
+  .addCustomDialog label {
+    vertical-align: top; }
+  .addCustomDialog form {
+    margin: 0 0 0 20px; }
+  .addCustomDialog .custom_search {
+    display: none;
+    margin: -10px 0 0 10px;
+    background: #f21a1a; }
+  .addCustomDialog .custom_email input {
+    width: 180px; }
+  .addCustomDialog .custom_address input {
+    width: 180px; }
+  .addCustomDialog .step2, .addCustomDialog .step3 {
+    display: none; }
+
+.add_new_custom .step2, .add_new_custom .step3 {
+  display: none; }
+
+.ajaxEditGoodsDialog form {
+  float: left; }
+  .ajaxEditGoodsDialog form input, .ajaxEditGoodsDialog form select {
+    clear: both;
+    text-align: center;
+    width: 130px; }
+  .ajaxEditGoodsDialog form textarea {
+    width: 300px;
+    height: 120px; }
+  .ajaxEditGoodsDialog form .delete_parent_div {
+    display: none; }
+
+.ui-accordion {
+  width: 50%; }
+  .ui-accordion h4 {
+    color: #054a05;
+    font-size: 20px;
+    padding: 16px 0 8px 0; }
+  .ui-accordion h2 {
+    font-size: 17px;
+    color: #e08787; }
+  .ui-accordion h1 {
+    font-size: 13px;
+    color: #4545f5; }
+  .ui-accordion .accordion_left {
+    float: left; }
+  .ui-accordion .accordion_right {
+    float: left;
+    margin: 0 0 0 40px; }
+  .ui-accordion .goodsResTabs {
+    width: 100%; }
+    .ui-accordion .goodsResTabs div.button {
+      float: right;
+      font-size: .8em;
+      margin: -16px -20px 0 0; }
+      .ui-accordion .goodsResTabs div.button button {
+        margin: 0 6px 0 6px; }
+    .ui-accordion .goodsResTabs ul.goods_list {
+      width: 100%; }
+      .ui-accordion .goodsResTabs ul.goods_list li {
+        width: 100%; }
+
+#customSearchCondition {
+  position: relative;
+  overflow: hidden;
+  width: 150px;
+  height: 20px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 10px;
+  border: #dedede outset 1px; }
+  #customSearchCondition p {
+    font-size: 14px;
+    line-height: 15px;
+    padding: 3px 0 3px 3px; }
+    #customSearchCondition p.Phidden {
+      display: none; }
+
+table.ope_list {
+  margin: 30px 0 50px 0; }
+  table.ope_list th {
+    text-align: center;
+    width: 180px;
+    border: #dedede solid 1px;
+    background-color: #D57200;
+    color: #fff; }
+  table.ope_list td {
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+    width: 180px;
+    border-bottom: #dedede solid 1px; }
+table.table-bordered thead tr th {
+  background-color: #D57200; }

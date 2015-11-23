@@ -1,0 +1,259 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block external %}
+<link rel="stylesheet" href="{{ asset('/css/jquery.newDatetime.css')}}">
+
+<style>
+
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { float: left; clear:left; padding: 0 0 0 5px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 45%; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; padding: 0 5px 0 0; }
+.ui-timepicker-rtl dl dt{ float: right; clear: right; }
+.ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+{% if app.user|has_auth('TIMELINESS_SETTINGS') %}
+<div class="row mt-30">
+    <div class="col-md-4 col-xs-12" style="border-right: 1px solid #c9c9c9">
+        <div class="row">
+            <div class="col-xs-12">
+                {% for flashMessage in app.session.flashbag.get('error') %}
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
+
+                {% for flashMessage in app.session.flashbag.get('success') %}
+                    <div class="alert alert-success">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
+
+                <form action="{{ path("producttl_create") }}" role="form" method="POST">
+                    <fieldset>
+                        <div class="form-group">
+                            <label for="sn">產編:</label>
+                            <input id="sn" name="sn" type="text" class="form-control" />
+                        </div>
+
+                        <div class="from-group">
+                            <label for="price">搶購價:</label>
+                            <input type="number" id="price" name="price" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="end_at">截止時間:</label>
+                            <input id="end_at" name="end_at" type="text" class="form-control" readonly />
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-primary pull-left">儲存</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+
+            <div class="col-xs-12 mt-30">
+                <div class="product-res panel panel-default hidden">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Panel title</h3>
+                    </div>
+                    <div class="panel-body">
+                        <img src="" class="img-responsive" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8 col-xs-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>產編</th>
+                    <th>品名</th>
+                    <th>搶購價</th>
+                    <th>截止時間</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tl in tls %}
+                <tr>
+                    <td>{{ tl.product.sn }} 
+                        {% if tl.product.status.id == 1 %}
+                            {% set labelClass = 'primary' %}
+                        {% elseif tl.product.status.id == 2 %}
+                            {% set labelClass = 'success' %}
+                        {% elseif tl.product.status.id == 4 %}
+                            {% set labelClass = 'danger' %}
+                        {% else %}
+                            {% set labelClass = 'warning' %}
+                        {% endif %}
+                        <span class="label label-{{ labelClass }}">{{ tl.product.status.name }}</span>
+                        {% if tl.product.img %} 
+                         <div>
+                            <a href="{{ path('goods_edit_v2', {id: tl.product.id }) }}" target="_blank">
+                                <img src="{{ tl.product.img.path }}" class="max-width-100"> 
+                            </a>
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td>{{ tl.product.name }}
+                    </td>
+                    <td>
+                       <input type="number" name="price" value="{{ tl.price }}"> 
+                    </td>
+                    <td>
+                        <input name="end_at" type="text" data-id="{{ tl.id }}" value="{{ tl.endAt|date('Y-m-d H:i:s') }}" />               
+                    </td>
+                    <td>
+                        <button class="update-end_at btn btn-primary" data-id="{{ tl.id }}">更新</button>
+
+                        <form action="{{ path('producttl_delete', {id: tl.id}) }}" method="POST">
+                            <input type="hidden" name="_method" value="DELETE">
+
+                            <button type="submit" class="btn btn-danger">移除</button>
+                        </form>            
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+<script src="{{ asset('/js/jquery-ui-1.10.3.min.js') }}"></script>
+<script src="{{ asset('/js/jquery.newDatetimepicker.js') }}"></script>
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script>
+var loaded = function () {
+    var oCss = { 
+        'border' : 'none',
+        'padding' : '15px',
+        'backgroundColor' : '#000',
+        '-webkit-border-radius' : '10px',
+        '-moz-border-radius' : '10px',
+        'opacity' : .5,
+        'color' : '#fff'
+    };
+
+    return $.blockUI({css: oCss, message: '處理中請稍後...'}); 
+};
+
+var endAtUpdate = function ($e) {
+    var id = $e.data('id');
+    var $tr = $e.closest('tr');
+    var endAt = $tr.find('input[name="end_at"]').val();
+    var price = $tr.find('input[name="price"]').val();
+
+    $.ajax({
+        url: Routing.generate('producttl_update', {id: id}),
+        type: 'PUT',
+        data: {
+            end_at: endAt,
+            price: price
+        },
+        dataType: 'json',
+        success: function() {
+            $.unblockUI();
+        },
+        error: function () {
+            alert('some thing error');
+
+            $.unblockUI();
+        }
+    }); 
+};
+
+$('#sn').blur(function () {
+    var $this = $(this);
+    var $panel = $('.product-res');
+
+    if ($(this).val().length !== 13) {
+        return;
+    }
+
+    loaded();
+    $.getJSON(Routing.generate('api_goodsPassport_show_bySn', {sn: $this.val()}), function(product, textStatus) {
+        $panel.find('h3').html(product.name + '<small>' + product.sn + '</small>');
+
+        $panel.find('.panel-body').find('img').attr('src', product.img.path);
+
+        $('#price').val(product.price);
+
+        $panel.removeClass('hidden');
+
+        $.unblockUI();
+    }).error(function () {
+        $panel.addClass('hidden');
+
+        $.unblockUI();
+    });
+});
+
+$('td>input[name="end_at"]').datetimepicker({
+    lang:'zh-TW',
+    i18n:{
+        de:{
+            months:[
+                '1月','2月','3月','4月',
+                '5月','6月','7月','8月',
+                '9月','10月','11月','12月',
+            ],
+            dayOfWeek:[
+                "週四", "週一", "週二", "週三", 
+                "週四", "週五", "週六",
+            ]
+        }
+    },
+    format:'Y-m-d H:i:s'
+});
+
+var afterTomorrow = new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000);
+
+$('#end_at').datetimepicker({
+    lang:'zh-TW',
+    i18n:{
+        de:{
+            months:[
+                '1月','2月','3月','4月',
+                '5月','6月','7月','8月',
+                '9月','10月','11月','12月',
+            ],
+            dayOfWeek:[
+                "週四", "週一", "週二", "週三", 
+                "週四", "週五", "週六",
+            ]
+        }
+    },
+    format: 'Y-m-d H:i:s',
+    defaultDate: afterTomorrow
+}).val(afterTomorrow.getFullYear() + '-' + (afterTomorrow.getMonth() + 1) + '-' + (afterTomorrow.getDate() + 2) + ' 00:00:00');
+
+$('button.update-end_at').click(function () {
+    loaded();
+    endAtUpdate($(this));
+});
+
+</script>
+{% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+{% endblock %}

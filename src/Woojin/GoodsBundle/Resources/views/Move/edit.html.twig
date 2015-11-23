@@ -1,0 +1,20 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+{% if app.user|has_auth('MOVE_RELATE') %}
+    <h1>修改調貨備註</h1>
+
+    {{ form(edit_form) }}
+
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('move') }}">
+                回到列表
+            </a>
+        </li>
+        {#{ form(delete_form) }#}
+    </ul>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

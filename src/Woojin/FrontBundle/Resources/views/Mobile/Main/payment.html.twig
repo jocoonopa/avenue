@@ -1,0 +1,86 @@
+{% extends ':Mobile/Front:base.html.twig' %}
+
+{% block header %}
+    {% embed ':Mobile/Front/Header:header.html.twig' %}
+        {% block headerMessage %}Payment Info 付款資訊{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="static-notification-yellow tap-dismiss-notification MBC_empty-show mt-10">
+            <p class="center-text uppercase"><i class="fa fa-square-o"></i>未選購任何商品</p> 
+        </div>
+
+        <div class="payment-info">
+            <form id="payment-form" class="mt-30 MBC_empty-hide" action="{{ path('front_payment_generate') }}" method="post" role="form">
+                <input type="hidden" name="avenue_token" value="{{ csrf_token('invoice') }}" />
+
+                <h2 class="my-text-center">付款方式</h2>
+                <div class="billing-info-inputs checkbox-list">             
+                    <div class="mt-5 mb-10">
+                        <label class="my-float-left font-12">欲使用信用卡分期請選擇分期期數</label>
+                        <select name="creditInstallment" id="creditInstallment" class="width-100-per bg-white border-black-solid line-height-30 border-radius-0">
+                            <option value="0">請選擇</option>
+                            <option value="3">分3期</option>
+                            <option value="6">分6期</option>
+                            <option value="12">分12期</option>
+                            <option value="18">分18期</option>
+                            <option value="24">分24期</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h2 class="my-text-center">配送資訊</h2>
+                <div class="billing-info-inputs checkbox-list">              
+                    <div class="mt-5">
+                        <label class="my-float-left font-12">姓名</label>
+                        <input id="name" type="text" placeholder="您的姓名" name="name" class="form-control required" value="{{ custom.name }}" />
+                    </div>
+                    
+                    <div class="mt-5">   
+                        <label class="my-float-left font-12">Email</label>
+                        <input id="email" type="email" placeholder="您的信箱" name="email" class="form-control required" value="{{ custom.email }}"  />
+                    </div>
+                    
+                    <div class="mt-5">   
+                        <label class="my-float-left font-12">手機</label>
+                        <input id="phone" type="tel" placeholder="您的手機(同步更新您個人資訊記錄的手機)" name="phone" class="form-control required" value="{{ custom.mobil }}" />
+                    </div>
+                     
+                    <div class="mt-5">   
+                        <label class="my-float-left font-12">地址</label>
+                        <div id="twzipcode" class="width-100-per font-12 mb-10">
+                            <div class="width-100-per font-12" data-style="width-100-per bg-white border-black-solid line-height-30 border-radius-0 mb-10" data-role="county" data-value="{{ custom.county }}"></div>
+                            <div class="width-100-per font-12" data-style="width-100-per bg-white border-black-solid line-height-30 border-radius-0" data-role="district" data-value="{{ custom.district }}"></div>
+                            <div data-style="hidden" data-role="zipcode"></div>
+                        </div>
+
+                        <input id="address" type="text" placeholder="配送地址(同步更新您個人資訊記錄的地址)" name="address" class="form-control required" value="{{ custom.address }}" />
+                    </div>
+                    
+                    <label class="checkbox text-left hidden">
+                        <input type="checkbox" name="isDiffAddress" value="1" {% if custom.county == '未填寫' %}disabled{% endif %} />
+                        <i></i>
+                        此帳單地址不同步更新註冊地址
+                    </label>
+                </div>
+
+                <div class="decoration"></div>
+            
+                <p class="total-amount">小計: <strong id="MBP_total-amount">{{ totalAmount|number_format }}</strong></p>
+
+                <button type="submit" class="button button-dark my-text-center line-height-20 width-100-per mb-10"><i class="fa fa-hand-o-right"></i>結帳</button>
+            </form>
+        </div>
+
+        <a href="{{ path('mobile_front_index') }}" class="button button-light my-text-center width-100-per mb-10"><i class="fa fa-shopping-cart"></i>繼續購物</a>  
+        <div class="my-bold-border-bottom MBC_empty-hide mt-30 mb-30"></div>       
+        
+        <h2 class="my-text-center MBC_empty-hide mb-30">Shopping Bag 購物清單</h2>
+        <div class="decoration MBC_empty-hide bg-black"></div>
+        {% include 'WoojinFrontBundle:Mobile/Main/Cart:list.html.twig' with {products: products} %}
+        
+        <div class="decoration"></div> 
+    </div>  
+{% endblock %}

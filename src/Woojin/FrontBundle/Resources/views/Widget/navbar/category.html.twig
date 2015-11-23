@@ -1,0 +1,111 @@
+<!-- 分類中每個種類的欄 -->
+{% macro column(category, entitys, name, kind) %}
+    {% set i = 0 %}
+    {% set isHead = true %}
+    {% set isTail = false %}
+
+    {# {% if not isMobile() %} #}
+    <div class="col-md-6 hidden-xs">
+    {% for entity in entitys %}
+        {% set _count = 0 %}
+        
+        {% if loop.first %}
+        <div class="col-md-12 hidden-xs">
+            <h3 class="mega-menu-heading">{{ name }}</h3>
+        </div>
+        {% endif %}
+        
+        {% if i % 10 == 0 and isHead %}
+            {% set isHead = false %}
+            
+            <div class="col-md-4 hidden-xs">
+            <ul class="list-unstyled style-list">
+        {% endif %}
+        
+        {% if category.id == 1 %}
+            {% set _count = entity.womenCount %}
+        {% elseif category.id == 2 %}
+            {% set _count = entity.menCount %}
+        {% elseif category.id == 3 %}
+            {% set _count = entity.secondhandCount %}
+        {% endif %}
+        
+        {% if _count > 0 %}
+        <li>
+            <a href="{{ path('front_filter', {id: category.id, entityId: entity.id, entityName: kind}) }}">{{ entity.name }}</a>&nbsp;&nbsp;
+            {# 20,50,100,150 #}
+            
+            {# <span class="badge rounded-2x {{ getBadgeStyleByCount(_count) }}"
+             >{{ _count }}</span> #}
+        </li>
+        {% endif %}
+
+        {% if _count > 0 %}
+            {% set i = (i + 1) %}
+
+            {% if i % 10 == 0 %}
+                {% set isHead = true %}
+                {% set isTail = true %}
+            {% endif %}
+        {% endif %}
+
+        {% if (i % 10 == 0 and isTail) or loop.last %}
+            </ul></div>
+            {% set isTail = false %}
+        {% endif %}    
+    {% endfor %}
+    </div>
+    {# {% endif %} #}
+
+    {% set _count = 0 %}
+    <div class="col-xs-12 visible-xs-block">
+        <h3 class="mega-menu-heading">{{ name }}</h3>
+        <ul class="list-unstyled style-list">
+            {% for entity in entitys %}
+                {% if category.id == 1 %}
+                    {% set _count = entity.womenCount %}
+                {% elseif category.id == 2 %}
+                    {% set _count = entity.menCount %}
+                {% elseif category.id == 3 %}
+                    {% set _count = entity.secondhandCount %}
+                {% endif %}
+                
+                {% if _count > 0 %}
+                <li class="text-center">
+                    <a href="{{ path('front_filter', {id: category.id, entityId: entity.id, entityName: kind}) }}">{{ entity.name }}</a>&nbsp;&nbsp;
+                    {# 20,50,100,150 #}
+                    
+                    {# <span class="badge rounded-2x {{ getBadgeStyleByCount(_count) }}"
+                     >{{ _count }}</span> #}
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}
+
+<!-- 整個分類的 Board -->
+{% macro with(category, brands, patterns) %}
+    {% import _self as board %}
+
+    <li class="dropdown mega-menu-fullwidth default-hover">
+        <!-- 這邊不能直接加 link，被 unify 用 script 鎖死了-->
+        <a href="{{ path('front_filter_category', {id: category.id }) }}" class="default dropdown-toggle text-center" data-hover="dropdown" data-toggle="dropdown">{{ category.englishName }}</a>
+
+        <a href="{{ path('front_filter_category', {id: category.id }) }}" class="hover dropdown-toggle text-center hidden" data-hover="dropdown" data-toggle="dropdown">{{ category.name }}</a>
+
+        <ul class="dropdown-menu">
+            <li>
+                <div class="mega-menu-content">
+                    <div class="container">
+                        <div class="row">
+                            {{ board.column(category, brands, '品牌', 'brand') }}
+
+                            {{ board.column(category, patterns, '款式', 'pattern') }}
+                        </div><!--/end row-->
+                    </div><!--/end container-->
+                </div><!--/end mega menu content-->  
+            </li>
+        </ul><!--/end dropdown-menu-->
+    </li>
+{% endmacro %}

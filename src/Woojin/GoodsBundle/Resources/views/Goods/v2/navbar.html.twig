@@ -1,0 +1,13 @@
+<!-- Button trigger modal -->
+{% if goods.isAllowWeb %}
+<button type="button" class="btn btn-primary mr-10" data-toggle="modal" data-target="#yahooModal">
+<i class="glyphicon glyphicon-cloud-upload"></i>同步商城
+</button>
+{% endif %}
+
+<button class="btn btn-default pull-right toggle-goods-form mr-10">
+    顯示/隱藏   
+</button>
+
+<a class="btn btn-info pull-right mr-10" target="_blank" href="{{ path('front_product_show', {id: goods.id}) }}">
+    <i class="glyphicon glyphicon-eye-open"></i> 從官網檢視</a>

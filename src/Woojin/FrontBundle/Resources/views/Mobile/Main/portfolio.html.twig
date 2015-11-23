@@ -1,0 +1,58 @@
+{% extends ':Mobile/Front:base.html.twig' %}
+
+{% block title %}
+    {{ getPortFolioTitle(app.request.get('brand_id'), app.request.get('pattern_group_id')) }}
+{% endblock %}
+
+{% block header %}
+    {% embed ':Mobile/Front/Header:header.html.twig' %}
+        {% block headerMessage %}
+            {{ getPortFolioTitle(app.request.get('brand_id'), app.request.get('pattern_group_id')) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block content %}
+    <div class="full-bottom"></div>
+    <div class="content">
+       <div class="adaptive-style">
+            <h4 class="h4-text-center">{{ count }} product</h4>
+
+            {% if 0 < products|length %}
+                <a class="adaptive-three-activate" href="#"><i class="fa fa-th"></i></a>
+                <a class="adaptive-two-activate active-adaptive-style" href="#"><i class="fa fa-th-large"></i></a>
+            {% endif %}
+        </div>
+
+        <div class="clear"></div>
+        <div class="decoration"></div>
+
+        <div class="portfolio-adaptive adaptive-two">
+            {% if 0 < products|length %}
+                {% include 'WoojinFrontBundle:Mobile/Main/Portfolio:list.html.twig' with {products: products} %}
+            {% else %}
+                <div class="static-notification-yellow tap-dismiss-notification MBC_empty-show mt-10">
+                    <p class="center-text uppercase"><i class="fa fa-square-o"></i>此分類暫無商品</p> 
+                </div>
+            {% endif %}
+
+            {% block pager %}
+                {% include 'WoojinFrontBundle:Mobile/Main/Portfolio:pager.html.twig' with {
+                products: products, page: page, perpage: perpage, count: count} %}
+            {% endblock %}
+            
+            <div class="full-bottom"></div>
+            <div class="decoration"></div>
+        </div> 
+    </div> 
+
+    <div class="full-bottom"></div>
+{% endblock %}
+
+
+
+
+
+
+
+

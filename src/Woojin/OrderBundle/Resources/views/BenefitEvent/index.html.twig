@@ -1,0 +1,33 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    {% if app.user|has_auth('BENEFIT_MANAGE') %}
+        <h1>購物金活動列表</h1>
+        <hr>
+
+        <table class="records_list table table-striped">
+            <thead>
+                <tr>
+                    <th>開始時間</th>
+                    <th>結束時間</th>
+                    <th>活動描述</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for event in events|reverse %}
+                <tr>
+                    <td>{% if event.startAt %}{{ event.startAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{% if event.endAt %}{{ event.endAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{{ event.des }}</td>
+                    <td>
+                        <a class="btn btn-primary" href="{{ path('benefitevent_edit', { 'id': event.id }) }}">編輯</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a class="btn btn-default" href="{{ path('benefitevent_new') }}">新增購物金活動</a>
+    {% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+{% endblock %}

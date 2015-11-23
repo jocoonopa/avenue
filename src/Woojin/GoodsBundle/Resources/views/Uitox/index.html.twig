@@ -1,0 +1,57 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+
+<h1>Uitox 批次上傳 <a href="{{ path('goods') }}" class="btn btn-info btn-sm">
+    <i class="glyphicon glyphicon-share-alt"></i>回到商品處理</a>
+</h1>
+
+<hr>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">步驟說明</div>
+    
+    <div class="panel-body">
+        <ol class="list-group">
+            <li class="list-group-item">1. 將main data 和 main price 選好後上傳</li>
+            <li class="list-group-item">2. 將得到的uitox excel 檔案進行必要的編輯修改</li>
+            <li class="list-group-item">3. 每個商品對應的圖片名稱打好，並且名稱寫入對應的欄位</li>
+            <li class="list-group-item">4. 有問題請mail <a href="mailto:jocoonopa@gmail.com">jocoonopa@gmail.com</a> 或是line: jocoonopa </li>
+        </ol>
+    </div>
+</div>
+
+<form action="{{ path('uitox_combine') }}" method="post" enctype="multipart/form-data" role="form">
+
+    <div class="form-group">
+        <h2>選擇 Yahoo 檔案</h2>
+        <hr>
+    </div>
+
+    <div class="form-group data-div">
+        
+        <input type="file" name="main-data[]" class="pull-right" accept=".csv" />
+
+        <p>請上傳MAIN_DATA字樣的 csv 檔案</p>
+
+        <input type="file" name="main-price[]" class="pull-right" accept=".csv" />
+
+        <p>請上傳MAIN_PRICE字樣的 csv 檔案</p>
+
+        <input type="file" name="main-stock[]" class="pull-right" accept=".csv" />
+
+        <p>請上傳MAIN_STOCK字樣的 csv 檔案</p>
+        
+        <hr>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-open"></i>生成檔案</button>
+
+        <button type="button" class="btn btn-success add-div"><i class="glyphicon glyphicon-plus"></i>增加欄位</button>
+    </div>
+</form> 
+
+<script src="/js/uitox_index.js"></script>
+
+{% endblock %}

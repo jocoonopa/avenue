@@ -1,0 +1,83 @@
+{% macro checkbox(label, entitys, name, column) %}
+
+{% import _self as checkbox %}
+
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading_{{ name }}">
+        <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{ name }}" aria-expanded="false" aria-controls="collapse_{{ name }}">
+        {{ label }}
+        </a>
+        </h4>
+    </div>
+    <div id="collapse_{{ name }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{ name }}">
+        <div class="panel-body">
+            <div class="checkbox">
+                {{ checkbox.checkWidget(entitys, name, column) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endmacro %}
+
+{% macro text(label, entitys, name) %}
+
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading_{{ name }}">
+        <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{ name }}" aria-expanded="false" aria-controls="collapse_{{ name }}">
+        {{ label }}
+        </a>
+        </h4>
+    </div>
+    <div id="collapse_{{ name }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{ name }}">
+        <div class="panel-body">
+            <div class="form-group">
+                <input class="form-control" name="name" type="text" placeholder="{{ label }}">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endmacro %}
+
+{% macro singleSelect(label, entitys, name) %}
+
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading_{{ name }}">
+        <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{ name }}" aria-expanded="false" aria-controls="collapse_{{ name }}">
+        {{ label }}
+        </a>
+        </h4>
+    </div>
+
+    <div id="collapse_{{ name }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{ name }}">
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="select_{{ name }}" class="col-lg-2 control-label">{{ label }}</label>
+                <div class="col-lg-10">
+                    <select class="form-control" id="select_{{ name }}" name="{{ name }}">
+                        {% for entity in entitys %}
+                        <option value="{{ entity.id }}">{{ entity.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro checkWidget(entitys, name, column) %}
+
+{% for entity in entitys %}
+    <div class="col-xs-{{ column }} col-md-4">
+        <label>
+            <input type="checkbox" name="{{ name }}[]" value="{{ entity.id }}">{{ entity.name }}
+        </label>
+    </div>
+{% endfor %}
+
+{% endmacro %}

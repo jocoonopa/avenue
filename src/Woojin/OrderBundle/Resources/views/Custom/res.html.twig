@@ -1,0 +1,126 @@
+{% if app.user|has_auth('READ_CUSTOM') %}
+	{% for custom in rCustom %}	
+		<h3 data-page="{{ nCount }}" data-nowPage="{{ nNowPage }}">
+			<p data-id="{{ custom.id }}">{{ custom.name }}</p>
+		</h3>
+		
+		<div>
+			<div class="accordion_left">	
+				<div>
+					<table class="customInfo">
+						<tr>
+							<th><span>客戶</span></th>
+							<th><span>手機</span></th>
+							<th><span>信箱</span></th>
+							<th><span>地址</span></th>
+							<th><span>備註</span></th>
+							<th><span>修改</span></th>
+						</tr>
+						<tr class="updateRefreshTr">
+							<td><span>{{ custom.name }}{{ custom.sex }}</span></td>
+							<td><span>{{ custom.mobil }}</span></td>
+							<td><span>{{ custom.email }}</span></td>
+							<td><span>{{ custom.address }}</span></td>
+							<td><span>{{ custom.memo }}</span></td>
+							<td>
+								<button data-id="{{ custom.id }}" class="edit_custom btn btn-default">
+									<i class="icon-edit"></i>修改
+								</button>
+							</td>
+						</tr>
+					</table>
+					<table class="customHistoryTable" >
+						<thead>
+							<tr>
+								<th><p>商品名稱</p></th>
+								<th><p>商品產編</p></th>
+								<th><p>訂單類型</p></th>
+								<th><p>販售時間</p></th>	
+								<th><p>操作店員</p></th>
+								<th><p>詳細資料</p></th>
+							</tr>	
+						</thead>
+						<tbody>
+						{% for order in custom.orders|reverse %}
+							{% if 
+								order.status.id != constant('Woojin\\Utility\\Avenue\\Avenue::OS_CANCEL')
+								and order.kind.id in [
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_OUT'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_EXCHANGE_OUT'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_TURN_OUT'),
+									constant('Woojin\\Utility\\Avenue\\Avenue::OK_WEB_OUT')
+								] 
+							%}
+								{% if 
+									(app.user|has_auth('READ_ORDER_OWN') 
+									and app.user|is_own(order.product)) 
+									or app.user|has_auth('READ_ORDER_ALL') 
+								%}
+								<tr class="customBuyHistory">
+									<td>
+										<p>{{ order.product.name }}</p>
+									</td>
+									<td>
+										<p>{{ order.product.sn }}</p>
+									</td>
+									<td>
+										{% if order.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::OS_HANDLING') %}
+											{% set statusString = '未付清' %}
+											{% set color = 'red' %}
+										{% else %}
+											{% set statusString = '已付清' %}
+											{% set color = 'green' %}
+										{% endif %}
+
+										<p>{{ order.kind.name }}</p>
+										<p style="color: {{ color }};">({{ statusString }})</p>
+									</td>
+
+									{% for ope in order.opes %}
+										{% if loop.first %}
+											<td>
+												<p>{{ ope.datetime|date('Y-m-d H:i:s') }}</p>
+											</td>
+											<td>
+												<p>{% if ope.user %}{{ ope.user.username }}{% endif %}</p>
+											</td>
+										{% endif %}
+									{% endfor %}
+
+									<td>
+										{# <button data-id="{{ order.product.id }}" class="detail_goods btn btn-default"><i class="icon-eye-open"></i>查看
+										</button> #}
+										<a href="{{ path('goods_edit_v2', {id: order.product.id }) }}" target="_blank">
+											查看
+										</a>
+									</td>	
+								</tr>	
+								{% else %}
+								<span class="label label-warning">沒有足夠權限</span>
+								{% endif %}				
+							{% endif %}
+						{% endfor %}	
+						</tbody>
+					</table>
+
+					<div class="pager">
+						<form>
+							<img src="{{ PagerFirstPng }}" class="first"/>
+							<img src="{{ PagerPrevPng }}" class="prev"/>
+							<input type="text" class="pagedisplay"/>
+							<img src="{{ PagerNextPng }}" class="next"/>
+							<img src="{{ PagerLastPng }}" class="last"/>
+							<select class="pagesize">
+								<option selected="selected"  value="10">10</option>
+								<option value="20">20</option>
+								<option value="30">30</option>
+								<option value="40">40</option>
+							</select>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="accordion_right"></div>
+		</div>
+	{% endfor %}
+{% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}

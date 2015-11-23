@@ -1,0 +1,77 @@
+<tbody>
+    {% for product in products %}
+        {% set feedback = 0 %}
+
+        {% for order in product.orders %} 
+            {% if order.kind.id == constant('Woojin\\Utility\\Avenue\\Avenue::OK_FEEDBACK') %}
+                {% set feedback = order.required %}
+            {% endif %}
+
+            {% if order.kind.id in [
+                constant('Woojin\\Utility\\Avenue\\Avenue::OK_OUT'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::OK_EXCHANGE_OUT'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::OK_TURN_OUT'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::OK_WEB_OUT'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::OK_OFFICIAL'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::OK_SAME_BS'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::OK_SPECIAL_SELL')
+            ] and order.status.id != constant('Woojin\\Utility\\Avenue\\Avenue::OS_CANCEL') %}
+                <tr>
+                    {% for ope in order.opes %}
+                        {% if loop.last %}  
+                            <td>
+                                <span>{{ ope.datetime|date('Y-m-d H:i:s') }}</span>
+                            </td>
+                        {% endif %}
+                
+                    {% endfor %}
+                    <td>
+                        <span>{{ product.brand.name }}</span>
+                    </td>
+                    <td>
+                        <span>{{ product.name }}</span>
+                    </td>
+                    <td>
+                        <span>{{ product.sn }}</span>
+                    </td>
+                    <td>
+                        <span>{{ product.level.name }}</span>
+                    </td>
+                    <td>
+                        <span>{{ product.price|number_format }}</span>
+                    </td>   
+                    <td class="consign_feedback" data-money="{{ feedback }}">
+                        <span>{{ feedback|number_format }}</span>
+                    </td>
+                    <td class="orders_kind">
+                        <span>{{ order.kind.name }}</span>
+                    </td>  
+                    <td class="org_achievement" data-money = "{{ order.orgRequired }}">
+                        <span>{{ order.orgRequired|number_format }}</span>
+                    </td>         
+                    <td class="achievement" data-money = "{{ order.required }}">
+                        <span>{{ order.required|number_format }}</span>
+                    </td>
+                    
+                    <td class="goods_cost" data-money="{{ product.cost }}">
+                        {% if (app.user|has_auth('READ_COST_OWN') and app.user|is_own(product)) or app.user|has_auth('READ_COST_ALL') %}
+                            <span>{{ product.cost|number_format }}</span>
+                        {% else %}
+                            <span>無權限</span>
+                        {% endif %}
+                    </td>
+                    {% set profit = (order.required - product.cost) %}
+                    
+                    {% set profit = (profit < 0) ? 0 : profit %}
+
+                    <td class="profit" data-money="{{ profit }}">
+                        <span>{{ profit|number_format }}</span>
+                    </td>       
+                    <td>
+                        <button type="button" class="openGoodsDetailDialog btn btn-default" data-id="{{ product.id }}"><i class="icon-eye-open"></i>查看</button>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+</tbody>

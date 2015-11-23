@@ -1,0 +1,133 @@
+<!-- Modal -->
+<div class="modal fade" id="yahooModal" tabindex="-1" role="dialog" aria-labelledby="yahooModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                <h4 class="modal-title" id="yahooModalLabel">同步商城 &nbsp;&nbsp;
+                    <small class="pull-right mr-20">
+                        <a class="btn btn-default" href="{{ constant('Woojin\\Utility\\YahooApi\\Yahoo::YAHOO_ITEM_URL') ~ '/' ~ goods.yahooId }}" target="_blank"><i class="glyphicon glyphicon-eye-open"></i>商城前台檢視</a>
+                    </small>
+
+                    <small class="pull-right mr-20">
+                        <a class="btn btn-default" href="{{ constant('Woojin\\Utility\\YahooApi\\Yahoo::YAHOO_ADMIN_URL') ~ goods.yahooId }}" target="_blank"><i class="glyphicon glyphicon-pencil"></i>商城後台編輯</a>
+                    </small>
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <div id="yahoo-preload-display" class="hidden">
+                    <span>正在從 <b>Yahoo</b> 撈取資料，請稍後...</span>
+                    <img src="{{ AjaxLoadingGif }}" />
+                </div>
+                <form name="yahoo-upload" method="post" action="{{ goods|get_yahoo_form_action }}" role="form">
+                    {% if goods.yahooId %}
+                        <input type="hidden" name="_method" value="PUT" />
+                    {% endif %}
+                    
+                    <div class="form-group">
+                        <label for="yahoo_categoryId" class="col-md-2 control-label">狀態</label>
+                        <div class="col-md-10">
+                            <span>商城:&nbsp;
+                                <span id="yahoo-status-display" class="hidden label label-warning">
+                                    尚未上傳
+                                </span>
+                            </span>
+
+                            <span>
+                                本店:&nbsp;
+                                <span class="label label-default">{{ goods.status.name }}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="yahoo_categoryId" class="col-md-2 control-label">商品分類(*必選)</label>
+                        <div class="col-md-10">
+                            <select name="yahoo_categoryId" id="yahoo_categoryId" class="form-control">
+                                <option value="0">--請選擇--</option>
+                                {% for yahooCategory in yahooCategorys %}
+                                    <option value="{{ yahooCategory.yahooId }}" {% if yahooCategory|is_this_yahoo_category(goods) %}selected{% endif %} >{{ yahooCategory.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yahoo_paymentType" class="col-md-2 control-label">允許付費方式(*必選)</label>
+                        <div class="col-md-10">
+                            {% for payment in storePayments %}
+                                <div class="checkbox">
+                                    <label>
+                                      <input name="yahoo_paymentTypes[]" type="checkbox" value="{{ payment.Id }}" checked>{{ payment._Name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yahoo_shipping" class="col-md-2 control-label">允許物流方式(*必選)</label>
+                        <div class="col-md-10">
+                            {% for shipping in storeShippings %}
+                                <div class="checkbox">
+                                    <label>
+                                      <input name="yahoo_shippings[]" type="checkbox" value="{{ shipping.Id }}" {% if shipping.UserDefaultOn == 'on' %}checked{% endif %}>{{ shipping._Name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yahoo_storeCategoryId" class="col-md-2 control-label">店內分類</label>
+                        <div class="col-md-10">
+                            {% for category in storeCategorys %}
+                                <div class="checkbox">
+                                    <label>
+                                      <input name="yahoo_storeCategoryIds[]" type="checkbox" value="{{ category.Id }}">{{ category._Path }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                {% if goods.yahooId %}
+                    {% if goods.status.id in [
+                        constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
+                        constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
+                    ] %}
+                    <form class="pull-left mr-10" action="{{ path('admin_yahoo_online', {id: goods.id}) }}" method="post" role="form" onsubmit="return confirm('確定要將商品從商城上架嘛?');">
+                        <input type="hidden" name="_method" value="PUT" />
+                        <button class="btn btn-success"><i class="glyphicon glyphicon-arrow-up"></i>上架</button>
+                    </form> 
+                    {% endif %}      
+
+                    <form class="pull-left mr-10" action="{{ path('admin_yahoo_offline', {id: goods.id}) }}" method="post" role="form" onsubmit="return confirm('確定要從商城下架 嘛?');">
+                        <input type="hidden" name="_method" value="PUT" />
+                        <button class="btn btn-warning"><i class="glyphicon glyphicon-arrow-down"></i>下架</button>
+                    </form>
+
+                    <form class="pull-left mr-10" action="{{ path('admin_yahoo_delete', {id: goods.id}) }}" method="post" role="form" onsubmit="return confirm('確定要刪除商城的資料嘛?');">
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>刪除</button>
+                    </form>
+                {% endif %}
+                
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                {% if goods.status.id in [
+                        constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
+                        constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
+                    ] %}
+                <button id="yahoo-upload-submit" type="button" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-ok"></i>
+                    確認
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,636 @@
+{% extends 'WoojinOrderBundle:Orders:orders.layout.html.twig' %}
+{% if app.user|has_auth('ACTIVITY_SELL') %}
+{% block library_css %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('/css/order.css') }}">
+	<style>
+
+	body::before {
+		content: '';
+	}
+
+	#body {
+		margin: 0 !important;
+	}
+	</style>
+{% endblock %}
+{% block library_javascript %}
+<script src="{{ asset('/js/jquery-1.9.1.min.js') }}"></script>
+<script src="{{ asset('/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('/js/bootbox.min.js') }}"></script>
+<script src="{{ asset('/js/jquery-ui-1.10.3.min.js') }}"></script>
+<script src="{{ asset('/js/hinclude.js') }}"></script>
+<script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+<script src="{{ asset('/js/jquery.form.js')}}"></script>
+<script src="{{ asset('/js/jquery.numeric.js') }}"></script><!-- 數字輸入限制jQuery Plugin -->
+<script src="{{ asset('/js/jquery-migrate.js') }}"></script>
+<script src="{{ asset('/js/tablesorter.js') }}"></script>
+<script src="{{ asset('/js/tablepager.js') }}"></script>
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="{{ asset('/js/base.js') }}"></script>
+<script src="{{ asset('/js/order.js') }}"></script>
+{% endblock %}
+{% block body %}
+
+<script>
+{% if app.user.store.sn == 'C' %}
+window.fix_rate = 10;
+window.phone_length = 11;
+{% else %}
+window.fix_rate = 100;
+window.phone_length = 10;
+{% endif %}
+</script>
+
+<div id="orders">
+	<div class="ordersEditFormDialog" title="修改訂單"></div>
+	<div id="orders-specialSell">
+		<div class="ajaxResMsgRight">{% block resLeft %}{% endblock %}</div>
+		<div class="ajaxResMid"><div class="pageBar" style="display:none">{% block pageBar %}{% endblock %}</div></div>
+		<div class="ajaxResLeft">{% block resRight %}{% endblock %}</div>
+		<div class="sellStart">
+			<div>
+				<h1>特殊活動銷貨</h1>
+				<hr/>
+			</div>
+			<div class="customMobil">
+				<label>輸入電話號碼:</label>
+				<input type="text" class="numeric" name="nCustomMobil" placeholder="請輸入電話號碼" />
+				<b data-icon="I">無資料</b><input type="checkbox" id="customNoData" value = "1" /><br/>
+			</div>
+			<div class="goodsSn" style="display:none;">
+				<label>輸入產編:</label>
+				<input type="text" name="sGoodsSn" value="{{ app.user.store.sn }}" placeholder="請輸入產編" />
+			</div>
+			<div class="sellsType">
+				<label>販售方式:</label>
+				<input type="radio" name="sell_type" id="_radio1" checked="checked" vale="sell" />
+				<label for="_radio1"><span data-icon="P">活動售出</span></label>
+			</div>	
+		</div>
+		<div class="sellFlow flowSepStart" >
+			<div>
+				<h2>販售流程</h2>
+				<hr/>
+			</div>
+			<form method="POST" enctype="multipart/form-data" style="margin-left: 31px;">
+				<input type="hidden" name="form[_token]" value="{{ _token }}" />
+                <input type="hidden" name="invoice_key" />
+    
+				<div class="step1">
+					<label class="vader">付費方式:</label>
+					<select name="nPayTypeId">
+						{{ render( controller('WoojinBaseBundle:Base:getPayTypeSelect') ) }}
+					</select>
+				</div>
+				<div class="step1">
+					<label class="vader">商品訂價:</label>
+					<input type="text" name="nGoodsPrice" value="0" readonly/>
+					<label class="vader">商品售價:</label>
+					<input type="text" name="nOrdersRequired" value="0" />
+					<!-- <label>折扣金額:</label> -->
+					<input type="hidden" name="nDiscountMoney" value="0" readonly />
+					<label class="vader">預付訂金/付清:</label>
+					<input type="text" name="nOrdersPaidReal" value="0"/>
+					<label class="vader">實收金額:</label>
+					<input type="text" name="nOrdersPaid" readonly value="0"/>
+				</div>
+				<div class="step1">
+					<label class="vader">訂單備註:</label>
+					<textarea name="sOrdersMemo" placeholder="可不填寫"></textarea>	
+				</div>
+				<input type="hidden" name="sGoodsSn" />
+				<input type="hidden" name="nCustomMobil" />
+				<input type="hidden" name="nOrdersKindId" value="13" />
+				<button type="button" class="step1 submitButton btn btn-default" onkeydown="preventEnterSubmit();">
+					<span data-icon="V">確定</span>
+				</button>
+                <button type="button" id="refresh_invoice_key" class="btn btn-inverse">刷新發票號碼</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+function preventEnterSubmit () {
+    if (event.keyCode == 13) {
+        event.cancelBubble = true;
+        event.returnValue = false;
+    }
+}
+$(function(){
+	var 
+		$tab = $('#orders-specialSell'), 
+		$editDialog = $('.edit_custom_dialog'),
+		$resRight = $tab.find('.ajaxResMsgRight'),
+		$resLeft = $tab.find('.ajaxResLeft'),
+		$customNoData = $tab.find('#customNoData'),
+		$sellTypeDiv = $tab.find('.sellsType'),
+		$sellTypeRadio = $tab.find('[name="sell_type"]'),
+		$ajaxGoodsSn = $tab.find('.goodsSn').children('input'),
+		$nCustomMobilInput = $tab.find('.customMobil').children('input[type="text"]'),
+		$flowSepStart = $tab.find('.flowSepStart'),
+		$sellFlow = $tab.find('.sellFlow'),
+		$sellFlowForm = $sellFlow.find('form'),
+		$nPayTypeId = $sellFlowForm.find('[name="nPayTypeId"]'),
+		$ordersPaid = $sellFlowForm.find('[name="nOrdersPaid"]'),
+        $ordersRequired = $sellFlowForm.find('[name="nOrdersRequired"]'),
+        $nOrdersPaidReal = $sellFlowForm.find('[name="nOrdersPaidReal"]'),
+        $nDiscountMoney = $sellFlowForm.find('[name="nDiscountMoney"]'),
+        $goodsPrice = $sellFlowForm.find('[name="nGoodsPrice"]'),
+		$detailGoodsDialog = $('.detail_of_custom_goods'),
+		$ordersEditFormDialog = $('.ordersEditFormDialog'),
+		$button = $tab.find('button'),
+		$addGoodsOperateOpen = $tab.find('.panelSwitch'),
+		$buttonSubmit = $tab.find('.submitButton'),
+		nMinLength = 2,
+		nAminateSpeed = 700,
+		sSellUrl = Routing.generate('order_sell_goods'),
+		sAutoGoodsSnUrl = Routing.generate('order_autoComplete_goodsSn'),
+		sSearchByGoodsSnUrl = Routing.generate('order_activity_search_by_goodsSn'),
+		sMobilFindUrl= Routing.generate('admin_custom_fetch'),
+		sAutoByMobilUrl = Routing.generate('admin_custom_searchName_byEmail'),
+		sFixUrl	= Routing.generate('goods_fix_res_show'),
+		sFormLoadedUrl = Routing.generate('goods_edit_form_loaded'),
+		reMobil	= /^[09]{2}[0-9]{8}$/;
+
+$('#refresh_invoice_key').click(function () {
+    $('input[name="invoice_key"]').val(getGUID());
+
+    return false;
+}).click();
+
+	function attachOnNewElement () {
+		var	
+			$tab = $('#orders-specialSell'),
+			$goodsSearchAjaxLoadImg = $tab.find('.ajaxResLeft'),
+			$ajaxSearchDiv = $tab.find('.ajaxResMsgRight'),
+			$h3 = $tab.find('h3');
+
+		$h3.on('click', function(){
+			$goodsSearchAjaxLoadImg.html( '<img src="'+$(this).data('imgpath')+'" />'  );
+		}).eq(0).click();
+		return false;
+	}
+
+	function specialOrdersRefresh ($ordersUl) {
+		if ($ordersUl.find('.orders_kind').data('id') == 5) {
+			var 
+				$refreshTarget = $ordersUl.next(),
+				nOrdersId = $refreshTarget.find('.button').data('id'),
+				sImgClass = $refreshTarget.attr('id'),
+				sOrdersRefreshUrl = Routing.generate('orders_ajax_one_info');
+
+			$refreshTarget.html('<img src="{{ AjaxLoadingGif }}" style="margin: 15px;"/>');
+			$.post( sOrdersRefreshUrl, {'nOrdersId' : nOrdersId }, function(res){
+				$refreshTarget.html(res);
+			});
+			$('img.'+sImgClass).attr('src', '{{ CancelPng }}');
+		} else if ($ordersUl.find('.orders_kind').data('id') == 9) {
+			var 
+				$refreshTarget = $ordersUl.prev(),
+				nOrdersId = $refreshTarget.find('.button').data('id'),
+				sImgClass = $refreshTarget.attr('id'),
+				sOrdersRefreshUrl = Routing.generate('orders_ajax_one_info');
+			$refreshTarget.html('<img src="{{ AjaxLoadingGif }}" style="margin: 15px;"/>');
+			$.post( sOrdersRefreshUrl, {'nOrdersId' : nOrdersId }, function(res){
+				$refreshTarget.html(res);
+			});
+			$('img.'+sImgClass).attr('src', '{{ CancelPng }}');
+		}
+		return;
+	}
+
+	function editDialogRefresh ( nCustomId ) {
+		var 
+			sEditFormUrl = Routing.generate('orders_custom_edit_form'),
+			sCheckExistUrl = Routing.generate('admin_custom_checkExist'),
+    	sUpdateCustomUrl = Routing.generate('admin_custom_update');
+    $.post(sEditFormUrl, { 'nCustomId' : nCustomId }, function(res){
+      $editDialog.html(res);
+      var 
+      	$form = $('.editCustomForm'),
+        sOrgCustomEmail = $form.find('[name="sCustomEmail"]').val(),
+        sOrgCustomMobil = $form.find('[name="sCustomMobil"]').val();
+      $form.find('.datepicker').datepicker({
+        changeYear : true,
+        dateFormat : "yy-mm-dd",
+        yearRange : "1901:2013",
+        defaultDate : "-30y",
+      });
+
+      $form.find('[name="sCustomEmail"]').on('blur', function(){
+        var 
+        	$this = $(this),
+          sEmail = $this.val();
+
+        if ( !reEmail.test(sEmail) && sEmail != '' ) {
+            $this.val('').attr('title', '信箱格式有誤').tooltip().focus(); //這邊可能會發生信箱重複
+        } else if (sEmail == '') {
+        	$this.attr('title', '');
+        } else {
+          if (sOrgCustomEmail != sEmail ) {
+            $.post(sCheckExistUrl, {'custom_email' : sEmail}, function (res) {
+              if (res != '') {
+                alert('電子信箱已存在');
+                $this.val('');
+              }         
+            });
+          }
+        }
+      });
+
+      $form.find('[name="sCustomMobil"]').numeric().on('blur', function(){
+        var 
+        	$this = $(this),
+          sMobil = $this.val();
+        if (sOrgCustomMobil != sMobil && sMobil != '') {
+          $.post(sCheckExistUrl, {'custom_mobil' : sMobil}, function (res) {
+            if (res != '') {
+              alert('電話號碼已存在');
+              $this.val(sOrgCustomMobil);
+            }         
+          });
+        }
+      });
+      $form.ajaxForm({
+        url : sUpdateCustomUrl,
+        error: function(){
+          $.unblockUI();
+          alert('ajax error!');
+        },
+        success: function (res) {
+          $('.thisTarget').closest('tr').html(res);
+          $('.thisTarget').button().on('click', function(){
+              var $this = $(this);
+
+            $this.addClass('thisTarget');
+            editDialogRefresh( $this.data('id') );
+            $editDialog.dialog('open');
+          }).button().removeClass('thisTarget');
+          $editDialog.dialog('close');
+          $.unblockUI();
+        }
+      }).on('submit', function(){
+          
+      });
+    });
+  };
+
+	function refreshAccordion (response) {
+    $resRight.html(response).accordion('destroy').accordion(
+    	{
+    		heightStyle: "content"
+    	}
+    ).addClass('isSearch')
+    .find('button').button()
+    .end().find('.edit_custom').on('click', function(){
+      var $this = $(this);
+      $this.addClass('thisTarget');
+      editDialogRefresh( $this.data('id') );
+      $editDialog.dialog('open');
+    })
+    .end().find('.detail_goods').each(function(){
+      var $this = $(this);     
+      $this.on('click', function () {
+        var 
+        	nGoodsId = $(this).data('id'),
+          sOneGoodsDetailUrl  = Routing.generate('goods_one_detail_info');
+
+        $.post(sOneGoodsDetailUrl , { 'nGoodsPassportId' : nGoodsId }, function(res){
+          $detailGoodsDialog.html(res);
+          $detailGoodsDialog.children('div').tabs({ heightStyle: "content" });
+          $detailGoodsDialog.dialog('open');
+        });
+      });
+    })
+    .end().find('.customHistoryTable').each(function(){ 
+    // table pager must put at last or enevs wont bind on DOM
+      var $this = $(this);
+      
+      if ( $this.find('.customBuyHistory').size() == 0 )
+        $this.add( $this.next() ).hide();
+      else
+        $this.tablesorter().tablesorterPager(
+        	{ 
+        		container: $this.next() 
+        	}
+        );
+    });
+
+    return $.unblockUI();
+  };
+
+  $('header').remove();
+  $resRight.accordion();
+	$sellTypeDiv.buttonset();
+	$buttonSubmit.on('click', function(){
+		$(this).closest('form').submit();
+		
+	});
+
+	$ordersPaid
+	.add($ordersRequired)
+	.add($nOrdersPaidReal).numeric()
+	.on('change', function(){
+		if (parseInt($ordersPaid.val()) > parseInt($ordersRequired.val()))
+			$ordersPaid.val($ordersRequired.val());
+		if (parseInt($ordersRequired.val() ) < 0)
+			$ordersRequired.val( 0 );
+		if ($ordersPaid.val() < 0)
+			$ordersPaid.val( 0 );
+	});
+
+	$customNoData.on('change', function(){
+		var $this = $(this);
+
+		if ($this.prop('checked') === true)
+			$nCustomMobilInput.val('00000').blur().prop('readonly', true);
+		else
+			$nCustomMobilInput.val('').prop('readonly', false).blur();
+	});
+
+	$nCustomMobilInput.on('blur', function(){
+		var 
+			$this = $(this),
+      sMobil = $this.val(),
+      $nCustomMobilInputHidden = $tab.find('[name="nCustomMobil"]'),
+			$span = $this.parent().find('span');
+
+		$span.remove();
+
+		initRes = function(){
+			$resLeft.html('');
+			$resRight.html('');
+			$this.parent().find('span').remove();
+			$ajaxGoodsSn.parent().fadeOut(300);
+			$flowSepStart.fadeOut(300);
+			$sellTypeDiv.fadeOut(nAminateSpeed);
+			return false;
+		};
+		
+		if (sMobil == '') {
+			return initRes();
+		}
+
+		$resRight.html('<img src="{{ AjaxLoadingGif }}" style="margin: 150px;"/>');
+		$resLeft.html('');
+		$.post(
+			sMobilFindUrl, 
+			{ 
+				'custom_mobil[]' 	: sMobil, 
+				'form[_token]' 		: $('[name="form[_token]"]').eq(0).val() 
+			}, function(res){
+    			if (res != '') {
+					//$resRight.html(res).accordion('destroy').accordion();
+					refreshAccordion(res);
+					$ajaxGoodsSn.parent().fadeIn( nAminateSpeed );
+					$nCustomMobilInputHidden.val( sMobil );
+    			} else {
+    				$this.parent().append('<span style="color:red;">該手機號碼不存在!</span>');
+    				initRes();
+    			}
+		}).fail(function(){
+			alert('ajax error!');
+		});
+	})
+	.autocomplete({
+    source: sAutoByMobilUrl,
+    minLength: nMinLength+2
+  }).on('keydown', function(){
+  	if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || (event.keyCode == 65 && event.ctrlKey === true) || (event.keyCode >= 35 && event.keyCode <= 39 ))
+      {
+      	return;
+      }
+  	else if ( $(this).val().length==window.phone_length)
+  		event.preventDefault();
+  });
+
+  $ajaxGoodsSn.on('blur', function(){
+    var 
+    	$this = $ajaxGoodsSn,
+    	$tab = $('#orders-specialSell'),
+    	sJudge = '{{ app.user.store.sn }}',
+      sGoodsSn = $this.val();
+
+    $this.attr('title', '');
+  	$sellFlowForm.find('[name="sGoodsSn"]').val('');
+
+  	if (sGoodsSn.length < 10) {
+			$this.attr('title', '未達產編長度').focus();
+  		$flowSepStart.fadeOut(300);
+			$sellTypeDiv.fadeOut(nAminateSpeed);
+			$resRight.html('');
+			$resLeft.html('<img src="{{ NothingPng }}" />');
+			$sellTypeDiv.fadeOut(nAminateSpeed);
+  	} else {
+  		$resRight.accordion('destroy').html('<img src="{{ AjaxLoadingGif }}" style="margin: 150px;"/>');
+  		$resLeft.html('<img src="{{ AjaxLoadingGif }}" style="margin: 60px;"/>');
+
+  		$sellFlowForm.find('input')
+		.not('[name="form[_token]"], [type="radio"], [name="sGoodsSn"], [name="nCustomMobil"], [name="nOrdersKindId"],[name="invoice_key"]' )
+		.val('').change();
+
+		$sellFlowForm.find('[name="sOrdersMemo"]').val('');
+		$goodsPrice.val(  parseInt( parseInt( $ajaxGoodsSn.val().substr(-4,4) ) )*window.fix_rate );
+		$flowSepStart.fadeOut(nAminateSpeed);
+		attachOnNewElement();
+		$ajaxGoodsSn.attr('title', '');    	
+      	$sellFlowForm.find('[name="sGoodsSn"]').val('');
+      	$sellTypeDiv.fadeOut(nAminateSpeed);
+      	$tab.find('[name="nPayTypeId"]').val('sell');
+
+  		$.post(
+  			sSearchByGoodsSnUrl, 
+  			{
+  				'sGoodsSn': sGoodsSn, 
+  				'form[_token]': $('[name="form[_token]"]').eq(0).val()
+  			}, 
+  			function (res) {
+  				var nOrdersRequired = parseInt( sGoodsSn.substr(-4, 4) )*window.fix_rate;
+  				
+  				$resRight.html(res).accordion();
+  				attachOnNewElement();
+
+  				var 
+  					$ajaxTabs = $resRight.find('.goodsResTabs'),
+						$ajaxButton = $ajaxTabs.find('button'),
+						$ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog');
+				
+					$ajaxTabs.tabs({
+						collapsible: true
+			    }).find('button').button();
+
+			    $ajaxButton.filter('.edit_goods').on('click', function(){
+			    	var $this = $(this),
+			    		nGoodsPassportId = $this.parent().data('id');
+
+			    	
+			    	$.post(sFormLoadedUrl, { 'nGoodsPassportId' : nGoodsPassportId }, function(res){
+			    		$ajaxEditGoodsDialog.html( res );
+			    		$ajaxEditGoodsDialog.dialog('open');
+			    		$.unblockUI();
+			    	})
+			    	.fail(function(xhr, textStatus, errorThrown) {
+			    		alert('ajax error');
+			    		$.unblockUI();
+			    	});
+			    });
+
+  				if ($resRight.find('h3').length<1) {
+  					$flowSepStart.fadeOut( 300 );
+					$sellTypeDiv.fadeOut(nAminateSpeed);
+					$resRight.html('');
+					$resLeft.html('<img src="{{ NothingPng }}" />');
+					$sellTypeDiv.fadeOut(nAminateSpeed);
+  				} else {
+  					$sellFlowForm.find('[name="sGoodsSn"]').val(sGoodsSn);
+  					$sellFlowForm.find('[name="nOrdersRequired"]').val(nOrdersRequired);
+  					$sellFlowForm.find('[name="nGoodsPrice"]').val(nOrdersRequired);
+  					$sellTypeDiv.add($flowSepStart).fadeIn(nAminateSpeed);
+  				}
+  			}
+  		)
+  		.fail(function(){
+  			alert('ajax_error!');
+  		});
+  	}
+  }).autocomplete({
+    source: sAutoGoodsSnUrl,
+    minLength: nMinLength
+  }).tooltip();
+
+	$sellTypeRadio.on('click', function(){
+		var 
+			$this = $(this),
+			sVal = $this.attr('id');
+
+		switch(sVal)
+		{
+			case 'radio1':
+				$sellFlow.find('[name="nOrdersKindId"]').val(6);
+				break;
+				
+			case 'radio2':
+				$sellFlow.find('[name="nOrdersKindId"]').val(7);
+				break;
+
+			case 'radio3':
+				$sellFlow.find('[name="nOrdersKindId"]').val(12);
+				break;
+			break;
+
+			default:
+			break;
+		}
+	});
+
+	$sellFlowForm.ajaxForm({
+		url : sSellUrl,
+		success: function (id) {
+	    	$.post(sFixUrl, { 
+	    		'nGoodsPassportId': id,
+	    		'bGoods': 1 
+	    	}, function(response) {
+	    		$resRight.html(response).accordion('destroy').accordion(
+	    			{ 
+	    				'heightStyle' : 'content' 
+	    			}
+	    		);
+
+	    		var $ajaxTabs 				= $('.goodsResTabs'),
+                    $ajaxButton             = $ajaxTabs.find('button'),
+                    $ajaxEditGoodsDialog    = $('.ajaxEditGoodsDialog');
+
+				$ajaxTabs.tabs({
+					collapsible: true
+		    }).find('button').button();
+
+		    $ajaxButton.filter('.edit_goods').on('click', function(){
+		    	var $this = $(this),
+			    		nGoodsPassportId = $this.parent().data('id');
+
+			 
+			    	$.post(sFormLoadedUrl, { 'nGoodsPassportId' : nGoodsPassportId }, function ( res ) {
+			    		$ajaxEditGoodsDialog.html(res);
+			    		$ajaxEditGoodsDialog.dialog('open');
+			    		$.unblockUI();
+			    	})
+			    	.fail(function(xhr, textStatus, errorThrown) {
+			    		alert('ajax error');
+			    		$.unblockUI();
+			    	});
+			    })
+			    .end()
+			    .filter('.change_order_custom, .back_order').hide();
+	    	});
+
+			$sellFlowForm.find('input')
+			.not('[name="form[_token]"], [type="radio"], [name="nOrdersKindId"]')
+			.val('').change();
+
+			$sellFlowForm.find('[name="sOrdersMemo"]').val('');
+			$ajaxGoodsSn.val('{{ app.user.store.sn }}');
+			$flowSepStart.fadeOut(nAminateSpeed);
+			
+			attachOnNewElement();
+			$ajaxGoodsSn.attr('title', '');
+    	$sellFlowForm.find('[name="sGoodsSn"]').val('');
+    	$sellTypeDiv.fadeOut(nAminateSpeed);
+    	$tab.find('[name="nPayTypeId"]').val('sell');
+    	$.unblockUI();
+			scrollToPageTop();
+		}
+	})
+	.find('[name="nPayTypeId"]')
+	.on('change', function(){
+		var nOrdersRequired = parseInt( $ajaxGoodsSn.val().substr( -4, 4) )*window.fix_rate,
+			fPayTypeDis 	= $(this).find('option:selected').data('discount');
+
+		$nOrdersPaidReal.val( Math.ceil( parseInt( $ordersPaid.val() ) /fPayTypeDis ) ).change();
+	});
+
+	$ordersPaid.on('change', function(){
+		var $this = $(this),
+			nDis  = $nPayTypeId.find('option:selected').data('discount');
+		$nOrdersPaidReal.val( Math.ceil(parseInt($ordersPaid.val())/nDis ));
+
+		if ($this.val() == 'NaN')
+			$this.val(0);
+	});
+
+	$nOrdersPaidReal.on('change', function(){
+		var $this = $(this),
+			nDis  = $nPayTypeId.find('option:selected').data('discount');
+
+		if (parseInt($this.val())> parseInt($ordersRequired.val()) )
+			$this.val($ordersRequired.val()).change();
+
+		$ordersPaid.val( Math.ceil( parseInt($this.val()*nDis) ) );
+		
+		if ($this.val() == 'NaN')
+			$this.val(0);
+	});
+
+	$ordersRequired.on('change', function(){
+		var nOrdersRequired = $(this).val(),
+			nDis 			= $nPayTypeId.find('option:selected').data('discount');
+
+		if (parseInt($ordersRequired.val()) < $nOrdersPaidReal.val())
+			$nOrdersPaidReal.val( $ordersRequired.val() ).change();
+
+		if ($nOrdersPaidReal.val() == 'NaN')
+			$nOrdersPaidReal.val(0);
+
+		$nDiscountMoney.val( parseInt($goodsPrice.val()) - parseInt($ordersRequired.val()) );
+
+		if ($nDiscountMoney.val() == 'NaN')
+			$nDiscountMoney.val(0);
+	});
+});
+
+</script>
+
+{% endblock %}
+{% endif %}

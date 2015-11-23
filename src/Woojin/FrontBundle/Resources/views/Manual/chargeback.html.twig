@@ -1,0 +1,102 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+  
+{% block title %}退款說明{% endblock %}
+
+{% block preExt %}
+<link rel="stylesheet" href="/bundles/woojinfront/plugins/jquery-steps/css/jquery.steps.css">
+{% endblock %}
+
+{% block body %}
+
+<div class="row mt-30">
+    <div class="col-md-2 hidden-xs">&nbsp;</div>
+    <div class="col-md-8 col-xs-12">
+        <div class="service-block service-block-dark">            
+            <span class="icon-custom icon-color-light rounded-x icon-line icon-bulb"></span>
+            <h2 class="heading-md">退貨須知</h2>
+
+            <hr>
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>1.</strong>&nbsp;
+                    鑑賞期內可辦退換貨，若超過鑑賞期限，恕無法接受退換貨！ 
+                </span> 
+            </div>
+
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>2.</strong>&nbsp;
+                    商品使用壽命與個人使用習慣及環境相關，所以不負責保固！但若有任何維修保養問題，可幫客戶代送維修保養，維修保養費用需由消費者自行負擔，若需保養維修服務可撥打服務專線，將有專人為您服務！
+                </span> 
+            </div>
+
+            <div class="text-left mb-10">
+                <span class="gender white font-15">
+                    <strong>3.</strong>&nbsp;
+                    退換貨商品必須在全新未使用之狀態下，且包裝必須完整(含購買商品、附件、內外包裝、隨機文件、贈品等)，商品若在已使用、缺少附件或吊牌拆除狀況下，則視 同該商品已使用，恕無法接受退換貨！ 
+                </span> 
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 hidden-xs">&nbsp;</div>
+</div>
+
+{# <div class="row">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-10">
+        <div id="manual-chargeback" class="manual mt-30">
+            <h3>登入會員</h3>
+            <section>
+                <h2 class="text-center border-bottom-solid-grey">登入會員</h2>
+                <div class="row">
+                    <div class="col-md-12 col-xs-12 text-center">
+                        <img src="/img/manual-chargeback/mc-a-1.jpg" class="img-responsive" alt="退款步驟1"/>
+                    </div>
+                </div>
+            </section>
+
+            <h3>前往訂單查詢頁面</h3>
+            <section>
+                <h2 class="text-center border-bottom-solid-grey">前往訂單查詢頁面</h2>
+                <div class="row">
+                    
+                    <div class="col-md-12 text-center">
+                        <img src="/img/manual-chargeback/mc-b.jpg" class="img-responsive" alt="退款步驟2"/>
+                    </div>
+                </div>
+            </section>
+
+            <h3>對訂單退款</h3>
+            <section>
+                <h2 class="text-center border-bottom-solid-grey">對訂單退款</h2>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <img src="/img/manual-chargeback/mc-c.jpg" class="img-responsive" alt="退款步驟3"/>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="col-md-1">&nbsp;</div>
+</div> #}
+{% endblock %}
+
+{% block jsExec %}
+<script>
+$("#manual-chargeback").steps({
+    headerTag: "h3",
+    bodyTag: "section",
+    transitionEffect: "slideLeft",
+    transitionEffectSpeed: 500,
+    labels: {
+        cancel: "取消",
+        current: "目前步驟:",
+        pagination: "頁籤",
+        finish: "完成",
+        next: "下一步",
+        previous: "上一步",
+        loading: "處理中 ..."
+    }
+});
+</script>
+{% endblock %}

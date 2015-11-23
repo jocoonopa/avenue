@@ -1,0 +1,44 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Invoice</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Sn</th>
+                <td>{{ entity.sn }}</td>
+            </tr>
+            <tr>
+                <th>Hasprint</th>
+                <td>{{ entity.hasPrint }}</td>
+            </tr>
+            <tr>
+                <th>Createat</th>
+                <td>{{ entity.createAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Updateat</th>
+                <td>{{ entity.updateAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('invoice') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('invoice_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

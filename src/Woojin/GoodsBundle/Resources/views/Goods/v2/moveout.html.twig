@@ -1,0 +1,12 @@
+{% if (app.user|has_auth('MOVE_REQUEST') and app.user|is_own(goods)) and goods.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') %}
+<hr><div class="row move-out mt-30">
+    <label class="col-md-2">調出貨操作</label>
+
+    <div class="col-md-10">
+        <input type="text" name="sStoreSn" placeholder="輸入店碼($, C, Y, Z, P, L, X)" />
+        <button class="btn btn-primary" type="button" data-id="{{ goods.id }}">確認</button>
+    </div>
+</div>
+<hr>
+<br>
+{% endif %}

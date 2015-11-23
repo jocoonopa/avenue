@@ -1,0 +1,74 @@
+<!-- Modal -->
+<div class="modal fade" id="behalfRequest" tabindex="-1" role="dialog" aria-labelledby="behalfRequestLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!--== modal header ==-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center" id="behalfRequestLabel">
+                    {% if app.session.get('custom') %}
+                    <span class="icon-emoticon-smile"></span>
+                    要讓香榭為您代購<strong class="product-name"></strong>嘛?
+                    {% else %}
+                    <span class="icon-login"></span>
+                    請先登入會員
+                    {% endif %}
+                </h4>
+            </div>
+            <!--== modal header End ==-->
+     
+            <!--== modal body ==-->
+            <div class="modal-body">
+                {% if app.session.get('custom') %}
+                    <p>您好:</p>
+                    <p>由於<strong class="product-name"></strong>已慶鑿，暫時沒有現貨。</p>
+                    <p>您可以點擊下方<button type="button" class="btn btn-default"><span class="icon-like"></span>
+                        幫我代購</button>按鈕，並且填寫上聯絡電話，我們將會來電與您聯繫，確認代購事宜</p>
+                {% else %}
+                    <p>代購功能需要<a class="behalf-login-redirect" href="">登入會員</a>才可以使用喔。</p>
+                {% endif %}
+
+                <br>
+                <br>
+                <hr>
+
+                <h3>注意事項:</h3>
+                <p>1. &nbsp;一旦於電話中確認代購後，因成本關係恕無法取消訂單。</p>
+                <p>2. &nbsp;代購商品需等候七至三十天方能到貨。</p>
+                <p>3. &nbsp;若最終香榭無法取得商品，得以保留取消該代購訂單並退還您的訂金的權利。</p>
+            </div>
+            <!--== modal body End ==-->
+
+            <!--== modal footer ==-->
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-8">
+                        {% if app.session.get('custom') %}
+                            {% set custom = app.session.get('custom')|json_decode %}
+                            <form name="behalf" action="{{ path('front_behalf_create') }}" method="POST" role="form">
+                                <input name="product_id" type="hidden" value="" />
+                                <input type="hidden" name="avenue_token" value="{{ csrf_token('behalf') }}">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <button type="submit" class="trigger-submit btn btn-default pull-left">
+                                            <span class="icon-like"></span>幫我代購
+                                        </button>
+
+                                        <input type="text" name="phone" class="numeric form-control max-width-150 pull-left" placeholder="請輸入聯絡電話" value="{{ custom.mobil }}"/>
+                                    </div>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">
+                            <span class="icon-shield"></span>暫時不用
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--== modal footer End ==-->
+        </div>
+    </div>
+</div>

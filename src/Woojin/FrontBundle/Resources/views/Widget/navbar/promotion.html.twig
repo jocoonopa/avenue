@@ -1,0 +1,49 @@
+{% macro with(promotions) %}
+<li class="dropdown mega-menu-fullwidth default-hover">
+    <a href="javascript:void(0);" class="default dropdown-toggle text-center" data-hover="dropdown" data-toggle="dropdown" data-delay="1000">Promo</a>
+    
+    <a href="javascript:void(0);" class="hover dropdown-toggle text-center hidden" data-hover="dropdown" data-toggle="dropdown" data-delay="1000">促銷活動</a>
+
+    <ul class="dropdown-menu">
+        <li>
+            <div class="mega-menu-content">
+                <div class="container">
+                    <div class="row">
+                        {% for promotion in promotions %} 
+                            <div class="col-md-3 col-sm-12 col-xs-12 md-margin-bottom-30">
+                                <div class="thumbnails thumbnail-style thumbnail-kenburn">
+                                    <div class="thumbnail-img">
+                                        <div class="overflow-hidden">
+                                            <a href="{{ path('front_promotion_filter', {id: promotion.id}) }}" class="white">
+                                                <img class="img-responsive" src="{{ promotion.webPath }}" alt="{{ promotion.name }}">
+                                            </a>
+                                        </div>
+                                        {# <a class="btn-more hover-effect" href="{{ path('front_promotion_filter', {id: promotion.id}) }}" style="color: #fff;">前往活動</a>    #}                
+                                    </div>
+                                    <div class="caption">
+                                        <h3 class="font-24">
+                                            <a class="hover-effect" href="#">{{ promotion.name }}</a>
+
+                                            {# <span class="badge rounded-2x {{ getBadgeStyleByCount(promotion.count) }}">{{ promotion.count }}</span> #}
+                                        </h3>
+                                        {# <p>{{ promotion.description }}</p> #}
+                                    </div>
+                                </div>
+                            </div>           
+                            {# <div class="col-md-3 col-sm-12 col-xs-12 md-margin-bottom-30">
+                                <a href="{% if promotion.goodsPassports|length > 0 %}{% endif %}">
+                                    <img class="product-offers img-responsive" src="{{ promotion.webPath }}" >
+                                </a>
+                            </div> #}
+                            
+                            {% if loop.index % 4 == 0 %}
+                                <div class="col-sm-12 col-xs-0 mb-10">&nbsp;</div>                   
+                            {% endif %}
+                        {% endfor %}
+                    </div><!--/end row-->
+                </div><!--/end container-->
+            </div><!--/end mega menu content-->  
+        </li>
+    </ul>
+</li>
+{% endmacro %}

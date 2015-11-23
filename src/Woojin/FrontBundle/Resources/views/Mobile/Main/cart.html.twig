@@ -1,0 +1,25 @@
+{% extends ':Mobile/Front:base.html.twig' %}
+
+{% block title %}Shopping Bag{% endblock %}
+
+{% block header %}
+    {% embed ':Mobile/Front/Header:header.html.twig' %}
+        {% block headerMessage %}Shopping Bag{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="static-notification-yellow tap-dismiss-notification MBC_empty-show mt-10">
+            <p class="center-text uppercase"><i class="fa fa-square-o"></i>未選購任何商品</p> 
+        </div>
+
+        {% include 'WoojinFrontBundle:Mobile/Main/Cart:list.html.twig' with {products: products} %}
+
+        <a href="{{ path('mobile_front_payment') }}" class="button button-dark my-text-center width-100-per MBC_empty-hide mb-10"><i class="fa fa-hand-o-right"></i>結帳</a>
+        
+        <a href="{{ path('mobile_front_index') }}" class="button button-light my-text-center width-100-per mb-10"><i class="fa fa-shopping-cart"></i>繼續購物</a>        
+        
+        <div class="decoration"></div> 
+    </div>  
+{% endblock %}

@@ -1,0 +1,51 @@
+<div class="snap-drawer snap-drawer-left">
+    <!--Sidebar Header-->
+    <div class="sidebar-header">
+        <a href="{{ path('mobile_front_index') }}" class="sidebar-logo" style="background-image: url('{{ getBackCacheImage('http://www.avenue2003.com/img/%E9%A6%99%E6%A6%ADLOGO_w.png', 121, 75) }}');"></a>
+        <a href="#" class="sidebar-close"><i class="fa fa-times"></i></a>
+        {# <a class="my-left-home-icon" href="{{ path('mobile_front_index') }}"><i class="fa fa-home"></i></a> #}
+    </div>            
+    <div class="deco"></div>
+    <!--Page Breadcrumb-->
+    {# <div class="breadcrumb"><a href="">Home</a></div> #}
+    
+    <div class="position-rel">
+        <form action="{{ path('mobile_front_search') }}" method="get" role="form">
+            <input type="text" name="search" value="{{ app.request.get('search') }}" class="font-16 white contactField my-search-input border-none requiredField" id="contactNameField" placeholder="SEARCH">
+
+            <button id="search" class="button my-search-button-light"><i class="fa fa-search font-16"></i></button>
+        </form>
+        
+    </div>  
+    <div class="deco"></div>
+    <!--Submenu Item-->
+
+    {% for brandName, brandId in getBrandList() %}
+    <div class="has-submenu" href="#">
+        <a class="menu-item"  href="#" >
+            <i class="fa fa-angle-right"></i>
+            <em>{{ brandName }}</em>
+            <i class="fa fa-plus"></i>
+        </a>
+
+        {% block patternMenu %}
+            <div class="submenu">
+                {% for groupName, groupId in getPatternGroupList() %}
+                    <div class="deco"></div>
+                    <a class="menu-item" href="{{ path('mobile_front_portfolio', {brand_id: brandId, pattern_group_id: groupId}) }}">
+                        <i class="fa fa-angle-right"></i>
+                        <em>{{ groupName }}</em>
+                        <i class="fa fa-circle"></i>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endblock %}
+    </div>    
+    {% endfor %}       
+    
+    <div class="deco"></div>
+    <!-- Page Breadcrumb -->
+    <div class="breadcrumb">Copyright {{ 'now'|date('Y')}} . All rights reserved</div>
+    <div class="deco"></div>
+      
+</div>

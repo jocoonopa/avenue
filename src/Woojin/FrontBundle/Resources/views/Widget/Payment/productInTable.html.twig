@@ -1,0 +1,120 @@
+{% macro table(products) %}
+    {% import _self as table %}
+    
+    {% for product in products %}
+        {{ table.tr(product) }}
+    {% endfor %}
+{% endmacro %}
+
+{% macro whishlist(products) %}
+    {% import _self as whishlist %}
+    
+    {% for product in products %}
+        {{ whishlist.tr(product, 'whishlist') }}
+    {% endfor %}
+{% endmacro %}
+
+{% macro tr(product, type) %}
+
+{% import _self as tr %}
+<tr>
+    {{ tr.first(product, type) }}
+
+    {# {{ tr.second(product) }} #}
+
+    {{ tr.third(product) }}
+    
+    {{ tr.last(product, type) }}
+</tr>
+{% endmacro %}
+
+{% macro first(product, type) %}
+<td class="product-in-table">
+    {% set categoryId = (product.categorys|length > 0) ? product.categorys[0].id : 1 %}
+    
+    <a href="{{ path('front_product_show', {id: product.id}) }}">
+        <img class="img-responsive" src="{% if product.img %}{{ product.img.path }}{% endif %}" alt="{{ product.name }}">
+    </a>   
+
+    <div class="product-it-in">
+        <h3>{{ product.name }} 
+            {% if product.brand %}
+                <small>
+                    <a href="{{ path('front_filter', {
+                    id: categoryId, 
+                    entityName: 'brand', 
+                    entityId: product.brand.id
+                    }) }}">{{ product.brand.name }}</a>
+                </small>
+            {% endif %}
+
+            {% if product.pattern %}
+                <small>
+                    <a href="{{ path('front_filter', {
+                    id: categoryId, 
+                    entityName: 'pattern', 
+                    entityId: product.pattern.id
+                    }) }}">{{ product.pattern.name }}</a>
+                </small>
+            {% endif %}
+        </h3>
+        {# <span class="hidden-xs">{% autoescape false %}{{ product.brief.content }}{% endautoescape %}</span> #}
+    </div>    
+
+    <div class="product-it-in visible-xs-block">
+        {% if product.promotionPrice %}
+            <p class="red">{{ 'NT. ' ~ product.promotionPrice|number_format }}</p>
+        {% else %}
+            <p>{{ 'NT. ' ~ product.promotionPrice(true)|number_format }}</p>
+        {% endif %}
+        
+        <hr>
+
+        {% if type != 'whishlist' %}
+            <button data-id="{{ product.id }}" class="pull-left btn-u btn-u-default cart-to-whishlist" data-toggle="tooltip" data-placement="top" title="加入願望清單">下次再買</button>
+        
+            <button data-id="{{ product.id }}" class="pull-right btn-u btn-u-dark trigger-remove-from-cart">取消購買</button>
+        {% elseif type == 'behalf' %}
+
+        {% else %}
+            <button data-id="{{ product.id }}" class="pull-left btn-u btn-u-default remove-from-whishlist" data-toggle="tooltip" data-placement="top" title="從願望清單中移除">
+                <span class="glyphicon glyphicon-remove-sign"></span>
+            </button>
+        
+            <button data-id="{{ product.id }}" class="pull-right btn-u btn-u-dark whishlist-to-cart" data-toggle="tooltip" data-placement="top" title="加入購物車">
+                <span class="glyphicon glyphicon-shopping-cart"></span>
+            </button>
+        {% endif %}
+    </div>
+</td>
+{% endmacro %}
+
+{% macro second(product) %}
+<td class="hidden-xs">{{ 'NT. ' ~ product.price|number_format }}</td>
+{% endmacro %}
+
+{% macro third(product) %}
+    {% if product.promotionPrice %}
+        <td class="shop-red hidden-xs">{{ 'NT. ' ~ product.promotionPrice|number_format }}</td>
+    {% else %}
+        <td class="hidden-xs">{{ 'NT. ' ~ product.promotionPrice(true)|number_format }}</td>
+    {% endif %}
+{% endmacro %}
+
+{% macro last(product, type) %}
+    <td class="hidden-xs">
+        {% if type != 'whishlist' %}
+            <button data-id="{{ product.id }}" class="btn-u btn-u-default cart-to-whishlist" data-toggle="tooltip" data-placement="top" title="加入願望清單">下次再買</button>
+        
+            <button data-id="{{ product.id }}" class="btn-u btn-u-dark trigger-remove-from-cart">取消購買</button>
+        {% else %}
+            <button data-id="{{ product.id }}" class="btn-u btn-u-default remove-from-whishlist" data-toggle="tooltip" data-placement="top" title="從願望清單中移除">
+                <span class="glyphicon glyphicon-remove-sign"></span>
+            </button>
+        
+            <button data-id="{{ product.id }}" class="btn-u btn-u-dark whishlist-to-cart" data-toggle="tooltip" data-placement="top" title="加入購物車">
+                <span class="glyphicon glyphicon-shopping-cart"></span>
+            </button>
+        {% endif %}
+    </td>
+{% endmacro %}

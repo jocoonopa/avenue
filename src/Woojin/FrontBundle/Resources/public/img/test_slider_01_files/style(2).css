@@ -1,0 +1,90 @@
+a:hover,#st-logo a,
+.avatar-nav-responsive .st-mega-menu li.current a,
+.avatar-nav-responsive .st-mega-menu li.current span.separator,
+.st-page-home .avatar-nav-responsive .st-mega-menu li.current a,
+.st-page-home-ver-2 .avatar-nav-responsive .st-mega-menu li.current a,
+.st-page-home .avatar-nav-responsive .st-mega-menu li.current span.separator,
+.st-page-home-ver-2 .avatar-nav-responsive .st-mega-menu li.current span.separator,
+.avatar-nav-responsive .avatar-main-menu li:hover a,
+.st-page-home .avatar-nav-responsive .st-mega-menu li:hover a ,
+.st-page-home-ver-2 .avatar-nav-responsive .st-mega-menu li:hover a,
+.avatar-nav-responsive .avatar-main-menu li:hover span.separator,
+.st-page-home .avatar-nav-responsive .st-mega-menu li:hover span.separator ,
+.st-page-home-ver-2 .avatar-nav-responsive .st-mega-menu li:hover span.separator,
+.st-page-portfolio .category-wall span:hover, .st-page-portfolio-2 .category-wall span:hover,
+.st-easy .st-easy-content h3 a:hover,
+.st-recent-work-slider .column-inner .title a:hover,
+.st-welcome-venus ul.nav-tabs li.active a, .st-welcome-venus ul.nav-tabs li a:hover,
+.st-welcome-venus .content .content-text h3 span,
+.st-welcome-venus .content .content-text .learn-more a,
+.st-footer-top-content a:hover,
+ul.st-footer-menu li:hover a,
+.st-recent-home-2  .title a:hover,
+.st-our-team .column-inner .title a:hover,
+.st-our-team .content h3.job,
+.st-page-about-us .st-about-us-slide .content .inner h3 span,
+#page-404-page p.back-home a:hover,
+.st-portfolio .inner .title a:hover,
+.st-page-blog .blogst-page-blog .page-header h2 a:hover,
+.st-page-blog ul.categories-module li a:hover,
+.st-page-blog .archive-modulest-blog-archives li a:hover,
+p.readmore a,p.readmore a:hover,
+.breadcrumb li a:hover,.archivest-page-blog  .page-header h2 a:hover,
+.st-page-portfolio .category-wall span.current,.st-page-portfolio-2 .category-wall span.current{
+	color:#151515;
+}
+.avatar-nav-responsive .st-mega-menu li.current a,
+.avatar-nav-responsive .st-mega-menu li.current span.separator,
+.st-page-home .avatar-nav-responsive .st-mega-menu li.current a,
+.st-page-home-ver-2 .avatar-nav-responsive .st-mega-menu li.current a,
+.st-page-home .avatar-nav-responsive .st-mega-menu li.current span.separator,
+.st-page-home-ver-2 .avatar-nav-responsive .st-mega-menu li.current span.separator,
+.st-page-home .avatar-nav-responsive .st-mega-menu li:hover a,
+.st-page-home-ver-2 .avatar-nav-responsive .st-mega-menu li:hover a,
+.avatar-nav-responsive .st-mega-menu li:hover a,
+.st-page-home .avatar-nav-responsive .st-mega-menu li:hover span.separator,
+.st-page-home-ver-2 .avatar-nav-responsive .st-mega-menu li:hover span.separator,
+.avatar-nav-responsive .st-mega-menu li:hover span.separator{
+	border-color:#151515;
+}
+
+#avatar-go-to-top:hover,#st-connect [id*="connect-"] a:hover,#out-team-connect [class*="connect-"] a:hover,
+.st-mauris-readmore a.read-more:hover,
+.st-contact .st-contact-form .submit,
+.st-easy [class*="st-easy-icon-"], .st-shoot .st-shoot-content p.what-video a,.st-subscribe input[type=submit],
+.filters .btn-primary:hover{
+	background-color: #151515;
+}
+
+.st-slide-home-1 .st-slide1-frame-1 a:hover,
+.st-slide-home-1 .sequence-prev:hover, .st-slide-home-1 .sequence-next:hover,
+.st-out-client .sequence-prev:hover, .st-out-client .sequence-next:hover,
+.st-our-team .sequence-prev:hover, .st-our-team .sequence-next:hover,
+.st-about-us-slide .sequence-prev:hover, .st-about-us-slide .sequence-next:hover,
+.st-recent-work-slider .sequence-prev:hover,.st-recent-work-slider .sequence-next:hover{
+	background-color: #151515;
+}
+
+.st-recent-work-slider .column-inner .image a:before,
+.st-recent-home-2  .image a:before,
+.st-our-team .column-inner .image a:before,
+.st-portfolio .layout-wall .inner .media:before{
+	background-color: #151515;
+}
+
+.avatar-responsive .avatar-nav-responsive  span.toggle,.avatar-responsive .avatar-nav-responsive  span.pull{
+	background-image: url('../nav_toggle.png');
+}
+
+.st-mauris-readmore{
+	background-image:url('../border_readmore.png');
+}
+.st-welcome-venus ul.nav-tabs li.active:first-child a, .st-welcome-venus ul.nav-tabs li:first-child a:hover{
+	background-image: url('../who_we_are_hover.png');
+}
+.st-welcome-venus ul.nav-tabs li.active:nth-child(2) a, .st-welcome-venus ul.nav-tabs li:nth-child(2) a:hover{
+	background-image: url('../what_we_do_hover.png');
+}
+.st-welcome-venus ul.nav-tabs li.active:last-child a, .st-welcome-venus ul.nav-tabs li:last-child a:hover{
+	background-image: url('../why_chose_us_hover.png');
+}

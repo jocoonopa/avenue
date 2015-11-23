@@ -1,0 +1,233 @@
+{# <form class="editGoodsInfoForm" method="POST" enctype="multipart/form-data">
+	<input type="hidden" name="form[_token]" value="{{ _token }}">
+	
+    <label>商品名稱:</label>
+    <input type="text" name="sGoodsName" value="{{ oGoodsPassport.name }}"/>
+
+	{% set nGoodsCost =  app.user.getTheRoles.id == 2 ? oGoodsPassport.cost/100 : '' %}
+
+	<label>成本:</label>
+	<input type="{% if (app.user.getTheRoles.id in [2,3,5,7] and (app.user.store.sn ==  oGoodsPassport.sn|slice(0,1) or app.user.store.sn != 'C' ) and app.user.id != 34) %}text{% else %}hidden{% endif %}" class="numeric " name="sGoodsCost" value="{{ oGoodsPassport.cost }}" {% if (app.user.getTheRoles.id != 3 and app.user.getTheRoles.id != 5 and (app.user.store.id != 6 or app.user.getTheRoles.id != 2) ) %}readonly{% endif %} />
+
+	<label>售價:</label>
+	<input type="text" class="numeric" name="sGoodsPrice" value="{{ oGoodsPassport.price }}" />
+	
+    <div>
+        <label>新舊:</label>
+        {{ render(controller("WoojinBaseBundle:Base:getGoodsLevelSelect")) }}
+    </div>
+
+    <div>
+        <label>品牌:</label>
+        <select class="brand" name="brand" style="margin: 0; width:180px;">
+            <option value="">無</option>
+
+            {% for brand in brands %}
+                <option value="{{ brand.id }}" {% if oGoodsPassport.brand is not empty and brand.id == oGoodsPassport.brand.id %}selected{% endif %}>{{ brand.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label>色號:</label>
+        <input type="text" name="colorSn" value="{{ oGoodsPassport.colorSn }}"/>
+    </div>
+
+    <div>
+        <label>顏色:</label>
+        <select class="color" name="color">
+            <option value="">無</option>
+
+            {% for color in colors %}
+                <option value="{{ color.id }}" {% if oGoodsPassport.color is not empty and color.id == oGoodsPassport.color.id %}selected{% endif %}>{{ color.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label>款式:</label>
+
+        <select class="pattern" name="pattern">
+            <option value="">無</option>    
+
+            {% for pattern in patterns %}
+                <option value="{{ pattern.id }}" {% if oGoodsPassport.pattern is not empty and pattern.id == oGoodsPassport.pattern.id %}selected{% endif %}>{{ pattern.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label>型號:</label>
+        <input type="text" name="model" value="{{ oGoodsPassport.model }}"/>
+    </div>
+	
+    <label>序號:</label><input type="text" name="sGoodsOrgSn" value="{{ oGoodsPassport.orgSn }}"/>
+	
+    <label>進貨時間:</label>
+	
+    <input type="text" name="sCreatedAt" value="{% if oGoodsPassport.createdAt%}{{ oGoodsPassport.getCreatedAt|date('Y-m-d') }}{% endif %}" />
+	
+    <label>材質:</label>{{ render( controller('WoojinBaseBundle:Base:getGoodsMTSelect') ) 	}}
+	
+    <label>來源:</label>{{ render( controller('WoojinBaseBundle:Base:getGoodsSourceSelect') ) 	}}
+	
+    <div class="buttonset">
+		<input type="radio" id="oigte1" name="oigt" checked="checked" vale="1"/>
+		<label for="oigte1"><span data-icon="9"></span>圖片上傳</label>
+		<input type="radio" id="oigte2" name="oigt" value="2"/>
+		<label for="oigte2"><span data-icon="W"></span>取消圖片</label>
+	</div>
+	
+    <input type="file" name="img" style="display:none;"/>
+	
+    <img src="" class="imgContainer">
+	
+    <label>備註:</label>
+    <textarea name="sGoodsMemo">{{ oGoodsPassport.memo }}</textarea>
+	<input type="hidden" name="nGoodsPassportId" value="{{ oGoodsPassport.id }}"/>
+</form>
+
+
+<script>
+{% if app.user.store.sn == 'C' %}
+window.fix_rate = 10
+{% else %}
+window.fix_rate = 100
+{% endif %}
+</script>
+
+<script>
+$(function(){
+	var 
+		isClickFirst = [],
+		repo = [],
+        brand_str = '',
+        brand_type_option_arr = [],
+        brand_sn_option_arr = [];
+
+	var $form = $('form.editGoodsInfoForm'),
+		$goodsLevelSelect = $form.find('.goods_search_goods_level'),
+		$brandSelect = $form.find('.base_ajax_brand'),
+		$brandTypeSelect = $form.find('.base_ajax_brand_type'),
+		$brandSnSelect = $form.find('.base_ajax_brand_sn'),
+		$goodsSourceSelect = $form.find('[name="nGoodsSourceId"]'),
+		$nGoodsPassportId = $form.find('[name="nGoodsPassportId"]'),
+		$sGoodsPassportName = $form.find('[name="sGoodsName"]'),
+		$nGoodsMTId = $form.find('[name="nGoodsMTId"]'),
+		$goodsCost = $form.find('[name="sGoodsCost"]'),
+		$goodsPrice = $form.find('[name="sGoodsPrice"]'),
+		$imgContainer = $form.find('.imgContainer'),
+		$createAt = $form.find('[name="sCreatedAt"]'),
+        $imgTrigger = $('#oigte1'),
+        $imgCancel = $('#oigte2'),
+        $imgFile = $form.find('[name="img"]'),
+        $buttonset = $('.buttonset'),
+        $ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog'),
+        sIniGoodsName = $sGoodsPassportName.val(),
+        sIniCost = $goodsCost.val(),
+        sIniPrice = $goodsPrice.val(),
+        sEditGoodsUrl = Routing.generate('goods_ajax_edit');
+
+    $goodsCost.add($goodsPrice).numeric();
+	$goodsSourceSelect.val( {{ oGoodsPassport.source.id }} );
+	$goodsLevelSelect.val( {{ oGoodsPassport.level.id }} ).change();
+	$nGoodsMTId.val( parseInt( {{ oGoodsPassport.mt.id }} ) ).change();
+	$buttonset.buttonset();
+	$sGoodsPassportName.on('blur', function(){
+		var $this = $(this),
+			sVal = $this.val();
+
+		if (sVal.length < 1)
+			$this.val(sIniGoodsName);
+		else
+			sIniGoodsName = sVal;		
+	});
+
+	$createAt.datepicker({ 
+        changeYear: true,
+        dateFormat: "yy-mm-dd",
+        yearRange: "2013:2023",
+        defaultDate: "+0y"
+    });
+
+	$goodsPrice.add( $goodsCost ).on('blur', function() {
+		var $this = $( this );
+
+        $this.val( $this.val().substring( -1, 6) );
+        $this.val( Math.ceil( $this.val() / window.fix_rate ) * window.fix_rate );
+	});
+
+	createImage = function(file) {
+		var $image 	= $form.find('.imgContainer'),
+			reader;
+		try
+		{
+			var max_file_size 	= 1048576 * 2;
+				reader 		 	= new FileReader();
+
+			if (file.size > max_file_size) {
+				console.log('File size is too big, limit under 2MB');
+				return;
+			}
+		} catch (err) {
+			console.log('Your Browser does not support HTML5 uploads! Cannot show preview!');
+			return;
+		}                
+
+		reader.onload = function(e){
+			$image.attr('src', e.target.result).fadeIn(500);
+		};     
+		    
+		reader.readAsDataURL(file);
+		$.data(file);
+	}
+
+	$imgTrigger.on('click', function(){
+    	$imgFile.click();
+    });
+
+    $imgCancel.on('click', function(){
+		$imgFile.val('');
+		$imgContainer.attr('src', '').fadeOut(200);
+	});
+
+   $imgFile.on('change',
+		function() {
+	        if(this.files != undefined) {
+	            createImage(this.files[0]);
+	        }
+	        else {
+	           console.log('Your Browser does not support HTML5 uploads! Cannot show preview!');
+	        }
+	    }
+	);
+
+   $form.ajaxForm({
+   		url: sEditGoodsUrl,
+   		error: function()
+	    {
+	    	$.unblockUI();
+	        alert('ajax error!'); 
+	    },
+   		success: function(res)
+   		{
+   			var nGoodsPassportId 	= $nGoodsPassportId.val(),
+   				$div 				= $('#ResTabs'+nGoodsPassportId),
+   				$ul  				= $div.find('.goods_list'),
+   				$h3  				= $div.parent().parent().prev(),
+   				sRefreshAjaxTabUrl 	= Routing.generate('goods_ajax_refresh_goods_info');
+
+   			info = JSON.parse(res);
+   			$h3.find('p').text(info.sGoodsSn);
+   			$h3.find('em').text(info.nImgId);
+   			$h3.data('imgpath', info.sImgPath);
+   			$.post(sRefreshAjaxTabUrl, { 'nGoodsPassportId' : nGoodsPassportId }, function(res){
+   				$ul.html(res);
+   				$h3.click();
+   				$.unblockUI();
+   				$ajaxEditGoodsDialog.dialog('close');
+   			});
+   		}
+   	});
+});
+</script> #}

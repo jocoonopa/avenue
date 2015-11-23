@@ -1,0 +1,39 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+{% if app.user|has_auth('COLOR') %}
+
+    <h1>{{ entity.name }}
+        <small>
+            <a href="{{ path('color') }}" class="btn btn-info">
+                回到列表
+            </a>
+        </small>
+    </h1>
+
+    <table class="record_properties table">
+        <tbody>
+            <tr>
+                <th>序號</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>名稱</th>
+                <td>{{ entity.name }}</td>
+            </tr>
+            <tr>
+                <th>色碼</th>
+                <td style="background-color: {{ entity.code }};">{{ entity.code }}</td>
+            </tr>
+        </tbody>
+    </table>
+   
+    <a href="{{ path('color_edit', { 'id': entity.id }) }}" class="btn btn-primary pull-right">
+        編輯
+    </a>
+    
+    {{ form(delete_form) }}
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

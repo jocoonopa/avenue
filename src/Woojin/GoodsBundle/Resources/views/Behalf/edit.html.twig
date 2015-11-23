@@ -1,0 +1,160 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block external %}
+<style>
+span.label-light, span.badge-light {
+  color: #777;
+  background: #ecf0f1;
+}
+
+span.label-dark, span.badge-dark {
+  background: #555;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+{% if app.user|has_auth('BEHALF_MANAGE') %}
+    {% import 'WoojinGoodsBundle:Behalf/Macro:widget.html.twig' as behalfWidget %}
+
+    <h1>代購訂單編輯&nbsp;<small>
+        <a href="{{ path('behalf') }}">回到列表</a>
+    </small></h1>
+    <hr>
+    <ul class="admin-behalf-ul">
+        <li>
+            <b>狀態:&nbsp;</b>{{ behalfWidget.label(behalf) }}
+        </li>
+        <li>
+            <b>代購商品:&nbsp;</b>
+            <a href="{{ path('goods_edit_v2', {id: behalf.want.id }) }}" target="_blank">{{ behalf.want.name }}&nbsp;{{ behalf.want.sn }}</a>
+        </li>
+        {% if behalf.got %}
+        <li>
+            <b>出貨商品:&nbsp;</b>
+            <a href="{{ path('goods_edit_v2', {id: behalf.got.id }) }}" target="_blank">{{ behalf.got.name }}&nbsp;{{ behalf.got.sn }}</a>
+        </li>
+        {% endif %}
+        <li>
+            <b>客戶:&nbsp;</b>{{ behalf.custom.name }}{{ behalf.custom.sex }}
+            <br>
+            <b>電話:&nbsp;</b>{{ behalf.phone }}
+            <br>
+            <b>電子郵件:&nbsp;</b><a href="mailto:{{ behalf.custom.email }}">{{ behalf.custom.email }}</a>
+        </li>
+        {% if behalf.createAt %}
+        <li>
+            <b>建立時間:&nbsp;</b> {{ behalf.createAt|date('Y-m-d H:i:s')}}
+        </li>
+        {% endif %}
+        {% if behalf.confirmFirstAt %}
+        <li>
+            <b>確認時間: &nbsp;</b>{{ behalf.confirmFirstAt|date('Y-m-d H:i:s')}}
+        </li>
+         {% endif %}
+        {% if behalf.payAt %}
+        <li>
+            <b>付款時間: &nbsp;</b>{{ behalf.payAt|date('Y-m-d H:i:s')}}
+        </li>
+         {% endif %}
+        {% if behalf.confirmSecondAt %}
+        <li>
+            <b>確認付款時間: &nbsp;</b>{{ behalf.confirmSecondAt|date('Y-m-d H:i:s')}}
+        </li>
+         {% endif %}
+        {% if behalf.inAt %}
+        <li>
+            <b>進貨時間:&nbsp;</b> {{ behalf.inAt|date('Y-m-d H:i:s')}}
+        </li>
+         {% endif %}
+        {% if behalf.sendAt %}
+        <li>
+            <b>出貨時間:&nbsp; </b>{{ behalf.sendAt|date('Y-m-d H:i:s')}}
+            <br>
+            <b>宅配單號:&nbsp;</b> {{ behalf.deliverySn }}
+        </li>
+         {% endif %}
+
+        {% if behalf.acancelAt %}
+            <li>
+                <b></b>香榭取消代購時間:&nbsp; {{ behalf.acancelAt|date('Y-m-d H:i:s')}}
+            </li>
+        {% endif %}
+
+        {% if behalf.chargeBackAt %}
+            <li>
+                <b></b>香榭退款時間:&nbsp; {{ behalf.chargeBackAt|date('Y-m-d H:i:s')}}
+            </li>
+        {% endif %}
+
+        {% if behalf.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_CANCEL') %}
+            <li>
+                <b></b>取消時間:&nbsp; {{ behalf.updateAt|date('Y-m-d H:i:s')}}
+            </li>
+        {% endif %}
+    </ul>
+
+    <hr>
+
+    {# 每個狀態對應一個不同頁面(form) #}
+    
+    <form name="admin_behalf" action="{{ path('behalf_update', {id: behalf.id}) }}" method="POST" role="form">
+        <input type="hidden" name="status" value="{{ behalf.status.id }}" />
+        <input type="hidden" name="_token" value="{{ csrf_token('admin_behalf') }}" />
+        <input type="hidden" name="_method" value="PUT" />
+    {# 請求尚未確認 #}
+    {% if behalf.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_NOT_CONFIRM') %}
+        <div class="form-group">
+            <input type="hidden" name="to_status" value="{{constant('Woojin\\Utility\\Avenue\\Avenue::BS_FIRST_CONFIRM')}}" />
+            <button type="submit" class="btn btn-success btn-sm pull-left">確認代購成立</button>
+        </div>
+    {# 付款但尚未確認 #}
+    {% elseif behalf.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_PAID') %}
+        <div class="form-group">
+            <input type="hidden" name="to_status" value="{{constant('Woojin\\Utility\\Avenue\\Avenue::BS_SECOND_CONFIRM')}}" />
+            <button type="submit" class="btn btn-success btn-sm pull-left">確認到款</button>
+        </div>
+    {# 尚未進貨 #}
+    {% elseif behalf.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_SECOND_CONFIRM') %}
+        <div class="form-group">
+            <input type="hidden" name="to_status" value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::BS_PURIN') }}" />
+            <input type="text" class="form-group pull-left" placeholder="請輸入批進貨物的成本" name="cost" value="{{ behalf.want.cost }}" />
+            <button type="submit" class="btn btn-success btn-sm pull-left">確認入庫</button>
+        </div>
+    {# 尚未出貨 #}
+    {% elseif behalf.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_PURIN') %}
+        <div class="form-group">
+            <input type="hidden" name="to_status" value="{{constant('Woojin\\Utility\\Avenue\\Avenue::BS_PUROUT')}}" />
+            <input type="text" class="form-group pull-left" name="delivery_sn" placeholder="請輸入宅配單號" value="" />
+            <button type="submit" class="btn btn-success btn-sm pull-left">確認出貨</button>
+        </div>
+    {% elseif behalf.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::BS_AVENUE_CANCEL') %}
+        <div class="form-group">
+            <input type="hidden" name="to_status" value="{{constant('Woojin\\Utility\\Avenue\\Avenue::BS_CHARGE_BACK')}}" />
+            <button type="submit" class="btn btn-success btn-sm pull-left">退款確認</button>
+        </div>
+    {% endif %}
+    </form>
+    {% if behalf.status.id not in [
+        constant('Woojin\\Utility\\Avenue\\Avenue::BS_PURIN'),
+        constant('Woojin\\Utility\\Avenue\\Avenue::BS_PUROUT'), 
+        constant('Woojin\\Utility\\Avenue\\Avenue::BS_CANCEL'),
+        constant('Woojin\\Utility\\Avenue\\Avenue::BS_AVENUE_CANCEL'),
+        constant('Woojin\\Utility\\Avenue\\Avenue::BS_CHARGE_BACK')
+    ] %}
+    <form action="{{ path('behalf_delete', {id: behalf.id}) }}" method="POST" role="form">
+        <div class="form-group">
+            <input type="hidden" name="_method" value="DELETE" />
+            <button type="submit" class="btn btn-danger btn-sm pull-right">刪除</button>
+        </div>
+    </form>
+    {% endif %}
+
+<script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+<script>
+$('form').find('cost').numeric();
+</script>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

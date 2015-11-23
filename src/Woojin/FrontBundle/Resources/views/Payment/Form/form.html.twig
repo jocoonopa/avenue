@@ -1,0 +1,17 @@
+<form class="shopping-cart" action="{{ path('front_payment_generate') }}" method="POST">
+    <div>
+        <!-- 購物車頁面 -->
+        {% include 'WoojinFrontBundle:Payment/Form:_cart.html.twig' with {products: products} %}
+        <!-- End 購物車頁面 -->
+        
+        <!-- 結帳及配貨資訊 -->
+        {% include 'WoojinFrontBundle:Payment/Form:_billinfo.html.twig' with {custom: custom} %}
+        <!-- End 結帳及配貨資訊 -->
+        
+        <!-- 付費方式選擇頁面 -->
+        {% include 'WoojinFrontBundle:Payment/Form:_pay.html.twig' %}
+        <!-- End 統計區塊 -->   
+    </div>
+
+    <input type="hidden" name="avenue_token" value="{{ csrf_token('invoice') }}" />
+</form>

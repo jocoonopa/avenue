@@ -1,0 +1,217 @@
+{% extends 'WoojinGoodsBundle:Goods:goods.layout.html.twig' %}
+{% if app.user.getTheRoles.id in [2,3,4,5] %}
+{% block library_css %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('/css/goods.css') }}">
+{% endblock %}
+{% block library_javascript %}
+	<script src="{{ asset('/js/jquery-1.9.1.min.js') }}"></script>
+  <script src="{{ asset('/js/bootstrap.min.js') }}"></script>
+  <script src="{{ asset('/js/bootbox.min.js') }}"></script>
+  <script src="{{ asset('/js/jquery-ui-1.10.3.min.js') }}"></script>
+  <script src="{{ asset('/js/hinclude.js') }}"></script>
+  <script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+  <script src="{{ asset('/js/jquery-migrate.js') }}"></script>
+  <script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+  <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+  <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+	<script src="{{ asset('/js/goods.js') }}"></script>
+{% endblock %}
+{% block body %}
+
+{% app.user|has_auth('SOURCE') %}
+<div id="tabs">
+	<div id="tabs-source">
+		<div style="position:absolute; left:40px; top:60px;">
+			{% for oGoodsSource in rGoodsSource %}
+			<ul class="goods_source">
+				<li>
+					<span>{{ loop.index }}.  <input type="hidden" class="goods_source_id" value="{{ oGoodsSource.id }}"/></span>
+				</li>
+				<li class="ajax_goods_source_name">
+					<span>{{ oGoodsSource.name }}</span>
+					<input type="text" class="dynamic_update_goods_source_name" value="{{ oGoodsSource.name }}"/>
+				</li>
+				<li><button class="del_goods_source_button btn btn-warning">刪除</button></li>
+			</ul>
+			{% endfor %}
+			<button class="add_goods_source_button btn btn-primary"><span data-icon="#">新增</span></button>
+		</div>
+		<div class="goods_source_dialog" title="商品產地">
+			<input type="text" class="dialog_goods_source_name" placeholder="商品產地" value=""/>
+		</div>
+	</div>
+</div>
+<script>
+
+$(function(){
+  var 
+  	$tab = $('#tabs-source'),
+  	$div = $tab.children('div'),
+    $GoodsSource = $div.find('ul.goods_source'),
+    $GoodsSourceDialog = $tab.find('.goods_source_dialog'),
+    $GoodsSourceName = $tab.find('.dialog_goods_source_name'),
+    $dialogInput = $GoodsSourceDialog.find('input'),
+    $button = $div.find('button'),
+    $addButton = $('.add_goods_source_button'),
+    $delButton = $('.del_goods_source_button'),
+    sAddUrl = Routing.generate('goods_ajax_add_goodsSource'),
+    sGoodsSourceUrl = Routing.generate('base_get_goodsSource_select');
+  $dialogInput.css(
+  	{
+  		'float' : 'left',
+  		'width' : '100px'
+  	}
+  ).addClass('fbSubmit');
+	$dialogInput.tooltip();
+	$GoodsSourceDialog.dialog({
+    autoOpen : false,
+    modal : true,
+    width : '270px',
+		buttons:
+		{
+			'確定': function () {
+				var 
+					sGoodsSourceName = $dialogInput.eq(0).val(),
+					nIndex = $('ul.goods_source').length+1;
+				if (sGoodsSourceName == '') {
+					$GoodsSourceName.attr('title', '付費方式不可為空').focus();
+					return;
+				}
+				$dialogInput.attr('title', '');			
+				$.post(
+					sAddUrl, 
+					{
+						'sGoodsSourceName' 		: sGoodsSourceName
+					}, function (res) {
+						var $addElement = $('<ul class="goods_source"><li><span>'+nIndex+'</span><input type="hidden" class="goods_source_id" value="'+res+'"/></li><li class="ajax_goods_source_name"><span>'+sGoodsSourceName+'</span><input type="text" class="dynamic_update_goods_source_name" value="'+sGoodsSourceName+'" /></li><li><button class="del_goods_source_button btn btn-warning ">刪除</button></li></ul>');
+						
+						$addElement.insertBefore($addButton);
+						attachAjaxEvent();
+						$addElement.addClass('noAjaxEvent');
+						
+						$dialogInput.val('');
+						$GoodsSourceDialog.dialog('close');
+						$.unblockUI();
+						// orders-sale GoodsSource refresh
+						
+						$('#orders').find('[name="nGoodsSourceId"]').load(sGoodsSourceUrl, function(){
+							$(this).change();
+						});
+					}
+				).fail(function () {
+					alert('ajax error!');
+					$.unblockUI();
+				});
+			},
+			'取消': function () {
+				$GoodsSourceDialog.dialog('close');
+			}
+		}
+	});
+	$addButton.on('click', function () {
+		$GoodsSourceDialog.dialog('open');
+	});
+	attachAjaxEvent();
+});
+
+function attachAjaxEvent () {
+	var 
+		$tab = $('#tabs-source'),
+  	$div = $tab.children('div'),
+    $GoodsSource = $div.find('.goods_source').not('.noAjaxEvent'),
+    $GoodsSourceLi = $GoodsSource.find('.ajax_goods_source_name'),
+    $GoodsSourceInput = $GoodsSourceLi.find('input'),
+    $button = $div.find('button'),
+    $delButton = $GoodsSource.find('.del_goods_source_button'),
+    $numeric = $('.numeric'),
+    sGoodsSourceUrl = Routing.generate('base_get_goodsSource_select');
+  $numeric.numeric();    
+	$delButton.on('click', function () {
+		var	
+			$ul= $(this).closest('ul'),
+			nGoodsSourceId = $ul.find('input').filter('.goods_source_id').val(),
+			sDeleteUrl = Routing.generate('goods_ajax_delete_goodsSource');
+		bootbox.confirm('確定要刪除嘛?', function(result) {
+			if(result !== true)
+				return;
+			$.post( 
+				sDeleteUrl, 
+				{ 
+					'nGoodsSourceId' : nGoodsSourceId
+				}, 
+				function(){
+					$ul.remove();
+					$('#orders').find('[name="nGoodsSourceId"]').load(sGoodsSourceUrl, function(){
+						$(this).change();
+					});
+				}
+			)
+			.fail(function(){
+				alert('ajax error!');
+			});
+		}); 
+	});
+	$GoodsSourceLi.on('click', function(){
+		$(this).find('span').hide().end().find('input').show().eq(0).focus();
+	})
+	.find('input').on('blur', function () {
+		var 
+			$this = $(this).parent(),
+			$GoodsSourceName = $this.find('.dynamic_update_goods_source_name'),
+			sGoodsSourceName = $GoodsSourceName.val(),
+			nGoodsSourceId = $this.parent().find('.goods_source_id').val(),
+			sUpdateUrl = Routing.generate('goods_ajax_update_goodsSource'),
+			sGoodsSourceUrl = Routing.generate('base_get_goodsSource_select');
+
+		if (sGoodsSourceName == $GoodsSourceName.prev().text() ) {
+			$this.find('input').hide().end().find('span').show();
+			return;
+		}
+		if (sGoodsSourceName == '') {
+			bootbox.alert('付費方式不可空白喔!', function(){
+				$GoodsSourceName.val( $GoodsSourceName.prev().text() ).focus();
+			});
+			return;
+		}
+		$.post(
+			sUpdateUrl, 
+			{
+				'sGoodsSourceName'		: sGoodsSourceName, 
+				'nGoodsSourceId' 		: nGoodsSourceId
+			}, 
+			function () {
+				$this.each(function(){
+					var sVal = $(this).find('input').val();
+					$(this).find('span').text(sVal);
+				});
+				$this.find('input').hide().end().find('span').show();
+				$('#orders').find('[name="nGoodsSourceId"]').load(sGoodsSourceUrl, function(){
+					$(this).change();
+				});
+				$.unblockUI();
+			}
+		).fail(function () {
+			$this.each(function(){
+				var sVal = $(this).find('span').text();
+				$(this).find('input').text(sVal);
+			});
+			$this.find('input').hide().end().find('span').show();
+			$.unblockUI();
+		});
+	});
+}
+
+</script>
+<script>
+$(function () {
+	$( '#tabs').tabs('destroy').css('backgroundColor', '#fff' );
+  $( 'header' ).remove();
+})
+</script>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}
+{% endif %}
+

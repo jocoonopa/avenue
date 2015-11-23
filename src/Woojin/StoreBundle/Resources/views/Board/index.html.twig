@@ -1,0 +1,351 @@
+{% extends '::activity.html.twig' %}
+
+{% block title %}系統公告{% endblock %}
+
+{% block head %}
+{{ parent() }}
+
+<style>
+
+.deep-background {
+	background-color: #19191A;
+}
+
+.date-color {
+	color: #099;
+}
+
+.info-color {
+	color: #d9edf7;
+}
+
+.success-color {
+	color: #c8e5bc;
+}
+
+.danger-color {
+	color: #f2dede;
+}
+
+.warning-color {
+	color: red;
+}
+
+.fix_row {
+	position: relative; margin: 0 auto; float:none; z-index: -100;
+}
+
+</style>
+
+{% endblock %}
+
+{% block body %} 
+
+<header class="row col-xs-12 deep-background" style="border-bottom: 1px solid rgba(158, 218, 168, 0.65);" >
+	<h1>系統公告
+	<small><a href="{{ path('order') }}">返回系統</a></small>
+	</h1>
+</header>
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/10/01 <span class="badge">2</span></h4><hr>
+
+	<blockquote>
+	<p class="success-color">寄賣無法確認問題修正</p>
+	<footer>14:00 ~ 15:00</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">調貨單有時候調出會撈不到資料修復(現在對方收到後也能印)</p>
+	<footer>14:00 ~ 15:00</footer>
+	</blockquote>
+
+</div>
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/08/12 <span class="badge">2</span></h4><hr>
+
+	<blockquote>
+	<p class="success-color">新增購買憑證列印</p>
+	<footer>09:00 ~ 10:00</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">資料庫亂碼修改</p>
+	<footer>10:00 ~ 11:00</footer>
+	</blockquote>
+
+</div>
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/16 <span class="badge">1</span></h4><hr>
+
+	<blockquote>
+	<p class="success-color">型號顏色顯示</p>
+	<footer>16:30 ~ 16:20</footer>
+	</blockquote>
+
+</div>
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/14 <span class="badge">3</span></h4><hr>
+
+	<blockquote>
+	<p class="success-color">訂單操作記錄修改</p>
+	<footer>22:30 ~ 23:00</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">調貨單日期顯示</p>
+	<footer>16:00 ~ 16:30</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">會計權限新增</p>
+	<footer>15:00 ~ 15:30</footer>
+	</blockquote>
+</div>
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/10 <span class="badge">1</span></h4><hr>
+
+	<blockquote>
+	<p class="success-color">修正調貨單目的地店名無法顯示問題</p>
+	<footer>22:00 ~ 22:30</footer>
+	</blockquote>
+</div>
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/09 <span class="badge">2</span></h4><hr>
+
+	<blockquote>
+	<p class="success-color">大陸店長不可看到台灣店商品的成本</p>
+	<footer>22:00 ~ 22:30</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">修正進貨單報表匯出問題，並且加上品牌可多選功能</p>
+	<footer>14:45 ~ 15:20</footer>
+	</blockquote>
+</div>
+
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/08 <span class="badge">4</span></h4><hr>
+	
+	<blockquote>
+	<p class="success-color">客戶生日輸入欄位索死，禁止手key輸入</p>
+	<footer>21:50 ~ 22:00</footer>
+	</blockquote>
+
+
+	<blockquote>
+	<p class="success-color">大陸應急介面價格修改後畫面莫名增生商品問題修正</p>
+	<footer>20:10 ~ 20:30</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">大陸應急介面價格無法修改bug修正</p>
+	<footer>19:20 ~ 19:40</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">產編產生少一碼的錯誤修正</p>
+	<footer>13:50 ~ 14:00</footer>
+	</blockquote>
+
+</div>
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/07 <span class="badge">2</span></h4><hr>
+
+	<blockquote>
+	<p class="success-color">錯誤回報自動送信</p>
+	<footer>23:20 ~ 23:30</footer>
+	</blockquote>
+	
+	<blockquote>
+	<p class="success-color">商品編輯功能503錯誤, 以修正( 型號選項過多導致的效能問題，改成三段式lazy load )</p>
+	<footer>21:00 ~ 21:30</footer>
+	</blockquote>
+
+</div>
+
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/05 <span class="badge">11</span></h4><hr>
+	
+	<blockquote>
+	<p class="success-color">活動管理頁面刪去多餘的引入 bootstrap-theme.min.css </p>
+	<footer>12:00 ~ 12:10</footer>
+	</blockquote>
+
+</div>
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/04 <span class="badge">16</span></h4><hr>
+	
+	<blockquote>
+	<p class="success-color">商品進貨原本一次進貨筆數過多會失敗，已經使用 set_time_limit(0) 修正</p>
+	<footer>23:00 ~ 23:30</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">大陸店出貨單位置調整</p>
+	<footer>22:00 ~ 23:00</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">大陸小幫手限制僅能查大陸商品資料</p>
+	<footer>20:00 ~ 22:00</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">Database Schema 更新</p>
+	<footer>01:00 ~ 01:30</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">財務報表頁面品牌選項改為 Lazy Load 以利提昇效能, 同時在BaseController 新增只獲取品牌資料的方法</p>
+	<footer>01:00 ~ 01:30</footer>
+	</blockquote>
+
+	<blockquote>
+		<p class="warning-color">系統維護更新</p>
+		<footer>00:00 ~ 01:30</footer>
+	</blockquote>
+	
+	<blockquote>
+		<p class="success-color">發票api上線</p>
+		<footer>00:00 ~ 01:00</footer>
+	</blockquote>
+
+	<blockquote>
+		<p class="success-color">修正賣東西第二次賣會把日期欄位清空的bug 修正</p>
+		<footer>00:00 ~ 01:00</footer>
+	</blockquote>
+
+	<blockquote>
+		<p class="success-color">連續賣東西, nCustomMobil 的input[type="hidden"] 的值會被清空的bug 修正</p>
+		<footer>00:00 ~ 01:00</footer>
+	</blockquote>
+
+	<blockquote>
+		<p class="success-color">批次上傳功能失效，檢查後發現為GoodsController 的 csrf 檢查函式回傳值錯誤，已修正</p>
+		<footer>00:00 ~ 01:00</footer>
+	</blockquote>
+
+	<blockquote>
+		<p class="success-color">order.custom.html.twig 的 script 有陷阱，當按完頁碼時會刷新 page 欄位的值，
+這時假設按了第五頁，之後再用電話查詢，query 會跑成符合 "該電話的第五頁資料，自然就找不到東西了 (已修正)</p>
+		<footer>00:00 ~ 01:00</footer>
+	</blockquote>
+
+	<blockquote>
+		<p class="success-color">security.yml, routing.yml, 各主要controller 參數修改</p>
+		<footer>00:00 ~ 01:00</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">Appkernal.php 新註冊 ApiDocBundle</p>
+	<footer>00:00 ~ 01:00</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">OrderBundle 和 StoreBundle Entity 更新</p>
+	<footer>00:00 ~ 01:00</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">OrderBundle 和 StoreBundle Entity 更新</p>
+	<footer>00:00 ~ 01:00</footer>
+	</blockquote>
+
+	<blockquote>
+	<p class="success-color">Doctrine Listener InvoiceManager 新增，監聽 Order的變化決定是否新增修改發票</p>
+	<footer>00:00 ~ 01:00</footer>
+	</blockquote>
+
+
+</div>
+
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/03 <span class="badge">0</span></h4><hr>
+	<p>暫無排定事項</p>
+</div>
+
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/02 <span class="badge">2</span></h4><hr>
+
+	<blockquote>
+		<p class="success-color">修改大陸電話號碼輸入長度</p>
+		<footer>17:30 ~ 18:00</footer>
+	</blockquote>
+
+	<blockquote>
+		<p class="success-color">新增大陸刷卡方式, 折扣率為0.965</p>
+		<footer>18:00 ~ 18:10</footer>
+	</blockquote>
+
+	<blockquote>
+		<p class="success-color">大陸應急修改介面增加品牌欄位</p>
+		<footer>20:45 ~ 21:15</footer>
+	</blockquote>
+</div>
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/07/01 <span class="badge">0</span></h4><hr>
+
+	<blockquote>
+		<p>暫無排定事項</p>
+	</blockquote>
+</div>
+
+<div class="row col-xs-10 text-left fix_row">
+	<h4 class="date-color">2014/06/30 <span class="badge">2</span></h4><hr>
+
+	<blockquote>
+		<p class="success-color">新增系統公告區</p>
+		<footer>23:00 ~ 24:00</footer>
+	</blockquote>
+
+	<blockquote>
+		<p class="success-color">修正進貨頁面品牌下拉選單無法產生的bug</p>
+		<footer>18:00 ~ 18:30</footer>
+	</blockquote>
+</div>
+
+<footer class="row col-xs-12 text-left deep-background" style="border-top: 1px solid rgba(158, 218, 168, 0.65); border-bottom: 1px solid rgba(158, 218, 168, 0.65);">
+
+<section style="width: 90%; margin: 0 auto;">
+	
+	<section style="width: 30%; margin-top: 30px;">
+		<dl class="dl-horizontal text-left">
+
+		  <dt>Line聯絡ID:</dt>
+		  <dd>jocoonopa</dd>
+			
+			<dt>手機聯絡:</dt>
+			<dd>0939-160-705</dd>
+
+			<dt>Skype聯絡我:</dt>
+			<dd>
+				<a href="skype:jocoonopa?chat">Skype</a>
+			</dd>
+
+			<dt>
+				發送Mail:
+			</dt>
+			<dd>
+				<a href="mailto:jocoonopa@gmail.com" target="_top">E-mail</a>
+			</dd>		
+		</dl>
+	</section>
+	
+
+</section>
+
+</footer>
+{% endblock %}

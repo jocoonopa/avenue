@@ -1,0 +1,240 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block ngApp %}ng-app="promotionApp"{% endblock %}
+
+{% block title %}批次設定促銷關連商品{% endblock %}
+
+{% block body %}
+
+{% if app.user|has_auth('PROMOTION_MANAGE') %}
+<div id="promotion-relate" data-id="{{ promotion.id }}" ng-controller="PromotionCtrl">
+    <div class="row">
+        <h1>請選擇查詢條件
+            <a class="btn btn-default" href="{{ path('promotion') }}">
+                <i class="glyphicon glyphicon-arrow-left"></i>回到列表
+            </a>
+        </h1><hr/>
+
+        <form name="promotionSearch" method="POST" role="form">
+            <div class="form-group">
+                <label class="control-label">品牌</label>
+
+                <div>
+                    <select name="brand" class="form-control">
+                        <option value="0">請選擇</option>
+
+                        {% for brand in brands %}
+                            <option value="{{ brand.id }}">{{ brand.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">款式</label>
+
+                <div>
+                    <select name="pattern" class="form-control">
+                        <option value="0">請選擇</option>
+
+                        {% for pattern in patterns %}
+                            <option value="{{ pattern.id }}">{{ pattern.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label">顏色</label>
+
+                <div>
+                    <select name="color" class="form-control">
+                        <option value="0">請選擇</option>
+
+                        {% for color in colors %}
+                            <option value="{{ color.id }}">{{ color.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">促銷活動</label>
+
+                <div>
+                    <select name="color" class="form-control">
+                        <option value="0">請選擇</option>
+
+                        {% for promotion in promotions %}
+                            <option value="{{ promotion.id }}">{{ promotion.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">色號</label>
+                
+                <div>
+                    <input type="text" name="colorSn" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">產編</label>
+
+                <div>
+                    <input type="text" name="sGoodsSn" class="form-control" placeholder="產編" />
+                    <input type="hidden" name="isAllowWeb" value="1">
+                </div>
+            </div>
+                
+            <div class="form-group">
+                <button type="button" class="search btn btn-info pull-left" ng-click="search();"><i class="icon-search"></i>查詢</button>
+            </div>
+        </form>
+    </div>
+    <br/>
+    <hr />
+    <div class="row">
+         {% verbatim %}
+        <ul class="nav nav-tabs" role="tablist" id="myTab">
+          <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">查詢結果</a></li>
+          <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">上架<span class="badge">{{ promotionProducts.length }}</span></a></li>
+
+           <li role="presentation"><a href="#vv" aria-controls="vv" role="tab" data-toggle="tab">售出<span class="badge">{{ soldProducts.length }}</span></a></li>
+
+        </ul>
+       
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home"> 
+                <div class="row mt-30 mb-30">
+                    <div class="col-xs-4">
+                        <button class="btn btn-inverse pull-left" ng-click="checkAll(resProducts)"><i class="glyphicon glyphicon-ok-circle"></i>全選</button>
+
+
+                        <button class="btn btn-default pull-right" ng-click="batchAdd()"><i class="glyphicon glyphicon-plus-sign"></i>批量加入</button>
+                    </div>
+                </div> 
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table">
+                            <tr>
+                                <th ng-click="resOrder = 'name'; reverse=!reverse">品名</th>
+                                <th ng-click="resOrder = 'sn'; reverse=!reverse">產編</th>
+                                <th ng-click="resOrder = 'brand.name'; reverse=!reverse">品牌</th>
+                                <!-- <th ng-click="resOrder = 'pattern.name'; reverse=!reverse">款式</th>
+                                <th ng-click="resOrder = 'color.name'; reverse=!reverse">顏色</th>-->
+                                <th>圖片</th>
+                                <th>加入活動</th>
+                            </tr>
+                            <tr ng-repeat="product in resProducts | orderBy:resOrder:reverse">
+                                <td><input type="checkbox" ng-model="product.isChecked" />{{ product.name }} 
+                                    <any ng-repeat="order in product.orders">
+                                        <span class="label label-success" ng-if="order.kind.id == 15">
+                                            官網售出
+                                        </span>
+                                    </any>
+                                </td>
+                                <td>
+                                    <a href="{{ getProductUrl(product) }}" target="_blank">{{ product.sn }}</a>
+                                </td>
+                                <td>{{ product.brand.name }}</td>
+                                <!--<td>{{ product.pattern.name }}</td>
+                                <td>{{ product.color.name }}</td>-->
+                                
+                                <td>
+                                    <img src="{{ product.img.path }}" alt="{{ product.name }}" style="width: 140px;" />
+                                </td>
+
+                                <td><i class="glyphicon glyphicon-plus-sign" ng-click="add($index);"></i></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>              
+                
+            </div>
+            <div role="tabpanel" class="tab-pane" id="profile">
+                <div class="row mt-30 mb-30">
+                    <div class="col-xs-4">
+                        <button class="btn btn-inverse pull-left" ng-click="checkAll(promotionProducts)"><i class="glyphicon glyphicon-ok-circle"></i>全選</button>
+
+
+                        <button class="btn btn-default pull-right" ng-click="batchRemove()"><i class="glyphicon glyphicon-remove-circle"></i>批量移出</button>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table">
+                            <tr>
+                                <th ng-click="promotionOrder = 'name'; reverse=!reverse">品名</th>
+                                <th ng-click="promotionOrder = 'sn'; reverse=!reverse">產編</th>
+                                <th ng-click="promotionOrder = 'brand.name'; reverse=!reverse">品牌</th>
+                                <th>圖片</th>
+                                <td ng-click="promotionOrder = 'name'; reverse=!reverse">移出活動</td>
+                            </tr>
+                            <tr ng-repeat="product in promotionProducts | orderBy:promotionOrder:reverse">
+                                <td><input type="checkbox" ng-model="product.isChecked" />{{ product.name }}</td>
+                                <td><a href="{{ getProductUrl(product) }}" target="_blank">{{ product.sn }}</a></td>
+                                <td>{{ product.brand.name }}</td>
+                                <td>
+                                    <img src="{{ product.img.path }}" alt="{{ product.name }}" style="width: 140px;" />
+                                </td>
+                                <td><i ng-click="remove($index)" class="glyphicon glyphicon-remove-circle"></i></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="vv">
+                <table class="table">
+                    <tr>
+                        <th ng-click="promotionOrder = 'name'; reverse=!reverse">品名</th>
+                        <th ng-click="promotionOrder = 'sn'; reverse=!reverse">產編</th>
+                        <th ng-click="promotionOrder = 'brand.name'; reverse=!reverse">品牌</th>
+                        <th>圖片</th>
+                    </tr>
+                    <tr ng-repeat="product in soldProducts | orderBy:promotionOrder:reverse">
+                        <td><input type="checkbox" ng-model="product.isChecked" />{{ product.name }}</td>
+                        <td><a href="{{ getProductUrl(product) }}" target="_blank">{{ product.sn }}</a></td>
+                        <td>{{ product.brand.name }}</td>
+                        <td>
+                            <img src="{{ product.img.path }}" alt="{{ product.name }}" style="width: 140px;" />
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    {% endverbatim %}
+</div>
+
+<script src="{{ asset('/js/jquery.form.js')}}"></script>
+<script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="/bundles/woojinstore/js/angular/angular.js"></script>
+<script src="/bundles/woojinstore/js/angular/angular-route.js"></script>
+<script src="/bundles/woojinstore/js/angular/angular-resource.js"></script>
+<script src="/bundles/woojinstore/js/angular/angular-animate.js"></script>
+<script src="/bundles/woojinstore/js/angular/angular-sanitize.js"></script>
+<script src="{{ asset('/js/jquery.serializejson.min.js')}}"></script>
+<script src="/bundles/woojingoods/js/Promotion/app.js"></script>
+<script>
+$('#myTab a').click(function (e) {
+  e.preventDefault();
+  $(this).tab('show');
+});
+
+$(function () {
+    $('#myTab li:eq(1) a').tab('show');
+});
+</script>
+{% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+<link rel="stylesheet" href="/prettyPhoto/css/prettyPhoto.css">
+{% endblock %}
+
+

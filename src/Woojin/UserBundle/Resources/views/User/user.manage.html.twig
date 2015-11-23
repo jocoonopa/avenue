@@ -1,0 +1,21 @@
+<table class="userManage">
+	<thead>
+		<tr>
+			<th>身分</th>
+			<th>帳號</th>
+			<th>手機</th>
+			<th>信箱</th>
+			<th>創建日期</th>
+			<th>停權日期</th>
+			<th>密碼</th>
+			<th>開通/停權</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% include 'WoojinUserBundle:Frag:_user.tbody.html.twig' with {'users': users} %}
+	</tbody>
+</table>
+{% if app.user.getTheRoles.id not in [1] %}
+<div class="add_user_button" ><button class="btn btn-default"><span data-icon="#">新增</span></button></div>
+{% endif %}
+{% include "WoojinUserBundle:Js:user.manage.js.html.twig" %}

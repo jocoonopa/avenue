@@ -1,0 +1,84 @@
+{% if app.user|has_auth('MOVE_RELATE') %}
+	<h4>
+		<small>{{ queryDate }}</small> {{ app.user.store.name }} ->{#{ rOutput|first.in.users.store.storeName }#}{{ store.name }}
+		<small>存根聯</small>
+	</h4><hr />
+
+	<table class="table" style="font-size: 12px;">
+		<thead>
+			<tr>
+				<th>流水號</th>
+				<th>產編</th>
+				<th>品牌</th>
+				<th>型號</th>
+				<th>顏色</th>
+				<th>新舊</th>
+				<th>品名</th>
+				<th>時間</th>
+				<th>建立人</th>
+				<th>簽名</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for move in moves %}
+			<tr>
+				<td>{{ loop.index }}</td>
+				<td>{{ move.orgGoods.sn }}</td>
+				<td>{{ move.orgGoods.brand.name }}</td>
+				<td>{{ move.orgGoods.pattern.name }}</td>
+				<td>{{ move.orgGoods.colorSn }}</td>
+				<td>{{ move.orgGoods.level.name }}</td>
+				<td>{{ move.orgGoods.name }}</td>
+				<td>{{ move.createAt|date('Y-m-d H:i:s') }}</td>
+				<td>{{ move.creater.username }}</td>
+				<td><div style="border-bottom: 1px solid #000; width: 100%;">&nbsp;<button class="btn btn-danger remove-item">不列印</button></div></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<hr />
+
+	<div style="page-break-after:always;">&nbsp;</div>
+
+	<h4>
+		<small>{{ queryDate }} </small> {{ app.user.store.name }} ->{#{ rOutput|first.in.users.store.storeName }#}{{ store.name }}
+
+		<small>收執聯</small>
+	</h4><hr />
+
+	<table class="table" style="font-size: 12px;">
+		<thead>
+			<tr>
+				<th>流水號</th>
+				<th>產編</th>
+				<th>品牌</th>
+				<th>型號</th>
+				<th>顏色</th>
+				<th>新舊</th>
+				<th>品名</th>
+				<th>時間</th>
+				<th>建立人</th>
+				<th>簽名</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for move in moves %}
+			<tr>
+				<td>{{ loop.index }}</td>
+				<td>{{ move.orgGoods.sn }}</td>
+				<td>{{ move.orgGoods.brand.name }}</td>
+				<td>{{ move.orgGoods.pattern.name }}</td>
+				<td>{{ move.orgGoods.colorSn }}</td>
+				<td>{{ move.orgGoods.level.name }}</td>
+				<td>{{ move.orgGoods.name }}</td>
+				<td>{{ move.createAt|date('Y-m-d H:i:s') }}</td>
+				<td>{{ move.creater.username }}</td>
+				<td><div style="border-bottom: 1px solid #000; width: 100%;">&nbsp;</div></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}

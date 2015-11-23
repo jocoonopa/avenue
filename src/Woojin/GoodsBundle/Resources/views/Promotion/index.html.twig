@@ -1,0 +1,66 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    {% if app.user|has_auth('PROMOTION_MANAGE') %}
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>促銷活動列表</h1>
+
+                <table class="records_list table table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th class="hidden-xs">序號</th>
+                            <th>活動名稱</th>
+                            {# <th class="hidden-xs">介紹</th> #}
+                            {# <th>建立時間</th>
+                            <th>更新時間</th> #}
+                            <th class="hidden-xs">活動開始</th>
+                            <th class="hidden-xs">活動結束</th>
+                            {# <th>是否為搶購</th> #}
+                            <th>是否顯示</th>
+                            <!-- <th>Type</th> -->
+            {#                 <th>閾值</th> #}
+                            {# <th>折扣</th> #}
+                            {# <th>贈送禮金</th> #}
+                            <th>建立人員</th>
+                            <th>動作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        <tr>
+                            <td class="hidden-xs"><a href="{{ path('promotion_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                            <td>{{ entity.name }}</td>
+                            {# <td class="hidden-xs">{{ entity.description }}</td> #}
+                           {#  <td>{% if entity.createAt %}{{ entity.createAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                            <td>{% if entity.updateAt %}{{ entity.updateAt|date('Y-m-d H:i:s') }}{% endif %}</td> #}
+                            <td class="hidden-xs">{% if entity.startAt %}{{ entity.startAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                            <td class="hidden-xs">{% if entity.stopAt %}{{ entity.stopAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                            {# <td>{{ entity.isTimeliness }}</td> #}
+                            <td>{% if entity.isDisplay == true %}是{% else %}否{% endif %}</td>
+                            <!-- <td>{#{ entity.type }#}</td> -->
+                            {# <td>{{ entity.thread }}</td> #}
+                           {#  <td>{{ entity.discount }}</td> #}
+                            {# <td>{{ entity.gift }}</td> #}
+                            <td>{% if entity.user %}{{ entity.user.username }}{% endif %}</td>
+                            <td>
+                            <ul>
+                                <a class="btn btn-primary" href="{{ path('promotion_edit', { 'id': entity.id }) }}"><i class="glyphicon glyphicon-edit"></i>編輯</a>
+
+                                <a class="btn btn-info" href="{{ path('promotion_relate', {id: entity.id })}}"><i class="glyphicon glyphicon-link"></i>關連</a>
+                            </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>        
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <a class="btn btn-success pull-left" href="{{ path('promotion_new') }}"><i class="glyphicon glyphicon-plus-sign"></i>新增</a>
+            </div>
+        </div>
+    {% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% import 'WoojinFrontBundle:Widget:productWidget.html.twig' as productWidget %}
+
+<div class="row illustration-v4">
+    <div class="col-md-12 col-xs-12">
+        <div class="heading heading-v1 margin-bottom-20">
+            <h2 class="font-24">
+                <a href="javascript: void(0);">精選推薦</a>
+            </h2>
+        </div>
+
+        {# <div class="index-gradient min-height-100">&nbsp;</div> #}
+    </div>
+    
+    {% if not isMobile() %}
+        {% set showLength = 8 %}
+    {% else %}
+        {% set showLength = 8 %}
+    {% endif %}
+
+    {% for goods in goodses|slice(0, showLength) %}
+    <div class="col-md-3 col-xs-12 illustration-v2">
+        {{ productWidget.unit(goods) }}
+    </div>
+    {% endfor %}
+</div>

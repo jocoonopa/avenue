@@ -1,0 +1,59 @@
+{% verbatim %}
+<div id="theActivity" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="theActivityLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button ng-click="emptyErrorMsg();" type="button" class="close j-modal-close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="theActivityLabel">
+          {{ modalTitle }}
+          <small style="color:red;">{{ theActivity.name }}</small>
+        </h4>
+      </div>
+      
+      <div class="modal-body">
+        <div ng-show="hasErrorMsg();" >
+          <div ng-click="emptyErrorMsg($index);" class="alert alert-danger" ng-repeat="errorMsg in errorMsgs">
+            <button type="button" class="close j-alert-close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ errorMsg }}
+          </div>   
+        </div>
+       
+        <form role="form" class="form-horizontal" name="activity" method="POST">
+          <div class="form-group">
+            <label for="activityName" class="col-sm-2">名稱</label>
+            <div class="col-sm-10">
+             
+              <input ng-model="theActivity.name" type="text" id="activityName" class="form-control" name="name" placeholder="活動名稱" required />  
+            </div>           
+          </div>
+          <div class="form-group">
+            <label for="activityStartAt" class="col-sm-2">開始時間</label>
+            <div class="col-sm-10">
+              
+              <input ng-datepicker ng-model="theActivity.startAt" type="text" id="activityStartAt"  class="form-control" name="startAt" role="date" required readonly />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="activityEndAt" class="col-sm-2">結束時間</label>
+            <div class="col-sm-10">
+              
+              <input ng-datepicker ng-model="theActivity.endAt" type="text" id="activityEndAt"  class="form-control" name="endAt" role="date" required readonly />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="activityDescription" class="col-sm-2">簡介</label>
+            <div class="col-sm-10">
+              <textarea ng-model="theActivity.description" name="description" id="activityDescription" class="form-control" cols="30" rows="10"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button ng-click="clean();" type="reset" class="btn btn-inverse">Clean</button>
+        <button ng-click="save();" type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endverbatim %}

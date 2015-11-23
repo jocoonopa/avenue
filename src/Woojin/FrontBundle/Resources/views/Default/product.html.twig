@@ -1,0 +1,63 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+
+{% block title %}{{ goods.name }}{% endblock %}
+
+{% block og %}
+    <meta property="og:title" content="{{ goods.name }}" />
+    <meta property="og:type" content="og:product" />
+    <meta property="og:description" content="{% if goods.brief %}{{ goods.brief.content }}{% endif %}" />
+    <meta property="og:url" content="{{ url('front_product_show', {id: goods.id}) }}" />
+    <meta property="og:image" content="{{ 'http://www.avenue2003.com' ~ goods.img.path  }}" />
+    <meta property="product:price:amount"      content="{{ goods.promotionPrice(true) }}"/>
+    <meta property="product:price:currency"    content="TWD"/>
+{% endblock %}
+
+{% block metaDescription %}香榭國際精品{% endblock %}
+
+{% block metaAuthor %}香榭國際精品{% endblock %}
+
+{% block body %}
+    <!--=== Shop Product ===-->
+    <div class="shop-product">
+        {% include 'WoojinFrontBundle:Default/Product:shopProduct.html.twig' with {goods: goods} %}  
+    </div>
+    <!--=== End Shop Product ===-->
+
+    <!--=== Content Medium ===-->
+    <div class="content-md container">
+        {% include 'WoojinFrontBundle:Default/Product:contentMd.html.twig' with {goods: goods} %}
+    </div><!--/end container-->    
+    <!--=== End Content Medium ===-->
+
+     <!--=== Illustration v2 ===-->
+    <div class="container">
+        <div class="heading heading-v1 margin-bottom-20">
+            <h2>您可能對以下商品也會有興趣</h2>
+        </div>
+
+        {% include 'WoojinFrontBundle:Default/Product:mightInterest.html.twig' with {goodses: relatives} %}
+    </div>    
+    <!--=== End Illustration v2 ===-->
+
+    <!--=== Shop Suvbscribe ===-->
+     {#% include 'WoojinFrontBundle:Default/common/component:subscribe.html.twig' %#}
+    <!--=== End Shop Suvbscribe ===-->
+{% endblock %}
+
+{% block fixed %}
+    {% if not isMobile() %}
+        {% import 'WoojinFrontBundle:Widget/Fixed:panel.html.twig' as fixedPanel %}
+        
+        {{ fixedPanel.panel('瀏覽記錄', historys, 'right') }}
+        
+        {# {{ fixedPanel.panel('相關推薦', relatives, 'right') }} #}
+    {% endif %}
+    <!--=== End Flag ===-->
+{% endblock %}
+
+{% block jsExec %}
+    <script src="/bundles/woojinfront/js/front.product.js"></script>
+    <script>
+        window.hh.add({{goods.id}});
+    </script>
+{% endblock %}

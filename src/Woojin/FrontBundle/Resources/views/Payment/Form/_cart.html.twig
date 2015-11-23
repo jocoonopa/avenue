@@ -1,0 +1,23 @@
+{% import 'WoojinFrontBundle:Widget/Payment:productInTable.html.twig' as productTableWidget %}
+
+<div class="header-tags">            
+    <div class="overflow-h">
+        <h2>購物車</h2>
+        <p>{{ '重新檢視確認您的購物項目' }}</p>
+        <i class="rounded-x fa fa-check"></i>
+    </div>    
+</div>
+
+<section>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>商品名稱</th>
+                    <th class="hidden-xs">價格</th>
+                </tr>
+            </thead>
+            <tbody>{{ productTableWidget.table(products) }}</tbody>
+        </table>
+    </div>
+</section>

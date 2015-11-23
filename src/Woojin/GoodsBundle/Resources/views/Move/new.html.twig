@@ -1,0 +1,19 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+{% if app.user|has_auth('EDIT_MOVE_RELATE') %}
+    <h1>Move creation</h1>
+
+    {{ form(form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('move') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

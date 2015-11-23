@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-TW" ng-app="myApp">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>{% block title %}香榭國際精品館-特殊活動管理{% endblock %}</title>
+
+	{% block head %}
+	<link rel="stylesheet" href="/css/bootswatch.darkly.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="/bundles/woojinstore/css/animate.css">
+	<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+	
+	<script src="{{ asset('/js/jquery-1.9.1.min.js') }}"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	
+	<script src="{{ asset('/js/jquery.blockUI.js') }}"></script>
+	<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+	<script src="/bundles/woojinstore/js/angular/angular.js"></script>
+	<script src="/bundles/woojinstore/js/angular/angular-route.js"></script>
+	<script src="/bundles/woojinstore/js/angular/angular-resource.js"></script>
+	<script src="/bundles/woojinstore/js/angular/angular-animate.js"></script>
+	<script src="/bundles/woojinstore/js/angular/angular-sanitize.js"></script>
+	<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+	{% endblock %}
+</head>
+<!-- 
+
+1. 搞定新增後表單增加 v
+2. modal 換成 ang ui x
+3. datepicker 也換 x
+4. delete v
+5. edit v
+6. 刷入件 add, delete
+7. 刷出件 add, delete
+8. 盤點記錄顯示
+
+ -->
+<body class="text-center">{% block body %}{% endblock %}</body>
+</html>

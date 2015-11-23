@@ -1,0 +1,13 @@
+{% for key, goods in GoodsPassports %}
+    {% if goods.sn|slice(0, 1) == 'C' %}{% else %}
+    <div class="item" title="{{ goods.status.name }}-{{ goods.name }}-{{ goods.sn }}">
+        <a href="{{ path('goods_edit_v2', {id: goods.id}) }}?iframe=true&width=100%&height=100%" rel="prettyPhoto[iframes]">
+            <img src="{% if goods.img %}{{ goods.img.path }}?t={{ 'now'|date('U') }}{% else %}{{ NothingPng }}{% endif %}" style="width: 100%;">
+            
+        </a>
+        <div style="position: absolute; left: 0; top: 0; background-color: #000;">{{ goods.sn }}</div>
+    </div>
+    <br>
+    {% endif %}
+{% endfor %}
+<script type="text/template" class="page-data" data-count="{{ nCount }}" data-page="{{ nNowPage }}"></script>

@@ -1,0 +1,6 @@
+<td><span>{{ custom.name }}{{ custom.sex }}</span></td>
+<td><span>{{ custom.mobil }}</span></td>
+<td><span>{{ custom.email }}</span></td>
+<td><span>{{ custom.address }}</span></td>
+<td><span>{{ custom.memo }}</span></td>
+<td>{% if app.user|has_auth('EDIT_CUSTOM') %}<button data-id="{{ custom.id }}" class="edit_custom thisTarget btn btn-default"><i class="icon-edit"></i>修改</button>{% endif %}</td>

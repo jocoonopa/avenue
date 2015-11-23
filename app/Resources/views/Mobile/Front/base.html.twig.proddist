@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui"/>
+<meta name="description" content="{% block metaDescription %}香榭國際精品{% endblock %}">
+<meta name="keywords" content="二手精品，名牌包包，珠寶飾品">
+<meta name="author" content="{% block metaAuthor %}香榭國際精品{% endblock %}">
+
+{% block og %}{% endblock %}
+
+<meta name="google-site-verification" content="KcHMCbgmNORwitKOYZt4XcCfSlOJmEi0EvZ2DxdQVQU" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>{% block title %}香榭國際精品{% endblock %}</title>
+
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/bundles/woojinfront/mobile/styles/compiled.css?v=1.0.0">
+
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script type="text/javascript" src="/js/compiled/compiled.js?v=1.0.0"></script>
+</head>
+<body> 
+
+{% if not app.user %}
+    {% include 'WoojinFrontBundle:Common:googlemanager.html.twig' %}
+{% endif %}
+
+{% block preloader %}
+    {% include ':Mobile/Front/Preloader:preloader.html.twig' %}
+{% endblock %}
+   
+<div class="all-elements">
+    <div class="snap-drawers">
+        {% block sidebar %}
+            <!-- Left Sidebar-->
+            {% block left %}
+                {% include ':Mobile/Front/Sidebar:left.html.twig' %}
+            {% endblock %}
+            <!-- Right Sidebar -->
+            {% block right %}
+                {% include ':Mobile/Front/Sidebar:right.html.twig' %}
+            {% endblock %}
+        {% endblock %}
+    </div>
+
+    <!-- Page Header -->
+    {% block header %}
+        {% include ':Mobile/Front/Header:header.html.twig' %}
+    {% endblock %}
+    
+    <div id="content" class="snap-content"> 
+        {% block content %}{% endblock %}
+        
+        {% block pageFooter %} 
+            {% include ':Mobile/Front/Footer:footer.html.twig' %}
+        {% endblock %}        
+    </div> 
+    <!-- Page Content-->  
+</div>
+{% block pagejs %}{% endblock %}
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

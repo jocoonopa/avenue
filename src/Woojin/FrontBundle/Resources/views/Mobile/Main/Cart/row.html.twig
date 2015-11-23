@@ -1,0 +1,33 @@
+{# <p class="notification-page-item MBC_product-in-cart-{{ product.id }}">
+ #} <div class="width-100-per MBC_product-in-cart-{{ product.id }} mb-10">
+        <div class="position-rel my-float-left min-height-150">
+            <img class="lazy border-radius-0 max-width-150" data-original="{% if product.img %}{{ product.img.path }}{% endif %}" alt="{{ product.name }}">
+        </div>
+        
+        <div class="position-rel my-float-left left-10 min-height-150">
+            <span class="black font-bold font-12">{{ product.name }}</span><br />
+            
+            <span class="black font-12">品牌:</span><span>&nbsp;{{ product.brand.name }}</span><br>
+            <span class="black font-12">款式:</span><span>&nbsp;{{ product.pattern.name }}</span><br>
+            <span class="black font-12">狀況:</span><span>&nbsp;{{ product.level.convertName }}</span>
+            {# <span class="my-force-word-noshift">{{ product.brief.getBriefFillRow(40) }}&nbsp;</span><br /> #}
+
+            <div class="position-abs bottom-0">
+                {% if product.promotionPrice(true) < product.price %}
+                    <span class="font-12 td-lt">NT.&nbsp;{{ product.price(true)|number_format }}</span>&nbsp;&nbsp;
+                    <span class="font-12 font-bold">NT.&nbsp;{{ product.promotionPrice(true)|number_format }}</span>
+                    {% else %}
+                    <span class="font-12 font-bold">NT.&nbsp;{{ product.price(true)|number_format }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="position-abs right-0 bottom-0">
+            <a href="#" class="font-16 MBP_remove-from-cart" data-id="{{ product.id }}" data-price="{{ product.promotionPrice(true) }}">
+                <i class="hidden"></i><i class="fa fa-trash-o black"></i>
+            </a>
+        </div>
+    </div>
+{# </p>
+ #}
+<div class="decoration bg-black MBC_product-in-cart-{{ product.id }}"></div>

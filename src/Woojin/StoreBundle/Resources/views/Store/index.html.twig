@@ -1,0 +1,53 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    <h1>香榭門市列表</h1>
+
+    <table class="records_list table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>店碼</th>
+                <th>店名</th>
+                <th>地址</th>
+                <th>電話</th>
+                <th>營業時間</th>
+                <th>Mail</th>
+                <th>官網是否顯示</th>
+                <th>動作</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('admin_store_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.sn }}</td>
+                <td>{{ entity.name }}</td>
+                <td>{{ entity.address }}</td>
+                <td>{{ entity.phone }}</td>
+                <td>{{ entity.openRegion }}</td>
+                <td>{{ entity.mail }}</td>
+                <td>{{ entity.isShow }}</td>
+                <td>
+                <ul>
+                   {#  <li>
+                        <a href="{{ path('admin_store_show', { 'id': entity.id }) }}">顯示</a>
+                    </li> #}
+                    <li>
+                        <a href="{{ path('admin_store_edit', { 'id': entity.id }) }}">編輯</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        {# <ul>
+        <li>
+            <a href="{{ path('admin_store_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul> #}
+    {% endblock %}

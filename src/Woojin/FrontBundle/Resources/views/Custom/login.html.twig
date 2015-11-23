@@ -1,0 +1,42 @@
+{% extends 'WoojinFrontBundle::base.html.twig' %}
+
+{% block title %}會員登入{% endblock %}
+
+{% block metaDescription %}香榭國際精品{% endblock %}
+
+{% block metaAuthor %}香榭國際精品{% endblock %}
+
+{% block body %}
+
+<!--=== Breadcrumbs v4 ===-->
+<div class="breadcrumbs-v4">
+    <div class="container">
+        <h1>香榭國際精品</h1>
+
+        <ul class="breadcrumb-v4-in">
+            <li><a href="{{ path('front_index') }}">首頁</a></li>
+            <li class="active">登入</li>
+        </ul>
+    </div><!--/end container-->
+</div> 
+<!--=== End Breadcrumbs v4 ===-->
+
+<!--=== Login ===-->
+<div class="log-reg-v3 content-md">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 md-margin-bottom-50">
+                {% include 'WoojinFrontBundle:Custom/Login:notice.html.twig' %}
+            </div>
+
+            <div class="col-md-5">
+                {% include 'WoojinFrontBundle:Custom/Login:form.html.twig' with {routeName: routeName} %}
+            </div>
+        </div><!--/end row-->
+    </div><!--/end container-->
+</div>
+<!--=== End Login ===-->     
+
+{% endblock %}
+
+{% block jsExec %}<script src="/bundles/woojinfront/js/front.login.js"></script>{% endblock %}

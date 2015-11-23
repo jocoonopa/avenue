@@ -1,0 +1,50 @@
+<div class="header-tags">
+    <div class="overflow-h">
+        <h2>訂單資訊</h2>
+        <p>地址以及聯絡方式等相關資訊</p>
+        <i class="rounded-x fa fa-home"></i>
+    </div>    
+</div>
+
+<section class="billing-info">
+    <div class="row">
+        <div class="col-md-12 md-margin-bottom-40">
+            <h2 class="title-type">配送資訊</h2>
+            <div class="billing-info-inputs checkbox-list">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label>姓名:&nbsp;(同步更新您的姓名)</label>
+                        <input id="name" type="text" placeholder="您的姓名" name="name" class="form-control required" value="{{ custom.name }}" />
+                    </div>
+                    
+                    <div class="col-sm-12">   
+                        <label>Email:&nbsp;(同步更新您的Email)</label>
+                        <input id="email" type="email" placeholder="您的信箱" name="email" class="form-control required" value="{{ custom.email }}"  />
+                    </div>
+                    
+                    <div class="col-sm-12">   
+                        <label>手機:&nbsp;(同步更新您的手機)</label>
+                        <input id="phone" type="tel" placeholder="您的手機(同步更新您個人資訊記錄的手機)" name="phone" class="form-control required" value="{{ custom.mobil }}" />
+                    </div>
+                     
+                    <div class="col-sm-12">   
+                        <label>地址:&nbsp;(同步更新您的地址)</label>
+                        <div class="twzipcode">
+                            <div data-style="pull-left" data-role="county" data-value="{{ custom.county }}"></div>
+                            <div data-style="pull-left" data-role="district" data-value="{{ custom.district }}"></div>
+                            <div data-style="hidden" data-role="zipcode"></div>
+                        </div>
+
+                        <input id="address" type="text" placeholder="配送地址(同步更新您個人資訊記錄的地址)" name="address" class="form-control required" value="{{ custom.address }}" />
+                    </div>
+                </div>
+                
+                <label class="checkbox text-left">
+                    <input type="checkbox" name="isDiffAddress" value="1" {% if custom.county == '未填寫' %}disabled{% endif %} />
+                    <i></i>
+                    此帳單地址不同步更新註冊地址
+                </label>
+            </div>
+        </div>
+    </div>       
+</section>

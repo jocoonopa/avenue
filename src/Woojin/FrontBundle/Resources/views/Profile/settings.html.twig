@@ -1,0 +1,105 @@
+{% extends 'WoojinFrontBundle:Profile/common:layout.html.twig' %}
+
+{% block title %}個人資訊編輯{% endblock %}
+
+{% block profileBody %}
+
+{% for flashMessage in app.session.flashbag.get('success') %}
+   <div class="alert alert-success" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+       {{ flashMessage }}
+   </div> 
+{% endfor %}
+
+{% if not custom.isActive %}
+<div class="alert alert-warning" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <h4>注意 ! 您的帳號尚未驗證！</h4>
+    <p>請點擊下方按鈕進行驗證已啟用購物功能。</p>
+    <p>
+        <a href="{{ path('front_profile_activeMail_send') }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;發送驗證信
+        </a>
+    </p>
+</div>
+{% endif %}
+
+{{ form_start(edit_form) }}
+
+<header>個人資訊編輯</header>
+<fieldset>
+    {{ form_errors(edit_form) }}
+
+    <section>
+        {{ form_label(edit_form.name, '姓名', {'attr': {'class': 'label'}}) }}
+        <label class="input">
+            {{ form_errors(edit_form.name) }}
+            {{ form_widget(edit_form.name) }}
+        </label>
+    </section>
+
+    <section>
+        {{ form_label(edit_form.sex, '性別', {'attr': {'class': 'label'}}) }}
+        <label class="select">
+            {{ form_errors(edit_form.sex) }}
+            {{ form_widget(edit_form.sex) }}
+        </label>
+    </section>
+
+    <section>
+        {{ form_errors(edit_form.email) }}
+        {{ form_label(edit_form.email, 'Email', {'attr': {'class': 'label'}}) }}
+        <label class="input">
+            {{ form_widget(edit_form.email) }}
+        </label>
+    </section>
+
+    <section>
+        {{ form_errors(edit_form.birthday) }}
+        {{ form_label(edit_form.birthday, '生日 (Example: 1984/07/01)', {'attr': {'class': 'label'}}) }}
+        {{ form_widget(edit_form.birthday) }}
+    </section>
+
+    <section>
+        {{ form_errors(edit_form.address) }}
+        {{ form_label(edit_form.address, '地址', {'attr': {'class': 'label'}}) }}
+
+        <div class="twzipcode mb-10">
+            <div data-role="county" data-style="pull-left"></div>
+            <div data-role="district" data-style="pull-left"></div>
+            <div data-role="zipcode" data-style="hidden"></div>
+        </div>
+        
+        <br>
+        
+        <label class="input">
+            {{ form_widget(edit_form.address) }}
+        </label>
+    </section>
+
+    <section>
+        <button type="submit" class="btn-u btn-u-default btn-block margin-bottom-20">儲存</button>
+    </section>
+</fieldset>
+
+    
+{{ form_end(edit_form) }}
+
+{% endblock %}
+
+{% block jsExec %}
+
+{{ parent() }}
+
+<script>
+$('.twzipcode').twzipcode({
+    'countySel': '{{ custom.county }}',
+    'districtSel': '{{ custom.district }}'
+});
+</script>
+{% endblock %}
+
+
+

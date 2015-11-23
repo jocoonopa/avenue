@@ -1,0 +1,161 @@
+<?php
+
+namespace Woojin\StoreBundle\Twig\Extension;
+
+use Symfony\Component\DependencyInjection\ContainerInterface; 
+
+use Woojin\UserBundle\Entity\User;
+use Woojin\GoodsBundle\Entity\GoodsPassport;
+use Woojin\GoodsBundle\Entity\YahooCategory;
+use Woojin\Utility\Avenue\Avenue;
+
+class AdminExtension extends \Twig_Extension
+{
+    protected $container;
+    
+    public function __construct(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    public function getFilters() 
+    {
+        return array(
+            'has_auth'                  => new \Twig_Filter_Method($this, 'hasAuth'),
+            'is_own'                    => new \Twig_Filter_Method($this, 'isOwn'),
+            'is_this_yahoo_category'    => new \Twig_Filter_Method($this, 'isThisYahooCategory'),
+            'get_yahoo_form_action'     => new \Twig_Filter_Method($this, 'getYahooFormAction'),
+            'locale_week'               => new \Twig_Filter_Method($this, 'localeWeek'),
+            'get_hd_name'               => new \Twig_Filter_Method($this, 'getHdName')
+        );
+    }
+
+    /**
+     * !!注意!!!!
+     * 
+     * 空的也要有回傳陣列，不然會報錯
+     */
+    public function getFunctions()
+    {
+        return array();
+    }
+
+    public function isOwn(User $user, GoodsPassport $product)
+    {
+        return ($user->getStore()->getSn() === substr($product->getSn(), 0, 1));
+    }
+
+    /**
+     * 判斷該使用者是否具有對應操作權限
+     * 
+     * @param  Woojin\UserBundle\Entity\User    $user
+     * @param  string  $targetName
+     * @return boolean            
+     */
+    public function hasAuth(User $user, $targetName)
+    {
+        return $user->getRole()->hasAuth($targetName);
+    }
+
+    /**
+     * 判斷該yahoo分類選項是否適用於該商品
+     * 
+     * @return boolean
+     */
+    public function isThisYahooCategory(YahooCategory $yc, GoodsPassport $product)
+    {
+        return ($yBrand = $yc->getBrand()) && ($pBrand = $product->getBrand()) 
+            ? ($yBrand->getId() === $pBrand->getId()) 
+            : false;
+    }
+
+    public function getYahooFormAction(GoodsPassport $product)
+    {
+        $router = $this->container->get('router');
+
+        return ($product->getYahooId()) 
+                ? $router->generate('admin_yahoo_update', array('id' => $product->getId()))
+                : $router->generate('admin_yahoo_create', array('id' => $product->getId()))
+            ;
+    }
+
+    public function localeWeek($week)
+    {
+
+        switch ($week)
+        {
+            case 'Mon':
+                $week = '一';
+                break;
+
+            case 'Tue':
+                $week = '二';
+                break;
+
+            case 'Wed':
+                $week = '三';
+                break;
+
+            case 'Thu':
+                $week = '四';
+                break;
+
+            case 'Fri':
+                $week = '五';
+                break;
+
+            case 'Sat':
+                $week = '六';
+                break;
+
+            case 'Sun':
+                $week = '日';
+                break;
+
+            default:
+                break;
+        }
+
+        return $week;
+    }
+
+    public function getHdName($hd)
+    {
+        switch ($hd)
+        {
+            case Avenue::HD_NORMAL:
+                $hd = '正常';
+                break;
+
+            case Avenue::HD_OFFICIAL:
+                $hd = '休假';
+                break;
+
+            case Avenue::HD_EVENT:
+                $hd = '事假';
+                break;
+
+            case Avenue::HD_SICK:
+                $hd = '病假';
+                break;
+
+            case Avenue::HD_YEAR:
+                $hd = '年假';
+                break;
+
+            case Avenue::HD_GLORY:
+                $hd = '榮譽';
+                break;
+
+            default:
+                break;
+        }
+
+        return $hd;
+    }
+
+    public function getName()
+    {
+        return 'admin_extension';
+    }
+}

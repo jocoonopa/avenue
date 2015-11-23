@@ -1,0 +1,100 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% import 'WoojinStoreBundle:Holiday/macro:hd.html.twig' as hdMacro %}
+
+{% block body %}
+
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success mt-30">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ flashMessage }}
+    </div>
+{% endfor %}
+
+<h1 class="text-center">
+    <small class="pull-left">
+        <a class="btn btn-default" href="{{ path('admin_store_holiday_list', {date: time|date_modify('-1 month')|date('Y-m')}) }}">
+            <i class="glyphicon glyphicon-arrow-left"></i>
+            查看上個月
+        </a>
+    </small>
+
+    {{ time|date('Y-m') }}假表
+
+    <small>
+        <a href="{{ path('admin_store_holiday_manage') }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i> 排假</a>
+    </small>
+
+    <small class="pull-right">
+        <a class="btn btn-default" href="{{ path('admin_store_holiday_list', {date: time|date_modify('+1 month')|date('Y-m')}) }}"> 查看下個月
+        <i class="glyphicon glyphicon-arrow-right"></i>
+        </a> 
+    </small>
+</h1>
+<hr>
+
+{% set daysInMonth = time|date('t') %}
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr class="info"> 
+            <td colspan="4">
+                <div class="width-300">{{ time|date('Y-m') }}</div>
+            </td>  
+            
+            {% for day in range(1, daysInMonth) %}
+                <td>
+                    <div>
+                        <div>{{ day }}</div>
+                    </div>
+                </td>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>門市</td>
+            <td>使用者</td>
+            <td colspan="2">最後修改時間</td>
+            
+            {% for day in range(1, daysInMonth) %}
+                {% set dayDiff = day - 1 %}
+                {% set weekDay = time|date_modify('first day of this month')|date_modify('+' ~ dayDiff ~ ' Day')|date('D')|locale_week %}
+                <td>
+                    <span class="label {% if weekDay in ['六', '日'] %}label-danger{% else %}label-default{% endif %}">
+                        {{ weekDay }}
+                    </span>
+                </td>
+            {% endfor %}
+        </tr>
+        {% for holiday in holidays %}
+        <tr>
+            <td>{{ holiday.user.store.name|slice(0, 2) }}</td>
+            <td>
+                {% if app.user|has_auth('EDIT_OTHER_HOLIDAY') %}
+                    <a href="{{ path('admin_store_holiday_manageother', {id: holiday.user.id})}}">{{ holiday.user.username }}</a>
+                {% else %}
+                    <span>{{ holiday.user.username }}</span>
+                {% endif %}
+            </td>
+            <td colspan="2">
+                {{ holiday.updateAt|date('Y-m-d H:i:s')}}
+            </td>
+
+            {% for day in range(1, daysInMonth) %}
+                <td>
+                    {{ hdMacro.span(holiday.schedule[day]) }}
+                </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+$('.col-xs-0').remove();
+$('.col-md-10').addClass('col-md-12').removeClass('col-md-10');
+</script>
+{% endblock %}

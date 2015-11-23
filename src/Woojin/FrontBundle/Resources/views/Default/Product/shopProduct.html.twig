@@ -1,0 +1,142 @@
+{% import 'WoojinFrontBundle:Widget/Product:level.html.twig' as levelWidget %}
+{% import 'WoojinFrontBundle:Widget/Product:brief.html.twig' as briefWidget %}
+{% import 'WoojinFrontBundle:Widget/Product:social.html.twig' as socialWidget %}
+{% import 'WoojinFrontBundle:Widget/Product:tag.html.twig' as tagWidget %}
+
+<!-- Breadcrumbs v5 -->
+<div class="container">
+    <ul class="breadcrumb-v5">
+        <li>
+            <a href="{{ path('front_index') }}"><span class="fa fa-home"></span></a>
+        </li>
+        
+        {% if goods.categorys and goods.categorys|length > 0 %}
+            {% if goods.brand %}
+            <li><a href="{{ path('front_filter', {
+                id: goods.categorys.first.id,
+                entityName: 'brand',
+                entityId: goods.brand.id,
+            }) }}">{{ goods.brand.name }}</a></li>
+            {% endif %}
+
+            {% if goods.pattern %}
+                {% if goods.pattern %}
+                <li><a href="{{ path('front_filter', {
+                    id: goods.categorys.first.id,
+                    entityName: 'pattern',
+                    entityId: goods.pattern.id
+                }) }}">{{ goods.pattern.name }}</a></li>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        <li class="active">{{ goods.seoName }}</li>
+    </ul> 
+</div>
+<!-- End Breadcrumbs v5 -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 md-margin-bottom-50">
+            <img class="ms-brd width-100-per" src="{% if goods.img %}{{ goods.img.path }}{% endif %}" data-src="{% if goods.img %}{{ goods.img.path }}{% endif %}" alt="{{ goods.name }}" >
+        </div>
+
+        <div class="col-md-6">
+            <div class="shop-product-heading">
+                <h2>{{ goods.seoName }}   
+                {% if app.user %}          
+                    <a href="{{ path('goods_edit_v2', {id: goods.id}) }}" target="_blank">{{ goods.sn }}</a>
+                {% endif %}
+                </h2>
+
+                <!--=== 第三方社群 api 分享 ===-->
+                {{ socialWidget.with(goods) }}
+                <!--=== End 第三方社群 api 分享 ===-->
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <!--=== 新舊 星星評比 ===-->
+                    {{ levelWidget.with(goods, 'top') }}
+                    <!--=== End 新舊 星星評比 ===-->
+
+                    <a href="#reviews" class="pull-left ml-20" onclick="$('#qa-trigger').click();">
+                        <span class="glyphicon glyphicon-comment"></span>留言
+                    </a>
+
+                    <a href="https://muut.com/avenue-2003/#!/" class="ml-20" target="_blank">
+                        <span class="icon-bubbles"></span>
+                        香榭頻道
+                    </a>
+                </div>
+            </div>
+            
+            <div class="row mt-30">
+                <div class="col-md-12">
+                    <!--=== 賣點 ===-->
+                    {{ briefWidget.with(goods) }}
+                    <!--=== End 賣點 ===-->
+                    <br>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="list-inline shop-product-prices margin-bottom-30">
+                        {% if goods.promotionPrice(true) < goods.price %}
+                            <li class="line-through">NT.{{ goods.price|number_format }}</li>
+                            <li class="shop-red">促銷價{{ goods.promotionPrice(true)|number_format }}</li><!-- 促銷活動價 -->
+                        {% else %}
+                            <li>NT.{{ goods.promotionPrice(true)|number_format }}</li>
+                        {% endif %}
+                        
+                        {% if goods.promotion and goods.promotion.isValid() %}
+                            <li>
+                                <small class="shop-bg-red time-day-left">活動截止還剩{{ goods.promotion.diff }}天</small>
+                            </li><!-- 活動倒數 -->
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            
+            {% if goods.status %}
+                {% if goods.status.id in [
+                    constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'), 
+                    constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
+                ] %}
+                    <div class="margin-bottom-40">
+                        {% if not goods.isAllowCreditCard %}
+                            <a href="javascript: void(0)" class="btn-u btn-u-yellow btn-u-lg" data-toggle="modal" data-target="#notAllowCreditCard"><span class="icon-info">說明</span> </a>
+                        {% else %}
+                            <a href="javascript: void(0);" class="btn-u btn-u-sea-shop btn-u-lg add-to-cart" data-id="{{ goods.id }}"><span class="fa fa-shopping-cart"></span>加入購物車</a>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="margin-bottom-40">
+                        {% if goods.isBehalf %}
+                        <div class="margin-bottom-40">
+                            <a href="javascript: void(0);" class="btn-u btn-u-light-green btn-u-lg behalf-request" data-id="{{ goods.id }}" data-name="{{ goods.name }}"><span class="icon-briefcase"></span>幫我代購</a>
+                        </div>
+                        {% else %}
+                        <span class="label label-warning font-18">
+                            <span class="fa fa-bookmark-o"></span> 已售出
+                        </span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <ul class="list-inline add-to-wishlist add-to-wishlist-brd">
+                <li class="wishlist-in">
+                    <a href="javascript: void(0);" class="add-to-whishlist" data-id="{{ goods.id }}">
+                        <span class="gender"> <span class="fa fa-heart-o"></span>加入願望清單</span>
+                    </a>
+                </li>
+            </ul>    
+            <!--=== !!!! 購買加入購物車和加入願望清單製作中，相關的 db 都還沒好 ===-->
+            
+            <!--=== 標籤 ===-->
+            {{ tagWidget.with(goods) }}
+            <!--=== End 標籤 ===-->
+        </div>
+    </div><!--/end row-->
+</div>  

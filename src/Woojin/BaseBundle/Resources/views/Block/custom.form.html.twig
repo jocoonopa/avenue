@@ -1,0 +1,37 @@
+<input type="hidden" name="form[_token]" value="{{ _token }}" />
+
+<div class="custom_name step1">
+	<label>*客戶名稱:</label>
+	<input type="text" name="custom_name" data-key="sCustomName" placeholder="至少兩個字" />
+	<!-- <button type="button" class="custom_search">顯示</button> -->
+</div>
+<div class="custom_sex step1">
+	<label>*客戶性別:</label>
+	<select name="custom_sex" id="custom_sex_select">
+		<option value="">不確定</option>
+		<option value="先生">先生</option>
+		<option value="小姐">小姐</option>
+	</select>
+</div>
+<div class="custom_mobil step2">
+	<label>*電話號碼:</label>
+	<input type="text" class="numeric" name="custom_mobil" data-key="sCustomMobil" />
+   <!--  <button type="button" class="custom_search">顯示</button> -->
+</div>
+<div class="custom_email step3">
+	<label>電子信箱:</label>
+	<input type="text" name="custom_email" data-key="sCustomEmail" placeholder="可不填寫"/>
+<!--     <button type="button" class="custom_search">顯示</button> -->
+</div>
+<div class="custom_birthday step3">
+    <label>客戶生日:</label>
+    <input type="text" name="custom_birthday" placeholder="可不填寫" readonly />
+</div>
+<div class="custom_address step3">
+	<label>客戶地址:</label>
+	<input type="text" name="custom_address" placeholder="可不填寫" />
+</div>
+<div class="custom_memo step3">
+	<label>備註:</label>
+	<textarea type="text" name="custom_memo" placeholder="可不填寫"></textarea>
+</div>

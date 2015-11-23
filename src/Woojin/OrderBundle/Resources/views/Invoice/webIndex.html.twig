@@ -1,0 +1,85 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body %}
+
+{% if app.user|has_auth('WEB_ORDER_MANAGE') %}
+    {% for flash in app.session.flashbag.get('msg') %}
+        <div class="alert alert-success alert-dismissible fade in" role="alert">      
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <span>{{ flash }}</span>       
+        </div>
+        {% endfor %}
+
+    <h3 class="text-center">官網訂單列表</h3>
+
+    <table class="table table-striped">
+        {% for invoice in invoices %}
+        <tr id="{{ invoice.sn }}">
+            <td>{{ invoice.sn }}
+                <ul>
+                    {% for order in invoice.orders %}
+                        {% if order.product %}
+                            <li>
+                                <a href="{{ path('goods_edit_v2', {id: order.product.id}) }}" target="_blank">
+                                    {{ '[' ~ order.product.sn ~ ']' ~ order.product.name ~ ' ' ~ order.product.brand.name ~ ' ' ~ order.product.pattern.name }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>
+                <p>{{ invoice.custom.name ~ invoice.custom.sex }}</p>
+                <p>
+                    <a href="mailto:{{ invoice.custom.email }}">{{ invoice.custom.email }}</a>
+                </p>
+                <p>{{ invoice.custom.mobil }}</p>
+                <p>{{ invoice.county ~ invoice.district ~ invoice.address }}</p>
+            </td>
+            <td>
+                {% if invoice.status == 0 %}
+                    <span class="label label-default">尚未付款</span>
+                {% elseif invoice.status == 1 %}
+                    <span class="label label-primary">出貨中</span>
+                {% elseif invoice.status == 2 %}
+                    <span class="label label-success">已出貨</span>
+                {% elseif invoice.status == 3 %}
+                    <span class="label label-warning">退貨通知</span>
+                {% elseif invoice.status == 4 %}
+                    <span class="label label-primary">退貨處理中</span>
+                {% elseif invoice.status == 5 %}
+                    <span class="label label-success">退貨完成</span>
+                {% endif %}
+            </td>
+            <td>
+                {{ invoice.updateAt|date('Y-m-d H:i:s') }}
+            </td>   
+            <td>
+                {% if invoice.status == 1 %}
+                    <form action="{{ path('admin_invoice_giveDone', {id: invoice.id}) }}" method="POST">
+                        <button class="btn btn-primary">確認到貨</button>
+                        <input type="hidden" name="_method" value="PUT" />
+                    </form>
+                {% elseif invoice.status == 3 %}
+                    <form action="{{ path('admin_invoice_cancel_reject', {id: invoice.id}) }}" method="POST">
+                        <button class="btn btn-primary">拒絕退款</button>
+                        <input type="hidden" name="_method" value="PUT" />
+                    </form>
+
+                    <form action="{{ path('admin_invoice_cancel', {id: invoice.id}) }}" method="POST">
+                        <button class="btn btn-primary">退款處理完成</button>
+                        <input type="hidden" name="_method" value="PUT" />
+                    </form>
+                {% elseif invoice.status == 4 %}
+                    <form action="{{ path('admin_invoice_backDone', {id: invoice.id}) }}" method="POST">
+                        <button class="btn btn-primary">退還貨物接收</button>
+                        <input type="hidden" name="_method" value="PUT" />
+                    </form>
+                {% endif %}
+            </td>   
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
+<div class="mt-30"></div>
+{% endblock %}

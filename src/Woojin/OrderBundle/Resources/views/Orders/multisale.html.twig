@@ -1,0 +1,364 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block title %}多筆銷貨{% endblock %}
+
+{% block body %}
+
+{% if app.user|has_auth('MULTI_SELL') %}
+	<link rel="stylesheet" href="/prettyPhoto/css/prettyPhoto.css">
+
+	<div id="orders">
+		<div id="orders-multisale" >
+			<div class="row">
+				<h1>請選擇查詢條件</h1>
+
+				<hr/>
+
+				<form name="multiSaleSearch" method="POST" role="form">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">品牌</label>
+
+						<div class="col-sm-10">
+							<select name="brand" class="form-control">
+								<option value="0">請選擇</option>
+
+								{% for brand in brands %}
+									<option value="{{ brand.id }}">{{ brand.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">款式</label>
+
+						<div class="col-sm-10">
+							<select name="pattern" class="form-control">
+								<option value="0">請選擇</option>
+
+								{% for pattern in patterns %}
+									<option value="{{ pattern.id }}">{{ pattern.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label">顏色</label>
+
+						<div class="col-sm-10">
+							<select name="color" class="form-control">
+								<option value="0">請選擇</option>
+
+								{% for color in colors %}
+									<option value="{{ color.id }}">{{ color.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">色號</label>
+						
+						<div class="col-sm-10">
+							<input type="text" name="colorSn" class="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">產編</label>
+
+						<div class="col-sm-10">
+							<input type="text" name="sGoodsSn" class="form-control" placeholder="產編" />
+						</div>
+					</div>
+						
+					<div class="form-group">
+						<button type="button" class="search btn btn-info pull-left" onkeydown="preventEnterSubmit();"><i class="icon-search"></i>查詢</button>
+					</div>
+				</form>
+			</div>
+
+			<br/>
+			<hr />
+			<br/>
+			
+			<div class="row">
+				<form role="form" name="multiSale" class="hidden" method="POST" role="form">
+					<div class="form-group">
+						<label class="control-label">客戶手機</label>
+						<input type="number" name="mobil" class="form-control" value="00000" placeholder="手機號碼" />
+					<div>
+
+					<div class="form-group">
+						<label class="control-label">付款方式</label>
+						<select name="nPayTypeId" class="form-control">
+							{{ render( controller('WoojinBaseBundle:Base:getPayTypeSelect') ) }}
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label>販售方式</label>
+						
+						<select name="nOrdersKindId" class="form-control">
+							<option value="6" selected >售出</option>
+							<option value="7">換購</option>
+							<option value="12">網路售出</option>
+							<option value="14">同行批貨</option>
+						</select>
+					</div>
+				</form>
+			</div>
+
+			<div class="row">
+				<ul class="nav nav-pills nav-stacked">
+					<li class="active">
+					<a href="#">
+					<span class="badge res-count pull-right"></span>
+					符合條件數量
+					</a>
+					</li>
+				</ul>
+
+				<table class="res-container table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>產編</th>
+							<th>品名</th>
+							<th>成本</th>
+							<th>售價</th>
+							<th>是否售出</th>
+							<th>刪除</th>
+						</tr>
+					</thead>
+					<tbody><!-- Ajax Res add Here! --></tbody>
+				</table>
+				
+				<div class="goods-info">
+					
+				</div>
+
+				<button type="button" class="sale btn btn-success pull-left hidden" onkeydown="preventEnterSubmit();">
+					<i class="icon-play"></i>送出
+				</button>
+
+				<button type="button" class="keep btn btn-default pull-left" onkeydown="preventEnterSubmit();">
+					保留選取
+				</button>
+
+				<button type="button" class="cancel btn btn-inverse pull-left" onkeydown="preventEnterSubmit();">
+					<i class="icon-remove-sign"></i>清除
+				</button>
+			</div>
+		</div>
+	</div>
+	<script src="{{ asset('/js/jquery.form.js')}}"></script>
+	<script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+	<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+	<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+	<script>
+	function preventEnterSubmit () {
+			if (event.keyCode == 13) {
+				event.cancelBubble  = true;
+				event.returnValue   = false;
+			}
+		}
+
+	$(function () {
+		{#{ render( controller("WoojinBaseBundle:Base:getBrandSelect") ) }#}
+		$('header').remove();
+		
+		var $paytypeSelect = $( '#orders-multisale' ).find( 'select[name="nPayTypeId"]' );
+
+		// 付款方式改變隨之變動應付金額
+		$paytypeSelect.change(function () {
+			var 
+				_discount = $(this).find('option:selected').data('discount'),
+				$requiredInput = $('#orders-multisale').find('.goods-info').find('input[name="rOrdersRequired[]"]');
+
+				// 根據折扣變動應付金額
+				$requiredInput.each(function () {
+					$( this ).val( Math.round(parseInt( $( this ).val() ) * _discount) );
+				});
+		});
+
+		var 
+			$form = $('#orders-multisale').find('form[name="multiSaleSearch"]'),
+			$formSale = $('#orders-multisale').find('form[name="multiSale"]'),
+			$button = $form.find('button'),
+			$saleButton = $formSale.find('button').filter('.sale'),
+			$clearButton = $formSale.find('button').filter('.cancel'),
+			_url = Routing.generate('goods_search_multisale'),
+			_urlSell = Routing.generate('order_multisale_sell');
+
+		// 如果型號不為空, 則送出搜尋表單
+		$button.click(function () {
+			$form.submit();
+		});
+
+		// 多筆商品販賣售出
+		$form.ajaxForm({
+			url: _url,
+			success: function (res) {
+				// 更新訊息區塊
+				$('.res-container>tbody').prepend($($.parseHTML(res)));
+
+				$formSale.removeClass('hidden');
+
+				$('.res-count').text($('.res-container>tbody>tr').length);
+
+				// 判斷是否有找到符合條件的上架產品
+				if ($('#orders-multisale').find('.res-container').find('tr').length > 1) {
+					var 
+						$inputRequired = $formSale.find('input[name="rOrdersRequired[]"]'),
+						_discount = $formSale.find('select[name="nPayTypeId"]').find('option:selected').data('discount');
+
+					// 將應付金額乘上折扣
+					$inputRequired.each(function () {
+						var _disPrice = Math.round(parseInt($(this).val()) * _discount);
+						
+						$(this).val(_disPrice);
+					});
+
+					// 顯示送出按鈕
+					$saleButton.removeClass('hidden').addClass('show');
+				} else {
+					// 隱藏送出按鈕
+					$saleButton.removeClass('show').addClass('hidden');
+				}
+
+				$.unblockUI();
+			},
+			error: function () {
+				$.unblockUI();
+
+				alert('error');
+			}
+		});
+
+		// 送出前將沒打勾的欄位清除
+		$saleButton.click(function () {
+			myBlock();
+
+			keepOnlyChecked();
+
+			$formSale.submit();
+			
+			return false;
+		});
+
+		var keepOnlyChecked = function () {
+			var $notChecked = $('#orders-multisale').find('input[type="checkbox"]').not('input:checked');
+
+			$notChecked.each(function () {
+				$(this).closest('tr').remove();
+			});
+		};
+
+		// 清空按鈕
+		$clearButton.click(function () {
+			$('#orders-multisale').find('.goods-info').find('tbody').html('');
+			$formSale.addClass('hidden');
+			$saleButton.addClass('hidden');
+		})
+
+		// 每行的刪除按鈕
+		$( document ).on('click', '#orders-multisale .icon-remove', function () {
+			$( this ).closest('tr').remove();
+		})
+
+		var $mobilInput = $('#orders-multisale').find('[name="mobil"]');
+
+		// 檢查客戶手機是否存在
+		$mobilInput.blur(function () {
+			$.post(
+				Routing.generate('admin_custom_checkExist'), 
+				{ 'custom_mobil': $mobilInput.val() }
+			)
+			.done(function (res) {
+				if (res != '') {
+					$('#orders-multisale').find('.goods-info').removeClass('hidden');
+				} else {
+					$mobilInput.val('09');
+					$('#orders-multisale').find('.goods-info').addClass('hidden');
+					alert('電話號碼不存在');
+				}     
+			})
+			.fail(function () {
+				alert('check mobil ajax error');
+			});
+		});
+
+		$('button.keep').click(function () {
+			keepOnlyChecked();
+		});
+
+		// 多筆商品售出訂單成立
+		$formSale.ajaxForm({
+			url: _urlSell,
+			success: function (res) {
+				$('#orders-multisale').find('.goods-info').html(res);
+
+				$saleButton.removeClass('show').addClass('hidden');
+
+				$("[rel^='prettyPhoto']").prettyPhoto();
+				
+				$.unblockUI();
+			},
+			error: function () {
+				$.unblockUI();
+
+				alert('error');
+			}
+		});
+
+		// 反悔銷售操作
+		$(document).on('click', '#orders-multisale button.rollback', function () {
+			myBlock();
+
+			var $this = $(this);
+			$.post(
+				Routing.generate('admin_multisale_rollback'),
+				{
+					jRollBack : $this.data('roll')
+				}
+			)
+			.done(function (res) {
+				$('#orders-multisale').find('.goods-info').html( res );
+
+				$saleButton.addClass('show').removeClass('hidden');
+
+				$.unblockUI();
+			})
+			.fail(function () {
+				$.unblockUI();
+				alert('異常錯誤, 請使用商品查詢逐筆取消');
+			})
+		});
+
+		$('button.search').click(function () {
+			myBlock();
+		});
+
+		var myBlock = function () {
+			$.blockUI({ css: { 
+	            border: 'none', 
+	            padding: '15px', 
+	            backgroundColor: '#000', 
+	            '-webkit-border-radius': '10px', 
+	            '-moz-border-radius': '10px', 
+	            opacity: .5, 
+	            color: '#fff' 
+	        }});
+		};
+	});
+	</script>
+
+	<script src="{{ asset('/prettyPhoto/js/jquery.prettyPhoto.js') }}"></script>
+{% else %}
+	{% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}
+
+

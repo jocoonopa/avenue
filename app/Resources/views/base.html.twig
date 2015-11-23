@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-TW" ng-app>
+	<head>
+		<meta charset="UTF-8">
+		<title>{% block title %}香榭國際精品館{% endblock %}</title>
+		{% block library_css %}
+			<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" />  
+			<link rel="stylesheet" href="{{ asset('/css/ui-darkness/jquery-ui-1.10.3.custom.min.css') }}" />
+			<link rel="stylesheet" href="{{ asset('/css/reset.css') }}" />
+			<link rel="stylesheet" href="{{ asset('/css/base.css') }}" />
+			<link rel="stylesheet" href="{{ asset('/css/style.css') }}" />
+		{% endblock %}
+		{% block library_javascript %}
+			<script src="{{ asset('/js/jquery-1.9.1.min.js') }}"></script>
+			<script src="{{ asset('/js/bootstrap.min.js') }}"></script>
+			<script src="{{ asset('/js/bootbox.min.js') }}"></script>
+			<script src="{{ asset('/js/jquery-ui-1.10.3.min.js') }}"></script>
+			<script src="{{ asset('/js/hinclude.js') }}"></script>
+			<script src="{{ asset('/js/jquery.form.js')}}"></script>
+			<script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+			<script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+			<script src="{{ asset('/js/base.js') }}"></script>
+			<script src="{{ asset('/js/tablesorter.js') }}"></script>
+			<script src="{{ asset('/js/tablepager.js') }}"></script>
+			<script src="{{ asset('/js/jquery-migrate.js') }}"></script>
+			<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+			<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+			<script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
+		{% endblock %}
+		<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+	</head>
+	<body style="display:none; overflow-x:hidden;">
+		{% block header %}{{ render(controller('WoojinBaseBundle:Base:header')) }}{% endblock %}
+		<div class="openConsign"><button class="btn btn-default"><i class="icon-bell"></i>寄賣完成通知</button></div>
+		<div id="AjaxMsgConsign"></div>
+		<!-- <div class="openBackOrder"><button class="btn btn-default"><i class="icon-bell"></i>調貨請求通知</button></div> -->
+		<div id="AjaxMsgBackOrder"></div>
+		<div id="body">{% block body %}{% endblock %}</div>
+		<div class="ajaxEditGoodsDialog" title="商品資訊修改"></div>
+		{% block footer %}{{ render(controller('WoojinBaseBundle:Base:footer')) }}{% endblock %}
+		{% block javascript %}{% endblock %}
+		<script>$(function(){
+			$('body').show();
+		});</script>
+	</body>
+</html>

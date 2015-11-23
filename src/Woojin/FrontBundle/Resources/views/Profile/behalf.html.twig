@@ -1,0 +1,64 @@
+{% extends 'WoojinFrontBundle:Profile/common:layout.html.twig' %}
+
+{% import 'WoojinFrontBundle:Widget/Payment:productInTable.html.twig' as productTableWidget %}
+
+{% block title %}代購記錄{% endblock %}
+
+{% block modal %}
+
+{{ parent() }}
+
+{% include 'WoojinFrontBundle:Common/Modal/Behalf:bank.html.twig' %}
+{% include 'WoojinFrontBundle:Common/Modal/Behalf:show.html.twig' %}
+{% include 'WoojinFrontBundle:Common/Modal/Behalf/show:_template.html.twig' with {custom: custom} %}
+
+{% endblock %}
+
+{% block profileBody %}
+    {% for flashMessage in app.session.flashbag.get('success') %}
+       <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+           {{ flashMessage }}
+       </div> 
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-grey margin-bottom-40">
+                <div class="panel-heading white">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-list"></i>代購記錄</h3>
+                </div>
+                <div class="panel-body">
+                    <section id="behalf-frame">
+                        <div class="table-responsive">
+                            <table class="table table-striped shopping-cart">
+                                <thead>
+                                    <tr>
+                                        <th>編號</th>
+                                        <th>品名</th>
+                                        <th>價格</th>
+                                        <th>優惠價</th>
+                                        <th>狀態</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="product-in-table">
+                                    {% include 'WoojinFrontBundle:Profile/Behalf:_tbody.html.twig' with {custom: custom} %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>                      
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExec %}
+
+{{ parent() }}
+
+<script src="/bundles/woojinfront/js/front.behalf.js"></script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body %}
+{% if app.user|has_auth('ROLE_MANAGE') %}
+    {% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success mt-10" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+       {{ flashMessage }}
+    </div> 
+    {% endfor %}
+    
+    <h3>職務列表&nbsp;&nbsp;
+        <small>
+            <a class="btn btn-primary" href="{{ path('admin_role_new') }}">
+                <span class="glyphicon glyphicon-plus"></span>新增職務</a>
+        </small>
+    </h3>
+    <hr>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>身分名稱</th>
+                <th>所屬使用者</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for role in roles %}
+            <tr>
+                <td>
+                    <span>{{ role.name }}</span><span class="label label-info">{{ role.users|length }}</span>
+                </td>
+                <td>
+                    <ul>
+                        {% for user in role.users %}
+                            <li>
+                                <a href="{{ path('admin_user_edit', {id: user.id }) }}">{{ user.username }}</a>
+                                <span class="badge">{{ user.store.name }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <a href="{{ path('admin_role_edit', {id: role.id}) }}" class="btn btn-primary pull-left"><span class="glyphicon glyphicon-edit"></span> 編輯</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    
+                    <form class="inline-block" action="{{ path('admin_role_delete', {id: role.id})}}" method="POST" onsubmit="return confirm('確定要刪除{{ role.name }}嘛?');">
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button type="submit" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash"></span>刪除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

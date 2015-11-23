@@ -1,0 +1,20 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+{% if app.user|has_auth('STORE_SETTING') %}
+    <h1>商店編輯</h1>
+
+    {{ form(edit_form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('admin_store') }}">
+            回到門市列表
+        </a>
+    </li>
+   {#  <li>{{ form(delete_form) }}</li> #}
+</ul>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}

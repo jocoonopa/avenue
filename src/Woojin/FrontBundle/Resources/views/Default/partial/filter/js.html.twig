@@ -1,0 +1,22 @@
+<script>
+window.angularSource = {};
+
+{% set brands = brands|replace({"'": '`'}) %}
+
+angularSource.brands = '{% autoescape false %}{{ brands }}{% endautoescape %}';
+angularSource.patterns = '{% autoescape false %}{{ patterns }}{% endautoescape %}';
+angularSource.levels = '{% autoescape false %}{{ levels }}{% endautoescape %}';
+angularSource.promotions = '{% autoescape false %}{{ promotions }}{% endautoescape %}';
+
+{% if category %}
+    angularSource.category = {id: '{% autoescape false %}{{ category.id }}{% endautoescape %}'};
+{% endif %}
+
+{% if val %}
+    angularSource.name = '{{ val }}';
+{% endif %}
+
+{% if promotion %}
+    angularSource.promotion = {id: '{% autoescape false %}{{ promotion.id }}{% endautoescape %}'};
+{% endif %}
+</script>

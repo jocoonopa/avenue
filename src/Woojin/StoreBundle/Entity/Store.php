@@ -1,0 +1,518 @@
+<?php 
+namespace Woojin\StoreBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Exclude;
+
+
+/**
+ * @ORM\Entity(repositoryClass="Woojin\StoreBundle\Entity\StoreRepository")
+ * @ORM\Table(name="store")
+ */
+class Store
+{
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Move", mappedBy="from")
+     * @var FromMoves[]
+     */
+    protected $fromMoves;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Move", mappedBy="destination")
+     * @var DestinationMoves[]
+     */
+    protected $destinationMoves;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\GoodsPassport", mappedBy="store")
+     * @var GoodsPassports[]
+     */
+    protected $goodsPassports;
+
+  /**
+   * @Exclude
+   * @ORM\OneToMany(targetEntity="\Woojin\UserBundle\Entity\User", mappedBy="store")
+   * @var User[]
+   */
+  protected $users;
+
+  /**
+   * @Exclude
+   * @ORM\OneToMany(targetEntity="\Woojin\OrderBundle\Entity\Custom", mappedBy="store")
+   * @var Custom[]
+   */
+  protected $customs;
+
+  /**
+   * @Exclude
+   * @ORM\OneToMany(targetEntity="\Woojin\OrderBundle\Entity\Invoice", mappedBy="store")
+   * @var Invoice[]
+   */
+  protected $invoices;
+
+  /**
+   * @ORM\ManyToOne(targetEntity="\Woojin\StoreBundle\Entity\ExchangeRate", inversedBy="stores")
+   * @var ExchangeRate
+   */
+  protected $exchange_rate;
+
+  /**
+   * @ORM\Id
+   * @ORM\Column(type="integer")
+   * @ORM\GeneratedValue(strategy="AUTO")
+   */
+  protected $id;
+
+  /**
+   * @ORM\Column(type="string", length=30)
+   */
+  protected $sn;
+
+  /**
+   * @ORM\Column(type="string", length=100)
+   */
+  protected $name;
+
+  /**
+   * @ORM\Column(type="string", length=255)
+   */
+  protected $address;
+
+  /**
+   * @ORM\Column(type="string", length=50)
+   */
+  protected $phone;
+
+  /**
+   * @ORM\Column(type="string", length=50)
+   */
+  protected $openRegion;
+
+  /**
+   * @ORM\Column(type="string", length=100)
+   */
+  protected $mail;
+
+  /**
+   * @ORM\Column(type="boolean")
+   */
+  protected $isShow;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->fromMoves = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->destinationMoves = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->customs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->invoices = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function getStockCheckFileName()
+    {
+        return 'stock_check_' . $this->getSn() . '.json';
+    }
+    
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set sn
+     *
+     * @param string $sn
+     * @return Store
+     */
+    public function setSn($sn)
+    {
+        $this->sn = $sn;
+    
+        return $this;
+    }
+
+    /**
+     * Get sn
+     *
+     * @return string 
+     */
+    public function getSn()
+    {
+        return $this->sn;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Store
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Add fromMoves
+     *
+     * @param \Woojin\GoodsBundle\Entity\Move $fromMoves
+     * @return Store
+     */
+    public function addFromMove(\Woojin\GoodsBundle\Entity\Move $fromMoves)
+    {
+        $this->fromMoves[] = $fromMoves;
+    
+        return $this;
+    }
+
+    /**
+     * Remove fromMoves
+     *
+     * @param \Woojin\GoodsBundle\Entity\Move $fromMoves
+     */
+    public function removeFromMove(\Woojin\GoodsBundle\Entity\Move $fromMoves)
+    {
+        $this->fromMoves->removeElement($fromMoves);
+    }
+
+    /**
+     * Get fromMoves
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFromMoves()
+    {
+        return $this->fromMoves;
+    }
+
+    /**
+     * Add destinationMoves
+     *
+     * @param \Woojin\GoodsBundle\Entity\Move $destinationMoves
+     * @return Store
+     */
+    public function addDestinationMove(\Woojin\GoodsBundle\Entity\Move $destinationMoves)
+    {
+        $this->destinationMoves[] = $destinationMoves;
+    
+        return $this;
+    }
+
+    /**
+     * Remove destinationMoves
+     *
+     * @param \Woojin\GoodsBundle\Entity\Move $destinationMoves
+     */
+    public function removeDestinationMove(\Woojin\GoodsBundle\Entity\Move $destinationMoves)
+    {
+        $this->destinationMoves->removeElement($destinationMoves);
+    }
+
+    /**
+     * Get destinationMoves
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDestinationMoves()
+    {
+        return $this->destinationMoves;
+    }
+
+    /**
+     * Add users
+     *
+     * @param \Woojin\UserBundle\Entity\User $users
+     * @return Store
+     */
+    public function addUser(\Woojin\UserBundle\Entity\User $users)
+    {
+        $this->users[] = $users;
+    
+        return $this;
+    }
+
+    /**
+     * Remove users
+     *
+     * @param \Woojin\UserBundle\Entity\User $users
+     */
+    public function removeUser(\Woojin\UserBundle\Entity\User $users)
+    {
+        $this->users->removeElement($users);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * Add customs
+     *
+     * @param \Woojin\OrderBundle\Entity\Custom $customs
+     * @return Store
+     */
+    public function addCustom(\Woojin\OrderBundle\Entity\Custom $customs)
+    {
+        $this->customs[] = $customs;
+    
+        return $this;
+    }
+
+    /**
+     * Remove customs
+     *
+     * @param \Woojin\OrderBundle\Entity\Custom $customs
+     */
+    public function removeCustom(\Woojin\OrderBundle\Entity\Custom $customs)
+    {
+        $this->customs->removeElement($customs);
+    }
+
+    /**
+     * Get customs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCustoms()
+    {
+        return $this->customs;
+    }
+
+    /**
+     * Add invoices
+     *
+     * @param \Woojin\OrderBundle\Entity\Invoice $invoices
+     * @return Store
+     */
+    public function addInvoice(\Woojin\OrderBundle\Entity\Invoice $invoices)
+    {
+        $this->invoices[] = $invoices;
+    
+        return $this;
+    }
+
+    /**
+     * Remove invoices
+     *
+     * @param \Woojin\OrderBundle\Entity\Invoice $invoices
+     */
+    public function removeInvoice(\Woojin\OrderBundle\Entity\Invoice $invoices)
+    {
+        $this->invoices->removeElement($invoices);
+    }
+
+    /**
+     * Get invoices
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getInvoices()
+    {
+        return $this->invoices;
+    }
+
+    /**
+     * Set exchange_rate
+     *
+     * @param \Woojin\StoreBundle\Entity\ExchangeRate $exchangeRate
+     * @return Store
+     */
+    public function setExchangeRate(\Woojin\StoreBundle\Entity\ExchangeRate $exchangeRate = null)
+    {
+        $this->exchange_rate = $exchangeRate;
+    
+        return $this;
+    }
+
+    /**
+     * Get exchange_rate
+     *
+     * @return \Woojin\StoreBundle\Entity\ExchangeRate 
+     */
+    public function getExchangeRate()
+    {
+        return $this->exchange_rate;
+    }
+
+    /**
+     * Set address
+     *
+     * @param string $address
+     * @return Store
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return string 
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Set phone
+     *
+     * @param string $phone
+     * @return Store
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    
+        return $this;
+    }
+
+    /**
+     * Get phone
+     *
+     * @return string 
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Set openRegion
+     *
+     * @param string $openRegion
+     * @return Store
+     */
+    public function setOpenRegion($openRegion)
+    {
+        $this->openRegion = $openRegion;
+    
+        return $this;
+    }
+
+    /**
+     * Get openRegion
+     *
+     * @return string 
+     */
+    public function getOpenRegion()
+    {
+        return $this->openRegion;
+    }
+
+    /**
+     * Set mail
+     *
+     * @param string $mail
+     * @return Store
+     */
+    public function setMail($mail)
+    {
+        $this->mail = $mail;
+    
+        return $this;
+    }
+
+    /**
+     * Get mail
+     *
+     * @return string 
+     */
+    public function getMail()
+    {
+        return $this->mail;
+    }
+
+    /**
+     * Set isShow
+     *
+     * @param boolean $isShow
+     * @return Store
+     */
+    public function setIsShow($isShow)
+    {
+        $this->isShow = $isShow;
+    
+        return $this;
+    }
+
+    /**
+     * Get isShow
+     *
+     * @return boolean 
+     */
+    public function getIsShow()
+    {
+        return $this->isShow;
+    }
+
+    /**
+     * Add goodsPassports
+     *
+     * @param \Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports
+     * @return Store
+     */
+    public function addGoodsPassport(\Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports)
+    {
+        $this->goodsPassports[] = $goodsPassports;
+    
+        return $this;
+    }
+
+    /**
+     * Remove goodsPassports
+     *
+     * @param \Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports
+     */
+    public function removeGoodsPassport(\Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports)
+    {
+        $this->goodsPassports->removeElement($goodsPassports);
+    }
+
+    /**
+     * Get goodsPassports
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGoodsPassports()
+    {
+        return $this->goodsPassports;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+}

@@ -1,0 +1,194 @@
+{% extends 'WoojinBaseBundle:Base:woojin.layout.html.twig' %}
+{% block form %}
+	{% if app.user|has_auth('BATCH_UPLOAD') %}
+		<input type="file" name="fBatchUploadGoods" data-time="" />
+		<input type="hidden" name="bGoods" value="1" />
+		<button class="submit btn btn-deafult" type="button" style="display: none;">
+			<span data-icon="9"></span>上傳
+		</button>
+		<button class="clean btn btn-default" type="reset" style="display: none;">
+			<span data-icon="Z">清空</span>
+		</button>
+		<button class="rollback btn btn-inverse" type="button" style="display: none;">
+			<span data-icon="G">取消</span>
+		</button>
+		<button class="example_download btn btn-default" type="button"><span data-icon="M">範例</span></button>
+	{% else %}
+		{% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+	{% endif %}
+{% endblock %}
+
+{% block js %}
+<script>
+$(function(){
+	attachOnNewElementBatch = function () {
+		var	
+			$tab = $('#tabs-batch'),
+			$goodsBatchForm = $tab.find('.woojinForm'),
+			$goodsSearchAjaxLoadImg = $tab.find('.ajaxResLeft'),
+			$ajaxSearchDiv = $tab.find('.ajaxResMsgRight'),
+			$pageBar = $tab.find('.pageBar'),
+			$ajaxTabs = $('.goodsResTabs'),
+			$ajaxButton = $ajaxTabs.find('button'),
+			$ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog'),
+			$ordersEditFormDialog = $('.ordersEditFormDialog'),
+			$h3 = $tab.find('h3'),
+			sFormLoadedUrl = Routing.generate('goods_edit_form_loaded'),
+			sOrdersFormLoadedUrl = Routing.generate('orders_edit_form_loaded'),
+			sBatchResUrl = Routing.generate('goods_batch_ajax_res'),
+			sOrdersCancelUrl = Routing.generate('orders_cancel');
+		$ajaxSearchDiv.accordion('destroy').accordion({ 'heightStyle' : 'content' });
+		$h3.on('click', function(){
+			$goodsSearchAjaxLoadImg.html( '<img src="'+$(this).data('imgpath')+'" />'  );
+		}).eq(0).click();
+		$ajaxTabs.tabs({
+			collapsible: true
+	  }).find('button').button();
+    $ajaxButton.filter('.edit_goods').on('click', function () {
+    	var $this = $(this),
+    		nGoodsPassportId = $this.parent().data('id');
+    	ajaxLoaded();
+    	$.post(sFormLoadedUrl, { 'nGoodsPassportId' : nGoodsPassportId, 'bGoods' : 1 })
+    	.done(function (res) {
+    		$ajaxEditGoodsDialog.html(res);
+    		$ajaxEditGoodsDialog.dialog('open');
+    		$.unblockUI();
+    	})
+    	.fail(function(xhr, textStatus, errorThrown) {
+    		alert('ajax error');
+    		$.unblockUI();
+    	});
+    });
+		if ( $goodsBatchForm.hasClass('fromSubmit') ) {
+			var 
+				nCountTotal = $h3.eq(0).data('page'),
+				nNowPage = $h3.eq(0).data('nowpage'),
+				nPerPage = 10,
+				nPages = Math.ceil(nCountTotal/nPerPage),
+				sSpan = '<div class="pageTotal"><span>'+nNowPage+'/'+nPages+'</span></div><div class="pagePrev">prev</div><div class="scrollBar">';
+			for ( i = 1; i <= nPages; i ++) {
+				if (i == 1)
+					sSpan += '<div class="pageButton pageIsIt"><span style="font-size: 20px;">'+i+'</span></div>';
+				else
+					sSpan += '<div class="pageButton"><span style="font-size: 12px;">'+i+'</span></div>';
+			}
+			sSpan += '</div><div class="pageNext">next</div>';
+			$pageBar.html(sSpan).fadeIn(700)
+			.find('.pageButton').on('click', function () {
+				var 
+					$this = $(this).find('span'),
+					nSubmitPage = $(this).find('span').text(),
+					$pageTotal = $tab.find('.pageTotal');
+				$this.parent().parent().find('.pageIsIt').removeClass('pageIsIt');
+				$this.parent().addClass('pageIsIt');
+				$pageTotal.find( 'span' ).text(nSubmitPage + '/' + nPages);
+				$goodsBatchForm.removeClass( 'fromSubmit' );
+				$.post(
+					sBatchResUrl, 
+					{
+            'time' : sBatchTime,
+            'page' : nSubmitPage
+					}
+				)
+				.done(function (res) {
+					$goodsSearchAjaxLoadImg.html('<img src="{{ AjaxLoadingGif }}" />');
+		    	$ajaxSearchDiv.html( res );
+		    	attachOnNewElementBatch();
+				});
+			});
+			$pageBar.find('.pagePrev').on('click', function () {
+				if ($pageBar.find('.pageIsIt').prev('.pageButton').length>0)
+					$pageBar.find('.pageIsIt').prev('.pageButton').click();
+				return false;
+			});
+			$pageBar.find('.pageNext').on('click', function () {
+				if ($pageBar.find('.pageIsIt').next('.pageButton').length>0 )
+					$pageBar.find('.pageIsIt').next('.pageButton').click();
+				return false;
+			});
+		} else {
+			var 
+				nCountTotal = $h3.eq(0).data('page'),
+				nNowPage = $h3.eq(0).data('nowpage'),
+				nPerPage = 10,
+				nPages = Math.ceil( nCountTotal/nPerPage );
+			$('.pageButton').find('span').css({'font-size': '12px'});
+			$('.pageButton').eq(nNowPage-1).find('span').css({ 'font-size': '20px'});
+		}
+		return false;
+	};
+
+	var 
+		$tab = $('#tabs-batch'),
+		$form = $tab.find('form'),
+		$button = $form.find('button'),
+		$input = $form.find('[name="fBatchUploadGoods"]'),
+    $resRight = $tab.find('.ajaxResMsgRight'),
+    $resLeft = $tab.find('.ajaxResLeft'),
+    $pageBar = $tab.find('.pageBar'),
+		sUrl = Routing.generate('goods_batch_process'),
+    sBatchResUrl = Routing.generate('goods_batch_ajax_res');
+  sBatchTime = '';
+  $resRight.accordion();
+	$form.ajaxForm({
+		url : sUrl,
+		success : function (res) {
+			if (res.substr(0,1) != 2) {
+				$input.val('');
+				$.unblockUI();
+				return;
+			}	
+			$form.addClass('fromSubmit');
+			sBatchTime = res;
+			$input.data('time', sBatchTime);
+			$input.val('');
+			$.post( sBatchResUrl, { 'time' : sBatchTime })
+			.done(function (res) {
+				$resLeft.html('<img src="{{ AjaxLoadingGif }}" />');
+	    	$resRight.html(res);
+	    	$button.filter('.submit, .clean').fadeOut(300, function () {
+	    		$button.filter( '.rollback' ).fadeIn( 800 );
+	    	});
+	    	attachOnNewElementBatch();
+				$.unblockUI();
+			});
+		}
+	});
+	$form.find('.submit').on('click', function () {
+		if ($input.val() == '') {
+			return false;
+		} else {
+			ajaxLoaded();
+			$form.submit();
+		}
+	});
+	$form.find('.clean').on('click', function () {
+		$input.val('').change();
+	});
+	$form.find('.rollback').on('click', function () {
+		var 
+			sBatchRollbackUrl = Routing.generate( 'goods_batch_rollback' ),
+			$this = $(this);
+		ajaxLoaded();
+		$.post( sBatchRollbackUrl, { 'time' : $input.data('time') })
+		.done(function (res) {
+			$resLeft.html( '' );
+			$resRight.html( '' );
+			$pageBar.fadeOut( 600 );
+			$this.fadeOut( 600 );
+			$.unblockUI();
+		});
+	});
+	$form.find( '.example_download' ).on( 'click', function () {
+		window.location = '/csv/example/example.xls';
+	});
+	$input.on('change', function () {
+		if ( ( $( this ).val() == '') ) {
+			$button.filter('.submit, .clean').fadeOut(300);
+		} else {
+			$button.filter('.submit, .clean').fadeIn(1800);
+		}
+	});
+});
+</script>
+{% endblock %}

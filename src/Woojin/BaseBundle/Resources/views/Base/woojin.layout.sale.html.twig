@@ -1,0 +1,18 @@
+<div class="ajaxResMsgRight">{% block resLeft %}{% endblock %}</div>
+
+<div class="ajaxResLeft">{% block resRight %}{% endblock %}</div>
+
+<div class="operatePanel">
+
+	{% block panelOpen %}
+	
+	<span class="panelSwitch itsOpen hidden"><img src="{{ GoNextPng }}"></span>
+	
+	{% endblock %}
+	
+	{% block div %}{% endblock %}
+
+	</form>	
+</div>
+
+{% block js %}{% endblock %}

@@ -1,0 +1,698 @@
+{% extends 'WoojinBaseBundle:Base:woojin.layout.sale.html.twig' %}
+
+{% block div %}
+
+{% if app.user|has_auth('SELL') %}
+
+<script>
+
+window.fix_rate = 100;
+window.phone_length = 10;
+
+</script>
+
+<link rel="stylesheet" href="{{ asset('/css/jquery.datetimepicker.css') }}">
+<script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
+
+<div class="sellStart">
+	<div class="customMobil">
+		<label class="vader">輸入電話號碼:</label>
+		<input type="text" class="numeric" name="nCustomMobil" placeholder="請輸入電話號碼" />
+		<b data-icon="I" class="black">無資料</b><input type="checkbox" id="customNoData" value = "1" /><br/>
+	</div>
+
+	<div class="goodsSn" style="display:none;">
+		<label class="vader">輸入產編:</label>
+		<input type="text" name="sGoodsSn" value="{#{ app.user.getStore.getStoreSn }#}" placeholder="請輸入產編" />
+	</div>
+
+	<div class="sellsType">
+		<label class="vader">販售方式:</label>
+		<input type="radio" name="sell_type" id="radio1" checked="checked" vale="sell" />
+		<label for="radio1"><span data-icon="P">販售</span></label>
+        <input type="radio" name="sell_type" id="radio2" value="exchange" />
+        <label for="radio2"><span data-icon="8">換購</span></label>
+        <input type="radio" name="sell_type" id="radio3" vale="web_sell" />
+        <label for="radio3"><span data-icon='"'>網售</span></label>
+        <input type="radio" name="sell_type" id="radio4" vale="same_business" />
+        <label for="radio4"><span data-icon='a'>同行批貨</span></label>
+	</div>	
+</div>
+
+<div class="sellFlow flowSepStart" >
+	<div>
+		<h2>販售流程</h2>
+	</div>
+
+	<form method="POST" enctype="multipart/form-data">
+		<input type="hidden" name="form[_token]" value="{{ _token }}" />
+		<input type="hidden" name="invoice_key" />
+	
+		<div class="step1">
+			<label class="vader">付費方式:</label>
+			<select name="nPayTypeId">
+				{% for paytype in paytypes %}
+                <option data-discount="{{ paytype.discount }}" value="{{ paytype.id }}">
+                    {{ paytype.name }}
+                </option>
+                {% endfor %}
+			</select>
+		</div>
+
+		<div class="step1">
+			<label class="vader">商品訂價:</label>
+			<input type="text" name="nGoodsPrice" value="0" readonly/>
+			<label class="vader">商品售價:</label>
+			<input type="text" name="nOrdersRequired" value="0" />
+			<!-- <label>折扣金額:</label> -->
+			<input type="hidden" name="nDiscountMoney" value="0" readonly />
+			<label class="vader">預付訂金/付清:</label>
+			<input type="text" name="nOrdersPaidReal" value="0"/>
+			<label class="vader">實收金額:</label>
+			<input type="text" name="nOrdersPaid" readonly value="0"/>
+		</div>
+
+		<div class="step1">
+			<label class="vader">訂單備註:</label>
+			<textarea name="sOrdersMemo" placeholder="可不填寫"></textarea>	
+		</div>
+
+		<div class="step1">
+			<label class="vader">販售時間:</label>
+			<input type="text" name="sOpeTime" style="width: 150px;" value="{{ "now"|date("Y-m-d H:i:s") }}" readonly />
+		</div>
+
+		<input type="hidden" name="sGoodsSn" />
+		<input type="hidden" name="nCustomMobil" />
+		<input type="hidden" name="nOrdersKindId" value="6" />
+
+		<button type="button" class="step1 submitButton btn btn-default" onkeydown="preventEnterSubmit();">
+			<span><i class="icon-play"></i>確定</span>
+		</button>
+
+		<button type="button" class="step1 btn btn-inverse invoice" onkeydown="preventEnterSubmit();">
+			更換所屬發票
+		</button>
+	</form>
+</div>
+
+<div class="invoice_list">
+		<!-- 
+		品名: 
+		產編: 
+		售價: 
+		訂金:
+		尾款: 
+		-->
+</div>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+$(function(){
+	var 
+    $tab                    = $('#orders-sale'),
+    $editDialog             = $('.edit_custom_dialog'),
+    $resRight               = $tab.find('.ajaxResMsgRight'),
+    $resLeft                = $tab.find('.ajaxResLeft'),
+    $customNoData           = $tab.find('#customNoData'),
+    $sellTypeDiv            = $tab.find('.sellsType'),
+    $sellTypeRadio          = $tab.find('[name="sell_type"]'),
+    $ajaxGoodsSn            = $tab.find('.goodsSn').children('input'),
+    $nCustomMobilInput      = $tab.find('.customMobil').children('input[type="text"]'),
+    $flowSepStart           = $tab.find('.flowSepStart'),
+    $sellFlow               = $tab.find('.sellFlow'),
+    $sellFlowForm           = $sellFlow.find('form'),
+    $nPayTypeId             = $sellFlowForm.find('[name="nPayTypeId"]'),
+    $ordersPaid             = $sellFlowForm.find('[name="nOrdersPaid"]'),
+    $ordersRequired         = $sellFlowForm.find('[name="nOrdersRequired"]'),
+    $nOrdersPaidReal        = $sellFlowForm.find('[name="nOrdersPaidReal"]'),
+    $nDiscountMoney         = $sellFlowForm.find('[name="nDiscountMoney"]'),
+    $goodsPrice             = $sellFlowForm.find('[name="nGoodsPrice"]'),
+    $detailGoodsDialog      = $('.detail_of_custom_goods'),
+    $ordersEditFormDialog   = $('.ordersEditFormDialog'),
+    $button                 = $tab.find('button'),
+    $addGoodsOperateOpen    = $tab.find('.panelSwitch'),
+    $buttonSubmit           = $tab.find('.submitButton'),
+    nMinLength              = 2,
+    nAminateSpeed           = 700,
+    sSellUrl                = Routing.generate('order_sell_goods'),
+    sAutoGoodsSnUrl         = Routing.generate('order_autoComplete_goodsSn'),
+    sSearchByGoodsSnUrl     = Routing.generate('order_search_by_goodsSn'),
+    sMobilFindUrl           = Routing.generate('admin_custom_fetch'),
+    sAutoByMobilUrl         = Routing.generate('admin_custom_searchName_byEmail'),
+    sFixUrl                 = Routing.generate('goods_fix_res_show'),
+    sFormLoadedUrl          = Routing.generate('goods_edit_form_loaded'),
+    reMobil                 = /^[09]{2}[0-9]{8}$/;
+	
+	$('button.invoice').click(function () {
+		$('input[name="invoice_key"]').val(getGUID());
+	});
+
+	function cancelOrdersEvent (e) {}
+
+	function specialOrdersRefresh ($ordersUl) {
+		if ($ordersUl.find('.orders_kind').data('id') == 5) {
+			var
+				$refreshTarget = $ordersUl.next(),
+				nOrdersId = $refreshTarget.find('.button').data('id'),
+				sImgClass = $refreshTarget.attr('id'),
+				sOrdersRefreshUrl = Routing.generate('orders_ajax_one_info');
+
+			$refreshTarget.html('<img src="{{ AjaxLoadingGif }}" style="margin: 15px;"/>');
+			$.post( sOrdersRefreshUrl, {'nOrdersId' : nOrdersId }, function(res){
+				$refreshTarget.html(res);
+			});
+
+			$('img.' + sImgClass).attr('src', '{{ CancelPng }}');
+		} else if ($ordersUl.find('.orders_kind').data('id') == 9) {
+			var 
+				$refreshTarget = $ordersUl.prev(),
+				nOrdersId = $refreshTarget.find('.button').data('id'),
+				sImgClass = $refreshTarget.attr('id'),
+				sOrdersRefreshUrl = Routing.generate('orders_ajax_one_info');
+			$refreshTarget.html('<img src="{{ AjaxLoadingGif }}" style="margin: 15px;"/>');
+			$.post( sOrdersRefreshUrl, {'nOrdersId' : nOrdersId }, function(res){
+				$refreshTarget.html(res);
+			});
+			$('img.'+sImgClass).attr('src', '{{ CancelPng }}');
+		}
+		return;
+	}
+
+	function editDialogRefresh ( nCustomId ) {
+		var 
+			sEditFormUrl = Routing.generate('orders_custom_edit_form'),
+			sCheckExistUrl = Routing.generate('admin_custom_checkExist'),
+      sUpdateCustomUrl = Routing.generate('admin_custom_update');
+
+      $.post(sEditFormUrl, { 'nCustomId' : nCustomId }, function(res){
+        $editDialog.html(res);
+        var 
+        	$form = $('.editCustomForm'),
+          sOrgCustomEmail = $form.find('[name="sCustomEmail"]').val(),
+          sOrgCustomMobil = $form.find('[name="sCustomMobil"]').val();
+          
+        $form.find('.datepicker').datepicker({
+          changeYear      : true,
+          dateFormat      : "yy-mm-dd",
+          yearRange       : "1901:2013",
+          defaultDate     : "-30y",
+        });
+
+        $form.find('[name="sCustomEmail"]').on('blur', function(){
+          var 
+          	$this = $(this),
+            sEmail = $this.val();
+          if ( !reEmail.test(sEmail) && sEmail != '' ) {
+            $this.val('').attr('title', '信箱格式有誤').tooltip().focus(); //這邊可能會發生信箱重複
+          } else if (sEmail == '') {
+          	$this.attr('title', '');
+          } else {
+            if (sOrgCustomEmail != sEmail ) {
+              $.post(sCheckExistUrl, {'custom_email' : sEmail}, function(res){
+                if (res != '') {
+                  alert('電子信箱已存在');
+                  $this.val('');
+                }         
+              });
+            }
+          }
+        });
+        $form.find('[name="sCustomMobil"]').numeric().on('blur', function(){
+          var 
+          	$this = $(this),
+            sMobil = $this.val();
+          if (sOrgCustomMobil != sMobil && sMobil != '') {
+            $.post(sCheckExistUrl, {'custom_mobil' : sMobil}, function (res) {
+              if (res != '') {
+                alert('電話號碼已存在');
+                $this.val(sOrgCustomMobil);
+              }         
+            });
+          }
+        });
+
+        $form.ajaxForm({
+          url : sUpdateCustomUrl,
+          error: function () {
+            $.unblockUI();
+            console.log(' error!');
+          },
+          success: function (res) {
+            $('.thisTarget').closest('tr').html(res);
+            $('.thisTarget').button().on('click', function(){
+                var $this = $(this);
+
+                $this.addClass('thisTarget');
+                editDialogRefresh( $this.data('id') );
+                $editDialog.dialog('open');
+            }).button().removeClass('thisTarget');
+            $editDialog.dialog('close');
+            $.unblockUI();
+          }
+        })
+        .on('submit', function () {
+          ajaxLoaded();
+        });
+      });
+    };
+
+	function refreshAccordion (response) {
+    $resRight.html(response).accordion('destroy').accordion(
+    	{
+    		heightStyle: "content"
+    	}
+    ).addClass('isSearch')
+    .find('button').button()
+    .end().find('.edit_custom').on('click', function () {
+      var $this = $(this);
+
+      $this.addClass('thisTarget');
+      editDialogRefresh( $this.data('id') );
+      $editDialog.dialog('open');
+    })
+    .end()
+    .find('.detail_goods').each(function () {
+      var $this = $(this);
+      
+      $this.on('click', function(){
+        var 
+        	nGoodsId = $(this).data('id'),
+          sOneGoodsDetailUrl  = Routing.generate('goods_one_detail_info');
+
+        $.post(sOneGoodsDetailUrl , { 'nGoodsPassportId' : nGoodsId })
+        .done(function (res) {
+        	$detailGoodsDialog.html(res);
+          $detailGoodsDialog.children('div').tabs({ heightStyle: "content" });
+          $detailGoodsDialog.dialog('open');
+        })
+        .fail(function () {
+        	console.log(' error of goods_one_detail_info');
+        });
+      });
+    })
+    .end()
+    .find('.customHistoryTable').each(function(){ // table pager must put at last or enevs wont bind on DOM
+      var $this = $(this);
+      
+      if ( $this.find('.customBuyHistory').size() == 0 )
+        $this.add( $this.next() ).hide();
+      else {
+      	$this.tablesorter().tablesorterPager(
+        	{ 
+        		container: $this.next() 
+        	}
+        );
+      }  
+    });
+    return $.unblockUI();
+  };
+
+  $resRight.accordion();
+	$sellTypeDiv.buttonset();
+	$buttonSubmit.on('click', function () {
+		$(this).closest('form').submit();
+		ajaxLoaded();
+	});
+
+	$ordersPaid
+	.add($ordersRequired)
+	.add($nOrdersPaidReal).numeric()
+	.on('change', function () {
+		if (parseInt($ordersPaid.val()) > parseInt($ordersRequired.val()))
+			$ordersPaid.val($ordersRequired.val());
+		if (parseInt($ordersRequired.val() ) < 0)
+			$ordersRequired.val( 0 );
+		if ($ordersPaid.val() < 0)
+			$ordersPaid.val( 0 );
+	});
+
+	$customNoData.on('change', function(){
+		var $this = $(this);
+
+		if ($this.prop('checked') === true)
+			$nCustomMobilInput.val('00000').blur().prop('readonly', true);
+		else
+			$nCustomMobilInput.val('').prop('readonly', false).blur();
+	});
+
+	$nCustomMobilInput.on('blur', function(){
+		var 
+			$this = $(this),
+      sMobil = $this.val(),
+      $nCustomMobilInputHidden = $tab.find('[name="nCustomMobil"]'),
+			$span = $this.parent().find('span');
+
+		$span.remove();
+
+		initRes = function () {
+			$resLeft.html('');
+			$resRight.html('');
+			$this.parent().find('span').remove();
+			$ajaxGoodsSn.parent().fadeOut(300);
+			$flowSepStart.fadeOut(300);
+			$sellTypeDiv.fadeOut(nAminateSpeed);
+			return false;
+		};
+		
+		if (sMobil == '') {
+			return initRes();
+		}
+
+		$resRight.html('<img src="{{ AjaxLoadingGif }}" style="margin: 150px;"/>');
+		$resLeft.html('');
+		$.post(
+			sMobilFindUrl, 
+			{ 
+				'custom_mobil[]': sMobil, 
+				'form[_token]': $('[name="form[_token]"]').eq(0).val() 
+			}
+		)
+		.done(function (res) {
+			if (res != '') {
+				//$resRight.html(res).accordion('destroy').accordion();
+				refreshAccordion(res);
+				$ajaxGoodsSn.parent().fadeIn( nAminateSpeed );
+				$nCustomMobilInputHidden.val( sMobil );
+				$('input[name="invoice_key"]').val(getGUID());
+				//console.log($('input[name="invoice_key"]').val());
+			} else {
+				$this.parent().append('<span style="color:red;">該手機號碼不存在!</span>');
+				initRes();
+			}
+		})
+		.fail(function () {
+			console.log(' error!');
+		});
+	})
+	.autocomplete({
+    source : sAutoByMobilUrl,
+    minLength : nMinLength+2
+  })
+  .on('keydown', function(){
+  	if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || (event.keyCode == 65 && event.ctrlKey === true) || (event.keyCode >= 35 && event.keyCode <= 39 )) {
+      	return;
+      }
+  	else if ( $(this).val().length == window.phone_length)
+  		event.preventDefault();
+  });
+
+  $ajaxGoodsSn.on('blur', function () {
+    var 
+    	$this = $ajaxGoodsSn,
+    	$tab = $('#orders-sale'),
+    	sJudge = '{{ app.user.store.sn }}';
+
+    	$this.val( $this.val().toUpperCase() );
+    var 
+    	sGoodsSn = $this.val();
+
+    $this.attr('title', '');
+  	$sellFlowForm.find('[name="sGoodsSn"]').val('');
+
+  	if (sGoodsSn.substr( 0, 1) !== sJudge) {
+  		//$this.val( sJudge ).focus();
+  		$this.attr( 'title', '非本店店碼');
+  		$sellTypeDiv.fadeOut( nAminateSpeed );
+  		$flowSepStart.fadeOut(300);
+  	} else if (sGoodsSn.length < 10) {
+  		$this.attr('title', '未達產編長度').focus();
+  		$flowSepStart.fadeOut(300);
+			$sellTypeDiv.fadeOut(nAminateSpeed);
+			$resRight.html('');
+			$resLeft.html('<img src="{{ NothingPng }}" />');
+			$sellTypeDiv.fadeOut(nAminateSpeed);
+  	} else {
+  		$resRight.accordion('destroy').html('<img src="{{ AjaxLoadingGif }}" style="margin: 150px;"/>');
+  		$resLeft.html('<img src="{{ AjaxLoadingGif }}" style="margin: 60px;"/>');
+
+  		$sellFlowForm.find('input')
+		.not('[name="form[_token]"], [type="radio"], [name="sGoodsSn"], [name="nCustomMobil"], [name="nOrdersKindId"], [name="sOpeTime"], [name="invoice_key"]')
+		.val('').change();
+
+			$sellFlowForm.find('[name="sOrdersMemo"]').val('');
+			$goodsPrice.val(  parseInt( parseInt( $ajaxGoodsSn.val().substr(-4,4) ) )*window.fix_rate );
+			$flowSepStart.fadeOut(nAminateSpeed);
+			attachOnNewElement();
+			$ajaxGoodsSn.attr('title', '');    	
+	  	$sellFlowForm.find('[name="sGoodsSn"]').val('');
+	  	$sellTypeDiv.fadeOut(nAminateSpeed);
+	  	$tab.find('[name="nPayTypeId"]').val('sell');
+
+  		$.post(
+  			sSearchByGoodsSnUrl, 
+  			{
+  				'sGoodsSn': sGoodsSn, 
+  				'form[_token]': $('[name="form[_token]"]').eq(0).val()
+  			}
+  		)
+			.done(function (res) {
+				var nOrdersRequired = parseInt( sGoodsSn.substr(-4, 4) )*window.fix_rate;
+  				
+				$resRight.html(res).accordion();
+				attachOnNewElement();
+
+				var 
+					$ajaxTabs = $resRight.find('.goodsResTabs'),
+					$ajaxButton = $ajaxTabs.find('button'),
+					$ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog');
+			
+				$ajaxTabs.tabs({
+					collapsible: true
+		    }).find('button').button();
+
+		    $ajaxButton.filter('.edit_goods').on('click', function(){
+		    	var 
+		    		$this = $(this),
+		    		nGoodsPassportId = $this.parent().data('id');
+
+		    	ajaxLoaded();
+		    	$.post(sFormLoadedUrl, { 'nGoodsPassportId' : nGoodsPassportId }, function ( res ) {
+		    		$ajaxEditGoodsDialog.html(res);
+		    		$ajaxEditGoodsDialog.dialog('open');
+		    		$.unblockUI();
+		    	})
+		    	.fail(function(xhr, textStatus, errorThrown) {
+		    		console.log('ajax error');
+		    		$.unblockUI();
+		    	});
+		    })
+		    .end().filter('.edit_orders').on('click', function () {
+		    })
+		    .end().filter('.cancel_orders').on('click', function () {
+		    	cancelOrdersEvent( $(this) );
+		    })
+		    .end().filter('.change_order_custom, .back_order').hide();
+
+		    // 檢查狀態是否為上架
+		    var nGS = parseInt( $( res ).find( 'ul.goods_status' ).data( 'statusid' ) )
+				if ($resRight.find('h3').length < 1) {
+					$flowSepStart.fadeOut( 300 );
+					$sellTypeDiv.fadeOut( nAminateSpeed );
+					$resRight.html('');
+					$resLeft.html('<img src="{{ NothingPng }}" />');
+					$sellTypeDiv.fadeOut( nAminateSpeed );
+				} else if (nGS != 1) {
+					$flowSepStart.fadeOut(300);
+					$sellTypeDiv.fadeOut(nAminateSpeed);
+					$sellTypeDiv.fadeOut(nAminateSpeed);
+				} else {
+					$sellFlowForm.find('[name="sGoodsSn"]').val( sGoodsSn );
+					$sellFlowForm.find('[name="nOrdersRequired"]').val( nOrdersRequired );
+					$sellFlowForm.find('[name="nGoodsPrice"]').val( nOrdersRequired );
+					$sellTypeDiv.add( $flowSepStart ).fadeIn( nAminateSpeed );
+				}
+			})
+  		.fail(function () {
+  			console.log('_error!');
+  		});
+  	}
+  }).autocomplete({
+      source      : sAutoGoodsSnUrl,
+      minLength   : nMinLength
+  }).tooltip().on('keypress', function () {
+  	if (event.keyCode == 13) {
+  		$( this ).blur();
+  	}
+  });
+
+  // 決定銷售方式, 預設使用一般販售
+	$sellTypeRadio.on('click', function(){
+		var 
+			$this = $(this),
+			sVal = $this.attr('id');
+
+		switch ( sVal ) {
+			case 'radio1':
+				$sellFlow.find('[name="nOrdersKindId"]').val(6);
+				break;
+			case 'radio2':
+				$sellFlow.find('[name="nOrdersKindId"]').val(7);
+				break;
+			case 'radio3':
+				$sellFlow.find('[name="nOrdersKindId"]').val(12);
+				break;
+			break;
+			case 'radio4':
+				$sellFlow.find('[name="nOrdersKindId"]').val(14);
+				break;
+			break;
+			default:
+				break;
+		}
+	});
+
+	$sellFlowForm.ajaxForm({
+		url : sSellUrl,
+		success: function (id) {
+    	$.post(
+    		sFixUrl, 
+    		{ 
+	    		'nGoodsPassportId': id,
+	    		'bGoods': 1 
+	    	}, 
+	    	function (response) {
+	    		$resRight.html(response).accordion('destroy').accordion(
+	    			{ 
+	    				'heightStyle' : 'content' 
+	    			}
+    			);
+
+	    		var 
+	    			$ajaxTabs = $('.goodsResTabs'),
+            $ajaxButton = $ajaxTabs.find('button'),
+            $ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog');
+
+					$ajaxTabs.tabs({
+						collapsible: true
+				   }).find('button').button();
+
+			    $ajaxButton.filter('.edit_goods').on('click', function(){
+			    	var 
+			    		$this = $(this),
+			    		nGoodsPassportId = $this.parent().data('id');
+
+			    	ajaxLoaded();
+			    	$.post(sFormLoadedUrl, { 'nGoodsPassportId' : nGoodsPassportId }, function ( res ) {
+			    		$ajaxEditGoodsDialog.html(res);
+			    		$ajaxEditGoodsDialog.dialog('open');
+			    		$.unblockUI();
+			    	})
+			    	.fail(function(xhr, textStatus, errorThrown) {
+			    		console.log('ajax error');
+			    		$.unblockUI();
+			    	});
+			    })
+			    .end().filter('.change_order_custom, .back_order').hide();
+	    });
+
+			$.get(Routing.generate('get_invoice_now', {key: $('input[name="invoice_key"]').val()}), function (res) {
+				$('div.invoice_list').html(res);
+			});
+
+			$sellFlowForm.find('input')
+			.not('[name="form[_token]"], [type="radio"], [name="nOrdersKindId"], [name="nCustomMobil"], [name="sOpeTime"], [name="invoice_key"]')
+			.val('').change();
+
+			$sellFlowForm.find('[name="sOrdersMemo"]').val('');
+			$ajaxGoodsSn.val('{{ app.user.store.sn }}');
+			$flowSepStart.fadeOut(nAminateSpeed);
+			
+			attachOnNewElement();
+			$ajaxGoodsSn.attr('title', '');
+    	$sellFlowForm.find('[name="sGoodsSn"]').val('');
+    	$sellTypeDiv.fadeOut(nAminateSpeed);
+    	$tab.find('[name="nPayTypeId"]').val('sell');
+    	$.unblockUI();
+			scrollToPageTop();
+			$('input[name="invoice_key"]').val();
+		}
+	})
+	.find('[name="nPayTypeId"]')
+	.on('change', function () {
+		var 
+			nOrdersRequired = parseInt( $ajaxGoodsSn.val().substr( -4, 4) )*window.fix_rate,
+			fPayTypeDis = $(this).find('option:selected').data('discount');
+
+		$nOrdersPaidReal.val( Math.ceil( parseInt( $ordersPaid.val() ) /fPayTypeDis ) ).change();
+	});
+
+	$ordersPaid.on('change', function(){
+		var 
+			$this = $(this),
+			nDis = $nPayTypeId.find('option:selected').data('discount');
+		$nOrdersPaidReal.val( Math.ceil(parseInt($ordersPaid.val())/nDis ));
+
+		if ($this.val() == 'NaN')
+			$this.val(0);
+	});
+
+	$nOrdersPaidReal.on('change', function(){
+		var 
+			$this = $(this),
+			nDis = $nPayTypeId.find('option:selected').data('discount');
+
+		if (parseInt($this.val())> parseInt($ordersRequired.val()) )
+			$this.val($ordersRequired.val()).change();
+
+		$ordersPaid.val( Math.ceil( parseInt($this.val()*nDis) ) );
+		
+		if ($this.val() == 'NaN')
+			$this.val(0);
+	});
+
+	$ordersRequired.on('change', function(){
+		var 
+			nOrdersRequired = $(this).val(),
+			nDis = $nPayTypeId.find('option:selected').data('discount');
+
+		if (parseInt($ordersRequired.val()) < $nOrdersPaidReal.val())
+			$nOrdersPaidReal.val( $ordersRequired.val() ).change();
+
+		if ($nOrdersPaidReal.val() == 'NaN')
+			$nOrdersPaidReal.val(0);
+
+		$nDiscountMoney.val( parseInt($goodsPrice.val()) - parseInt($ordersRequired.val()) );
+
+		if ($nDiscountMoney.val() == 'NaN')
+			$nDiscountMoney.val(0);
+	});
+
+	setTimeout(function () {
+		$customNoData.prop('checked', true).change();
+	}, 500);
+
+	// $('input[name="sOpeTime"]').datetimepicker({
+	// 	timeFormat: 'hh:mm:00',
+	// 	dateFormat: 'yy-mm-dd'
+	// });
+});
+
+function preventEnterSubmit () {
+	if (event.keyCode == 13) {
+    event.cancelBubble  = true;
+    event.returnValue   = false;
+	}
+}
+
+function attachOnNewElement() {
+	var	
+		$tab = $('#orders-sale'),
+		$goodsSearchAjaxLoadImg = $tab.find('.ajaxResLeft'),
+		$ajaxSearchDiv = $tab.find('.ajaxResMsgRight'),
+		$h3 = $tab.find('h3');
+
+	$h3.on('click', function(){
+		$goodsSearchAjaxLoadImg.html( '<img src="'+$(this).data('imgpath')+'" />'  );
+	}).eq(0).click();
+	return false;
+}
+
+</script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body -%}
+    <h1>寄賣商品列表 &nbsp;&nbsp; 
+        <small>共<span class="badge">{{ products|length }}</span>件</small>
+        <a href="{{ path('consign_logout') }}" class="pull-right btn btn-primary ml-10 mr-10">
+            <i class="glyphicon glyphicon-log-out"></i>
+            登出</a>
+
+        <a href="{{ path('consign_list_export') }}" class="pull-right btn btn-success ml-10 mr-10">
+            <i class="glyphicon glyphicon-save"></i>匯出
+        </a>
+    </h1><hr>
+
+
+    <table class="records_list consign table">
+        <thead>
+            <tr>
+               <th>狀態</th>
+               <th>產編</th>
+               <th>品牌</th>
+               <th>建立時間</th>
+               <th>圖片</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>
+                    <span class="label label-success">{{ product.status.name }}
+                    </span>
+                    <span class="label label-default">{{ getProductLocate(product) }}</span>
+                </td>
+                <td>
+                    <span>{{ product.sn }}</span>
+                </td>
+                <td>
+                    <span class="label label-warning">{{ product.brand.name }}</span> 
+                    &nbsp;&nbsp;{{ product.name }}
+                </td>
+                <td>
+                    {% if product.createdAt %}
+                        {{ product.createdAt|date('Y-m-d') }}
+                    {% else %}
+
+                    {% endif %}
+                </td>
+                <td>
+                    <img data-original="{{ product.img.path }}" class="width-100 lazy" /> 
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination">
+        {% if page > 1 %}
+        <li>
+            <a href="{{ path('consign_list', {page: (page - 1)}) }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% for i in 1..totalPage %}
+            <li class="{% if i == page %}active{% endif %}"><a href="{{ path('consign_list', {page: i}) }}">{{ i }}</a></li>
+        {% endfor %}
+
+        {% if page < totalPage %}
+            <li>
+                <a href="{{ path('consign_list', {page: (page + 1)}) }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+        </ul>
+    </nav>
+
+<script src="{{ asset('/js/tablesorter.js') }}"></script>
+<script src="/bundles/woojinfront/js/plugins/jquery.lazyload.min.js"></script>
+<script src="{{ asset('/prettyPhoto/js/jquery.prettyPhoto.js') }}"></script>
+<script>
+$('table.consign').tablesorter();
+$('img.lazy').lazyload({
+        effect: 'fadeIn',
+        effectspeed: 900
+    });
+</script>
+{% endblock %}

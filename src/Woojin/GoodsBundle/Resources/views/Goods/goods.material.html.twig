@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-tw">
+<head>
+	<meta charset="UTF-8">
+	<title>材質管理</title>
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" /> 	
+	<script src="{{ asset('/js/jquery-1.9.1.min.js') }}"></script>
+	<script src="{{ asset('/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+	<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+	<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+	<style>
+	.hidden {
+		display: none;
+	}
+
+	input.hidden {
+		display: none;
+	}
+	</style>
+</head>
+<body style="text-align:center;">
+{% if app.user|has_auth('MT') %}
+	<header>
+		<h1>新增材質</h1><hr />
+		<input type="text" class="mt_add" name="name" placeholder="材質名稱" />
+		<button class="addbt btn btn-default">新增</button>
+	</header>
+	
+	<div style="position:relative; width: 80%; margin: 0  auto 0 auto;">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>名稱</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for key,mt in rGoodsMT %}
+				<tr data-id="{{ mt.id }}">
+					<td>{{ (key + 1) }}</td>
+					<td>
+						<span>{{ mt.name }}</span>
+						<input type="text" value="{{ mt.name }}" name="name" class="mt_update hidden" />
+					</td>
+					<td><i class="mt_delete icon-remove"></i></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+<script>
+/**
+ * 設定材質
+ */
+var MTSetter = function () {
+	return this.setView().initModel().bindAdd().bindUp().bindAjax().bindDel();
+};
+
+MTSetter.prototype.setView = function () {
+	this.$table = $('table.table');
+	this.$adder = $('input.mt_add');
+	this.$updater = $('input.mt_update');
+	this.$deleter = $('.mt_delete');
+	this.$addButton = $('button.addbt');
+	return this;
+};
+
+MTSetter.prototype.initModel = function () {
+	this.url = Routing.generate('crud_mt');
+	return this;
+};
+
+MTSetter.prototype.clearAdder = function () {
+	this.$adder.val('');
+	return this;
+};
+
+MTSetter.prototype.bindAdd = function () {
+	var _this = this;
+
+	this.$addButton.on('click', function () {
+		if (_this.isEmpty( _this.$adder )) {
+			return false;
+		}
+		$.post( _this.url, {name: _this.$adder.val(), flow: 'add'})
+		.done(function (res) {
+			return _this.addTR(res).clearAdder();
+		})
+		.fail(function () {
+			alert('add error!');
+		});
+	});
+	return this;
+};
+
+MTSetter.prototype.bindUp = function () {
+	var _this = this;
+
+	$(document).on('blur', 'input.mt_update', function () {
+		var $this = $(this);
+		if ( _this.isEmpty( $this ) || $this.val() === $this.prev().text() ) {
+			return _this.hideUpInput( $this );
+		}
+		$.post( _this.url, {id: $this.closest( 'tr' ).data('id'), name: $this.val(), flow: 'update'})
+		.done(function (res) {
+			return _this.hideUpInput( $this );
+		})
+		.fail(function () {
+			alert('update error!');
+		});
+	});
+	return this.showUpInput();
+};
+
+MTSetter.prototype.bindDel = function () {
+	var _this = this;
+	$(document).on('click', '.mt_delete', function () {
+		var $this = $( this );
+		$.post( _this.url, {id: $this.closest( 'tr' ).data('id'), flow: 'delete'})
+		.done(function () {
+			return $this.closest( 'tr' ).remove();
+		})
+		.fail(function () {
+			alert('delete error!');
+		});
+	});
+	return this;
+};
+
+MTSetter.prototype.bindAjax = function () {
+	$(document).ajaxStart(function() {
+		$.blockUI({ message: '<h1>處理中</h1>' });
+	}).ajaxStop(function() {
+		$.unblockUI();
+	});
+	return this;
+};
+
+MTSetter.prototype.addTR = function ( res ) {
+	this.$table.find('tbody').append('<tr data-id="'+res+'"><td>'+ this.$table.find('tr').length+'</td><td><span>'+this.$adder.val()+'</span><input type="text" value="'+this.$adder.val()+'" name="name" class="mt_update hidden" /></td><td><i class="mt_delete icon-remove"></i></td></tr>');
+	return this;
+};
+
+MTSetter.prototype.showUpInput = function () {
+	var _this = this;
+	$(document).on('click', 'table.table tr td span', function () {
+		_this.$updater.addClass('hidden');
+		_this.$table.find('span').removeClass('hidden');
+		$( this ).addClass('hidden');
+		$( this ).next().removeClass('hidden').focus();
+	});
+	return this;
+};
+
+MTSetter.prototype.hideUpInput = function ( $input ) {
+	return $input.addClass('hidden').prev().removeClass('hidden').text( $input.val() );
+};
+
+MTSetter.prototype.isEmpty = function ( $input ) {
+ return ($input.val().length === 0) ? true : false;
+};
+
+$(function () {
+	var iMTSetter = new MTSetter();
+});
+
+</script>
+{% else %}
+    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
+{% endif %}
+</body>
+</html>
+
+

@@ -1,0 +1,407 @@
+$goods-search-operate-width     : 460px;
+$font-size                      : 13px;
+
+#tabs-search, #tabs-batch
+{
+	.condition_add
+	{
+		margin 		: 6px 0 0 20px;
+
+		.goods_search_open{
+			margin : 0 0 0 15px;
+		}
+		p {
+			cursor: pointer;
+		}
+	}
+
+	.condition_set
+	{
+		div{
+			width   : 410px;
+			margin  : 5px 0 0 -2px;
+		}
+	}
+
+	.div_right_bottom 
+	{
+				position    : fixed;
+				float       : left;
+				left        : 0px;
+				width       : 50px;
+				bottom      : 0px;
+				z-index     : 20;
+
+				button
+				{
+						margin  : 0;
+				}
+	}
+
+	.noValue
+	{
+		border : red 2px solid;
+	}
+
+	.ajaxResMsgRight
+	{
+				float   : right;
+				margin  : 0;
+				width 	: 50%;
+
+				em 
+				{
+					display : none;
+				}
+
+				table{
+					margin: 30px 0 50px 0;
+					&.ope_list
+					{
+						th{
+										text-align          : center;
+										width               : 180px;
+										border              : #dedede solid 1px;
+										background-color: #D57200;
+										color               : #fff;
+						}
+
+						td{
+										text-align      : center;
+										height          : 40px;
+										line-height     : 40px;
+										vertical-align  : middle;
+										width           : 180px;
+										border-bottom   : #dedede solid 1px;
+						}
+					}
+				}
+	}	
+
+	.ajaxResMid
+	{
+		float : right;
+		width : 7%;
+	}
+
+	.pageTotal{
+		margin 		: 0 2px 0 0;
+		font-size 	: 16px;
+		width 		: 100px;
+	}
+
+	.pageBar{
+		float   			: right;
+		width 				: 80px; 	
+		font-size 			: 18px;
+		text-align 			: center;
+		border-radius 		: 7px; 
+		margin 				: 0;
+		.scrollBar{
+			width       		: 70px;
+			max-height	 		: 583px;
+			overflow-x 			: hidden;
+			margin 				: 0 auto 0 auto;
+			.pageButton 
+			{
+				color           : #000;
+				width           : 50px;
+				height 			: 26px;
+				line-height     : 26px;
+				vertical-align  : middle;
+				margin          : 10px 0 0 0;
+				cursor          : pointer;
+				
+				span {
+					color: #fff;
+				}
+			}
+		}
+	}
+
+	.ajaxResLeft
+	{
+		float: right;
+		width: 13%;
+		margin: 50px 0 0 0;
+	}
+}
+
+#tabs-source
+{
+	div{
+		width : 270px;
+		
+		ul{
+						width   : 270px;
+			opacity : .5;
+
+			li{
+				text-align          : center;
+				height              : 30px;
+				line-height         : 30px;
+				vertical-align      : bottom;
+				margin              : 0 0 10px 0;
+				list-style          : none;
+				float               : left;
+				background-color    : #7fffff;
+				border-right        : 1px #fff solid;
+							
+				&:first-of-type{
+					width 	: 45px;
+				}
+
+				&.ajax_goods_source_name
+				{
+					width 	: 150px;
+					input{
+						width       : 100px;
+						display     : none;
+					}
+				}
+
+				&:last-of-type{
+					width 	: 58px;
+				}
+			}
+			
+			&:hover{
+							opacity : 1;
+					}
+		}
+
+		button
+		{
+			&.add_goods_source_button{
+				position    : relative;
+							float       : left;
+			}
+		 
+						&.del_goods_source_button{
+							width 	: 58px;
+						}
+		}
+	}
+}
+
+#tabs-level
+{
+	div{
+		width : 270px;
+		
+		ul{
+						width   : 270px;
+			opacity : .5;
+
+			li{
+							text-align          : center;
+							height              : 30px;
+							line-height         : 30px;
+							vertical-align      : bottom;
+							margin              : 0 0 10px 0;
+							list-style          : none;
+							float               : left;
+							background-color    : #7fffff;
+							border-right        : 1px #fff solid;
+							
+				&:first-of-type{
+					width 	: 45px;
+				}
+
+							&.ajax_goods_level_name
+							{
+					width 	: 150px;
+
+					input{
+												width       : 100px;
+												display     : none;
+					}
+							}
+
+							&:last-of-type{
+								width 	: 58px;
+							}
+			}
+			
+			&:hover{
+							opacity : 1;
+					}
+		}
+
+		button
+		{
+			&.add_goods_level_button{
+				position    : relative;
+							float       : left;
+			}
+		 
+						&.del_goods_level_button{
+							width 	: 58px;
+						}
+		}
+	}
+}
+
+.ajaxEditGoodsDialog{
+	form{
+				float : left;
+				input, select{
+					clear 		: both;
+						text-align  : center;
+						width       : 130px;
+				}
+				textarea{
+					width : 300px;
+					height: 120px;
+				}
+				.delete_parent_div{
+					display:none;
+				}
+	}
+}
+
+div
+{
+	&.operatePanel
+	{
+		position    : absolute;
+		float       : left;
+		width 		: 27%; 
+		left        : -$goods-search-operate-width + 20px;
+		height      : 1500px;
+		padding 	: 0 10px 0 0;
+		z-index 	: 20;
+		background-color: #fff;
+		color: #000;
+
+		.goods_search_submit
+		{
+			top 	: -4px;
+				left    : 5px;
+		}	
+
+		.goods_search_open
+		{
+			float 	: right;
+			top 	: -4px;
+						width   : 32px;
+						height  : 40px;
+		}
+
+		.panelSwitch
+		{
+			display:none;
+		}
+
+		.woojinForm
+		{
+			float 	: left;
+			margin  : 0 0 0 20px;
+
+			.delete_parent_div
+			{
+				top 		: -4px;
+					left        : 10px;
+					display     : none;
+			}
+
+			div
+			{
+				width 	: 470px; 
+				margin 	: 5px 0 0 0;
+			}
+		}
+
+		input, select
+		{
+						width       : 120px;
+						font-size   : $font-size;
+						&.goods_search_store{
+				width: 150px;
+			}
+		}
+
+		label{
+			vertical-align: top;
+		}	
+
+		form
+		{
+			margin : 0 0 0 20px;
+		}
+
+		.goods_search_condition
+		{
+			overflow : hidden;
+			display: inline-block;
+			width : 150px;
+			height : 20px;
+			border-radius : 10px; 
+			border : #dedede outset 1px;
+			background-color: #000;
+			color: #fff;
+			margin-left: 10px;
+
+			p{
+				font-size 		: 14px;
+				line-height     : 15px;
+				padding         : 3px 0 3px 3px;
+
+				&.Phidden{
+					display : none;
+				}
+			}
+		}
+	}
+}
+
+.ui-accordion
+{
+	width 		: 50%;
+	font-size 	: 13px;
+	h4
+	{
+				color       : #054a05;
+				font-size   : 20px;
+				padding     : 16px 0 8px 0;
+	}
+
+	h2{
+		font-size : 17px;
+		color: #e08787;
+	}
+
+	h1{
+		font-size: 13px;
+		color: #4545f5;
+	}
+
+	.accordion_left
+	{
+		float : left;
+	}
+
+	.accordion_right
+	{
+		float  : left;
+		margin : 0 0 0 40px;
+	}
+
+	.goodsResTabs{
+		width : 100%;
+		div.button{
+						font-size   : 12px;
+						height 		: 20px;
+						margin      : 0;
+			button{
+				margin : 0 0 0 15px;
+			}
+		}
+		ul.goods_list{
+			width: 100%;
+			li{
+				width: 100%;
+			}
+		}
+	}
+}

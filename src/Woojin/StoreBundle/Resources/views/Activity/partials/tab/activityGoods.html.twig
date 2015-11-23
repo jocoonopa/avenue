@@ -1,0 +1,43 @@
+{% verbatim %}
+<div ng-controller="ActivityGoodsCtrl" class="tab-pane fade" id="activity-goods">
+  
+  <p>&nbsp;</p>
+
+  <h4>總共
+    <span style="color:red;">{{ activityGoods.length }}</span>件 &nbsp; 售出
+    <span style="color:green;">{{ activityGoods[activityGoods.length - 1].count }}</span> 件</h4>
+
+  <div class="row">
+    <input class="form-control" type="text" ng-model="query.sn" placeholder="輸入店碼" />
+  </div>
+  
+  <p>&nbsp;</p>
+
+  <div class="row">
+    <input class="form-control" type="text" ng-model="query.brand" placeholder="輸入品牌" />
+  </div>
+
+  <table class="table table-condensed">
+    <tr>
+      <td ng-click="orderProp='sn'; reverse=!reverse;" class="pointer" >產編</td>
+      <td ng-click="orderProp='name'; reverse=!reverse;" class="pointer" >品名</td>
+      <td ng-click="orderProp='brand'; reverse=!reverse;" class="pointer" >品牌</td>
+      <td ng-click="orderProp='status'; reverse=!reverse;" class="pointer" >狀態</td>
+      <td ng-click="orderProp='price'; reverse=!reverse;" class="pointer" >售價</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr ng-repeat="goods in activityGoods | filter:query | orderBy:orderProp:reverse">
+      <td>{{ goods.sn }}</td>
+      <td>{{ goods.name }}</td>
+      <td>{{ goods.brand }}</td>
+      <td ng-status-color >{{ goods.status }}</td>
+      <td>{{ goods.price }}</td>
+      <td>
+        <button ng-click="getGoodsDetail( goods.id );" class="btn btn-primary" data-toggle="modal" data-target="#goodsDetail">詳情</button>
+      </td>
+    </tr>
+  </table>
+  
+</div>
+{% endverbatim %}

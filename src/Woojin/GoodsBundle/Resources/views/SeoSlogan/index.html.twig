@@ -1,0 +1,36 @@
+{% extends '::bootstrap.html.twig' %}
+{% block body -%}
+    {% for flashMessage in app.session.flashbag.get('success') %}
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    
+    <h1>關鍵字列表</h1>
+
+    <table class="records_list table table-striped">
+        <thead>
+            <tr>
+                <th>索引</th>
+                <th>內容</th>
+                <th>動作</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('seoslogan_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.name }}</td>
+                <td><a href="{{ path('seoslogan_edit', { 'id': entity.id }) }}">編輯</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('seoslogan_new') }}">
+        新增關鍵字
+    </a>    
+{% endblock %}

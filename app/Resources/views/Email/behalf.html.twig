@@ -1,0 +1,39 @@
+{% extends ':Email:base.html.twig' %}
+
+{% block title %}香榭國際代購通知信{% endblock %}
+
+{% block body %}
+
+<tr>
+    <td style="font-size: 16px; color: #000; text-align: left; font-family: Arial, Helvetica, sans-serif; line-height: 25px; vertical-align: middle; padding: 0 20px 20px 40px; ">
+    <p>{{ behalf.custom.name }}您好:</p>
+    <br>
+    {% if behalf.status.id == 1 %}
+        香榭已經收到&nbsp;<b>{{ behalf.want.name }}</b>&nbsp; 的代購請求，我們將會儘快與您聯繫。
+    {% elseif behalf.status.id == 2 %}
+        您的代購請求已經確認，香榭將於您匯款完畢後立即為您批貨。
+    {% elseif behalf.status.id == 3 %}
+        <b>{{ behalf.want.name }}</b>&nbsp;的款項已支付，香榭核對中。
+    {% elseif behalf.status.id == 4 %}
+        <b>{{ behalf.want.name }}</b>&nbsp;的款項已確認到款，我們將儘速為您批貨。
+    {% elseif behalf.status.id == 5 %}
+        代購商品&nbsp;<b>{{ behalf.want.name }}</b>&nbsp;已經入庫，我們將會儘速配貨至府上。
+    {% elseif behalf.status.id == 6 %}
+        代購商品&nbsp;<b>{{ behalf.want.name }}</b>&nbsp;已出貨，敬請享受您的商品。
+    {% elseif behalf.status.id == 7 %}
+        已經取消代購商品&nbsp;<b>{{ behalf.want.name }}</b>&nbsp;！
+    {% endif %}
+    
+    <p>您的代購編號:&nbsp; {{ behalf.id|str_pad_left }}</p>
+    <p>如有任何問題請來信客服信箱: avenue16882@gmail.com</p>
+    <p>或電洽客服專線: 02-2992-6616</p>
+    <p>將有專人為您服務!</p>
+
+    <br>
+    <br>
+    <p>謝謝&nbsp;!</p>
+    <p>香榭國際精品&nbsp;&nbsp;工作團隊</p>
+   </td>
+</tr>
+
+{% endblock %}
