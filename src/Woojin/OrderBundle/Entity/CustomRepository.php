@@ -81,6 +81,38 @@ class CustomRepository extends EntityRepository
     }
 
     /**
+     * 透過GoogleId 找尋客戶
+     *
+     * @param  array $node
+     * @return \Woojin\OrderBundle\Entity\Custom | false   
+     */
+    public function findByGoogleNode(array $node)
+    {
+        $em = $this->getEntityManager();
+        $custom = NULL;
+
+        if (isset($node['sub'])) {
+            $custom = $em->getRepository('WoojinOrderBundle:Custom')->findOneBy(
+                array(
+                    'googleToken' => $node['sub'],
+                    'store' => self::STORE_WEBSITE
+                )
+            );
+        }
+
+        if (NULL === $custom && isset($node['email'])) {
+            $custom = $em->getRepository('WoojinOrderBundle:Custom')->findOneBy(
+                array(
+                    'email' => $node['email'],
+                    'store' => self::STORE_WEBSITE
+                )
+            );
+        }
+
+        return $custom;
+    }
+
+    /**
      * 找尋本店使用該手機號碼的客戶
      * 
      * @return \Woojin\OrderBundle\Entity\Custom | null   

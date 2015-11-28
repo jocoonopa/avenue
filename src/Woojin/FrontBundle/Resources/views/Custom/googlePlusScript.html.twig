@@ -1,0 +1,48 @@
+<script>
+var googleUser = {};
+var startApp = function() {
+    gapi.load('auth2', function(){
+        // Retrieve the singleton for the GoogleAuth library and set up the client.
+        auth2 = gapi.auth2.init({
+            client_id: '{{ getGooglePlusParams().id }}',
+            cookiepolicy: 'single_host_origin',
+            // Request scopes in addition to 'profile' and 'email'
+            //scope: 'additional_scope'
+        });
+
+        attachSignin(document.getElementById('googleplus'));
+    });
+};
+
+function attachSignin(element) {
+    auth2.attachClickHandler(element, {},
+    
+    function(googleUser) {
+        var id_token = googleUser.getAuthResponse().id_token;
+        var successStatusCode = 1;
+        var $modal = $('#googlePlusModal');
+
+        $.ajax({
+            dataType: 'json',
+            method: 'post',
+            url: Routing.generate('front_custom_verifyGoogleLogin'), 
+            data: {'id_token': id_token}, 
+            success: function (data) {
+                if (successStatusCode === Number(data.status)) {
+                    return window.location.href = data._href;
+                }
+
+                $modal.find('div.modal-body').html('麻煩請再試一次，或是透過其他方式進行登入。');
+
+                return $modal.show();
+            }
+        });
+    }, function(error) {
+        $modal.find('div.modal-body').html('<div class="alert alert-danger" role="alert">' + JSON.stringify(error, undefined, 2) + '</div>');
+        
+        return $modal.show();
+    });
+}
+
+startApp();
+</script>

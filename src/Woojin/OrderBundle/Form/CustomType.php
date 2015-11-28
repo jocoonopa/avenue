@@ -30,6 +30,7 @@ class CustomType extends AbstractType
             ))
             ->add('mobil')
             ->add('email', 'email')
+            ->add('bkemail', 'email')
             ->add('address')
             ->add('password', 'repeated', array(
                 'type' => 'password',

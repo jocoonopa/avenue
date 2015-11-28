@@ -37,6 +37,12 @@
 </div>
 <!--=== End Login ===-->     
 
+{% include 'WoojinFrontBundle:Common/Modal:googleplus.html.twig'  %}
+
 {% endblock %}
 
-{% block jsExec %}<script src="/bundles/woojinfront/js/front.login.js"></script>{% endblock %}
+{% block jsExec %}
+<script src="https://apis.google.com/js/api:client.js"></script>
+<script src="/bundles/woojinfront/js/front.login.js"></script>
+{% include 'WoojinFrontBundle:Custom:googlePlusScript.html.twig' %}
+{% endblock %}

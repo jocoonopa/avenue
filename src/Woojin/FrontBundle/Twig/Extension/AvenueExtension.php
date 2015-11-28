@@ -41,7 +41,9 @@ class AvenueExtension extends \Twig_Extension
             'getPatternGroupList' => new \Twig_Function_Method($this, 'getPatternGroupList'),
             'getPortFolioTitle' => new \Twig_Function_Method($this, 'getPortFolioTitle'),
             'getCacheDesImage' => new \Twig_Function_Method($this, 'getCacheDesImage'),
-            'getFBLoginUrl' => new \Twig_Function_Method($this, 'getFBLoginUrl')
+            'getFBLoginUrl' => new \Twig_Function_Method($this, 'getFBLoginUrl'),
+            'getGooglePlusParams' => new \Twig_Function_Method($this, 'getGooglePlusParams'),
+            'getGooglePlusCallBackUrl' => new \Twig_Function_Method($this, 'getGooglePlusCallBackUrl')
         );
     }
 
@@ -269,5 +271,15 @@ class AvenueExtension extends \Twig_Extension
         $permissions = ['email']; // optional
         
         return $loginUrl = $helper->getLoginUrl($this->container->get('router')->generate('front_custom_verifyFblogin', array(), true), $permissions);
+    }
+
+    public function getGooglePlusParams()
+    {
+        return $this->container->getParameter('google');
+    }
+
+    public function getGooglePlusCallBackUrl()
+    {
+        return;
     }
 }

@@ -30,7 +30,8 @@
         "leaseweb/api-caller-bundle": "*",
         "klaussilveira/simple-shm": "*",
         "suncat/mobile-detect-bundle": "0.10.*",
-        "facebook/php-sdk-v4": "~5.0"
+        "facebook/php-sdk-v4": "~5.0",
+        "google/apiclient": "1.0.*@beta"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev"

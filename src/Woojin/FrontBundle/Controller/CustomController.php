@@ -4,6 +4,7 @@ namespace Woojin\FrontBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -53,6 +54,51 @@ use Woojin\Utility\Avenue\Avenue;
  */
 class CustomController extends Controller
 {
+    /**
+     * @Route("/verifygooglelogin", name="front_custom_verifyGoogleLogin", options={"expose"=true})
+     * @Method("POST")
+     * @Template()
+     */
+    public function verifyGoogleLoginAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $curler = $this->get('curler');
+        $redirectUrlList = $this->getRedirectUrlList();
+        $session = $this->get('session');
+        
+        $node = $curler->get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token={$request->request->get('id_token')}");
+        $node = json_decode(json_encode($node), true);
+
+        if (!array_key_exists('sub', $node)) {
+            return new JsonResponse(['status' => 0]);
+        }
+        $googleId = $node['sub'];
+
+        $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByGoogleNode($node);
+
+        if ($custom && NULL === $custom->getGoogleToken()) {
+            $custom->setGoogleToken($googleId);
+
+            $em->persist($custom);
+            $em->flush();
+        }
+
+        if (!$custom) {
+            $custom = new Custom;
+            $custom->setStore($em->find('WoojinStoreBundle:Store', Avenue::STORE_WEBSITE));
+            $custom->handleGoogleResponse($node);
+            
+            $em->persist($custom);
+            $em->flush();
+
+            $this->get('avenue.notifier')->register($custom);
+        }
+
+        $this->loginSuccessCallback($session, $custom, $em);
+
+        return new JsonResponse(['status' => 1, '_href' => $redirectUrlList['success']]);
+    }
+
     /**
      * 1. 根據email 和 密碼找客戶[這邊會需要一個 repository 方法 for 客製搜尋客戶這件事情]
      * 2. 找到後，檢查客戶的狀態 

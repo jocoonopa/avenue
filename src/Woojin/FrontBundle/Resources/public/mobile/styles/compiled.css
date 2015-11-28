@@ -11635,3 +11635,8 @@ ul.admin-behalf-ul li {
     top: 650px; 
     z-index: 21; 
 }
+
+.avenue-fb-login {
+  color: #FFFFFF !important;
+  text-decoration: blink !important;
+}

@@ -418,6 +418,10 @@ class ModifyController extends Controller
             ))
         ;
 
+        if (!$custom) {
+            throw new \Exception('客戶不存在!');
+        }
+
         switch ($order->getKind()->getId()) 
         {
             // 如果訂單為一般進貨

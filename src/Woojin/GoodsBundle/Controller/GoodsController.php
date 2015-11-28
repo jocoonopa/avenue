@@ -2275,7 +2275,7 @@ class GoodsController extends Controller
 
             //--- 新的圖片蓋掉舊的圖片 ---//
             // 如果有上傳主圖
-            if ($files) { 
+            if (is_object($files)) { 
                 /**
                  * 根據上傳檔案取得圖片名稱
                  * 
@@ -2327,7 +2327,7 @@ class GoodsController extends Controller
                 $imgFactory->createRemoveBorder($img);
             }
 
-            if ($desFiles) {
+            if (is_object($desFiles)) {
                 $fileName = $goods->getImgName($desFiles, 'des');
                 $srcPath = $sepDir . '/' . $fileName;
 

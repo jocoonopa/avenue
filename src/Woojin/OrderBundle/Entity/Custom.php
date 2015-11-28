@@ -321,6 +321,22 @@ class Custom
         return $this;
     }
 
+    public function handleGoogleResponse(array $node)
+    {
+        $this->sex = '保密';
+
+        $this->email = $node['email'];
+        $this->name = $node['name'];
+        $this->googleToken = $node['sub'];
+        //$this->sex = $fb->getSex();
+        //$this->birthday = $fb->getBirthday();
+        $this->isActive = true;
+        $this->address = '';
+        $this->mobil = '';
+
+        return $this;
+    }
+
     /**
      * 取得密碼加鹽後字串
      * 

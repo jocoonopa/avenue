@@ -11,9 +11,28 @@
 
 {{ form_start(form) }}
 
-<a href="{{ getFBLoginUrl() }}" class="btn-u btn-u-md btn-u-fb btn-block avenue-fb-login"><span class="fa fa-facebook"></span> Facebook註冊</a>
-<p>&nbsp;</p>
-<h2>香榭會員註冊</h2>
+{# <p>&nbsp;</p>
+<h2>香榭會員註冊</h2> #}
+
+<div class="row">
+    <div class="col-md-12">
+        <a href="{{ getFBLoginUrl() }}" class="btn-u btn-u-md btn-u-fb btn-block avenue-fb-login"><span class="fa fa-facebook"></span> Facebook快速註冊</a>
+    </div>
+
+    <div class="col-md-12 min-height-20">
+        &nbsp;
+    </div>
+
+    <div class="col-md-12">
+        <a href="#" class="btn btn-u-md btn-block avenue-googleplus">
+            <span class="fa fa-google-plus"></span> Google+快速註冊
+        </a>
+    </div>
+</div>
+
+<div class="border-wings margin-top-20">
+    <span>or</span>
+</div>
 
 <div class="login-input reg-input">
 

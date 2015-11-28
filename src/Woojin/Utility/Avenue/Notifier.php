@@ -172,7 +172,7 @@ class Notifier
         $mails = array();
 
         $yesterday = new \DateTime();
-        $yesterday->modify('-1 DAY');
+        //$yesterday->modify('-1 DAY');
 
         foreach ($users as $user) {
             $mails[] = $user->getEmail();
