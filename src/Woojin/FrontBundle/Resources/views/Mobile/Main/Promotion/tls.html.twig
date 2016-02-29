@@ -1,0 +1,20 @@
+{% for tl in tls %}
+    {% if tl.product.isValidToShow() %}
+    <div class="adaptive-item mb-60">
+        <span class="text-highlight highlight-dark">搶購截止{{ tl.endAt|date('Y-m-d') }}</span>
+        <a href="{{ path('mobile_front_product', {id: tl.product.id}) }}">
+            {# <img class="responsive-image lazy" data-original="{{ getCacheImage(product.img, 300, 300) }}" alt="{{ product.name ~ '主圖' }}" /> #}
+
+            <img class="responsive-image lazy" data-original="{% if tl.product.img %}{{ tl.product.img.path }}{% endif %}" alt="{{ tl.product.name ~ '主圖' }}" />
+        </a>
+        <div>
+            <h4 class="my-force-word-noshift font-12">{{ tl.product.name }}</h4>
+            <span class="my-force-word-noshift">{{ tl.product.brief.getBriefFillRow(40) }}&nbsp;</span>
+            <br>
+                <span class="font-12 td-lt">NT.&nbsp;{{ tl.product.price(true)|number_format }}</span>&nbsp;&nbsp;
+                <span class="font-12 font-bold">NT.&nbsp;{{ tl.price|number_format }}</span>
+        </div>
+        <div class="countdown-tls text-center" data-date="{{ tl.endAt|date('Y-m-d H:i:s') }}"></div>
+    </div>
+    {% endif %}
+{% endfor %}

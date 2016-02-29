@@ -40,9 +40,9 @@ class AdminExtension extends \Twig_Extension
         return array();
     }
 
-    public function isOwn(User $user, GoodsPassport $product)
+    public function isOwn($user, GoodsPassport $product)
     {
-        return ($user->getStore()->getSn() === substr($product->getSn(), 0, 1));
+        return ($user instanceof User) ? ($user->getStore()->getSn() === substr($product->getSn(), 0, 1)) : false;
     }
 
     /**
@@ -52,9 +52,9 @@ class AdminExtension extends \Twig_Extension
      * @param  string  $targetName
      * @return boolean            
      */
-    public function hasAuth(User $user, $targetName)
+    public function hasAuth($user, $targetName)
     {
-        return $user->getRole()->hasAuth($targetName);
+        return ($user instanceof User) ? $user->getRole()->hasAuth($targetName) : false;
     }
 
     /**

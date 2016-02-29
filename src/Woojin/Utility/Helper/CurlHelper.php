@@ -37,10 +37,15 @@ class CurlHelper
     {
         $ch = curl_init();
         $timeout = 5;
+        $rs = [];
+
+        foreach ($r as $key => $val) {
+            $rs[$key] = ('@' === substr($val, 0, 1)) ? $this->getCurlFile($val) : $val;
+        }
 
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1); // 啟用POST
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $r);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $rs);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         
@@ -49,5 +54,13 @@ class CurlHelper
         curl_close($ch);
 
         return json_decode($data);
+    }
+
+    protected function getCurlFile($filename)
+    {
+        if (class_exists('CURLFile')) {
+            return new \CURLFile(substr($filename, 1));
+        }
+        return $filename;
     }
 }

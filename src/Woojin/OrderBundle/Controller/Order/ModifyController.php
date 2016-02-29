@@ -538,6 +538,10 @@ class ModifyController extends Controller
 
         $user = $this->get('security.context')->getToken()->getUser();
 
+        if (!is_object($user)) {
+            throw new \Exception('Session timeout!');
+        }
+
         $em = $this->getDoctrine()->getManager();
 
         $em->getConnection()->beginTransaction();

@@ -43,6 +43,10 @@ class InController extends Controller
         $em->getConnection()->beginTransaction();
 
         $user = $this->get('security.context')->getToken()->getUser();
+        if (!is_object($user)) {
+            throw new \Exception('Session timeout');
+        }
+
         $ids = array();
 
         $options = $this->getOptions($request, $em, $user);

@@ -2351,7 +2351,7 @@ class GoodsController extends Controller
                     if (file_exists($request->server->get('DOCUMENT_ROOT') . $desimg->getPath())) {
                         unlink($request->server->get('DOCUMENT_ROOT') . $desimg->getPath());
 
-                        $files->move($request->server->get('DOCUMENT_ROOT') . $desimg->getPurePath(), $desimg->getName());
+                        $desFiles->move($request->server->get('DOCUMENT_ROOT') . $desimg->getPurePath(), $desimg->getName());
                     } else {
                         if ($desFiles->move($comDir, $fileName)) {
                             $desimg->setPath($srcPath);
@@ -2534,13 +2534,15 @@ class GoodsController extends Controller
         $qb = $em->createQueryBuilder();
 
 
-        $qb->select('g')
+        $qb->select(['g','d'])
             ->from('WoojinGoodsBundle:GoodsPassport', 'g')
+            ->leftJoin('g.desimg', 'd')
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->gte('g.created_at', $qb->expr()->literal($date->format('Y-m-d H:i:s'))),
                     $qb->expr()->isNotNull('g.img'),
-                    $qb->expr()->isNotNull('g.desimg')
+                    $qb->expr()->isNotNull('g.desimg'),
+                    $qb->expr()->neq('d.path', $qb->expr()->literal('_____'))
                 )
             )
             ->groupBy('g.parent')

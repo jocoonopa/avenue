@@ -35,8 +35,9 @@ class MainController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $promotions = $em->getRepository('WoojinGoodsBundle:Promotion')->findValid();
+        $tls = $em->getRepository('WoojinGoodsBundle:ProductTl')->findNotExpired();
 
-        return array('promotions' => $promotions);
+        return array('promotions' => $promotions, 'tls' => $tls);
     }
 
     /**

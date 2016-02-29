@@ -356,7 +356,7 @@ class MoveController extends Controller
     public function backOrderConfirmAction (Request $request, Move $move) 
     {            
         if (!$move->isModifyble()) {
-            return new \Exception("請求已經為終止狀態{$move}，不可更改!");
+            return new \Exception("請求已經為終止狀態，不可更改!");
         }
 
         $user = $this->get('security.context')->getToken()->getUser();
@@ -408,6 +408,7 @@ class MoveController extends Controller
                 ;
 
                 $em->persist($newProduct);
+                $em->flush();
             } else {// 若不為空則直接使用取得的舊護照
                 /* 
                  * 商品回國將狀態改為國內( 上架 ), 
@@ -420,6 +421,7 @@ class MoveController extends Controller
                 // 將商品狀態改為上架
                 $newProduct->setStatus($oGoodsStatusIn);
                 $em->persist($newProduct);
+
 
                 // 取得該護照的所有訂單記錄
                 $newOrders = $newProduct->getOrders();

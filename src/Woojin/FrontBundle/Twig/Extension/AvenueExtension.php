@@ -101,6 +101,7 @@ class AvenueExtension extends \Twig_Extension
             'X' => '新莊',
             'P' => '板橋',
             'L' => '蘆洲',
+            'T' => '忠孝',
             '$' => '倉庫'
         );
 

@@ -363,4 +363,19 @@ class Client
 
         return false;
     }
+
+    public function isDeleteExist(\stdClass $response)
+    {
+        if (!isset($response->Response->FailList->ProductId)) { 
+            return false;
+        }
+
+        $ids = $response->Response->FailList->ProductId;
+            
+        if (!isset($ids[0]) || !isset($ids[0]->ErrorCode) || 1380 !== $ids[0]->ErrorCode) {
+            return false;
+        }
+
+        return true;
+    }
 }

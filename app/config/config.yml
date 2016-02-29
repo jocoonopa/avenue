@@ -96,6 +96,7 @@ assetic:
                 - "@WoojinFrontBundle/Resources/public/plugins/sky-forms/version-2.0.1/css/custom-sky-forms.css"
                 - "@WoojinFrontBundle/Resources/public/mobile/styles/font-awesome.css"
                 - "@WoojinFrontBundle/Resources/public/mobile/styles/animate.css"
+                - "@WoojinFrontBundle/Resources/public/assets/plugins/countdown/css/countdown.css"
                 - "@WoojinFrontBundle/Resources/public/css/custom.css"
         mobile_front_js:
             inputs: 
@@ -108,6 +109,8 @@ assetic:
                 - "@WoojinFrontBundle/Resources/public/plugins/twzipcode/twzipcode.js"
                 - "@WoojinFrontBundle/Resources/public/plugins/sky-forms/version-2.0.1/js/jquery.validate.min.js"
                 - "@WoojinFrontBundle/Resources/public/mobile/scripts/mobile.avenue.cart.js"
+                - "@WoojinFrontBundle/Resources/public/assets/plugins/countdown/jquery.countdown.js"
+                - "@WoojinFrontBundle/Resources/public/assets/plugins/countdown/plugin/jquery.countdown-zh-TW.js"
                 - "@WoojinFrontBundle/Resources/public/mobile/scripts/custom.js"
         front_js:
             inputs:

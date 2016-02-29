@@ -22,7 +22,7 @@
 
     {% for tl in tls %}
     <div class="col-md-{{ mdNum }} col-xs-12 illustration-v2">
-       <div class="countdown-tls text-center" data-date="{{ tl.endAt|date('Y-m-d H:i:s') }}"></div>
+       <div class="countdown-tls text-center" data-date="{{ tl.endAt|date('Y-m-d') }}"></div>
         {{ productWidget.unit(tl.product) }}
     </div>
     {% endfor %}

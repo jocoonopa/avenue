@@ -26,6 +26,11 @@ class MetaRecordMethod
 	public function recordMeta($act)
 	{
 		$user = $this->getUser();
+
+        if (!is_object($user)) {
+            throw new \Exception('Session timeout!');
+        }
+
 		$oMetaRecord = new MetaRecord();
 		$oMetaRecord
             ->setAct($act)

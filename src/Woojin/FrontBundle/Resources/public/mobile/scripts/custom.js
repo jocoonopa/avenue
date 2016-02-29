@@ -20,6 +20,11 @@ $(document).ready(function() {
         effect: 'fadeIn',
         effectspeed: 900
     });
+
+    $('.countdown-tls').each(function () {
+	    var austDay = new Date($(this).data('date').replace(/-/g, '/'));
+	    $(this).countdown({until: austDay, format: 'yowdHMS'});
+	});
     
     //Fullscreen Slider Variables
     var screen_width = 0;

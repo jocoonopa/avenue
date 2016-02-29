@@ -135,9 +135,7 @@ class CustomRepository extends EntityRepository
 
         $res = $qb->getQuery()->getResult();
 
-        return (NULL === $res) ? NULL : $res[0];
-
-        //return $qb->getQuery()->getOneOrNullResult();
+        return (NULL === $res) ? NULL : (array_key_exists(0, $res)) ? $res[0] : NULL;
     }
 }
 

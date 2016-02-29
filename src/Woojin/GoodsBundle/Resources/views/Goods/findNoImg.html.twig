@@ -12,6 +12,7 @@
             <a href="{{ path('goods_edit_v2', {id: product.id}) }}" target="_blank">{{ product.sn }}</a>
             {{ product.name }} 
         </td>
+        <td>{{ product.desimg.id }}-{{ product.desimg.path }}</td>
     </tr>
     {% endfor %}
 </table>

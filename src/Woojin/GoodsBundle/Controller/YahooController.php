@@ -127,7 +127,20 @@ class YahooController extends Controller
 
         $response = $client->getMain($product);
 
+        if ($this->isDeleteStatus($response)) {
+            $this->setProductYahooIdNull($product);
+        }
+
         return new JsonResponse($response);
+    }
+
+    protected function isDeleteStatus(\stdClass $response)
+    {
+        $tmpResponse = json_decode(json_encode($response), true);
+
+        $str = $tmpResponse['Response']['Product']['ProductStatus'];
+
+        return ('delete' === strtolower($tmpResponse['Response']['Product']['ProductStatus']));
     }
 
     /**
@@ -197,24 +210,41 @@ class YahooController extends Controller
         $response = $client->delete(array($product));
 
         if (
-            isset($response->Response->SuccessList->ProductId) 
+            (isset($response->Response->SuccessList->ProductId) 
             && $client->listSearchId($response->Response->SuccessList->ProductId, $product->getYahooId())
+            )
         ) {
-            $session->getFlashBag()->add('success', $product->getName() . '商城刪除成功!');
+            return $this->deleteSuccessCallback($session, $product);
+        }  
 
-            $em = $this->getDoctrine()->getManager();
-            
-            $product->setYahooId(null);
-            
-            $em->persist($product);
-            $em->flush();
+        if ($client->isDeleteExist($response)) { 
+            return $this->deleteSuccessCallback($session, $product);
+        } 
 
-            return true;
-        } else {
-            $session->getFlashBag()->add('error', $product->getName() . '商城刪除失敗!:'. json_encode($response));
+        $session->getFlashBag()->add('error', $product->getName() . '商城刪除失敗!:'. json_encode($response));
 
-            return false;
-        }
+        return false;
+    }
+
+    protected function deleteSuccessCallback(Session $session, GoodsPassport $product)
+    {
+        $session->getFlashBag()->add('success', $product->getName() . '商城刪除成功!');
+
+        $this->setProductYahooIdNull($product);
+
+        return true;
+    }
+
+    protected function setProductYahooIdNull(GoodsPassport $product)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $product->setYahooId(null);
+        
+        $em->persist($product);
+        $em->flush();
+
+        return $this;
     }
 
     /**

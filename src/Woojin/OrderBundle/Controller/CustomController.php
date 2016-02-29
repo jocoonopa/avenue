@@ -69,6 +69,10 @@ class CustomController extends Controller
     public function createAction(Request $request)
     {  
         $user = $this->get('security.context')->getToken()->getUser();
+
+        if (null === $user) {
+            return $this->redirect($this->generateUrl('login'), 302);
+        }
             
         $em = $this->getDoctrine()->getManager();
         $em->getConnection()->beginTransaction();
@@ -301,6 +305,10 @@ class CustomController extends Controller
     public function fetchAction(Request $request)
     {    
         $user = $this->get('security.context')->getToken()->getUser();
+
+        if (!is_object($user)) {
+            throw new \Exception('Session timeout');
+        }
          
         $em = $this->getDoctrine()->getManager();
         
