@@ -339,6 +339,10 @@ class PaymentController extends Controller implements AuthenticatedController
             $adapter->allInOne->SendExtend['CreditInstallment'] = $invoice->getCreditInstallment();
         }
 
+        // 發送通知信, 請大家注意該單後續有無結帳
+        $notifier = $this->get('avenue.notifier');
+        $notifier->noticeOrder($invoice);
+
         return new Response($adapter->pay(array(
             'ReturnURL' => $this->get('router')->generate('front_que_return', array(), true),
             'ClientBackURL' => $this->get('router')->generate('front_profile_orders', array(), true),

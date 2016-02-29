@@ -159,7 +159,7 @@ class Seller
     {
         $this->saleStatus = $this->em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_SOLDOUT);
         $this->completeStatus = $this->em->find('WoojinOrderBundle:OrdersStatus', Avenue::OS_COMPLETE);
-        $this->kind = $this->em->find('WoojinOrderBundle:OrdersKind', Avenue::OK_WEB_OUT);
+        $this->kind = $this->em->find('WoojinOrderBundle:OrdersKind', Avenue::OK_OFFICIAL);
         $this->paytype = $this->em->find('WoojinOrderBundle:PayType', Avenue::PT_CASH);
         
         foreach ($products as $product) {

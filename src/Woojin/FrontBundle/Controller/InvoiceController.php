@@ -148,6 +148,10 @@ class InvoiceController extends Controller
 
         $this->get('session')->getFlashBag()->add('success', '訂單編號: ' . $invoice->getSn() . '已經取消!');
 
+        // 發送訂單取消通知
+        $notifier = $this->get('avenue.notifier');
+        $notifier->cancelOrder($invoice);
+
         return $this->redirect($this->get('router')->generate('front_profile_orders'));
     }
 

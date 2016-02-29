@@ -55,6 +55,26 @@ class Notifier
 
         return $this;
     }
+
+    /**
+     * 提醒下單, 尚未結帳
+     *
+     * @param \Woojin\OrderBundle\Entity\Invoice $invoice
+     */
+    public function noticeOrder(Invoice $invoice)
+    {
+        $message = $this->genMessage(
+            $this->getMailsFromInvoice($invoice), 
+            '官網訂單: ' . $invoice->getSn() . ' 下單通知[尚未結帳]', 
+            $this->templating->render('::Email/shipNotify.html.twig', array(
+                'invoice' => $invoice
+            ))
+        );
+
+        $this->mailer->send($message);
+
+        return $this;
+    }
     
     /**
      * 出貨
@@ -77,6 +97,26 @@ class Notifier
             array($invoice->getCustom()->getEmail()), 
             '香榭國際精品訂單成立通知信', 
             $this->templating->render(':Email/Custom:ship.html.twig', array(
+                'invoice' => $invoice
+            ))
+        );
+
+        $this->mailer->send($message);
+
+        return $this;
+    }
+
+    /**
+     * 取消訂單
+     *
+     * @param \Woojin\OrderBundle\Entity\Invoice $invoice
+     */
+    public function cancelOrder(Invoice $invoice)
+    {
+        $message = $this->genMessage(
+            $this->getMailsFromInvoice($invoice), 
+            '官網訂單: ' . $invoice->getSn() . ' 客戶取消通知', 
+            $this->templating->render('::Email/cancelOrder.html.twig', array(
                 'invoice' => $invoice
             ))
         );
@@ -198,8 +238,8 @@ class Notifier
     protected function getMailsFromInvoice(Invoice $invoice)
     {
         $mails = array(
-            $this->em->find('WoojinUserBundle:User', Avenue::USER_ENG),
-            $this->em->find('WoojinUserBundle:User', Avenue::USER_BOSS)
+            $this->em->find('WoojinUserBundle:User', Avenue::USER_ENG)->getEmail(),
+            $this->em->find('WoojinUserBundle:User', Avenue::USER_BOSS)->getEmail()
         );
 
         $orders = $invoice->getOrders();
