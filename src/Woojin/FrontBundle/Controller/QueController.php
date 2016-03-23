@@ -77,6 +77,16 @@ class QueController extends Controller
             ->setStatus(1)
         ;
 
+        foreach ($invoice->getOrders() as $order) {
+            $order
+                ->setPaid($order->getRequired())
+                ->setOrgPaid($order->getOrgRequired())
+                ->setStatus(Avenue::OS_COMPLETE)
+            ;
+
+            $em->persist($order);
+        }
+
         $em->persist($invoice);
         $em->flush();
 

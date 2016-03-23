@@ -112,6 +112,10 @@ class MainController extends Controller
      */
     public function productAction(GoodsPassport $product)
     {
+        if (!$product->getIsAllowWeb()) {
+            throw $this->createNotFoundException('The product does not exist');
+        }
+        
         $desimg = $product->getDesimg();
 
         if ($desimg) {
@@ -138,6 +142,7 @@ class MainController extends Controller
     {
         $request->request->set('page', $request->query->get('page', 1));
         $request->request->set('promotion', array($promotion->getId()));
+        $request->request->set('productStatus', array(Avenue::GS_ONSALE));
         $request->request->set('perpage', 10);
         $request->request->set('isAllowWeb', 1);
 

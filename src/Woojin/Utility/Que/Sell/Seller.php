@@ -176,9 +176,9 @@ class Seller
 
         $order = new Orders;
         $order
-            ->setPaid(round($product->getPromotionPrice(true) * $per))
+            ->setPaid(0)
             ->setRequired(round($product->getPromotionPrice(true) * $per))
-            ->setOrgPaid($product->getPromotionPrice(true))
+            ->setOrgPaid(0)
             ->setOrgRequired($product->getPromotionPrice(true))
             ->setPayType($this->paytype)
             ->setKind($this->kind)

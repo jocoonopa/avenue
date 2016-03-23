@@ -22,3 +22,4 @@ composer.lock
 /web/js/63f2135.js
 /web/js/63f2135_part_1.js
 /web/cache/*
+.DS_Store

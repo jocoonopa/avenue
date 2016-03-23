@@ -75,12 +75,22 @@
                         <div class="full-bottom"></div>
 
                         <div class="portfolio-one-links">
-                            <a href="#" id="MBP_add-to-cart" data-id="{{ product.id }}" class="button button-tea white my-float-right">
-                                <i class="fa fa-shopping-cart"></i>
-                                加入購物車
-                            </a>
+                            {% if product.status.id in [
+                                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'), 
+                                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
+                            ] %}
+                                <a href="#" id="MBP_add-to-cart" data-id="{{ product.id }}" class="button button-tea white my-float-right">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    加入購物車
+                                </a>
 
-                            <a href="{{ path('mobile_front_payment') }}" id="MBP_go-to-pay" class="button button-tea white hidden my-float-right"><i class="fa fa-check"></i>結帳</a>
+                                <a href="{{ path('mobile_front_payment') }}" id="MBP_go-to-pay" class="button button-tea white hidden my-float-right"><i class="fa fa-check"></i>結帳</a>
+                            {% else %}
+                                <a href="#" class="button button-yellow">
+                                    <span class="fa fa-bookmark-o"></span>
+                                    已售出</a>
+                            {% endif %}
+                            
                         </div> 
                     </div>
 
