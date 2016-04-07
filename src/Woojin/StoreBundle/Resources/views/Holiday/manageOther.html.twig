@@ -77,6 +77,9 @@
                             <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_SICK')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_SICK') %}selected{% endif %}>病假</option>
                             <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_YEAR')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_YEAR') %}selected{% endif %}>年假</option>
                             <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_GLORY')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_GLORY') %}selected{% endif %}>榮譽</option>
+                            <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_PREG')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_PREG') %}selected{% endif %}>產假</option>
+                            <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_LOST')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_LOST') %}selected{% endif %}>喪假</option>
+                            <option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_COMPANY')}}" {% if holiday.schedule[day] == constant('Woojin\\Utility\\Avenue\\Avenue::HD_COMPANY') %}selected{% endif %}>公假</option>
                         </select>
                     </td>
                 {% endfor %}
@@ -125,6 +128,24 @@
                 <span id="hd_5"></span>
             </td>
         </tr>
+        <tr class="info">
+            <td>產假</td>
+            <td>
+                <span id="hd_6"></span>
+            </td>
+        </tr>
+        <tr class="info">
+            <td>喪假</td>
+            <td>
+                <span id="hd_7"></span>
+            </td>
+        </tr>
+        <tr class="info">
+            <td>公假</td>
+            <td>
+                <span id="hd_8"></span>
+            </td>
+        </tr>
     </tbody>
 </table>
 
@@ -135,7 +156,10 @@ $('select').change(function () {
         hd_2: 0,
         hd_3: 0,
         hd_4: 0,
-        hd_5: 0
+        hd_5: 0,
+        hd_6: 0,
+        hd_7: 0,
+        hd_8: 0
     };
 
     $('select').each(function () {
@@ -159,6 +183,18 @@ $('select').change(function () {
 
             case '{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_GLORY')}}': 
                 hd.hd_5 ++;
+                break;
+
+            case '{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_PREG')}}': 
+                hd.hd_6 ++;
+                break;
+
+            case '{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_LOST')}}': 
+                hd.hd_7 ++;
+                break;
+
+            case '{{ constant('Woojin\\Utility\\Avenue\\Avenue::HD_COMPANY')}}': 
+                hd.hd_8 ++;
                 break;
             default:
                 break;

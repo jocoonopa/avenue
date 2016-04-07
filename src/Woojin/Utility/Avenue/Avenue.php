@@ -136,6 +136,9 @@ abstract class Avenue
     const HD_SICK                   = 3;
     const HD_YEAR                   = 4;
     const HD_GLORY                  = 5;
+    const HD_LOST                   = 6;
+    const HD_PREG                   = 7;
+    const HD_COMPANY                = 8;
 
     const LV_NEW                    = 22;
     const LV_EXHIBIT                = 23;

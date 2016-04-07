@@ -147,6 +147,18 @@ class AdminExtension extends \Twig_Extension
                 $hd = '榮譽';
                 break;
 
+            case Avenue::HD_LOST:
+                $hd = '喪假';
+                break;
+
+            case Avenue::HD_PREG:
+                $hd = '產假';
+                break;
+
+            case Avenue::HD_COMPANY:
+                $hd = '公假';
+                break;
+
             default:
                 break;
         }
