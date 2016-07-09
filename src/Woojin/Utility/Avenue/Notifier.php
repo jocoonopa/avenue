@@ -212,7 +212,6 @@ class Notifier
         $mails = array();
 
         $yesterday = new \DateTime();
-        //$yesterday->modify('-1 DAY');
 
         foreach ($users as $user) {
             $mails[] = $user->getEmail();
@@ -238,19 +237,24 @@ class Notifier
     protected function getMailsFromInvoice(Invoice $invoice)
     {
         $mails = array(
-            $this->em->find('WoojinUserBundle:User', Avenue::USER_ENG)->getEmail(),
-            $this->em->find('WoojinUserBundle:User', Avenue::USER_BOSS)->getEmail()
+            'jocoonopa@gmail.com',
+            'alanchen200@gmail.com',
+            'alan29401997@yahoo.com.tw',
+            'avenue.29926616@gmail.com',
+            'weiamomo@gmail.com',
+            't87716717@gmail.com',
+            'aki730219@gmail.com'
         );
 
-        $orders = $invoice->getOrders();
+        // $orders = $invoice->getOrders();
 
-        $iterator = $orders->getIterator();
+        // $iterator = $orders->getIterator();
 
-        while ($iterator->valid()) {
-            $mails[] = $this->getMailFromOrder($iterator->current());
+        // while ($iterator->valid()) {
+        //     $mails[] = $this->getMailFromOrder($iterator->current());
 
-            $iterator->next();
-        }
+        //     $iterator->next();
+        // }
 
         return $mails;
     }

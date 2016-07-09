@@ -70,28 +70,33 @@ class QueController extends Controller
             return new Response('0|ErrorMessage');
         }
 
-        $invoice
-            ->setTradeNo($post->get('TradeNo'))
-            ->setPaymentType($post->get('PaymentType'))
-            ->setPayAt(new \DateTime($post->get('PaymentDate')))
-            ->setStatus(1)
-        ;
-
-        foreach ($invoice->getOrders() as $order) {
-            $order
-                ->setPaid($order->getRequired())
-                ->setOrgPaid($order->getOrgRequired())
-                ->setStatus(Avenue::OS_COMPLETE)
+        try {
+            $invoice
+                ->setTradeNo($post->get('TradeNo'))
+                ->setPaymentType($post->get('PaymentType'))
+                ->setPayAt(new \DateTime($post->get('PaymentDate')))
+                ->setStatus(Avenue::IV_GET)
             ;
 
-            $em->persist($order);
+            foreach ($invoice->getOrders() as $order) {
+                $order
+                    ->setPaid($order->getRequired())
+                    ->setOrgPaid($order->getOrgRequired())
+                    ->setStatus($em->getRepository('WoojinOrderBundle:OrdersStatus')->find(Avenue::OS_COMPLETE))
+                ;
+
+                $em->persist($order);
+            }
+
+            $em->persist($invoice);
+            $em->flush();
+
+            fwrite($fp, "\r\n" . '應該要成功才對, 這是交易編號' . $invoice->getTradeNo());
+            fclose($fp);
+        } catch (\Exception $e) {
+            fwrite($fp, "\r\n" . $e->getMessage() . $invoice->getTradeNo());
+            fclose($fp);
         }
-
-        $em->persist($invoice);
-        $em->flush();
-
-        fwrite($fp, "\r\n" . '應該要成功才對, 這是交易編號' . $invoice->getTradeNo());
-        fclose($fp);
 
         // 發送通知信給店長處理
         $notifier = $this->get('avenue.notifier');
@@ -241,7 +246,6 @@ class QueController extends Controller
 
         $boss = $em->find('WoojinUserBundle:User', Avenue::USER_BOSS);
         $manager = $em->find('WoojinUserBundle:User', Avenue::USER_MANAGER);
-        $eng = $em->find('WoojinUserBundle:User', Avenue::USER_ENG);
 
         $notifier = $this->get('avenue.notifier');
 
@@ -260,7 +264,7 @@ class QueController extends Controller
             ;
 
             $clues = $qb->getQuery()->getResult();
-            $notifier->clue($clues, array($eng, $manager, $boss), $chief->getStore());
+            $notifier->clue($clues, array($manager, $boss), $chief->getStore());
             
             unset($clues);
             unset($qb); 

@@ -43,22 +43,6 @@ class InvoiceController extends Controller
             $invoice->setStatus(Avenue::IV_NOTIFY_CANCEL);
             $em->persist($invoice);
 
-            $orders = $invoice->getOrders();
-
-            //$orderCancel = $em->find('WoojinOrderBundle:OrdersStatus', Avenue::OS_CANCEL);
-
-            //$productMoving = $em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_MOVING);
-
-            // $iterator = $orders->getIterator();
-            // while ($iterator->valid()) {
-            //     $order = $iterator->current();
-            //     $order->setStatus($orderCancel);
-
-            //     $em->persist($order);
-
-            //     $iterator->next();
-            // }
-
             $em->flush();
 
             $em->getConnection()->commit();
@@ -96,6 +80,10 @@ class InvoiceController extends Controller
     {
         if (!$this->get('form.csrf_provider')->isCsrfTokenValid('invoice', $request->request->get('avenue_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
+        }
+
+        if (Avenue::IV_NOT_GET !== $invoice->getStatus()->getId()) {
+            return $this->redirect($this->get('router')->generate('front_profile_orders'));
         }
 
         $em = $this->getDoctrine()->getManager();

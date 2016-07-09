@@ -457,55 +457,56 @@ class ActivityController extends Controller
 	}
   }
 
-  /**
-   * Get All Activity Goods 
-   * 
-   * @Route("/api/{id}/goods", name="api_goods_in_activity", options={"expose"=true})
-   * @Method("GET")
-   */
-  public function apiShowActivityGoodsAction(Request $request, $id)
-  {
-	$rData    = array();
-	$sellNum  = 0;
-	
-	$em = $this->getDoctrine()->getManager();
-	// $rGoods = $em
-	//   ->getRepository('WoojinGoodsBundle:GoodsPassport')
-	//   ->findBy( array('activity' => $id ), array('sn' => 'ASC') );
+    /**
+    * Get All Activity Goods 
+    * 
+    * @Route("/api/{id}/goods", name="api_goods_in_activity", options={"expose"=true})
+    * @Method("GET")
+    */
+    public function apiShowActivityGoodsAction(Request $request, $id)
+    {
+        $rData    = array();
+        $sellNum  = 0;
 
-    $qb = $em->createQueryBuilder();
-    $products = $qb->select('g')
-        ->from('WoojinGoodsBundle:GoodsPassport', 'g')
-        ->where(
-            $qb->expr()->eq('g.activity', $id),
-            $qb->expr()->in('g.status', array(
-                Avenue::GS_ONSALE, Avenue::GS_ACTIVITY, Avenue::GS_SOLDOUT
-            ))
-        )
-        ->getQuery()
-        ->getResult()
-    ;
+        $em = $this->getDoctrine()->getManager();
+        // $rGoods = $em
+        //   ->getRepository('WoojinGoodsBundle:GoodsPassport')
+        //   ->findBy( array('activity' => $id ), array('sn' => 'ASC') );
 
+        $qb = $em->createQueryBuilder();
+        $products = $qb->select(array('g', 'gs', 'gb'))
+            ->from('WoojinGoodsBundle:GoodsPassport', 'g')
+            ->join('g.status', 'gs')
+            ->join('g.brand', 'gb')
+            ->where(
+                $qb->expr()->eq('g.activity', $id),
+                $qb->expr()->in('g.status', array(
+                    Avenue::GS_ONSALE, Avenue::GS_ACTIVITY, Avenue::GS_SOLDOUT
+                ))
+            )
+            ->getQuery()
+            ->getResult()
+        ;
 
-	foreach ($products as $key => $oGoods) {
-	  $rTmp             = array();
-	  $rTmp['id']       = $oGoods->getId();
-	  $rTmp['sn']       = $oGoods->getSn();
-	  $rTmp['name']     = $oGoods->getName();
-	  $rTmp['price']    = $oGoods->getPrice();
-	  $rTmp['status']   = $oGoods->getStatus()->getName();
-	  $rTmp['brand']    = $oGoods->getBrand()->getName();
+        foreach ($products as $key => $oGoods) {
+          $rTmp             = array();
+          $rTmp['id']       = $oGoods->getId();
+          $rTmp['sn']       = $oGoods->getSn();
+          $rTmp['name']     = $oGoods->getName();
+          $rTmp['price']    = $oGoods->getPrice();
+          $rTmp['status']   = $oGoods->getStatus()->getName();
+          $rTmp['brand']    = $oGoods->getBrand()->getName();
 
-	  array_push( $rData, $rTmp);
+          array_push($rData, $rTmp);
 
-	  if ($rData[$key]['status'] == '售出') {
-		$sellNum ++;
-	  }
-	}
+          if ($rData[$key]['status'] == '售出') {
+        	$sellNum ++;
+          }
+        }
 
-	// 存入售出件數
-	$rData[(count($rData)-1)]['count'] = $sellNum;
+        // 存入售出件數
+        $rData[(count($rData)-1)]['count'] = $sellNum;
 
-	return new Response(json_encode($rData));
-  }
+        return new Response(json_encode($rData));
+    }
 }

@@ -116,10 +116,12 @@
                     
                     <input type="text" name="date" class="datepicker form-control" value="{{ "now"|date("m/d/Y H:i:s") }}" readonly>
                 </div>
+                
+                {% if invoice is defined and invoice %}
+                    <input type="hidden" name="invoice_id" value="{{ invoice.id }}" />
 
-                <input type="hidden" name="invoice_id" value="{{ invoice.id }}" />
-
-                <input type="hidden" name="store_sn" value="{{ invoice.store.sn }}" />
+                    <input type="hidden" name="store_sn" value="{{ invoice.store.sn }}" />
+                {% endif %}
 
                 <input type="hidden" name="current_page" value="{{ page }}" />
 

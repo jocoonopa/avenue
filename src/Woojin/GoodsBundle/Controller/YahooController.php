@@ -374,15 +374,16 @@ class YahooController extends Controller
     }
 
     /**
-     * @Route("/test/{id}", requirements={"id" = "\d+"}, name="admin_yahoo_test", options={"expose"=true})
-     * @ParamConverter("product", class="WoojinGoodsBundle:GoodsPassport")
+     * @Route("/test", name="admin_yahoo_test", options={"expose"=true})
      * @Method("GET")
      */
-    public function testAction(GoodsPassport $product)
+    public function testAction()
     {        
-        // $this->spliceDesImage($product->getDesImg());
+        $client = $this->get('yahoo.api.client');
 
-        // return new Response('ok');
+        echo "<pre>"; print_r($client->mallCategoryGet(['CategoryId'=>794018671])); echo "</pre>";
+
+        die();
     }
 
     /**
