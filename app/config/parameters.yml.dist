@@ -3,31 +3,29 @@ parameters:
     database_driver: pdo_mysql
     database_host: localhost
     database_port: null
-    database_name: woojin_3
-    database_user: root
-    database_password: 37103710
-    mailer_transport: gmail
+    database_name: dbname
+    database_user: dbuser
+    database_password: dbpassword
+    mailer_transport: smtp
     mailer_host: null
-    mailer_user: jocoonopa@gmail.com
-    mailer_password: 37103710cc
+    mailer_user: your@domain
+    mailer_password: your
     locale: zh-TW
-    secret: ThisTokenIsNotSoSecretChangeIt
-    allpay_hashkey: VXdvYLqIEn1TDpoc
-    allpay_hashiv: 624FNExoh2CtcCKS
-    allpay_merchantid: 1084247
-    yahoo_key: 8deed35592b09d1a1545e97b6896e691
-    #yahoo_key: 8b337636394c4a9d24292ca20fe06b66
-    yahoo_secret: OTBkNGZhYWE5NTI4OGI1MmZhNzY5N2U4MzkwZTQ4NjE-
-    #yahoo_secret: O07WYrbfP1CgdtWRFzuuFELE_QmZ6nGp7QC_yjeIGnM-
-    yahoo_appid: VkN0i370
-    yahoo_oauth_token: qymdtwj
-    yahoo_oauth_verifier: nc2uqj
-    yahoo_seller_id: avenue2003
-
+    secret: secretString
+    allpay_hashkey: Thehashkey
+    allpay_hashiv: Thehashkey
+    allpay_merchantid: merchantId
+    yahoo_key: SomeThing
+    yahoo_secret: SomeThing
+    yahoo_appid: SomeThing
+    yahoo_oauth_token: SomeThing
+    yahoo_oauth_verifier: SomeThing
+    yahoo_seller_id: SomeThing
     api_caller.options:
-        timeout: 10  # maximum transport + execution duration of the call in sec.
-        ssl_verifypeer: false  # to stop cURL from verifying the peer's certificate.
-        useragent: "LeaseWeb API Caller"  # contents of the "User-Agent: " header.
-        followlocation: true  # to follow any "Location: " header that the server sends.
-        sslversion: 3  # set to 3 to avoid any bugs that relate to automatic version selection.
-        fresh_connect: false  # set to true to force full reconnect every call.
+        timeout: 10
+        ssl_verifypeer: false
+        useragent: 'LeaseWeb API Caller'
+        followlocation: true
+        sslversion: 3
+        fresh_connect: false
+
