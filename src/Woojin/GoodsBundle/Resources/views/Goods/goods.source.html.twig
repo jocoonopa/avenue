@@ -1,5 +1,4 @@
 {% extends 'WoojinGoodsBundle:Goods:goods.layout.html.twig' %}
-{% if app.user.getTheRoles.id in [2,3,4,5] %}
 {% block library_css %}
 	{{ parent() }}
 	<link rel="stylesheet" href="{{ asset('/css/goods.css') }}">
@@ -19,7 +18,7 @@
 {% endblock %}
 {% block body %}
 
-{% app.user|has_auth('SOURCE') %}
+{% if app.user|has_auth('SOURCE') %}
 <div id="tabs">
 	<div id="tabs-source">
 		<div style="position:absolute; left:40px; top:60px;">
@@ -209,9 +208,6 @@ $(function () {
   $( 'header' ).remove();
 })
 </script>
-{% else %}
-    {% include 'WoojinStoreBundle:Common:warning.html.twig' %}
 {% endif %}
 {% endblock %}
-{% endif %}
 

@@ -374,15 +374,16 @@ class YahooController extends Controller
     }
 
     /**
-     * @Route("/test", name="admin_yahoo_test", options={"expose"=true})
+     * @Route("/test/{num}", name="admin_yahoo_test", options={"expose"=true})
      * @Method("GET")
      */
-    public function testAction()
+    public function testAction($num)
     {        
+        //https://tw.mall.yahoo.com/152982585-category.html?.r=247093531
         $client = $this->get('yahoo.api.client');
 
-        echo "<pre>"; print_r($client->mallCategoryGet(['CategoryId'=>794018671])); echo "</pre>";
-
+        echo "<pre>"; print_r($client->mallCategoryGet(['CategoryId' => $num])); echo "</pre>";
+// 794018671
         die();
     }
 
