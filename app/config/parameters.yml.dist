@@ -21,6 +21,7 @@ parameters:
     yahoo_oauth_token: SomeThing
     yahoo_oauth_verifier: SomeThing
     yahoo_seller_id: SomeThing
+    domain: localhost.avenue
     api_caller.options:
         timeout: 10
         ssl_verifypeer: false

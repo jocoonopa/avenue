@@ -17,6 +17,7 @@
 /web/compiled/*
 /web/js/compiled/*
 /web/assetic/*
+/web/img/product
 nohup.out
 composer.lock
 /web/js/63f2135.js
