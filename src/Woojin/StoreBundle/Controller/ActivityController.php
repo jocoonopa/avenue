@@ -19,63 +19,80 @@ use Woojin\Utility\Avenue\Avenue;
  */
 class ActivityController extends Controller
 {
-  /**
-   * SPA template
-   *
-   * @Route("/", name="activity")
-   * @Method("GET")
-   * @Template()
-   */
-  public function indexAction()
-  {
-	return array();
-  }
-
-  /**
-   * List template
-   * 
-   * @Route("/template/list", name="activity_template_list", options={"expose"=true})
-   * @Method("GET")
-   * @Template()
-   */
-  public function templateListAction()
-  {
-	return array();
-  }
-
-  /**
-   * Detail template
-   *
-   * @Route("/template/detail", name="activity_template_detail", options={"expose"=true})
-   * @Method("GET")
-   * @Template()
-   */
-  public function templateDetailAction()
-  {
-	return array();
-  }
+    /**
+    * SPA template
+    *
+    * @Route("/", name="activity")
+    * @Method("GET")
+    * @Template()
+    */
+    public function indexAction()
+    {
+        return array();
+    }
 
     /**
-    * Lists all Activity entities.
+    * List template
+    * 
+    * @Route("/template/list", name="activity_template_list", options={"expose"=true})
+    * @Method("GET")
+    * @Template()
+    */
+    public function templateListAction()
+    {
+        return array();
+    }
+
+    /**
+    * Detail template
+    *
+    * @Route("/template/detail", name="activity_template_detail", options={"expose"=true})
+    * @Method("GET")
+    * @Template()
+    */
+    public function templateDetailAction()
+    {
+        return array();
+    }
+
+    /**
+    * Lists all Visible Activity entities.
     *
     * @Route("/api", name="actlist", options={"expose"=true})
     * @Method("GET")
     */
     public function apiActlistAction()
     {
-        $em           = $this->getDoctrine()->getManager();
-        $oActivitys   = $em->getRepository('WoojinStoreBundle:Activity')->findVisible();
+        $em = $this->getDoctrine()->getManager();
+        
+        return $this->returnActivityList($em, $em->getRepository('WoojinStoreBundle:Activity')->findVisible());
+    }
+
+    /**
+    * Lists all Hidden Activity entities.
+    *
+    * @Route("/api/fetchhidden", name="fetch_hidden_actlist", options={"expose"=true})
+    * @Method("GET")
+    */
+    public function apiFetchHiddenActlistAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        return $this->returnActivityList($em, $em->getRepository('WoojinStoreBundle:Activity')->findHidden());
+    }
+
+    protected function returnActivityList($em, $oActivitys)
+    {
         $rActivitys   = array();
 
         foreach ($oActivitys as $key => $eachActivity) {
             $rTmp                  = array();
             $rTmp['id']            = $eachActivity->getId();
             $rTmp['name']          = urlencode($eachActivity->getName());
+            $rTmp['is_hidden']     = (int) $eachActivity->getIsHidden();
             $rTmp['description']   = urlencode( str_replace( "\n", "<br>", $eachActivity->getDescription()) );
             $rTmp['startAt']       = $eachActivity->getStartAt()->format('Y-m-d');
             $rTmp['endAt']         = $eachActivity->getEndAt()->format('Y-m-d');
-
-            //$products = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->findBy(array('activity' => $rTmp['id']));
 
             $qb = $em->createQueryBuilder();
             $products = $qb->select('g')
@@ -99,6 +116,24 @@ class ActivityController extends Controller
         $json = json_encode($rActivitys);
 
         return new Response(urldecode($json));
+    }
+
+    /**
+     * 使活動可見
+     * 
+     * @Route("/api/makevisible/{id}", name="api_makevisible_actlist", options={"expose"=true}, requirements={"id": "\d+"})
+     * @Method("PUT")
+     */
+    public function apiMakeVisibleActAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $activity = $em->getRepository('WoojinStoreBundle:Activity')->find($id);
+
+        $activity->setIsHidden(false);
+        $em->persist($activity);
+        $em->flush();
+
+        return new Response(0);
     }
 
     /**

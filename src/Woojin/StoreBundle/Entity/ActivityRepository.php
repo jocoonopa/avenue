@@ -23,5 +23,17 @@ class ActivityRepository extends EntityRepository
             ->getResult()
         ;
     }
+
+    public function findHidden()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return $qb->select('activity')
+            ->from('WoojinStoreBundle:Activity', 'activity')
+            ->where($qb->expr()->eq('activity.isHidden', 1))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
 

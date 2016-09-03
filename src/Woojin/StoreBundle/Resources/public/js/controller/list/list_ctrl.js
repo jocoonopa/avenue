@@ -21,6 +21,16 @@ activityCtrl.controller( 'ActlistCtrl', ['$scope', '$http', 'Activity',
     endAt: ''
   };
 
+  $scope.fetchVisible = function () {
+    $scope.activitys = Activity.query();
+  };
+
+  $scope.fetchHidden = function () {
+    $http.get(Routing.generate('fetch_hidden_actlist')).success(function (res) {
+      $scope.activitys = res;
+    });
+  };
+
   /**
    * 初始化新增活動的 modal
    *
@@ -102,14 +112,37 @@ activityCtrl.controller( 'ActlistCtrl', ['$scope', '$http', 'Activity',
    *
    * @return {void}
    */
-  $scope.hide = function (id) {
-    $http.put(Routing.generate('api_hide_actlist', {id: id}))
+  $scope.hide = function (activity) {
+    $http.put(Routing.generate('api_hide_actlist', {id: activity.id}))
     .success(function (res) {
-      Activity.get({ activityId: res.id })
-        .$promise.then(function (activity) {
-          $scope.successMsg   = activity.name + '已經隱藏!';
-          $scope.activitys    = Activity.query();
-        });
+      var index = $scope.activitys.indexOf(activity);
+
+      $scope.successMsg = activity.name + '已經隱藏!';
+      $scope.activitys.splice(index, 1);
+    });
+  };
+
+  /**
+   * 檢查活動是否隱藏
+   * 
+   * @return {Boolean} 
+   */
+  $scope.isHiddenActivity = function (activity) {
+    return 1 === parseInt(activity.is_hidden);
+  };
+
+  /**
+   * 更新活動為顯示
+   * 
+   * @return {Boolean} 
+   */
+  $scope.makeVisible = function (activity) {
+    $http.put(Routing.generate('api_makevisible_actlist', {id: activity.id}))
+    .success(function (res) {
+      var index = $scope.activitys.indexOf(activity);
+
+      $scope.successMsg = activity.name + '改為顯示!';
+      $scope.activitys.splice(index, 1);
     });
   };
 

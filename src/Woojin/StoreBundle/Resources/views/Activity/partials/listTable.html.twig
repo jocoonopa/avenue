@@ -1,11 +1,19 @@
 {% verbatim %}
+
+<div class="row">
+  <div class="col-md-12">
+    <button class="btn btn-warning" ng-click="fetchVisible();">撈取可視活動</button>
+    <button class="btn btn-primary" ng-click="fetchHidden();">撈取隱藏活動</button>
+  </div>
+</div>
+
 <table class="table table-hover">
 
   <tr>
-    <td ng-click="orderProp='name'; reverse=!reverse;" class="pointer" >活動名稱</td>
+    <td ng-click="orderProp='name'; reverse=!reverse;" class="pointer">活動名稱</td>
     <td>簡介</td>
-    <td ng-click="orderProp='startAt'; reverse=!reverse;" class="pointer" >起始</td>
-    <td ng-click="orderProp='endAt'; reverse=!reverse;" class="pointer" >終止</td>
+    <td ng-click="orderProp='startAt'; reverse=!reverse;" class="pointer">起始</td>
+    <td ng-click="orderProp='endAt'; reverse=!reverse;" class="pointer">終止</td>
     <td>操作</td>
   </tr>
   
@@ -26,7 +34,8 @@
     <td>
       <button ng-click="edit(activity.id); emptyErrorMsg();" class="btn btn-info" data-toggle="modal" data-target="#theActivity">編輯</button>
       <button ng-click="remove(activity.id);" href="#" class="btn btn-danger #remove">刪除</button>
-      <button ng-click="hide(activity.id);" href="#" class="btn btn-default">隱藏</button>
+      <button ng-show="!isHiddenActivity(activity)" ng-click="hide(activity);" href="#" class="btn btn-warning">隱藏</button>
+      <button ng-show="isHiddenActivity(activity)" ng-click="makeVisible(activity);" href="#" class="btn btn-primary">顯示</button>
     </td>
   </tr>
   
