@@ -64,6 +64,13 @@ class Activity
    */
   private $description;
 
+  /**
+   * @var boolean
+   *
+   * @ORM\Column(name="is_hidden", type="boolean") 
+   */
+  private $isHidden;
+
 
   /**
    * Get id
@@ -244,5 +251,29 @@ class Activity
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * Set isHidden
+     *
+     * @param boolean $isHidden
+     *
+     * @return Activity
+     */
+    public function setIsHidden($isHidden)
+    {
+        $this->isHidden = $isHidden;
+
+        return $this;
+    }
+
+    /**
+     * Get isHidden
+     *
+     * @return boolean
+     */
+    public function getIsHidden()
+    {
+        return $this->isHidden;
     }
 }

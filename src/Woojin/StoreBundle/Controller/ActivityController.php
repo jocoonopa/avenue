@@ -64,7 +64,7 @@ class ActivityController extends Controller
     public function apiActlistAction()
     {
         $em           = $this->getDoctrine()->getManager();
-        $oActivitys   = $em->getRepository('WoojinStoreBundle:Activity')->findAll();
+        $oActivitys   = $em->getRepository('WoojinStoreBundle:Activity')->findVisible();
         $rActivitys   = array();
 
         foreach ($oActivitys as $key => $eachActivity) {
@@ -101,30 +101,52 @@ class ActivityController extends Controller
         return new Response(urldecode($json));
     }
 
-  /**
-   * Show an Activity entity.
-   *
-   * @Route("/api/{id}", name="api_show_activity", options={"expose"=true})
-   * @Method("GET")
-   */
-  public function apiShowAction($id)
-  {
-	$em = $this->getDoctrine()->getManager();
-	$oActivity = $em->getRepository('WoojinStoreBundle:Activity')->find($id);
-	$activity['id'] = urlencode($oActivity->getId());
-	$activity['name'] = urlencode($oActivity->getName());
-	$activity['description'] = urlencode( str_replace("\n","<br>", $oActivity->getDescription()));
-	$activity['startAt'] = $oActivity->getStartAt()->format('Y-m-d');
-	$activity['endAt'] = $oActivity->getEndAt()->format('Y-m-d');
+    /**
+    * Lists all Activity entities.
+    *
+    * @Route("/api/hide/{id}", name="api_hide_actlist", options={"expose"=true}, requirements={"id": "\d+"})
+    * @Method("PUT")
+    */
+    public function apiHideActAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $activity = $em->getRepository('WoojinStoreBundle:Activity')->find($id);
 
-	$json = json_encode($activity);
-	return new Response(urldecode($json));
-  }
+        $activity->setIsHidden(true);
+        $em->persist($activity);
+        $em->flush();
+
+        return new Response( 
+            json_encode( 
+              array('id' => $activity->getId(), 'name' => $activity->getName()) 
+            ) 
+        );
+    }
+
+    /**
+    * Show an Activity entity.
+    *
+    * @Route("/api/{id}", name="api_show_activity", options={"expose"=true}, requirements={"id": "\d+"})
+    * @Method("GET")
+    */
+    public function apiShowAction($id)
+    {
+        $em                         = $this->getDoctrine()->getManager();
+        $oActivity                  = $em->getRepository('WoojinStoreBundle:Activity')->find($id);
+        $activity['id']             = urlencode($oActivity->getId());
+        $activity['name']           = urlencode($oActivity->getName());
+        $activity['description']    = urlencode( str_replace("\n","<br>", $oActivity->getDescription()));
+        $activity['startAt']        = $oActivity->getStartAt()->format('Y-m-d');
+        $activity['endAt']          = $oActivity->getEndAt()->format('Y-m-d');
+
+        $json = json_encode($activity);
+        return new Response(urldecode($json));
+    }
 
   /**
    * Create an Activity entity.
    *
-   * @Route("/api", name="api_create_activity", options={"expose"=true})
+   * @Route("/api", name="api_create_activity", options={"expose"=true}, requirements={"id": "\d+"})
    * @Method("POST")
    */
   public function apiCreateAction(Request $request)
@@ -170,7 +192,7 @@ class ActivityController extends Controller
   /**
    * Delete an Activity entity.
    *
-   * @Route("/api/{id}", name="api_delete_activity", options={"expose"=true})
+   * @Route("/api/{id}", name="api_delete_activity", options={"expose"=true}, requirements={"id": "\d+"})
    * @Method("DELETE")
    */
   public function apiDeleteAction($id)
@@ -211,7 +233,7 @@ class ActivityController extends Controller
   /**
    * Update an Activity entity.
    *
-   * @Route("/api/{id}", name="api_update_activity", options={"expose"=true})
+   * @Route("/api/{id}", name="api_update_activity", options={"expose"=true}, requirements={"id": "\d+"})
    * @Method("PUT")
    */
   public function apiUpdateAction(Request $request, $id)
@@ -263,7 +285,7 @@ class ActivityController extends Controller
   /**
    * Bind Goods Entity with the Activity entity.
    *
-   * @Route("/api/punch/in/{id}", name="api_punch_in_update_activity", options={"expose"=true})
+   * @Route("/api/punch/in/{id}", name="api_punch_in_update_activity", options={"expose"=true}, requirements={"id": "\d+"})
    * @Method("PUT")
    */
   public function apiUpdatePunchInAction(Request $request, $id)

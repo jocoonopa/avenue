@@ -3,6 +3,8 @@
 namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * Activity
@@ -13,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Activity
 {
   /**
+   * @Exclude
    * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\GoodsPassport", mappedBy="activity")
    * @var GoodsPassport[]
    */
@@ -60,6 +63,13 @@ class Activity
    * @ORM\Column(name="description", type="text")
    */
   private $description;
+
+  /**
+   * @var boolean
+   *
+   * @ORM\Column(name="is_hidden", type="boolean") 
+   */
+  private $isHidden;
 
 
   /**
@@ -236,5 +246,10 @@ class Activity
     public function getStockTakeRecord()
     {
         return $this->stock_take_record;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

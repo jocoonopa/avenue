@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-activityCtrl.controller( 'ActlistCtrl', ['$scope', 'Activity',
-  function ($scope, Activity) {
+activityCtrl.controller( 'ActlistCtrl', ['$scope', '$http', 'Activity', 
+  function ($scope, $http, Activity) {
 
   $scope.activitys    = Activity.query();
   $scope.successMsg   = '';
@@ -92,6 +92,22 @@ activityCtrl.controller( 'ActlistCtrl', ['$scope', 'Activity',
       Activity.get({ activityId: res.id })
         .$promise.then(function (activity) {
           $scope.successMsg   = activity.name + '修改完成!';
+          $scope.activitys    = Activity.query();
+        });
+    });
+  };
+
+  /**
+   * 隱藏活動
+   *
+   * @return {void}
+   */
+  $scope.hide = function (id) {
+    $http.put(Routing.generate('api_hide_actlist', {id: id}))
+    .success(function (res) {
+      Activity.get({ activityId: res.id })
+        .$promise.then(function (activity) {
+          $scope.successMsg   = activity.name + '已經隱藏!';
           $scope.activitys    = Activity.query();
         });
     });

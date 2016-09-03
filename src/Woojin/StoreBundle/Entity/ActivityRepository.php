@@ -12,4 +12,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class ActivityRepository extends EntityRepository
 {
+    public function findVisible()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return $qb->select('activity')
+            ->from('WoojinStoreBundle:Activity', 'activity')
+            ->where($qb->expr()->eq('activity.isHidden', 0))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
+
