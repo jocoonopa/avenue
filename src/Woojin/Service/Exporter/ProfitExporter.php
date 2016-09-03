@@ -13,12 +13,10 @@ use PHPExcel_Style_Fill;
 class ProfitExporter implements IExporter
 {
     protected $service;
-
     protected $security;
-
     protected $user;
-
     protected $index;
+    protected $map;
 
     public function __construct(ExcelContainer $service, SecurityContext $security)
     {
@@ -45,6 +43,13 @@ class ProfitExporter implements IExporter
         // 1. 設定文件標題
         // 2. 寫入文件欄位名稱
         $this->initHead();
+    }
+
+    public function setMap(array $map)
+    {
+        $this->map = $map;
+
+        return $this;
     }
 
     public function create($products)
@@ -116,7 +121,9 @@ class ProfitExporter implements IExporter
             'Q1' => '原始毛利',
             'R1' => '售出人',
             'S1' => '備註',
-            'T1' => '活動'
+            'T1' => '活動',
+            'U1' => '來源單號',
+            'V1' => '來源門市'
         );
     }
 
@@ -145,7 +152,9 @@ class ProfitExporter implements IExporter
                 'Q' => '尚未結清',
                 'R' => '尚未結清',
                 'S' => '尚未結清',
-                'T' => '尚未結清'
+                'T' => '尚未結清',
+                'U' => '尚未結清',
+                'V' => '尚未結清'
             );
         }
 
@@ -173,7 +182,9 @@ class ProfitExporter implements IExporter
                 'Q' => ($order->getOrgRequired() - $product->getCostVerifyed($this->user)),
                 'R' => $order->getOpes()->last()->getUser()->getUsername(),
                 'S' => $order->getMemo(),
-                'T' => ($activity = $product->getActivity()) ? $activity->getName() : '門市出售'   
+                'T' => ($activity = $product->getActivity()) ? $activity->getName() : '門市出售',
+                'U' => $product->getParent()->getSn(),
+                'V' => $this->map[substr($product->getParent()->getSn(), 0, 1)]->getName()
             )
             : array(
                 'A' => '無閱讀權限',
@@ -195,7 +206,9 @@ class ProfitExporter implements IExporter
                 'Q' => '無閱讀權限',
                 'R' => '無閱讀權限',
                 'S' => '無閱讀權限',
-                'T' => '無閱讀權限'
+                'T' => '無閱讀權限',
+                'U' => '無閱讀權限',
+                'V' => '無閱讀權限'
             );
     }
 

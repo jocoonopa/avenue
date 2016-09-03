@@ -98,6 +98,11 @@ class Desimg
         return 'http://avenue2003.29230696.com' . $this->path;
     }
 
+    public function _getPath()
+    {
+        return $this->path;
+    }
+
     /**
      * Add goodsPassports
      *

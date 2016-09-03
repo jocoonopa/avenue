@@ -4,6 +4,11 @@
     {% if app.user|has_auth('ROLE_MANAGE') %}
         {% include 'WoojinBaseBundle:Ajax:store.select.html.twig' with {stores: stores} %}
     {% endif %}
+
+    {% if isMobile() %}
+        <a href="{{ path('admin_goods_mobile_index') }}" class="btn btn-default">手機查貨頁</a>
+    {% endif %}
+    
     {# {{ render( controller('WoojinBaseBundle:Base:getStoreSelect') ) }} #}
     <img src="/img/_logo_footer.jpg" style="width: 100%;" />
 </footer>

@@ -29,6 +29,18 @@ class StoreRepository extends EntityRepository
             ->getResult()
         ;
     }
+
+    public function genStoreSnMap()
+    {
+        $map = array();
+        $stores = $this->findAll(); 
+
+        foreach ($stores as $store) {
+            $map[$store->getSn()] = $store;
+        }
+
+        return $map;
+    }
 }
 
 

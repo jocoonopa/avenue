@@ -217,56 +217,57 @@ $(function () {
 	$form.ajaxForm({
 		url: sFinancialUrl,
 		success: function (res) {
-				if ( ($form.find('[name="bExport"]').val() == 0) ) {
-					$resRight.html(res).show();
-        	$resRight.tabs('destroy').tabs({ heightStyle: "content" });
-        	$resRight.find('button');
-        	goodsDetailInfo($resRight.find('button'));
+    		if (($form.find('[name="bExport"]').val() == 0)) {
+    			$resRight.html(res).show();
+            	$resRight.tabs('destroy').tabs({ heightStyle: "content" });
+            	$resRight.find('button');
+            	goodsDetailInfo($resRight.find('button'));
 
-        	var $table = $resRight.find('.financialReportTable');
-        	$table.each(function () {
-        		var 
-        			$this = $(this),
-        			nGoodsCost = 0,
-        			nAchievement = 0,
-        			nProfit = 0,
-        			nProfitNow = 0;
-                    nOrgAchievement = 0;
+            	var $table = $resRight.find('.financialReportTable');
+            	$table.each(function () {
+            		var 
+            			$this = $(this),
+            			nGoodsCost = 0,
+            			nAchievement = 0,
+            			nProfit = 0,
+            			nProfitNow = 0;
+                        nOrgAchievement = 0;
 
-        		if ( ($this.find('tbody>tr').length == 0) ) {
-        			return $this.siblings().addBack().remove();
-        		}
+            		if ( ($this.find('tbody>tr').length == 0) ) {
+            			return $this.siblings().addBack().remove();
+            		}
 
-        		if ( ($this.find( '.profit' ).length == 0) ) {	
-        			return $this.hide().next().hide();
-        		}
+            		if ( ($this.find( '.profit' ).length == 0) ) {	
+            			return $this.hide().next().hide();
+            		}
 
-        		$this.find('tbody').find('tr').each( function ( index ) {
-        			var 
-        				$tr = $(this),
-        				$ul = $tr.closest('table').next(),
-        				nTurns = $this.find('tbody').find('tr').length;
+            		$this.find('tbody').find('tr').each( function ( index ) {
+            			var 
+            				$tr = $(this),
+            				$ul = $tr.closest('table').next(),
+            				nTurns = $this.find('tbody').find('tr').length;
 
-        			nGoodsCost = nGoodsCost + parseInt( $tr.find('.goods_cost').data('money') );
-        			nProfit = nProfit + parseInt( $tr.find('.profit').data('money') );
-        			nAchievement = nAchievement + parseInt( $tr.find('.achievement').data('money') );
-                    nOrgAchievement = nOrgAchievement + parseInt( $tr.find('.org_achievement').data('money') );
-        			
-                    if ( ((nTurns - 1) == index) ) {
-        				$ul.find('.goods_cost').find('span').text(nGoodsCost);
-        				$ul.find('.profit').find('span').text(nProfit);
-        				$ul.find('.achievement').find('span').text(nAchievement);
-                        $ul.find('.org_achievement').find('span').text(nOrgAchievement);
-        				$ul.find( '.count_soldout' ).find( 'span' ).text( nTurns );
-        			}
-        		});
-        		$this.tablesorter()
-        		.tablesorterPager({ container: $this.next().next() });       			
-        	});
-				} else {
-					window.location = res;
-				}			
-			}
+            			nGoodsCost = nGoodsCost + parseInt( $tr.find('.goods_cost').data('money') );
+            			nProfit = nProfit + parseInt( $tr.find('.profit').data('money') );
+            			nAchievement = nAchievement + parseInt( $tr.find('.achievement').data('money') );
+                        nOrgAchievement = nOrgAchievement + parseInt( $tr.find('.org_achievement').data('money') );
+            			
+                        if ( ((nTurns - 1) == index) ) {
+            				$ul.find('.goods_cost').find('span').text(nGoodsCost);
+            				$ul.find('.profit').find('span').text(nProfit);
+            				$ul.find('.achievement').find('span').text(nAchievement);
+                            $ul.find('.org_achievement').find('span').text(nOrgAchievement);
+            				$ul.find( '.count_soldout' ).find( 'span' ).text( nTurns );
+            			}
+            		});
+            		$this.tablesorter()
+            		.tablesorterPager({ container: $this.next().next() });       			
+            	});
+    		} else {
+                //console.log(sFinancialUrl);return;
+    			window.location = res;
+    		}			
+		}
 	});
 
     $('select[name="reportKind"]').change(function () {

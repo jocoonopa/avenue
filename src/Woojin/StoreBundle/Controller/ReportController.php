@@ -204,7 +204,7 @@ class ReportController extends Controller
         }
 
         $exporter = $this->get('exporter.profit');
-        $exporter->create($products);
+        $exporter->setMap($em->getRepository('WoojinStoreBundle:Store')->genStoreSnMap())->create($products);
         
         return $exporter->getResponse();
     }

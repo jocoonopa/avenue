@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Woojin\Utility\Avenue\Avenue;
+
 /**
  * Behalf controller.
  *
@@ -16,6 +17,8 @@ use Woojin\Utility\Avenue\Avenue;
  */
 class ImgController extends Controller
 {
+    const NUM_PERPAGE = 50;
+
     /**
      * @Route("/test", name="admin_img_test")
      * @Method("GET")
@@ -32,3 +35,6 @@ class ImgController extends Controller
         return new Response($img->getPathNoBorder());
     }
 }
+
+
+

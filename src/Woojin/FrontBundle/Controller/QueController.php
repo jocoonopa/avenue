@@ -19,8 +19,12 @@ use Woojin\OrderBundle\Entity\Ope;
 use Avenue\Adapter\Adapter;
 use Woojin\Utility\Avenue\Avenue;
 
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\Finder\Finder;
+
 class QueController extends Controller
 {
+    const NUM_PERPAGE = 20;
     /**
      * 付款完成通知
      * %數請參考 https://www.allpay.com.tw/Business/payment_fees
@@ -272,4 +276,108 @@ class QueController extends Controller
 
         return new JsonResponse(array('status' => 1));
     }
+
+    /**
+     * 
+     * @Route("/que/inode", name="que_inode")
+     * @Method("GET")
+     */
+    public function inode(Request $request)
+    {
+        set_time_limit(0);
+        $finder = new Finder();
+        $finder->files()->in(__DIR__ . '/../../../../web/img/product');
+
+        return new Response(count($finder));
+    }
+
+    /**
+     * FLOW OF DESIMG:
+     * 1. Fetch collections of desimg
+     * 2. Iterate collection
+     * 3. Get each path without filename
+     * 4. Delete dir (rmdir($file->getRealPath());)
+     * 
+     * @Route("/que/delete_desimg", name="que_img_delete_desimg")
+     * @Method("GET")
+     */
+    public function deleteUselessDesimg()
+    {
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
+
+        $count = $this->fetchCountDesimg(0);
+        $total = 0;
+
+        $startAt = microtime(true);
+        for ($i = 0; $i <= $count; $i = $i + self::NUM_PERPAGE) {
+            $finder = new Finder();
+            $desimgs = $this->fetchDesimgCollection($i);
+
+            echo $i . ":currentIndex<br/>";
+
+            foreach ($desimgs as $desimg) {
+                if (!file_exists($_SERVER['DOCUMENT_ROOT'] . $desimg->getPath())) {
+                    continue;
+                }
+                          
+                $path = pathinfo($_SERVER['DOCUMENT_ROOT'] . $desimg->getPath());     
+                $finder->files()->in($path['dirname'])->name('des*')->notName(basename($desimg->getPath()));
+                foreach ($finder as $file) {                
+                    if (!file_exists($file->getRealPath())) {
+                        continue;
+                    }
+                    
+                    unlink($file->getRealPath());               
+                    unset($file);
+
+                    $total ++;  
+                }
+            }
+            unset($finder);
+            unset($desimgs);
+        }
+
+        return new Response($count . '_desimg_delete_complete_' . $total . ',cost time:' . (microtime(true) - $startAt));
+    }
+
+    protected function genFetchDesimgQ($page)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $date = new \DateTime();
+
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('img')
+            ->from('WoojinGoodsBundle:Desimg', 'img')
+            ->leftJoin('img.goodsPassports', 'gd')
+            ->leftJoin('gd.orders', 'od')
+            ->leftJoin('od.status', 'os')
+            ->leftJoin('od.kind', 'ok')
+            ->leftJoin('gd.status', 'gs')
+        ;
+
+        $qb->andWhere($qb->expr()->andX(
+            $qb->expr()->in('gs.id', array(2)),
+            $qb->expr()->eq('ok.type', 2),
+            $qb->expr()->eq('os.id', 2),
+            $qb->expr()->lt('gd.updateAt', $qb->expr()->literal($date->modify('-6 months')->format('Y-m-d H:i:s'))) 
+        ));
+
+        return $qb->orderBy('img.id', 'ASC')
+                ->setFirstResult($page)
+                ->setMaxResults(self::NUM_PERPAGE)
+            ;
+    }
+
+    protected function fetchCountDesimg()
+    {
+        return count($this->fetchDesimgCollection(0));
+    }
+
+    protected function fetchDesimgCollection($page)
+    {
+        return new Paginator($this->genFetchDesimgQ($page), $fetchJoinCollection = false);
+    }   
 }

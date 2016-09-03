@@ -1812,21 +1812,24 @@ class GoodsController extends Controller
          * 
          * @var array(\StdClass)
          */
-        $storeCategorys = $apiClient->storeCategoryGet()->Response->StoreCategoryList->StoreCategory;
+        $sc = $apiClient->storeCategoryGet();
+        $storeCategorys = NULL === $sc ? $sc : $sc->Response->StoreCategoryList->StoreCategory;
         
         /**
          * 店內允許付費方式
          * 
          * @var array(\StdClass)
          */
-        $storePayments = $apiClient->storePaymentGet()->Response->PayTypeList->PayType;
+        $sp = $apiClient->storePaymentGet();
+        $storePayments = NULL === $sp ? $sp : $sp->Response->PayTypeList->PayType;//$apiClient->storePaymentGet()->Response->PayTypeList->PayType;
         
         /**
          * 店內允許物流方式
          * 
          * @var array(\StdClass)
          */
-        $storeShippings = $apiClient->storeShippingGet()->Response->ShippingTypeList->ShippingType;
+        $ss = $apiClient->storeShippingGet();
+        $storeShippings = NULL === $ss ? $ss : $ss->Response->ShippingTypeList->ShippingType;//$apiClient->storeShippingGet()->Response->ShippingTypeList->ShippingType;
 
         return array(
             'goods' => $goods,

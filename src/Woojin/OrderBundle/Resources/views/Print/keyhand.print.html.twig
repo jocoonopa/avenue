@@ -124,7 +124,7 @@
         </div>
 
         <!-- 總金額 -->
-        <div class="my" style="top: {{ yShift + 12.5 }}cm; left: 12.2cm; font-size: 6pt;">
+        <div class="my" style="top: {{ yShift + 12.5 }}cm; left: 13cm; font-size: 6pt;">
             {% if totalRequired - totalPaid > 0 %}{{ totalRequired|number_format(0, '.', ',') }}元,已付{{ totalPaid|number_format(0, '.', ',') }}元,尾款{{ totalRequired - totalPaid }}元{% else %}{{ totalRequired|number_format(0, '.', ',') }}元, 已付清{% endif %}</div>
         <!-- 存根聯 /-->
         <!--/ 收執聯 -->
@@ -173,7 +173,7 @@
         </div>
 
         <!-- 總金額 -->
-        <div class="my" style="top: {{ yShift + 27.3 }}cm; left: 12.2cm; font-size: 6pt; ">
+        <div class="my" style="top: {{ yShift + 27.3 }}cm; left: 13cm; font-size: 6pt; ">
             {% if totalRequired - totalPaid > 0 %}{{ totalRequired|number_format(0, '.', ',') }}元,已付{{ totalPaid|number_format(0, '.', ',') }}元,尾款{{ totalRequired - totalPaid }}元{% else %}{{ totalRequired|number_format(0, '.', ',') }}元, 已付清{% endif %}
         </div>
     <!-- 收執聯 /-->

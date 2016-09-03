@@ -192,13 +192,9 @@ class MobileController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $user = $this->get('security.context')->getToken()->getUser();
-
         $product = $em->find('WoojinGoodsBundle:GoodsPassport', $request->request->get('id'));
 
-        $orders = ($user->getRole()->hasAuth('READ_ORDER_OWN') && $product->isOwnProduct($user))
-            or $user->getRole()->hasAuth('READ_ORDER_ALL') 
-            ? $product->getOrders() : array();
+        $orders = $this->hasReadableAuth($product) ? $product->getOrders() : array();
 
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
 
@@ -207,5 +203,12 @@ class MobileController extends Controller
         $responseHandler = new ResponseHandler;
        
         return $responseHandler->getNoncached($request, $jsonResponse, 'json');
+    }
+
+    protected function hasReadableAuth($product)
+    {
+        $user = $this->get('security.context')->getToken()->getUser();
+
+        return ($user->getRole()->hasAuth('READ_ORDER_OWN') && $product->isOwnProduct($user)) || $user->getRole()->hasAuth('READ_ORDER_ALL');
     }
 }
