@@ -16,7 +16,7 @@ class BaseExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'isMobile' => new \Twig_Function_Method($this, 'isMobile'),           
+            new \Twig_SimpleFunction('isMobile', array($this, 'isMobile')) 
         );
     }
 

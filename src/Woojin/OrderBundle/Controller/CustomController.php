@@ -32,7 +32,7 @@ class CustomController extends Controller
      */
     public function tempAction()
     {
-        return array('_token' => $this->get('form.csrf_provider')->generateCsrfToken('unknown'));
+        return array('_token' => $this->get('security.csrf.token_manager')->getToken('unknown'));
     }
 
     /**
@@ -68,7 +68,7 @@ class CustomController extends Controller
      */
     public function createAction(Request $request)
     {  
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if (null === $user) {
             return $this->redirect($this->generateUrl('login'), 302);
@@ -147,7 +147,7 @@ class CustomController extends Controller
     {
         return array(
             'custom' => $this->getDoctrine()->getRepository('WoojinOrderBundle:Custom')->find($request->request->get('nCustomId', Avenue::CUS_NONE)), 
-            '_token' => $this->get('form.csrf_provider')->generateCsrfToken('unknown') 
+            '_token' => $this->get('security.csrf.token_manager')->getToken('unknown') 
         );
     }
 
@@ -163,7 +163,7 @@ class CustomController extends Controller
             $key = $key;
         }
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
@@ -193,7 +193,7 @@ class CustomController extends Controller
      */
     public function searchByNameAction(Request $request)
     {   
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $names = array();
 
@@ -231,7 +231,7 @@ class CustomController extends Controller
      */
     public function searchByMobilAction(Request $request)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $mobils = array();
 
@@ -267,7 +267,7 @@ class CustomController extends Controller
      */
     public function searchByEmailAction(Request $request)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
         
@@ -304,7 +304,7 @@ class CustomController extends Controller
      */
     public function fetchAction(Request $request)
     {    
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if (!is_object($user)) {
             throw new \Exception('Session timeout');

@@ -22,7 +22,7 @@ class OpeFactory
 
     protected function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setOptional(
+        $resolver->setDefined(
             array(
             'amount',
             'name',

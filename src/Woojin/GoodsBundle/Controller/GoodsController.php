@@ -67,11 +67,11 @@ class GoodsController extends Controller
      */
     public function goodsSearchAction (Request $request) 
     {
-        $oUser = $this->get('security.context')->getToken()->getUser();
+        $oUser = $this->get('security.token_storage')->getToken()->getUser();
         
         $nUserId = $oUser->getId();
         
-        $_token = $this->get('form.csrf_provider')->generateCsrfToken('unknown');
+        $_token = $this->get('security.csrf.token_manager')->getToken('unknown');
         
         $sUsersHabitValue = '["1","2"]';
         
@@ -135,7 +135,7 @@ class GoodsController extends Controller
      */
     public function goodsSearchAjaxAction(Request $request) 
     {
-        $userStore = $this->get('security.context')->getToken()->getUser()->getStore();
+        $userStore = $this->get('security.token_storage')->getToken()->getUser()->getStore();
         
         $em = $this->getDoctrine()->getManager();
 
@@ -425,7 +425,7 @@ class GoodsController extends Controller
      */
     public function goodsSearchMultiSaleAction (Request $request) 
     {
-        $store = $this->get('security.context')->getToken()->getUser()->getStore();
+        $store = $this->get('security.token_storage')->getToken()->getUser()->getStore();
 
         $em = $this->getDoctrine()->getManager();
         
@@ -442,7 +442,7 @@ class GoodsController extends Controller
      */
     public function goodsSearchMultiSaleGoodsSnAction (Request $request) 
     {
-        $store = $this->get('security.context')->getToken()->getUser()->getStore();
+        $store = $this->get('security.token_storage')->getToken()->getUser()->getStore();
         
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
@@ -479,7 +479,7 @@ class GoodsController extends Controller
      */
     public function goodsBatchResAjaxAction (Request $request) 
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         
         $time = $request->request->get('time');
         
@@ -592,7 +592,7 @@ class GoodsController extends Controller
         $em->getConnection()->beginTransaction();
     
         try {
-            $oUser = $this->get('security.context')->getToken()->getUser();
+            $oUser = $this->get('security.token_storage')->getToken()->getUser();
             
             $userStore = $oUser->getStore();
             
@@ -840,7 +840,7 @@ class GoodsController extends Controller
      */
     public function ajaxGetAssignDayMoveOut (Request $request)
     {
-        $store = $this->get('security.context')->getToken()->getUser()->getStore();
+        $store = $this->get('security.token_storage')->getToken()->getUser()->getStore();
         $sStartTime = $request->request->get('sStartTime') . ' 00:00:00';
         $sEndTime = $request->request->get('sEndTime') . ' 23:59:59';
         $oEnd = new \DateTime($sEndTime);
@@ -1088,7 +1088,7 @@ class GoodsController extends Controller
             $$key = $request->request->get($key);
         }
             
-        $_token = $this->get('form.csrf_provider')->generateCsrfToken('unknown');
+        $_token = $this->get('security.csrf.token_manager')->getToken('unknown');
 
         $oGoodsPassport = $this->getDoctrine()->getRepository('WoojinGoodsBundle:GoodsPassport')->find($nGoodsPassportId);
 
@@ -1127,7 +1127,7 @@ class GoodsController extends Controller
      */
     public function goodsCheckonsaleAction () 
     {
-        $sStoreSn = $this->get('security.context')->getToken()->getUser()->getStore()->getSn();
+        $sStoreSn = $this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn();
 
         $em = $this->getDoctrine()->getManager();
 
@@ -1142,7 +1142,7 @@ class GoodsController extends Controller
      */
     public function goodsBatchAction () 
     {
-        $_token = $this->get('form.csrf_provider')->generateCsrfToken('unknown');
+        $_token = $this->get('security.csrf.token_manager')->getToken('unknown');
         
         return array('_token' => $_token);
     }
@@ -1165,7 +1165,7 @@ class GoodsController extends Controller
         }
 
         // 取得目前使用者實體
-        $this->oUser = $this->get('security.context')->getToken()->getUser();
+        $this->oUser = $this->get('security.token_storage')->getToken()->getUser();
 
         // 目前使用者所屬店家
         $sStoreSn = $this->oUser->getStore()->getSn();
@@ -1342,7 +1342,7 @@ class GoodsController extends Controller
                         $qb->expr()->eq('od.kind', ':nOrdersKindId')
                     ) 
                 )
-                ->setParameter('nId', $this->get('security.context')->getToken()->getUser()->getId())
+                ->setParameter('nId', $this->get('security.token_storage')->getToken()->getUser()->getId())
                 ->setParameter('sOpeAct', '批次成立進貨訂單')
                 ->setParameter('sTime', new \DateTime($sTime))
                 ->setParameter('nOrdersKindId', Avenue::OK_IN)
@@ -1372,7 +1372,7 @@ class GoodsController extends Controller
         
         $em = $this->getDoctrine()->getManager();
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $role = $user->getRole();
 
         $oMt = $goods->getMt();
@@ -1416,7 +1416,7 @@ class GoodsController extends Controller
     public function apiSearchConditionAction ($jCondition)
     {
         $rCondition = json_decode($jCondition, true);
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
@@ -1959,7 +1959,7 @@ class GoodsController extends Controller
              * 
              * @var \Woojin\UserBundle\Entity\User
              */
-            $user = $this->get('security.context')->getToken()->getUser();
+            $user = $this->get('security.token_storage')->getToken()->getUser();
 
             if ($isPriceDiff) {
                 $clue = new AvenueClue;
@@ -2399,7 +2399,7 @@ class GoodsController extends Controller
      */
     public function toBehalfAction(Request $request, GoodsPassport $product)
     {
-        if (!$this->get('form.csrf_provider')->isCsrfTokenValid('to_behalf', $request->request->get('_token'))) {
+        if (!$this->get('security.csrf.token_manager')->isCsrfTokenValid('to_behalf', $request->request->get('_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 

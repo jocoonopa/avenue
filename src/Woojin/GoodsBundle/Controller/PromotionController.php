@@ -49,7 +49,7 @@ class PromotionController extends Controller
     {
         $entity = new Promotion();
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $entity->setUser($user);
 
@@ -322,7 +322,7 @@ class PromotionController extends Controller
      */
     public function fetchByConAction(Request $request, $_format)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
         
@@ -346,7 +346,7 @@ class PromotionController extends Controller
      */
     public function fetchSoldoutAction(Promotion $promotion, $_format)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
 
@@ -387,7 +387,7 @@ class PromotionController extends Controller
      */
     public function removeAction(Request $request, Promotion $promotion)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
@@ -425,7 +425,7 @@ class PromotionController extends Controller
      */
     public function addAction(Request $request, Promotion $promotion)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
 

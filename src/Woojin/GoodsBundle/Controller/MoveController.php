@@ -37,7 +37,7 @@ class MoveController extends Controller
      */
     public function indexAction($page)
     {
-        $user = $this->get('security.context')->getToken()->getUser(); 
+        $user = $this->get('security.token_storage')->getToken()->getUser(); 
 
         $em = $this->getDoctrine()->getManager();
 
@@ -285,7 +285,7 @@ class MoveController extends Controller
 
         $move = new Move();
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $from = $user->getStore();
 
@@ -333,7 +333,7 @@ class MoveController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $move
             ->setStatus($em->find('WoojinGoodsBundle:MoveStatus', Avenue::MV_CONFIRM))
@@ -359,7 +359,7 @@ class MoveController extends Controller
             return new \Exception("請求已經為終止狀態，不可更改!");
         }
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $session = $this->get('session');
 
         $em = $this->getDoctrine()->getManager();
@@ -576,7 +576,7 @@ class MoveController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $move
             ->setCloser($user)

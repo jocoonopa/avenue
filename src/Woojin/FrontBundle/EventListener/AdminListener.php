@@ -4,13 +4,13 @@ namespace Woojin\FrontBundle\EventListener;
 
 use Woojin\FrontBundle\Controller\AuthenticatedController;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class AdminListener
 {
     private $context;
 
-    public function __construct(SecurityContext $context)
+    public function __construct(TokenStorage $context)
     {
         $this->context = $context;
     }

@@ -29,7 +29,7 @@ class InvoiceController extends Controller
      */
     public function chargeBackAction(Invoice $invoice, Request $request)
     {
-        if (!$this->get('form.csrf_provider')->isCsrfTokenValid('invoice', $request->request->get('avenue_token'))) {
+        if (!$this->get('security.csrf.token_manager')->isCsrfTokenValid('invoice', $request->request->get('avenue_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 
@@ -78,7 +78,7 @@ class InvoiceController extends Controller
      */
     public function cancelAction(Invoice $invoice, Request $request)
     {
-        if (!$this->get('form.csrf_provider')->isCsrfTokenValid('invoice', $request->request->get('avenue_token'))) {
+        if (!$this->get('security.csrf.token_manager')->isCsrfTokenValid('invoice', $request->request->get('avenue_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 

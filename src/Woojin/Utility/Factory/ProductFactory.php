@@ -27,7 +27,7 @@ class ProductFactory
 
     protected function configureOptions(OptionsResolver $resolver)
     {     
-        $resolver->setOptional(array(
+        $resolver->setDefined(array(
             'seoWord',
             'orgSn',
             'memo',

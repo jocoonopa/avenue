@@ -1,110 +1,166 @@
 services:
+    business.stock:
+        class: Woojin\Service\Business\Stock
+        arguments: ["@doctrine.orm.entity_manager"]
+    logger.custom:
+        class: Woojin\Service\Logger\CustomOpeLogger
+        arguments: ["@doctrine.orm.entity_manager"]
+    logger.ope:
+        class: Woojin\Service\Logger\AdminOpeLogger
+        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+
+    gd.converter:
+        class: Woojin\Service\Converter\GoodsPassport
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    base_method:
+        class: Woojin\BaseBundle\BaseMethod
+        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+
+    ## 一些meta資料的操作記錄服務
+    my_meta_record_method:
+        class: Woojin\StoreBundle\MetaRecordMethod
+        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+
+    files_manager:
+        class: Woojin\StoreBundle\FilesManager
+        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+
+    order_service:
+        class: Woojin\OrderBundle\WoojinOrderBundle
+
+    avenue.twig_extension:
+        class: Woojin\FrontBundle\Twig\Extension\AvenueExtension
+        arguments: ["@service_container"]
+        tags:
+            - { name: twig.extension }
+
+    admin.twig_extension:
+        class: Woojin\StoreBundle\Twig\Extension\AdminExtension
+        arguments: ["@service_container"]
+        tags:
+            - { name: twig.extension }
+
+    adminlistener:
+        class: Woojin\FrontBundle\EventListener\AdminListener
+        arguments: ["@security.token_storage"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+
+    customlistener:
+        class: Woojin\FrontBundle\EventListener\CustomListener
+        arguments: ["@security.token_storage"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+
+    front.tokens.action_listener:
+        class: Woojin\FrontBundle\EventListener\TokenListener
+        arguments: ["@service_container", "@doctrine.orm.entity_manager"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
     zipper:
-        class: 'Woojin\Utility\Helper\ZipHelper'
-
-    ## 權限判斷服務
+        class: Woojin\Utility\Helper\ZipHelper
     authority.judger:
-        class: 'Woojin\Utility\Authority\AuthorityJudger'
-        arguments: ['@security.context']
-
+        class: Woojin\Utility\Authority\AuthorityJudger
+        arguments: ["@security.token_storage"]
     ## 販售流程鏈
     seller:
-        class: 'Woojin\Utility\Que\Sell\Seller'
-        arguments: ['@service_container', '@doctrine.orm.entity_manager', '@security.context']
-
+        class: Woojin\Utility\Que\Sell\Seller
+        arguments: ["@service_container", "@doctrine.orm.entity_manager", "@security.token_storage"]
     avenue.notifier:
-        class: 'Woojin\Utility\Avenue\Notifier'
-        arguments: ['@doctrine.orm.entity_manager', '@swiftmailer.mailer', '@templating', '%mailer_user%']
+        class: Woojin\Utility\Avenue\Notifier
+        arguments: ["@doctrine.orm.entity_manager", "@swiftmailer.mailer", "@templating", "%mailer_user%"]
 
     ## 優達克斯Excel 產生
     uitox.excel.generator:
-        class: 'Woojin\Utility\ExcelGenerator\UitoxExcelGenerator'
-        arguments: ['@service_container', '@security.context']
+        class: Woojin\Utility\ExcelGenerator\UitoxExcelGenerator
+        arguments: ["@service_container", "@security.token_storage"]
 
     ## 提供一個避免重複產生 session 的取得 session 方法
     avenue.session:
-        class: 'Woojin\Utility\Session\AvenueSession'
-        arguments: ['@service_container', '@security.context']
+        class: Woojin\Utility\Session\AvenueSession
+        arguments: ["@service_container", "@security.token_storage"]
 
     session.custom:
-        class: 'Woojin\Utility\Session\Custom'
-        arguments: ['@session', '@doctrine.orm.entity_manager']
+        class: Woojin\Utility\Session\Custom
+        arguments: ["@session", "@doctrine.orm.entity_manager"]
 
     factory.behalf:
-        class: 'Woojin\Utility\Factory\Behalf'
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
+        class: Woojin\Utility\Factory\Behalf
+        arguments: ["@doctrine.orm.entity_manager", "@service_container"]
 
     facade.product:
-        class: 'Woojin\Utility\Facade\Product'
-        arguments: ['@doctrine.orm.entity_manager']
-    
+        class: Woojin\Utility\Facade\Product
+        arguments: ["@doctrine.orm.entity_manager"]
+
     factory.order:
-        class: 'Woojin\Utility\Factory\OrderFactory'
+        class: Woojin\Utility\Factory\OrderFactory
 
     factory.product:
-        class: 'Woojin\Utility\Factory\ProductFactory'
-    
+        class: Woojin\Utility\Factory\ProductFactory
+
     factory.ope:
-        class: 'Woojin\Utility\Factory\OpeFactory'
+        class: Woojin\Utility\Factory\OpeFactory
 
     factory.img:
-        class: 'Woojin\Utility\Factory\ImgFactory'
-        arguments: ['@image.handling']
+        class: Woojin\Utility\Factory\ImgFactory
+        arguments: ["@image.handling"]
 
     factory.desimg:
-        class: 'Woojin\Utility\Factory\DesimgFactory'
-        arguments: ['@image.handling']
+        class: Woojin\Utility\Factory\DesimgFactory
+        arguments: ["@image.handling"]
 
     facade.behalf.status:
-        class: 'Woojin\Utility\Facade\BehalfStatus'
-        arguments: ['@doctrine.orm.entity_manager']
+        class: Woojin\Utility\Facade\BehalfStatus
+        arguments: ["@doctrine.orm.entity_manager"]
 
     helper.benefit:
-        class: 'Woojin\Utility\Helper\BenefitHelper'
-        arguments: ['@session', '@doctrine.orm.entity_manager']
+        class: Woojin\Utility\Helper\BenefitHelper
+        arguments: ["@session", "@doctrine.orm.entity_manager"]
 
     curler:
-        class: 'Woojin\Utility\Helper\CurlHelper'
+        class: Woojin\Utility\Helper\CurlHelper
 
     yahoo.api.client:
-        class: 'Woojin\Utility\YahooApi\Client'
-        arguments: ['@curler', '%yahoo_key%', '%yahoo_secret%']
-    
+        class: Woojin\Utility\YahooApi\Client
+        arguments: ["@curler", "%yahoo_key%", "%yahoo_secret%"]
+
     yahoo.syncer:
-        class: 'Woojin\Utility\YahooApi\Adapter\Syncer'
-        arguments: ['@doctrine.orm.entity_manager', '@yahoo.api.client']
-    
+        class: Woojin\Utility\YahooApi\Adapter\Syncer
+        arguments: ["@doctrine.orm.entity_manager", "@yahoo.api.client"]
+
     product.finder:
-        class: 'Woojin\Service\Finder\ProductFinder'
-        arguments: ['@doctrine.orm.entity_manager']
-    
+        class: Woojin\Service\Finder\ProductFinder
+        arguments: ["@doctrine.orm.entity_manager"]
+
     order.finder:
-        class: 'Woojin\Service\Finder\OrderFinder'
-        arguments: ['@doctrine.orm.entity_manager']
+        class: Woojin\Service\Finder\OrderFinder
+        arguments: ["@doctrine.orm.entity_manager"]
 
     exporter.stock:
-        class: 'Woojin\Service\Exporter\StockExporter'
-        arguments: ['@xls.service_xls5', '@security.context']
+        class: Woojin\Service\Exporter\StockExporter
+        arguments: ["@phpexcel", "@security.token_storage"]
 
     exporter.consign:
-        class: 'Woojin\Service\Exporter\ConsignExporter'
-        arguments: ['@xls.service_xls5']
-    
+        class: Woojin\Service\Exporter\ConsignExporter
+        arguments: ["@phpexcel"]
+
     exporter.profit:
-        class: 'Woojin\Service\Exporter\ProfitExporter'
-        arguments: ['@xls.service_xls5', '@security.context']
+        class: Woojin\Service\Exporter\ProfitExporter
+        arguments: ["@phpexcel", "@security.token_storage"]
 
     exporter.uitox:
-        class: 'Woojin\Service\Exporter\UitoxExporter'
-        arguments: ['@xls.service_xls5', '@security.context', '@zipper']
-    
+        class: Woojin\Service\Exporter\UitoxExporter
+        arguments: ["@phpexcel", "@security.token_storage", "@zipper"]
+
     sculper.clue:
-        class: 'Woojin\Service\Sculper\ClueSculper'
+        class: Woojin\Service\Sculper\ClueSculper
 
     passport.syncer:
-        class: 'Woojin\Service\Syncer\PassportSyncer'
-        arguments: ['@doctrine.orm.entity_manager']
+        class: Woojin\Service\Syncer\PassportSyncer
+        arguments: ["@doctrine.orm.entity_manager"]
 
     resolver.device:
-        class: 'Woojin\Utility\Resolver\DeviceResolver'
-        arguments: ['@session', '@mobile_detect.mobile_detector']
+        class: Woojin\Utility\Resolver\DeviceResolver
+        arguments: ["@session", "@mobile_detect.mobile_detector"]

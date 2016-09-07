@@ -2,9 +2,9 @@
 
 namespace Woojin\Service\Exporter;
 
-use Liuggio\ExcelBundle\Service\ExcelContainer;
+use Liuggio\ExcelBundle\Factory;
 
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Woojin\OrderBundle\Entity\Orders;
@@ -12,22 +12,19 @@ use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\UserBundle\Entity\User;
 use Woojin\Utility\Avenue\Avenue;
 use Woojin\Utility\Helper\ZipHelper;
-
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use PHPExcel_Style_Fill;
 
 class UitoxExporter implements IExporter
 {
     protected $service;
-
     protected $security;
-
     protected $zipper;
-
     protected $user;
-
     protected $zipPaths;
+    protected $excel;
 
-    public function __construct(ExcelContainer $service, SecurityContext $security, ZipHelper $zipper)
+    public function __construct(Factory $service, TokenStorage $security, ZipHelper $zipper)
     {
         $this->service = $service;
 
@@ -40,7 +37,7 @@ class UitoxExporter implements IExporter
 
     public function create($products)
     {
-        $excel = $this->service->excelObj;
+        $excel = $this->service->createPHPExcelObject();
 
         $titleMap = $this->getTitileMap();
 
@@ -70,6 +67,13 @@ class UitoxExporter implements IExporter
 
             $index ++;                      
         }
+
+        return $this->setExcel($excel);
+    }
+
+    protected function setExcel($excel)
+    {
+        $this->excel = $excel;
 
         return $this;
     }
@@ -273,9 +277,19 @@ class UitoxExporter implements IExporter
 
     public function getResponse()
     {
-        $response = $this->service->getResponse();
+        // create the writer
+        $writer = $this->service->createWriter($this->excel, 'Excel5');
+        // create the response
+        $response = $this->service->createStreamedResponse($writer);
+        // adding headers
+        $dispositionHeader = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'uitox_avenue.xls'
+        );
         $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename="uitox_avenue.xls"');
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        $response->headers->set('Content-Disposition', $dispositionHeader);
 
         return $response;
     }

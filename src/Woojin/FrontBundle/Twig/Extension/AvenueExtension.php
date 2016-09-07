@@ -21,29 +21,29 @@ class AvenueExtension extends \Twig_Extension
     public function getFilters() 
     {
         return array(
-            'json_decode' => new \Twig_Filter_Method($this, 'jsonDecode'),
-            'trans_level' => new \Twig_Filter_Method($this, 'transLevel'),
-            'str_pad_left' => new \Twig_Filter_Method($this, 'strPadLeft'),
-            'mask_account' => new \Twig_Filter_Method($this, 'maskAccount')
+            new \Twig_SimpleFilter('json_decode', array($this, 'jsonDecode')),
+            new \Twig_SimpleFilter('trans_level', array($this, 'transLevel')),
+            new \Twig_SimpleFilter('str_pad_left', array($this, 'strPadLeft')),
+            new \Twig_SimpleFilter('mask_account', array($this, 'maskAccount'))
         );
     }
 
     public function getFunctions()
     {
         return array(
-            'getPromotionDiffDays'  => new \Twig_Function_Method($this, 'getPromotionDiffDays'),
-            'getBadgeStyleByCount'  => new \Twig_Function_Method($this, 'getBadgeStyleByCount'),
-            'isMobile' => new \Twig_Function_Method($this, 'isMobile'),
-            'getProductLocate' => new \Twig_Function_Method($this, 'getProductLocate'),
-            'getBrandList' => new \Twig_Function_Method($this, 'getBrandList'),
-            'getCacheImage' => new \Twig_Function_Method($this, 'getCacheImage'),
-            'getBackCacheImage' => new \Twig_Function_Method($this, 'getBackCacheImage'),
-            'getPatternGroupList' => new \Twig_Function_Method($this, 'getPatternGroupList'),
-            'getPortFolioTitle' => new \Twig_Function_Method($this, 'getPortFolioTitle'),
-            'getCacheDesImage' => new \Twig_Function_Method($this, 'getCacheDesImage'),
-            'getFBLoginUrl' => new \Twig_Function_Method($this, 'getFBLoginUrl'),
-            'getGooglePlusParams' => new \Twig_Function_Method($this, 'getGooglePlusParams'),
-            'getGooglePlusCallBackUrl' => new \Twig_Function_Method($this, 'getGooglePlusCallBackUrl')
+            new \Twig_SimpleFunction('getPromotionDiffDays', array($this, 'getPromotionDiffDays')),
+            new \Twig_SimpleFunction('getBadgeStyleByCount', array($this, 'getBadgeStyleByCount')), 
+            new \Twig_SimpleFunction('isMobile', array($this, 'isMobile')), 
+            new \Twig_SimpleFunction('getProductLocate', array($this, 'getProductLocate')),
+            new \Twig_SimpleFunction('getBrandList', array($this, 'getBrandList')),
+            new \Twig_SimpleFunction('getCacheImage', array($this, 'getCacheImage')), 
+            new \Twig_SimpleFunction('getBackCacheImage', array($this, 'getBackCacheImage')),
+            new \Twig_SimpleFunction('getPatternGroupList', array($this, 'getPatternGroupList')),
+            new \Twig_SimpleFunction('getPortFolioTitle', array($this, 'getPortFolioTitle')),
+            new \Twig_SimpleFunction('getCacheDesImage', array($this, 'getCacheDesImage')),
+            new \Twig_SimpleFunction('getFBLoginUrl', array($this, 'getFBLoginUrl')),
+            new \Twig_SimpleFunction('getGooglePlusParams', array($this, 'getGooglePlusParams')),
+            new \Twig_SimpleFunction('getGooglePlusCallBackUrl', array($this, 'getGooglePlusCallBackUrl')) 
         );
     }
 

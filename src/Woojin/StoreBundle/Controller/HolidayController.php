@@ -46,7 +46,7 @@ class HolidayController extends Controller
      */
     public function manageAction($date = null)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $time = new \DateTime($date);
 
@@ -87,7 +87,7 @@ class HolidayController extends Controller
      */
     public function manageOtherAction(User $user, $date = null)
     {
-        $currentUser = $this->get('security.context')->getToken()->getUser();
+        $currentUser = $this->get('security.token_storage')->getToken()->getUser();
 
         if (!$currentUser->getRole()->hasAuth('EDIT_OTHER_HOLIDAY')) {
             throw new \Exception('權限不足');

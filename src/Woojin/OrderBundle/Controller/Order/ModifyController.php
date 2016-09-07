@@ -95,7 +95,7 @@ class ModifyController extends Controller
          * 
          * @var \Woojin\UserBundle\Entity\User
          */
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         // 若'商品'不為本店商品，拋出意外結束
         if ($user->getStore()->getSn() !== substr($goods->getSn(), 0, 1)) {
@@ -218,7 +218,7 @@ class ModifyController extends Controller
             throw new \Exception('該訂單非寄賣訂單');
         }
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
 
         $em->getConnection()->beginTransaction();
@@ -405,7 +405,7 @@ class ModifyController extends Controller
 
         $product = $order->getProduct();
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         /**
          * 訂單關聯客戶
@@ -414,7 +414,7 @@ class ModifyController extends Controller
          */
         $custom = $em->getRepository('WoojinOrderBundle:Custom')->findOneBy(array(
                 'mobil' => $mobil,
-                'store' => $this->get('security.context')->getToken()->getUser()->getStore()->getId()
+                'store' => $this->get('security.token_storage')->getToken()->getUser()->getStore()->getId()
             ))
         ;
 
@@ -536,7 +536,7 @@ class ModifyController extends Controller
             return new \Exception('訂單非處理中狀態!');
         }
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if (!is_object($user)) {
             throw new \Exception('Session timeout!');
@@ -656,7 +656,7 @@ class ModifyController extends Controller
             throw new \Exception('訂單已經是取消狀態!');
         }
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
         $em->getConnection()->beginTransaction();
@@ -776,7 +776,7 @@ class ModifyController extends Controller
      */
     public function v2GetBackAction(Request $request, Orders $order) 
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
         $em->getConnection()->beginTransaction();

@@ -141,7 +141,7 @@ class StoreController extends Controller
      */
     public function editAction($id)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($user->getStore()->getId() != $id) {
             throw new \Exception('您不是該店同仁不可設定相關資訊!');

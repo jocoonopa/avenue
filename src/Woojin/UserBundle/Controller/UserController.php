@@ -76,7 +76,7 @@ class UserController extends Controller
 	{	  	
 	  	$em = $this->getDoctrine()->getManager();
 
-	  	$user = $this->get('security.context')->getToken()->getUser();
+	  	$user = $this->get('security.token_storage')->getToken()->getUser();
 		
 		$store = $user->getStore();
 
@@ -97,7 +97,7 @@ class UserController extends Controller
 		
 		$rUser = array();
 		
-		$oStore = $this->get('security.context')->getToken()->getUser()->getStore();
+		$oStore = $this->get('security.token_storage')->getToken()->getUser()->getStore();
 		
 		$nRoleId = ($oStore->getId() == self::STORE_DEPOT)? self::ROLE_SPECIAL_STAFF : self::ROLE_STAFF;
 		
@@ -224,7 +224,7 @@ class UserController extends Controller
 	 */
 	public function userHistoryAction(Request $request)
 	{
-		$oUser = $this->get('security.context')->getToken()->getUser();
+		$oUser = $this->get('security.token_storage')->getToken()->getUser();
 
     	$nStoreId = $oUser->getId();
 
@@ -245,7 +245,7 @@ class UserController extends Controller
 		foreach ($request->request->keys() as $key)
 			$$key = $request->request->get($key);
 		
-		$oUser 		= $this->get('security.context')->getToken()->getUser();
+		$oUser 		= $this->get('security.token_storage')->getToken()->getUser();
 		$em 		= $this->getDoctrine()->getManager();
 		$qb 		= $em->createQueryBuilder();
 		$sTimeEnd 	= date('Y-m-d H:i:s');
@@ -286,7 +286,7 @@ class UserController extends Controller
 	 */
 	public function ajaxRecordHabitAction(Request $request)
 	{
-		$user       = $this->get('security.context')->getToken()->getUser();
+		$user       = $this->get('security.token_storage')->getToken()->getUser();
         $user_id    = $user->getId();
         $store_id   = $user->getId();
 
@@ -323,7 +323,7 @@ class UserController extends Controller
 	{
         $em = $this->getDoctrine()->getManager();
 
-		$oUser = $this->get('security.context')->getToken()->getUser();
+		$oUser = $this->get('security.token_storage')->getToken()->getUser();
 		
 		$oUser->setStore($em->find('WoojinStoreBundle:Store', $request->request->get('store_id')));
 		

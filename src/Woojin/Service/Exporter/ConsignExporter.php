@@ -2,12 +2,13 @@
 
 namespace Woojin\Service\Exporter;
 
-use Liuggio\ExcelBundle\Service\ExcelContainer;
+use Liuggio\ExcelBundle\Factory;
 use Symfony\Component\Security\Core\SecurityContext;
 use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\UserBundle\Entity\User;
 use Woojin\Utility\Avenue\Avenue;
 use PHPExcel_Style_Fill;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * @service exporter.consign
@@ -17,15 +18,16 @@ use PHPExcel_Style_Fill;
 class ConsignExporter implements IExporter
 {
     protected $service;
+    protected $excel;
 
-    public function __construct(ExcelContainer $service)
+    public function __construct(Factory $service)
     {
         $this->service = $service;
     }
 
     public function create($products)
     {
-        $excel = $this->service->excelObj;
+        $excel = $this->service->createPHPExcelObject();
 
         $titleMap = $this->getTitileMap();
 
@@ -146,11 +148,28 @@ class ConsignExporter implements IExporter
         return $this;
     }
 
+    protected function setExcel($excel)
+    {
+        $this->excel = $excel;
+
+        return $this;
+    }
+
     public function getResponse()
     {
-        $response = $this->service->getResponse();
+        // create the writer
+        $writer = $this->service->createWriter($this->excel, 'Excel5');
+        // create the response
+        $response = $this->service->createStreamedResponse($writer);
+        // adding headers
+        $dispositionHeader = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'avenue_consign_stock_' . time() . '.xls'
+        );
         $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename="avenue_consign_stock.xls"');
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        $response->headers->set('Content-Disposition', $dispositionHeader);
 
         return $response;
     }

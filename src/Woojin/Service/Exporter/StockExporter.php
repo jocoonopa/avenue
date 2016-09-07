@@ -2,12 +2,13 @@
 
 namespace Woojin\Service\Exporter;
 
-use Liuggio\ExcelBundle\Service\ExcelContainer;
-use Symfony\Component\Security\Core\SecurityContext;
+use Liuggio\ExcelBundle\Factory;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\UserBundle\Entity\User;
 use Woojin\Utility\Avenue\Avenue;
 use PHPExcel_Style_Fill;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * @service exporter.stock
@@ -20,7 +21,9 @@ class StockExporter implements IExporter
 
     protected $security;
 
-    public function __construct(ExcelContainer $service, SecurityContext $security)
+    protected $excel;
+
+    public function __construct(Factory $service, TokenStorage $security)
     {
         $this->service = $service;
 
@@ -29,7 +32,7 @@ class StockExporter implements IExporter
 
     public function create($products)
     {
-        $excel = $this->service->excelObj;
+        $excel = $this->service->createPHPExcelObject();
 
         $titleMap = $this->getTitileMap();
 
@@ -149,14 +152,31 @@ class StockExporter implements IExporter
         $excel->getActiveSheet()->setTitle('進貨報表');
         $excel->setActiveSheetIndex(Avenue::START_FROM); 
         
+        return $this->setExcel($excel);
+    }
+
+    protected function setExcel($excel)
+    {
+        $this->excel = $excel;
+
         return $this;
     }
 
     public function getResponse()
     {
-        $response = $this->service->getResponse();
+        // create the writer
+        $writer = $this->service->createWriter($this->excel, 'Excel5');
+        // create the response
+        $response = $this->service->createStreamedResponse($writer);
+        // adding headers
+        $dispositionHeader = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'avenue_stock_' . time() . '.xls'
+        );
         $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename="avenue_stock.xls"');
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        $response->headers->set('Content-Disposition', $dispositionHeader);
 
         return $response;
     }

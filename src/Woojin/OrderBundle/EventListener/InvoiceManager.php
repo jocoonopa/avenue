@@ -44,7 +44,7 @@
 //     $invoice = new Invoice;
 //     $invoice
 //       ->setCustom( $order->getCustom() )
-//       ->setStore( $this->container->get('security.context')->getToken()->getUser()->getStore() )
+//       ->setStore( $this->container->get('security.token_storage')->getToken()->getUser()->getStore() )
 //       ->setHasPrint(false)
 //     ;
 

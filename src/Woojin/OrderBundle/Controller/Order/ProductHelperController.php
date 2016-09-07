@@ -111,7 +111,7 @@ class ProductHelperController extends Controller
     {            
         $sn = $request->request->get('sGoodsSn');
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $products = array();
 

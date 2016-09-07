@@ -64,7 +64,7 @@ class OutController extends Controller
         $em->getConnection()->beginTransaction();
         
         try{
-            $user = $this->get('security.context')->getToken()->getUser();
+            $user = $this->get('security.token_storage')->getToken()->getUser();
 
             $paytype = $em->find('WoojinOrderBundle:PayType', $nPayTypeId);
             
@@ -198,7 +198,7 @@ class OutController extends Controller
         $sculper = $this->get('sculper.clue');
         $sculper->initSoldOut();
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         try{      
             $paytype = $em->find('WoojinOrderBundle:PayType', $nPayTypeId);
@@ -303,7 +303,7 @@ class OutController extends Controller
 
         $successProducts = array();
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $opeLogger = $this->get('logger.ope');
 

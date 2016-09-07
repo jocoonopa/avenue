@@ -113,7 +113,7 @@ class CustomController extends Controller
      */
     public function verifyLoginAction(Request $request)
     {
-        if (!$this->get('form.csrf_provider')->isCsrfTokenValid('custom_login', $request->request->get('avenue_token'))) {
+        if (!$this->get('security.csrf.token_manager')->isCsrfTokenValid('custom_login', $request->request->get('avenue_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 

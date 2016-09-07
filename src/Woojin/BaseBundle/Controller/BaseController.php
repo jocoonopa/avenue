@@ -208,7 +208,7 @@ class BaseController extends Controller
 	 */
 	public function customFormAction()
 	{
-		$_token = $this->get('form.csrf_provider')->generateCsrfToken('unknown');
+		$_token = $this->get('security.csrf.token_manager')->getToken('unknown');
 		
 		return array('_token' => $_token);
 	}
@@ -219,7 +219,7 @@ class BaseController extends Controller
 	 */
 	public function recordUsersLogAction(Request $request)
 	{
-		$user = $this->get('security.context')->getToken()->getUser();
+		$user = $this->get('security.token_storage')->getToken()->getUser();
 
 		$ip = $request->server->get('REMOTE_ADDR');
 

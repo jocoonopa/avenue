@@ -57,7 +57,7 @@ class ConsignController extends Controller
      */
     public function confirmAction(Request $request)
     {
-        if (!$this->get('form.csrf_provider')->isCsrfTokenValid('consign_custom', $request->request->get('_csrf_token'))) {
+        if (!$this->get('security.csrf.token_manager')->isCsrfTokenValid('consign_custom', $request->request->get('_csrf_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 

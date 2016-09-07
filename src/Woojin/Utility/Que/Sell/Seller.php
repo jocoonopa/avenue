@@ -4,7 +4,7 @@ namespace Woojin\Utility\Que\Sell;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Doctrine\ORM\EntityManager;
 
 use Woojin\OrderBundle\Entity\Orders;
@@ -30,7 +30,7 @@ class Seller
 
     protected $em;
 
-    public function __construct(ContainerInterface $container, EntityManager $em, SecurityContext $context) 
+    public function __construct(ContainerInterface $container, EntityManager $em, TokenStorage $context) 
     {
         $this->context = $context;
 

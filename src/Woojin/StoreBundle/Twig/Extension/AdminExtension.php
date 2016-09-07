@@ -21,12 +21,12 @@ class AdminExtension extends \Twig_Extension
     public function getFilters() 
     {
         return array(
-            'has_auth'                  => new \Twig_Filter_Method($this, 'hasAuth'),
-            'is_own'                    => new \Twig_Filter_Method($this, 'isOwn'),
-            'is_this_yahoo_category'    => new \Twig_Filter_Method($this, 'isThisYahooCategory'),
-            'get_yahoo_form_action'     => new \Twig_Filter_Method($this, 'getYahooFormAction'),
-            'locale_week'               => new \Twig_Filter_Method($this, 'localeWeek'),
-            'get_hd_name'               => new \Twig_Filter_Method($this, 'getHdName')
+            new \Twig_SimpleFilter('has_auth', array($this, 'hasAuth')),
+            new \Twig_SimpleFilter('is_own', array($this, 'isOwn')),
+            new \Twig_SimpleFilter('is_this_yahoo_category', array($this, 'isThisYahooCategory')),
+            new \Twig_SimpleFilter('get_yahoo_form_action', array($this, 'getYahooFormAction')),
+            new \Twig_SimpleFilter('locale_week', array($this, 'localeWeek')),
+            new \Twig_SimpleFilter('get_hd_name', array($this, 'getHdName'))
         );
     }
 

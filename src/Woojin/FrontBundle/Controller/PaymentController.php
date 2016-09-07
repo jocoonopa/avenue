@@ -49,7 +49,7 @@ class PaymentController extends Controller implements AuthenticatedController
             throw new \Exception('帳號尚未通過認證，請完成帳號認證步驟!');
         }
 
-        if (!$this->get('security.context')->getToken()->getUser()) {
+        if (!$this->get('security.token_storage')->getToken()->getUser()) {
              throw new \Exception('建構中尚未開放!');
         }
     }
@@ -136,7 +136,7 @@ class PaymentController extends Controller implements AuthenticatedController
      */
     public function generateAction(Request $request)
     {
-        if (!$this->get('form.csrf_provider')->isCsrfTokenValid('invoice', $request->request->get('avenue_token'))) {
+        if (!$this->get('security.csrf.token_manager')->isCsrfTokenValid('invoice', $request->request->get('avenue_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 
@@ -254,7 +254,7 @@ class PaymentController extends Controller implements AuthenticatedController
      */
     public function passAllPayAction(Request $request)
     {        
-        if (!$this->get('form.csrf_provider')->isCsrfTokenValid('invoice', $request->request->get('avenue_token'))) {
+        if (!$this->get('security.csrf.token_manager')->isCsrfTokenValid('invoice', $request->request->get('avenue_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 

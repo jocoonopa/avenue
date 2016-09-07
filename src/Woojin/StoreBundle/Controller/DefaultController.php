@@ -37,7 +37,7 @@ class DefaultController extends Controller
      */
     public function stockCheckLoadAction()
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $fileName = $user->getStore()->getStockCheckFileName();
 
         if (file_exists($fileName)) {
@@ -53,7 +53,7 @@ class DefaultController extends Controller
      */
     public function stockCheckUpdateAction(Request $request)
     {   
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $file = fopen($user->getStore()->getStockCheckFileName(), 'w');
         fwrite($file, $request->request->get('content'));

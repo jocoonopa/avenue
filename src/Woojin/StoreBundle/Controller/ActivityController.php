@@ -361,7 +361,7 @@ class ActivityController extends Controller
 			$qb->expr()->eq('gd.status', Avenue::GS_ONSALE),
 			// $qb->expr()->eq( 
 			//   $qb->expr()->substring('gd.sn', 1, 1), 
-   //            $qb->expr()->literal($this->get('security.context')->getToken()->getUser()->getStore()->getSn())
+   //            $qb->expr()->literal($this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn())
 			// ),
 			$qb->expr()->in('gd.sn', $rSn)
 		  )
@@ -456,7 +456,7 @@ class ActivityController extends Controller
 			$qb->expr()->eq('gd.status', Avenue::GS_ACTIVITY),
 			$qb->expr()->eq( 
 			  $qb->expr()->substring('gd.sn', 1, 1), 
-              $qb->expr()->literal($this->get('security.context')->getToken()->getUser()->getStore()->getSn())
+              $qb->expr()->literal($this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn())
 			),
 			$qb->expr()->in('gd.sn', $rSn),
 			$qb->expr()->eq('gd.activity', $id)
@@ -466,7 +466,7 @@ class ActivityController extends Controller
 		->getQuery()
 	  ;
 
-      //echo $this->get('security.context')->getToken()->getUser()->getStore()->getSn();
+      //echo $this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn();
 
       //exit();
 

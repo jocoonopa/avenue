@@ -7,9 +7,9 @@ imports:
 framework:
     esi: { enabled: true }
     #translator:      { fallback: %locale% }
-    secret:          %secret%
+    secret:          "%secret%"
     router:
-        resource: "%kernel.root_dir%/config/routing.yml"
+        resource: "%kernel.root_dir%//config//routing.yml"
         strict_requirements: ~
     form:            ~
     csrf_protection: ~
@@ -29,42 +29,42 @@ twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
     globals:
-      OrdersRequiredLabel: "實收金額"
-      OrdersPaidLabel: "已請款"
-      OrdersMemoLabel: "訂單備註"
-      CustomNameLabel: "客戶姓名"
-      GoodsNameLabel: "商品名稱"
-      GoodsSnLabel: "商品序號"
-      OpeActLabel: "動作內容"
+      OrdersRequiredLabel: 實收金額
+      OrdersPaidLabel: 已請款
+      OrdersMemoLabel: 訂單備註
+      CustomNameLabel: 客戶姓名
+      GoodsNameLabel: 商品名稱
+      GoodsSnLabel: 商品序號
+      OpeActLabel: 動作內容
       OpeDatetimeLabel: "動作時間"
-      ProcessPng: "/img/process.png"
-      CheckroundPng: "/img/checkround.png"
-      CancelPng: "/img/cancel.png"
-      SalePng: "/img/sale.png"
-      SoldOutPng: "/img/sold_out.png"
-      MovingPng: "/img/moving.png"
-      OtherStorePng: "/img/other_store.png"
-      AjaxLoadingGif: "/img/ajax-loader.gif"
-      NothingPng: "/img/nothing.png"
-      PlusPng: "/img/plus.png"
-      GoNextPng: "/img/Actions-go-next-icon.png"
-      UserEditPng: "/img/user_edit.png"
-      UserActivePng: "/img/user_active.png"
-      PagerNextPng: "/img/pager_next.png"
-      PagerLastPng: "/img/pager_last.png"
-      PagerPrevPng: "/img/pager_prev.png"
-      PagerFirstPng: "/img/pager_first.png"
+      ProcessPng: /img/process.png
+      CheckroundPng: /img/checkround.png
+      CancelPng: /img/cancel.png
+      SalePng: /img/sale.png
+      SoldOutPng: /img/sold_out.png
+      MovingPng: /img/moving.png
+      OtherStorePng: /img/other_store.png
+      AjaxLoadingGif: /img/ajax-loader.gif
+      NothingPng: /img/nothing.png
+      PlusPng: /img/plus.png
+      GoNextPng: /img/Actions-go-next-icon.png
+      UserEditPng: /img/user_edit.png
+      UserActivePng: /img/user_active.png
+      PagerNextPng: /img/pager_next.png
+      PagerLastPng: /img/pager_last.png
+      PagerPrevPng: /img/pager_prev.png
+      PagerFirstPng: /img/pager_first.png
       # avenue information
-      BOSS_PHONE_NUM: "+886 952-104-510"
+      BOSS_PHONE_NUM: +886 952-104-510
       FACEBOOK_APPID: 704916842938836
-      FACEBOOK_URL: "https://www.facebook.com/avenue2003"
-      YAHOO_SUPERSTORE_URL: "https://tw.mall.yahoo.com/store/avenue2003"
-      ASAP_URL: "http://www.asap.com.tw/market/A12875"
+      FACEBOOK_URL: https://www.facebook.com/avenue2003
+      YAHOO_SUPERSTORE_URL: https://tw.mall.yahoo.com/store/avenue2003
+      ASAP_URL: http://www.asap.com.tw/market/A12875
 
 
 # Assetic Configuration
 assetic:
-    debug:          %kernel.debug%
+    debug:          "%kernel.debug%"
     use_controller: false
     bundles:        ['WoojinFrontBundle']
     node:           /usr/local/bin/node
@@ -80,7 +80,7 @@ assetic:
         # but it does mean that you don’t need to apply the filter manually, 
         # it’ll automatically apply it to any files ending in .less.
         less: 
-            apply_to: "\.less$"
+            apply_to: \.less$
 
         #closure:
         #    jar: %kernel.root_dir%/Resources/java/compiler.jar
@@ -228,67 +228,3 @@ mobile_detect:
         mobile: ~
         tablet: ~
     switch_device_view: ~
-
-services:
-    business.stock:
-        class: 'Woojin\Service\Business\Stock'
-        arguments: ['@doctrine.orm.entity_manager']
-
-    logger.custom:
-        class: 'Woojin\Service\Logger\CustomOpeLogger'
-        arguments: ['@doctrine.orm.entity_manager']
-
-    logger.ope:
-        class: Woojin\Service\Logger\AdminOpeLogger
-        arguments: ['@doctrine.orm.entity_manager', '@security.context']
-
-    gd.converter:
-        class: 'Woojin\Service\Converter\GoodsPassport'
-        arguments: ['@doctrine.orm.entity_manager']
-
-    base_method:
-        class: Woojin\BaseBundle\BaseMethod
-        arguments: ['@doctrine.orm.entity_manager', '@security.context']
-
-    ## 一些meta資料的操作記錄服務
-    my_meta_record_method:
-        class: Woojin\StoreBundle\MetaRecordMethod
-        arguments: ['@doctrine.orm.entity_manager', '@security.context']
-
-    files_manager:
-        class: Woojin\StoreBundle\FilesManager
-        arguments: ['@doctrine.orm.entity_manager', '@security.context']
-
-    order_service:
-        class: Woojin\OrderBundle\WoojinOrderBundle
-
-    avenue.twig_extension:
-        class: Woojin\FrontBundle\Twig\Extension\AvenueExtension
-        arguments: ['@service_container']
-        tags:
-            - { name: twig.extension }
-
-    admin.twig_extension:
-        class: Woojin\StoreBundle\Twig\Extension\AdminExtension
-        arguments: ['@service_container']
-        tags:
-            - { name: twig.extension }
-
-    adminlistener:
-        class: 'Woojin\FrontBundle\EventListener\AdminListener'
-        arguments: ['@security.context']
-        tags:
-            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
-
-    customlistener:
-        class: 'Woojin\FrontBundle\EventListener\CustomListener'
-        arguments: ['@security.context']
-        tags:
-            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
-
-    front.tokens.action_listener:
-        class: Woojin\FrontBundle\EventListener\TokenListener
-        arguments: ['@service_container', '@doctrine.orm.entity_manager']
-        tags:
-            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
-            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }

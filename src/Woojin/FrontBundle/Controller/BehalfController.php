@@ -36,7 +36,7 @@ class BehalfController extends Controller implements AuthenticatedController, To
     {
         $custom = $this->get('session.custom')->current();
         
-        if (!$this->get('form.csrf_provider')->isCsrfTokenValid('behalf', $request->request->get('avenue_token'))) {
+        if (!$this->get('security.csrf.token_manager')->isCsrfTokenValid('behalf', $request->request->get('avenue_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 
@@ -84,7 +84,7 @@ class BehalfController extends Controller implements AuthenticatedController, To
     {
         $custom = $this->get('session.custom')->current();
         
-        if (!$this->get('form.csrf_provider')->isCsrfTokenValid('behalf_cancel', $request->request->get('avenue_token'))) {
+        if (!$this->get('security.csrf.token_manager')->isCsrfTokenValid('behalf_cancel', $request->request->get('avenue_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 

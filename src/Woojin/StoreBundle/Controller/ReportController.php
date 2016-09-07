@@ -28,7 +28,7 @@ class ReportController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         return array(
-            '_token' => $this->get('form.csrf_provider')->generateCsrfToken('unknown'),
+            '_token' => $this->get('security.csrf.token_manager')->getToken('unknown'),
             'activitys' => $em->getRepository('WoojinStoreBundle:Activity')->findAll(),
             'brands' => $em->getRepository('WoojinGoodsBundle:Brand')->findAll(),
             'stores' => $em->getRepository('WoojinStoreBundle:Store')->findAll()
@@ -50,7 +50,7 @@ class ReportController extends Controller
         set_time_limit(0); // time out
         ini_set('memory_limit', '512M');
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
 
@@ -116,7 +116,7 @@ class ReportController extends Controller
         set_time_limit(0); // time out
         ini_set('memory_limit', '512M');
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();

@@ -60,7 +60,7 @@ class OpeController extends Controller
       $sculper->initModifyOpeDatetime();
       $sculper->setBefore($ope);
 
-		$user = $this->get('security.context')->getToken()->getUser();
+		$user = $this->get('security.token_storage')->getToken()->getUser();
 
 		$roleId = $user->getTheRoles()->getId();
 

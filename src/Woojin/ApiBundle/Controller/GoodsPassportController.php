@@ -26,7 +26,7 @@ class GoodsPassportController extends Controller
      */
     public function deleteAction()
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         
         if ($user->getId() !== Avenue::USER_ENGINEER_ID) {
             throw $this->createNotFoundException('Not exists');

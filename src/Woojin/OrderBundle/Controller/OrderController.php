@@ -34,7 +34,7 @@ class OrderController extends Controller
 			'categorys' => $em->getRepository('WoojinGoodsBundle:Category')->findAll(), 
 			'seoSlogans' => $em->getRepository('WoojinGoodsBundle:SeoSlogan')->findAll(),
 			'paytypes' => $em->getRepository('WoojinOrderBundle:PayType')->findAll(),
-			'_token' => $this->get('form.csrf_provider')->generateCsrfToken('unknown')
+			'_token' => $this->get('security.csrf.token_manager')->getToken('unknown')
 		);
 	}
 
@@ -61,7 +61,7 @@ class OrderController extends Controller
 	 */
 	public function orderSpecialSellAction () 
 	{
-		return array('_token' => $this->get('form.csrf_provider')->generateCsrfToken('unknown'));
+		return array('_token' => $this->get('security.csrf.token_manager')->getToken('unknown'));
 	}
 
 	/**
@@ -75,7 +75,7 @@ class OrderController extends Controller
 
 		$qb = $em->createQueryBuilder();
 
-		$user = $this->get('security.context')->getToken()->getUser();
+		$user = $this->get('security.token_storage')->getToken()->getUser();
 
 		/**
 		 * 目前店內寄賣已經售出，但尚未給寄賣客戶回扣的商品

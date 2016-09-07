@@ -2,7 +2,7 @@
 
 namespace Woojin\Utility\Authority;
 
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class AuthorityJudger
 {
@@ -14,7 +14,7 @@ class AuthorityJudger
 
     protected $user;
 
-    public function __construct(SecurityContext $context)
+    public function __construct(TokenStorage $context)
     {
         $this->context = $context;
         $this->user = $this->context->getToken()->getUser();

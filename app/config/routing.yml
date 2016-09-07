@@ -1,5 +1,5 @@
 mobile_index:
-    path:     /
+    path:     "/"
     host:     'm.%domain%'
     defaults: { _controller: WoojinFrontBundle:Mobile/Index:index }
     requirements:
@@ -8,62 +8,62 @@ mobile_index:
 woojin_front:
     resource: "@WoojinFrontBundle/Controller"
     type:     annotation
-    prefix:   /
+    prefix:   "/"
 
 woojin_api:
     resource: "@WoojinApiBundle/Controller/"
     type:     annotation
-    prefix:   /api/v1
+    prefix:   "/api/v1"
 
 woojin_agency:
     resource: "@WoojinAgencyBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   "/"
 
 woojin_user:
     resource: "@WoojinUserBundle/Controller/"
     type:     annotation
-    prefix:   /admin/user
+    prefix:   "/admin/user"
 
 woojin_base:
     resource: "@WoojinBaseBundle/Controller/"
     type:     annotation
-    prefix:   /admin/base
+    prefix:   "/admin/base"
 
 woojin_login:
     resource: "@WoojinSecurityBundle/Controller/SecurityController.php"
     type:     annotation
-    prefix:   /admin
+    prefix:   "/admin"
 
 woojin_goods:
     resource: "@WoojinGoodsBundle/Controller/"
     type:     annotation
-    prefix:   /admin/goods
+    prefix:   "/admin/goods"
 
 woojin_store:
     resource: "@WoojinStoreBundle/Controller/"
     type:     annotation
-    prefix:   /admin
+    prefix:   "/admin"
 
 woojin_order:  
     resource: "@WoojinOrderBundle/Controller/"
     type:     annotation
-    prefix:   /admin
+    prefix:   "/admin"
 
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
-    prefix:   /api/doc
+    prefix:   "/api/doc"
 
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
 
 gregwar_captcha_routing:
     resource: "@GregwarCaptchaBundle/Resources/config/routing/routing.yml"
-    prefix: /_gcb
+    prefix: "/_gcb"
 
 remove_trailing_slash:
-    path: /{url}
-    defaults: { _controller: WoojinFrontBundle:Redirecting:removeTrailingSlash }
+    path: "/{url}"
+    defaults: { _controller: "WoojinFrontBundle:Redirecting:removeTrailingSlash" }
     requirements:
-        url: .*/$
+        url: ".*/$"
     methods: [GET]

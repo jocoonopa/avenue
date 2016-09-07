@@ -6,7 +6,15 @@
 
     <!--
     <parameters>
-        <parameter key="woojin_order.example.class">Woojin\OrderBundle\Example</parameter>
+        <parameter key="woojin_security.example.class">Woojin\SecurityBundle\Example</parameter>
     </parameters>
-    -->    
+
+    <services>
+        <service id="woojin_security.example" class="%woojin_security.example.class%">
+            <argument type="service" id="service_id" />
+            <argument>plain_value</argument>
+            <argument>%parameter_name%</argument>
+        </service>
+    </services>
+    -->
 </container>

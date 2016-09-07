@@ -51,7 +51,7 @@ class UitoxController extends Controller
         // Generate response
         $response = new Response();
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $dir = __DIR__ . '/../../../../web/csv/uitox/' . $user->getId();
 

@@ -5,7 +5,7 @@ namespace Woojin\Utility\ExcelGenerator;
 use Woojin\Utility\ExcelGenerator\ExcelGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class UitoxExcelGenerator extends ExcelGenerator
 {
@@ -21,7 +21,7 @@ class UitoxExcelGenerator extends ExcelGenerator
 
     protected $context;
 
-    public function __construct(ContainerInterface $container, SecurityContext $context)
+    public function __construct(ContainerInterface $container, TokenStorage $context)
     {
         $this->context = $context;
 

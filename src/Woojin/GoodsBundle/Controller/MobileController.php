@@ -29,7 +29,7 @@ class MobileController extends Controller
      */
     public function indexAction()
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $baseMethod = $this->get('base_method');
 
@@ -207,7 +207,7 @@ class MobileController extends Controller
 
     protected function hasReadableAuth($product)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         return ($user->getRole()->hasAuth('READ_ORDER_OWN') && $product->isOwnProduct($user)) || $user->getRole()->hasAuth('READ_ORDER_ALL');
     }

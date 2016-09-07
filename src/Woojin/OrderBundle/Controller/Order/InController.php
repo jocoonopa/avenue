@@ -42,7 +42,7 @@ class InController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->getConnection()->beginTransaction();
 
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         if (!is_object($user)) {
             throw new \Exception('Session timeout');
         }

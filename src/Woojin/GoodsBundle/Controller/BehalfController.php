@@ -180,7 +180,7 @@ class BehalfController extends Controller
             throw $this->createNotFoundException('Unable to find Behalf entity.');
         }
 
-        if (!$this->get('form.csrf_provider')->isCsrfTokenValid('admin_behalf', $request->request->get('_token'))) {
+        if (!$this->get('security.csrf.token_manager')->isCsrfTokenValid('admin_behalf', $request->request->get('_token'))) {
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 

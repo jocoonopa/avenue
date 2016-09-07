@@ -4,7 +4,7 @@ namespace Woojin\Utility\Session;
 
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class AvenueSession
 {
@@ -12,7 +12,7 @@ class AvenueSession
 
     protected $context;
 
-    public function __construct(ContainerInterface $container, SecurityContext $context)
+    public function __construct(ContainerInterface $container, TokenStorage $context)
     {
         $this->context = $context;
 

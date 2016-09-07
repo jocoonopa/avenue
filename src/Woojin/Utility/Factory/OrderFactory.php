@@ -25,7 +25,7 @@ class OrderFactory
 
     protected function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setOptional(array(
+        $resolver->setDefined(array(
             'amount',
             'name',
             'cost',

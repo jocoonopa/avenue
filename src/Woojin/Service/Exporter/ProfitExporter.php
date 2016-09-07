@@ -2,13 +2,14 @@
 
 namespace Woojin\Service\Exporter;
 
-use Liuggio\ExcelBundle\Service\ExcelContainer;
-use Symfony\Component\Security\Core\SecurityContext;
+use Liuggio\ExcelBundle\Factory;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Woojin\OrderBundle\Entity\Orders;
 use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\UserBundle\Entity\User;
 use Woojin\Utility\Avenue\Avenue;
 use PHPExcel_Style_Fill;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ProfitExporter implements IExporter
 {
@@ -17,21 +18,15 @@ class ProfitExporter implements IExporter
     protected $user;
     protected $index;
     protected $map;
+    protected $excel;
 
-    public function __construct(ExcelContainer $service, SecurityContext $security)
+    public function __construct(Factory $service, TokenStorage $security)
     {
         $this->service = $service;
 
         $this->security = $security;
 
         $this->index = 2;
-
-        /**
-         * Excel obj
-         * 
-         * @var 
-         */
-        $excel = $this->service->excelObj;
 
         /**
          * 使用者實體
@@ -61,14 +56,21 @@ class ProfitExporter implements IExporter
          */
         $products = array_filter($products, array($this, 'filter'));
 
-        $this->writeDataInFile($products);
+        $this->writeDataInFile($products)->addColorAndSum();
+
+        return $this;
+    }
+
+    protected function setExcel($excel)
+    {
+        $this->excel = $excel;
 
         return $this;
     }
 
     protected function writeDataInFile($products)
     {
-        $excel = $this->service->excelObj;
+        $excel = $this->excel;
 
         foreach ($products as $key => $product) { 
             if (($key === Avenue::START_FROM) && ($this->index === 2)) {
@@ -91,7 +93,7 @@ class ProfitExporter implements IExporter
             $this->index ++;                     
         }
 
-        return $this;
+        return $this->setExcel($excel);
     }
 
     protected function filter($product)
@@ -214,16 +216,26 @@ class ProfitExporter implements IExporter
 
     public function getResponse()
     {
-        $response = $this->service->getResponse();
+        // create the writer
+        $writer = $this->service->createWriter($this->excel, 'Excel5');
+        // create the response
+        $response = $this->service->createStreamedResponse($writer);
+        // adding headers
+        $dispositionHeader = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'avenue_profit_' . time() . '.xls'
+        );
         $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename="avenue_profit.xls"');
-
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        $response->headers->set('Content-Disposition', $dispositionHeader);
+   
         return $response;
     }
 
     protected function initHead()
     {
-        $excel = $this->service->excelObj;
+        $excel = $this->service->createPHPExcelObject();
 
         $sheet = $excel->setActiveSheetIndex(Avenue::START_FROM);
         
@@ -232,12 +244,12 @@ class ProfitExporter implements IExporter
             $sheet->setCellValue($key, $title);
         }
 
-        return $this;
+        return $this->setExcel($excel);
     }
 
     public function addColorAndSum()
     {
-        $excel = $this->service->excelObj;
+        $excel = $this->excel;
 
         $indexNext = ($this->index + 1);
 
@@ -359,6 +371,6 @@ class ProfitExporter implements IExporter
         // 指回第一個表索引，否則會報錯
         $excel->setActiveSheetIndex(Avenue::START_FROM);
 
-        return $this;
+        return $this->setExcel($excel);
     }
 }
