@@ -283,6 +283,11 @@ class GoodsPassport
   protected $yahooId;
 
   /**
+   * @ORM\Column(type="boolean")
+   */
+  protected $isAllowAuction;
+
+  /**
    * @ORM\Column(type="string", length=40, nullable=true)
    */
   protected $seoWord;
@@ -300,8 +305,14 @@ class GoodsPassport
         $this->isAllowWeb = false;
         $this->webPrice = 0;
         $this->isBehalf = false;
+        $this->isAllowCreditCard = true;
     }
 
+    /**
+     * 檢查是否為代購商品
+     * 
+     * @return boolean
+     */
     public function isBehalfAndSold()
     {
         return (in_array($this->status->getId(), array(Avenue::GS_SOLDOUT, Avenue::GS_BEHALF)) 
@@ -317,16 +328,18 @@ class GoodsPassport
     {
         $seoName = '';
 
-        //$seoName .= '[香榭國際精品]';
-
         if ($this->getBrand()) {
             $seoName .= $this->getBrand()->getName() . ' ';
         }
 
-        $seoName .= $this->getName();
+        $seoName .= trim($this->getName());
 
         if ($this->getSeoSlogan()) {
             $seoName .= $this->getSeoSlogan()->getName() . ' ';
+        }
+
+        if ($this->getSeoSlogan2()) {
+            $seoName .= $this->getSeoSlogan2()->getName() . ' ';
         }
 
         $seoName .= $this->getSeoWord() . ' ';
@@ -1745,5 +1758,36 @@ class GoodsPassport
     public function getSeoSlogan2()
     {
         return $this->seoSlogan2;
+    }
+
+    /**
+     * Set isAllowCreditCard
+     *
+     * @param boolean $isAllowCreditCard
+     * @return GoodsPassport
+     */
+    public function setIsAllowCreditCard($isAllowCreditCard)
+    {
+        if ($isAllowCreditCard === 1) {
+            $isAllowCreditCard = true;
+        }
+
+        if ($isAllowCreditCard === 0) {
+            $isAllowCreditCard = false;
+        }
+
+        $this->isAllowCreditCard = $isAllowCreditCard;
+    
+        return $this;
+    }
+
+    /**
+     * Get isAllowCreditCard
+     *
+     * @return boolean 
+     */
+    public function getIsAllowCreditCard()
+    {
+        return $this->isAllowCreditCard;
     }
 }

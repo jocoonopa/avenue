@@ -366,6 +366,17 @@ class GoodsController extends Controller
 
                     break;
 
+                case 'isAllowAuction':
+                    if ($eachCon == 1) {
+                        $qb->andWhere($qb->expr()->eq('gd.isAllowAuction', true));
+                    } else if ($eachCon == 0) {
+                        $qb->andWhere($qb->expr()->eq('gd.isAllowAuction', false));
+                    } else {
+
+                    }
+
+                    break;
+
                 case 'phone':
                     $qb->andWhere($qb->expr()->in('gcm.mobil', $eachCon));
 
@@ -2140,6 +2151,12 @@ class GoodsController extends Controller
             $isAllowCreditCard = ($request->request->get('isAllowCreditCard', null) == 1) ? true : false;
 
             /**
+             * 是否允許競拍
+             * 
+             * @var boolean
+             */
+            $isAllowAuction = ($request->request->get('isAllowWeb', null) == 1) ? true : false;
+            /**
              * 上傳的圖片檔案
              * 
              * @var \Symfony\Component\HttpFoundation\File\UploadedFile
@@ -2245,6 +2262,7 @@ class GoodsController extends Controller
                 ->setMemo($memo)
                 ->setIsAllowWeb($isAllowWeb)
                 ->setIsAllowCreditCard($isAllowCreditCard)
+                ->setIsAllowAuction($isAllowAuction)
                 ->setWebPrice($webPrice)
             ;
 

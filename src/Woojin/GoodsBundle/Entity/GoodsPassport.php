@@ -283,6 +283,11 @@ class GoodsPassport
   protected $yahooId;
 
   /**
+   * @ORM\Column(type="boolean")
+   */
+  protected $isAllowAuction;
+
+  /**
    * @ORM\Column(type="string", length=40, nullable=true)
    */
   protected $seoWord;
@@ -1784,5 +1789,29 @@ class GoodsPassport
     public function getIsAllowCreditCard()
     {
         return $this->isAllowCreditCard;
+    }
+
+    /**
+     * Set isAllowAuction
+     *
+     * @param boolean $isAllowAuction
+     *
+     * @return GoodsPassport
+     */
+    public function setIsAllowAuction($isAllowAuction)
+    {
+        $this->isAllowAuction = $isAllowAuction;
+
+        return $this;
+    }
+
+    /**
+     * Get isAllowAuction
+     *
+     * @return boolean
+     */
+    public function getIsAllowAuction()
+    {
+        return $this->isAllowAuction;
     }
 }
