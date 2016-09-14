@@ -5,7 +5,6 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Exclude;
 
-
 /**
  * @ORM\Entity
  * @ORM\Table(name="img")
@@ -42,6 +41,26 @@ class Img
     public function __construct()
     {
         $this->goods_passport = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get goods_passport
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProducts()
+    {
+        return $this->goods_passport;
+    }
+
+    public function getPurePath()
+    {
+        return str_replace($this->getName(), '', $this->path);
+    }
+
+    public function getPathNoBorder($isAbs = false)
+    {
+        return (($isAbs) ? $_SERVER['DOCUMENT_ROOT'] : '') .  substr($this->path, 0, -4) . '_' . $this->getProducts()->last()->getSn() . '.jpg'; 
     }
 
     /**
@@ -84,9 +103,10 @@ class Img
      *
      * @return string 
      */
-    public function getPath()
+    public function getPath($isAbs = false)
     {
-        return $this->path;
+        return ($isAbs) ? $_SERVER['DOCUMENT_ROOT'] . $this->path : $this->path;
+        //return 'http://avenue2003.29230696.com' . $this->path;
     }
 
     /**

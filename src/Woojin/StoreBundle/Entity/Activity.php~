@@ -252,4 +252,28 @@ class Activity
     {
         return $this->name;
     }
+
+    /**
+     * Set isHidden
+     *
+     * @param boolean $isHidden
+     *
+     * @return Activity
+     */
+    public function setIsHidden($isHidden)
+    {
+        $this->isHidden = $isHidden;
+
+        return $this;
+    }
+
+    /**
+     * Get isHidden
+     *
+     * @return boolean
+     */
+    public function getIsHidden()
+    {
+        return $this->isHidden;
+    }
 }

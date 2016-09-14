@@ -691,6 +691,7 @@ class Promotion
         $this->menCount = 0;
         $this->secondhandCount = 0;
         $this->sort = 10;
+        $this->description = '活動描述';
     }
     
     /**
@@ -885,5 +886,28 @@ class Promotion
     public function getIsStack()
     {
         return $this->isStack;
+    }
+
+    /**
+     * Set sort
+     *
+     * @param integer $sort
+     * @return Promotion
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
+    
+        return $this;
+    }
+
+    /**
+     * Get sort
+     *
+     * @return integer 
+     */
+    public function getSort()
+    {
+        return $this->sort;
     }
 }

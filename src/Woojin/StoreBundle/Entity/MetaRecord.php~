@@ -134,4 +134,83 @@ class MetaRecord
     {
         return $this->users;
     }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set act
+     *
+     * @param string $act
+     * @return MetaRecord
+     */
+    public function setAct($act)
+    {
+        $this->act = $act;
+    
+        return $this;
+    }
+
+    /**
+     * Get act
+     *
+     * @return string 
+     */
+    public function getAct()
+    {
+        return $this->act;
+    }
+
+    /**
+     * Set datetime
+     *
+     * @param \DateTime $datetime
+     * @return MetaRecord
+     */
+    public function setDatetime($datetime)
+    {
+        $this->datetime = $datetime;
+    
+        return $this;
+    }
+
+    /**
+     * Get datetime
+     *
+     * @return \DateTime 
+     */
+    public function getDatetime()
+    {
+        return $this->datetime;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Woojin\UserBundle\Entity\User $user
+     * @return MetaRecord
+     */
+    public function setUser(\Woojin\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+    
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Woojin\UserBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 }

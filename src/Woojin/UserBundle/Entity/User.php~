@@ -4,6 +4,8 @@ namespace Woojin\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * Woojin\UserBundle\Entity\User
@@ -14,6 +16,49 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 class User implements AdvancedUserInterface, \Serializable
 {
     /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="backer")
+     * @var backAuctions[]
+     */
+    protected $backAuctions;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="canceller")
+     * @var cancelAuctions[]
+     */
+    protected $cancelAuctions;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Holiday", mappedBy="user")
+     * @var holidays[]
+     */
+    protected $holidays;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="AvenueClue", mappedBy="user")
+     * @var clues[]
+     */
+    protected $clues;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Behalf", mappedBy="user")
+     * @var Behalfs[]
+     */
+    protected $behalfs;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="creater")
+     * @var Auctions[]
+     */
+    protected $auctions;
+
+    /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Promotion", mappedBy="user")
      * @var Promotions[]
      */
@@ -26,36 +71,42 @@ class User implements AdvancedUserInterface, \Serializable
     private $roles;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\MetaRecord", mappedBy="user")
      * @var MetaRecords[]
      */
     protected $meta_records;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\OrderBundle\Entity\Ope", mappedBy="user")
      * @var Ope[]
      */
     protected $opes;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Move", mappedBy="catcher")
      * @var CatchMoves[]
      */
     protected $catchMoves;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Move", mappedBy="thrower")
      * @var ThrowMoves[]
      */
     protected $throwMoves;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Move", mappedBy="creater")
      * @var CreateMoves[]
      */
     protected $createMoves;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Move", mappedBy="closer")
      * @var CloseMoves[]
      */
@@ -63,18 +114,21 @@ class User implements AdvancedUserInterface, \Serializable
 
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\AgencyBundle\Entity\OperationRecord", mappedBy="user")
      * @var OperationRecord[]
      */
     protected $operation_records;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="UsersLog", mappedBy="user")
      * @var UsersLog[]
      */
     protected $users_logs;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="UsersHabit", mappedBy="user")
      * @var UsersHabit[]
      */
@@ -87,6 +141,7 @@ class User implements AdvancedUserInterface, \Serializable
     protected $store;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\StockTakeRecord", mappedBy="user")
      * @var StockTakeRecord[]
      */
@@ -146,8 +201,20 @@ class User implements AdvancedUserInterface, \Serializable
 
     public function __construct()
     {
-    $this->isActive = true;
-    $this->salt = md5(uniqid(null, true));
+        $this->isActive = true;
+        $this->salt = md5(uniqid(null, true));
+    }
+
+    /**
+     * 開發者自行新增之方法
+     * 
+     * Get roles
+     *
+     * @return \Woojin\UserBundle\Entity\Role
+     */
+    public function getRole()
+    {
+        return $this->roles;
     }
 
     /**
@@ -427,9 +494,22 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function setRoles(\Woojin\UserBundle\Entity\Role $roles = null)
     {
-    $this->roles = $roles;
-    
-    return $this;
+        $this->roles = $roles;
+        
+        return $this;
+    }
+
+    /**
+     * Set roles
+     *
+     * @param \Woojin\UserBundle\Entity\Role $roles
+     * @return User
+     */
+    public function setRole(\Woojin\UserBundle\Entity\Role $roles = null)
+    {
+        $this->roles = $roles;
+        
+        return $this;
     }
 
     /**
@@ -594,7 +674,7 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function getTheRoles()
     {
-    return $this->roles;
+        return $this->roles;
     }
 
     public function isAccountNonExpired()
@@ -614,7 +694,7 @@ class User implements AdvancedUserInterface, \Serializable
 
     public function isEnabled()
     {
-    return $this->isActive;
+        return $this->isActive;
     }
 
     /**
@@ -625,9 +705,9 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function setRolesId($rolesId)
     {
-    $this->roles_id = $rolesId;
+        $this->roles_id = $rolesId;
     
-    return $this;
+        return $this;
     }
 
     /**
@@ -637,7 +717,7 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function getRolesId()
     {
-    return $this->roles_id;
+        return $this->roles_id;
     }
 
     /**
@@ -648,9 +728,9 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function addOperationRecord(\Woojin\AgencyBundle\Entity\OperationRecord $operationRecord)
     {
-    $this->operation_records[] = $operationRecord;
+        $this->operation_records[] = $operationRecord;
     
-    return $this;
+        return $this;
     }
 
     /**
@@ -660,7 +740,7 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function removeOperationRecord(\Woojin\AgencyBundle\Entity\OperationRecord $operationRecord)
     {
-    $this->operation_records->removeElement($operationRecord);
+        $this->operation_records->removeElement($operationRecord);
     }
 
     /**
@@ -670,7 +750,7 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function getOperationRecords()
     {
-    return $this->operation_records;
+        return $this->operation_records;
     }
 
     /**
@@ -681,9 +761,9 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function addStockTakeRecord(\Woojin\StoreBundle\Entity\StockTakeRecord $stockTakeRecord)
     {
-    $this->stock_take_record[] = $stockTakeRecord;
+        $this->stock_take_record[] = $stockTakeRecord;
     
-    return $this;
+        return $this;
     }
 
     /**
@@ -693,7 +773,7 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function removeStockTakeRecord(\Woojin\StoreBundle\Entity\StockTakeRecord $stockTakeRecord)
     {
-    $this->stock_take_record->removeElement($stockTakeRecord);
+        $this->stock_take_record->removeElement($stockTakeRecord);
     }
 
     /**
@@ -703,7 +783,7 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function getStockTakeRecord()
     {
-    return $this->stock_take_record;
+        return $this->stock_take_record;
     }
 
     /**
@@ -881,5 +961,173 @@ class User implements AdvancedUserInterface, \Serializable
     public function getUsersHabits()
     {
         return $this->users_habits;
+    }
+
+    /**
+     * Add promotions
+     *
+     * @param \Woojin\GoodsBundle\Entity\Promotion $promotions
+     * @return User
+     */
+    public function addPromotion(\Woojin\GoodsBundle\Entity\Promotion $promotions)
+    {
+        $this->promotions[] = $promotions;
+    
+        return $this;
+    }
+
+    /**
+     * Remove promotions
+     *
+     * @param \Woojin\GoodsBundle\Entity\Promotion $promotions
+     */
+    public function removePromotion(\Woojin\GoodsBundle\Entity\Promotion $promotions)
+    {
+        $this->promotions->removeElement($promotions);
+    }
+
+    /**
+     * Get promotions
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPromotions()
+    {
+        return $this->promotions;
+    }
+
+    /**
+     * Add behalfs
+     *
+     * @param \Woojin\GoodsBundle\Entity\Behalf $behalfs
+     * @return User
+     */
+    public function addBehalf(\Woojin\GoodsBundle\Entity\Behalf $behalfs)
+    {
+        $this->behalfs[] = $behalfs;
+    
+        return $this;
+    }
+
+    /**
+     * Remove behalfs
+     *
+     * @param \Woojin\GoodsBundle\Entity\Behalf $behalfs
+     */
+    public function removeBehalf(\Woojin\GoodsBundle\Entity\Behalf $behalfs)
+    {
+        $this->behalfs->removeElement($behalfs);
+    }
+
+    /**
+     * Get behalfs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getBehalfs()
+    {
+        return $this->behalfs;
+    }
+
+    /**
+     * Get behalfs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getClues()
+    {
+        return $this->clues;
+    }
+
+    /**
+     * Get holidays
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getHolidays()
+    {
+        return $this->holidays;
+    }
+
+    /**
+     * Add holiday
+     *
+     * @param \Woojin\StoreBundle\Entity\Holiday $holiday
+     *
+     * @return User
+     */
+    public function addHoliday(\Woojin\StoreBundle\Entity\Holiday $holiday)
+    {
+        $this->holidays[] = $holiday;
+
+        return $this;
+    }
+
+    /**
+     * Remove holiday
+     *
+     * @param \Woojin\StoreBundle\Entity\Holiday $holiday
+     */
+    public function removeHoliday(\Woojin\StoreBundle\Entity\Holiday $holiday)
+    {
+        $this->holidays->removeElement($holiday);
+    }
+
+    /**
+     * Add clue
+     *
+     * @param \Woojin\UserBundle\Entity\AvenueClue $clue
+     *
+     * @return User
+     */
+    public function addClue(\Woojin\UserBundle\Entity\AvenueClue $clue)
+    {
+        $this->clues[] = $clue;
+
+        return $this;
+    }
+
+    /**
+     * Remove clue
+     *
+     * @param \Woojin\UserBundle\Entity\AvenueClue $clue
+     */
+    public function removeClue(\Woojin\UserBundle\Entity\AvenueClue $clue)
+    {
+        $this->clues->removeElement($clue);
+    }
+
+    /**
+     * Add auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     *
+     * @return User
+     */
+    public function addAuction(\Woojin\StoreBundle\Entity\Auction $auction)
+    {
+        $this->auctions[] = $auction;
+
+        return $this;
+    }
+
+    /**
+     * Remove auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     */
+    public function removeAuction(\Woojin\StoreBundle\Entity\Auction $auction)
+    {
+        $this->auctions->removeElement($auction);
+    }
+
+    /**
+     * Get auctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuctions()
+    {
+        return $this->auctions;
     }
 }

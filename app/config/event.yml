@@ -1,6 +1,0 @@
-services:
-    purchase.event:
-        class: 'Woojin\StoreBundle\Event\StoreSubscriber'
-        arguments: ['@factory.product', '@factory.order', '@factory.ope']
-        tags:
-            - { name: kernel.event_subscriber, event: store.purchase.in }

@@ -2,44 +2,68 @@
 namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Exclude;
+
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Woojin\StoreBundle\Entity\StoreRepository")
  * @ORM\Table(name="store")
  */
 class Store
 {
+    const STORE_BSO_ID = 9;
     /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="Auction", mappedBy="createStore")
+     * @var Auctions[]
+     */
+    protected $auctions;
+
+        /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="Auction", mappedBy="bsoStore")
+     * @var bsoAuctions[]
+     */
+    protected $bsoAuctions;
+
+    /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Move", mappedBy="from")
      * @var FromMoves[]
      */
     protected $fromMoves;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Move", mappedBy="destination")
      * @var DestinationMoves[]
      */
     protected $destinationMoves;
 
     /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\GoodsPassport", mappedBy="store")
      * @var GoodsPassports[]
      */
     protected $goodsPassports;
 
   /**
+   * @Exclude
    * @ORM\OneToMany(targetEntity="\Woojin\UserBundle\Entity\User", mappedBy="store")
    * @var User[]
    */
   protected $users;
 
   /**
+   * @Exclude
    * @ORM\OneToMany(targetEntity="\Woojin\OrderBundle\Entity\Custom", mappedBy="store")
    * @var Custom[]
    */
   protected $customs;
 
   /**
+   * @Exclude
    * @ORM\OneToMany(targetEntity="\Woojin\OrderBundle\Entity\Invoice", mappedBy="store")
    * @var Invoice[]
    */
@@ -93,10 +117,6 @@ class Store
    */
   protected $isShow;
 
-    public function __toString()
-    {
-        return $this->name;
-    }
     /**
      * Constructor
      */
@@ -107,6 +127,11 @@ class Store
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->customs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->invoices = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function getStockCheckFileName()
+    {
+        return 'stock_check_' . $this->getSn() . '.json';
     }
     
     /**
@@ -466,5 +491,111 @@ class Store
     public function getIsShow()
     {
         return $this->isShow;
+    }
+
+    /**
+     * Add goodsPassports
+     *
+     * @param \Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports
+     * @return Store
+     */
+    public function addGoodsPassport(\Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports)
+    {
+        $this->goodsPassports[] = $goodsPassports;
+    
+        return $this;
+    }
+
+    /**
+     * Remove goodsPassports
+     *
+     * @param \Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports
+     */
+    public function removeGoodsPassport(\Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports)
+    {
+        $this->goodsPassports->removeElement($goodsPassports);
+    }
+
+    /**
+     * Get goodsPassports
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGoodsPassports()
+    {
+        return $this->goodsPassports;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Add auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     *
+     * @return Store
+     */
+    public function addAuction(\Woojin\StoreBundle\Entity\Auction $auction)
+    {
+        $this->auctions[] = $auction;
+
+        return $this;
+    }
+
+    /**
+     * Remove auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     */
+    public function removeAuction(\Woojin\StoreBundle\Entity\Auction $auction)
+    {
+        $this->auctions->removeElement($auction);
+    }
+
+    /**
+     * Get auctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuctions()
+    {
+        return $this->auctions;
+    }
+
+    /**
+     * Add bsoAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $bsoAuction
+     *
+     * @return Store
+     */
+    public function addBsoAuction(\Woojin\StoreBundle\Entity\Auction $bsoAuction)
+    {
+        $this->bsoAuctions[] = $bsoAuction;
+
+        return $this;
+    }
+
+    /**
+     * Remove bsoAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $bsoAuction
+     */
+    public function removeBsoAuction(\Woojin\StoreBundle\Entity\Auction $bsoAuction)
+    {
+        $this->bsoAuctions->removeElement($bsoAuction);
+    }
+
+    /**
+     * Get bsoAuctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBsoAuctions()
+    {
+        return $this->bsoAuctions;
     }
 }

@@ -18,6 +18,7 @@ use Woojin\OrderBundle\Entity\Orders;
 use Woojin\StoreBundle\StoreEvents;
 use Woojin\StoreBundle\Event\PurchaseEvent;
 use Woojin\StoreBundle\Event\StoreSubscriber;
+use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
 
 /**
  * Store controller.
@@ -250,27 +251,10 @@ class StoreController extends Controller
      */
     public function eventTestAction()
     {
-        // 統一把事件集中在StoreBundle管理
-        // Those thing should did in an service,
-        // In avenue it should in Factory,
-        // use $em to save in controller
-        $order = new Orders();
+        $auctionService = $this->get('auction.service');
+        $auctionService->create(array());
 
-        // $dispatcher = new EventDispatcher();
-        
-        $dispatcher = $this->get('event_dispatcher');
-        $subscriber = new StoreSubscriber();
-        $dispatcher->addSubscriber($subscriber);
-        
-        $event = new PurchaseEvent($order);
-        $dispatcher->dispatch(StoreEvents::STORE_PURCHASE_IN, $event);
-        $order = $event->getOrder();
-        //$event->getDispatcher()->dispatch('log', $event);
-
-        echo $order->getRequired() . "<br />";
-        echo $order->getPaid();
-
-        return new Response(':');
+        return new Response('');
     }
 
     /**

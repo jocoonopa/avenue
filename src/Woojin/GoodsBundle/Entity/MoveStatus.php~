@@ -3,6 +3,7 @@
 namespace Woojin\GoodsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Woojin\Utility\Avenue\Avenue;
 
 /**
  * MoveStatus
@@ -111,5 +112,15 @@ class MoveStatus
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * Determoned move isModifyble
+     * 
+     * @return boolean
+     */
+    public function isModifyble()
+    {
+        return !in_array($this->id, array(Avenue::MV_COMPLETE, Avenue::MV_CANCEL, Avenue::MV_REJECT));
     }
 }

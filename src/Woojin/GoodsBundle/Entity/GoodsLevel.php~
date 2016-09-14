@@ -65,22 +65,14 @@ class GoodsLevel
         $this->secondhandCount = 0;
     }
 
-    public function getConvertName()
+    public function isNew()
     {
-        $cName = '二手商品';
+        return in_array($this->id, array(Avenue::GL_NEW, Avenue::GL_DEMO));
+    }
 
-        switch ($this->id)
-        {
-            case Avenue::GL_NEW:
-            case Avenue::GL_DEMO:
-                $cName = $this->name;
-                break;
-
-            default:
-                break;
-        }
-
-        return $cName;
+    public function getConvertName($convertName = '二手商品')
+    {
+        return $this->isNew() ? $this->name : $convertName;
     }
 
     /**

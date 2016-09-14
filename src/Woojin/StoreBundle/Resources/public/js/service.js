@@ -11,3 +11,13 @@ activityServices.factory('Activity', ['$resource',
     	update: { method: 'PUT'}
     });
 }]);
+
+var auctionServices = angular.module('auctionServices', ['ngResource']);
+
+auctionServices.factory('Auction', ['$resource',
+  function ($resource) {
+  return $resource(Routing.generate('api_auction_list') + '/:auctionId', null, 
+    {
+        update: { method: 'PUT'}
+    });
+}]);

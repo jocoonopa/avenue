@@ -14,7 +14,7 @@ class ResponseHandler
         $response = new Response($res);
         $response->setETag(md5($response->getContent()));
         $response->setPublic(); // make sure the response is public/cacheable
-        $response->headers->set('Content-type', $this->getContentType($_format));
+        $response->headers->set('Content-Type', $this->getContentType($_format));
         $response->isNotModified($request);
 
         return $response;
@@ -23,7 +23,7 @@ class ResponseHandler
     public function getNoncached(Request $request, $res, $_format = 'json')
     {
         $response = new Response($res);
-        $response->headers->set('Content-type', $this->getContentType($_format));
+        $response->headers->set('Content-Type', $this->getContentType($_format));
 
         return $response;
     }
@@ -31,7 +31,7 @@ class ResponseHandler
     public function getResponse($res, $_format)
     {
         $response = new Response($res);
-        $response->headers->set('Content-type', $this->getContentType($_format));
+        $response->headers->set('Content-Type', $this->getContentType($_format));
 
         return $response;
     }

@@ -1,4 +1,8 @@
 services:
+    # override symfony default, because we need the trans feature
+    test.client: 
+       class: Woojin\Utility\Test\TransactionalClient
+       arguments: ['@kernel']
     business.stock:
         class: Woojin\Service\Business\Stock
         arguments: ["@doctrine.orm.entity_manager"]
@@ -61,6 +65,7 @@ services:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
     zipper:
         class: Woojin\Utility\Helper\ZipHelper
+
     authority.judger:
         class: Woojin\Utility\Authority\AuthorityJudger
         arguments: ["@security.token_storage"]
@@ -68,6 +73,7 @@ services:
     seller:
         class: Woojin\Utility\Que\Sell\Seller
         arguments: ["@service_container", "@doctrine.orm.entity_manager", "@security.token_storage"]
+
     avenue.notifier:
         class: Woojin\Utility\Avenue\Notifier
         arguments: ["@doctrine.orm.entity_manager", "@swiftmailer.mailer", "@templating", "%mailer_user%"]
@@ -164,3 +170,19 @@ services:
     resolver.device:
         class: Woojin\Utility\Resolver\DeviceResolver
         arguments: ["@session", "@mobile_detect.mobile_detector"]
+
+    purchase.event:
+        class: 'Woojin\StoreBundle\Event\StoreSubscriber'
+        arguments: ['@factory.product', '@factory.order', '@factory.ope']
+        tags:
+            - { name: kernel.event_subscriber, event: store.purchase.in }
+
+    auction.service:
+        class: Woojin\Service\Store\AuctionService
+        arguments: ["@service_container", "@event_dispatcher"]
+
+    auction.subscriber:
+        class: 'Woojin\StoreBundle\Subscriber\AuctionSubscriber'
+        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+        tags:
+            - { name: kernel.event_subscriber}

@@ -53,7 +53,7 @@ class Pattern
     /**
      * @var integer
      * 
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $groupId;
 
@@ -296,5 +296,28 @@ class Pattern
     public function getUitoxName()
     {
         return $this->uitoxName;
+    }
+
+    /**
+     * Set groupId
+     *
+     * @param integer $groupId
+     * @return Pattern
+     */
+    public function setGroupId($groupId)
+    {
+        $this->groupId = $groupId;
+    
+        return $this;
+    }
+
+    /**
+     * Get groupId
+     *
+     * @return integer 
+     */
+    public function getGroupId()
+    {
+        return $this->groupId;
     }
 }

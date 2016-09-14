@@ -3,6 +3,8 @@
 namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * ExchangeRate
@@ -13,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 class ExchangeRate
 {
   /**
+   * @Exclude
    * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Store", mappedBy="exchange_rate")
    * @var Store[]
    */

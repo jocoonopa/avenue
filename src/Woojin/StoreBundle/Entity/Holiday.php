@@ -58,6 +58,10 @@ class Holiday
         $this->setUpdateAt(new \Datetime());
     }
 
+    public function getClassName()
+    {
+        return __CLASS__;
+    }
 
     /**
      * Get id

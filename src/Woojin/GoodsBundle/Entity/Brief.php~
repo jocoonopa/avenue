@@ -44,14 +44,41 @@ class Brief
         $rows = explode("\n", $this->content);
         
         foreach ($rows as $key => $row) {
-            if (($strCount + mb_strlen($row)) > $limitLength) {
+            if (($strCount + mb_strlen($row, 'utf-8')) > $limitLength) {
                 return $strCount;
             }
 
-            $strCount += mb_strlen($row);
+            $strCount += mb_strlen($row, 'utf-8');
         }
 
         return $strCount;
+    }
+
+    public function getBriefInLimit($limitLength = 255, $deli = ' ')
+    {
+        $strCount = 0;
+        $str = '';
+        $rows = explode("\n", $this->content);
+        
+        foreach ($rows as $key => $row) {
+            if (($strCount + mb_strlen($row, 'utf-8')) > $limitLength) {
+                return $str;
+            }
+
+            $strCount += mb_strlen($row, 'utf-8');
+            $str.= $deli . $row;
+        }
+
+        return $str;
+    }
+
+    public function getBriefFillRow($limitLength = 50)
+    {
+        $deli = '%%%###';
+
+        $str = $this->getBriefInLimit($limitLength, $deli);
+
+        return str_replace($deli, '', $str);
     }
 
     public function getOneBrief($rowNum)

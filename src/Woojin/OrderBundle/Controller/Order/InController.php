@@ -167,6 +167,7 @@ class InController extends Controller
             'status' => $em->find('WoojinGoodsBundle:GoodsStatus', ($request->request->get('isPreSale') == 1) ? Avenue::GS_PRESALE : Avenue::GS_ONSALE),
             'isAllowWeb' => $request->request->get('isAllowWeb', false),
             'isAllowCreditCard' => $request->request->get('isAllowCreditCard', false),
+            'isAllowAuction' => $request->request->get('isAllowAuction', false),
             'isBehalf' => $request->request->get('isBehalf', false),
             'description' => $description,
             'brief' => $brief,

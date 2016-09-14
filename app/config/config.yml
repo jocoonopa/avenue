@@ -2,7 +2,6 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: utility_service.yml }
-    - { resource: event.yml}
 
 framework:
     esi: { enabled: true }

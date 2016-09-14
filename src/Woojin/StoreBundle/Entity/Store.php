@@ -12,6 +12,21 @@ use JMS\Serializer\Annotation\Exclude;
  */
 class Store
 {
+    const STORE_BSO_ID = 9;
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="Auction", mappedBy="createStore")
+     * @var Auctions[]
+     */
+    protected $auctions;
+
+        /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="Auction", mappedBy="bsoStore")
+     * @var bsoAuctions[]
+     */
+    protected $bsoAuctions;
+
     /**
      * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\Move", mappedBy="from")
@@ -514,5 +529,73 @@ class Store
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * Add auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     *
+     * @return Store
+     */
+    public function addAuction(\Woojin\StoreBundle\Entity\Auction $auction)
+    {
+        $this->auctions[] = $auction;
+
+        return $this;
+    }
+
+    /**
+     * Remove auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     */
+    public function removeAuction(\Woojin\StoreBundle\Entity\Auction $auction)
+    {
+        $this->auctions->removeElement($auction);
+    }
+
+    /**
+     * Get auctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuctions()
+    {
+        return $this->auctions;
+    }
+
+    /**
+     * Add bsoAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $bsoAuction
+     *
+     * @return Store
+     */
+    public function addBsoAuction(\Woojin\StoreBundle\Entity\Auction $bsoAuction)
+    {
+        $this->bsoAuctions[] = $bsoAuction;
+
+        return $this;
+    }
+
+    /**
+     * Remove bsoAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $bsoAuction
+     */
+    public function removeBsoAuction(\Woojin\StoreBundle\Entity\Auction $bsoAuction)
+    {
+        $this->bsoAuctions->removeElement($bsoAuction);
+    }
+
+    /**
+     * Get bsoAuctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBsoAuctions()
+    {
+        return $this->bsoAuctions;
     }
 }

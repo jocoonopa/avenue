@@ -2,8 +2,10 @@
 
 /* Controllers */
 
-activityCtrl.controller( 'ActlistCtrl', ['$scope', '$http', 'Activity', 
+activityCtrl.controller('ActlistCtrl', ['$scope', '$http', 'Activity', 
   function ($scope, $http, Activity) {
+
+  document.title = '香榭國際精品館-特殊活動管理';
 
   $scope.activitys    = Activity.query();
   $scope.successMsg   = '';

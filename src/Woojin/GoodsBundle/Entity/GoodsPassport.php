@@ -52,6 +52,13 @@ class GoodsPassport
     private $productTl;
 
     /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="product")
+     * @var Auctions[]
+     **/
+    private $auctions;
+
+    /**
     * @ORM\ManyToOne(targetEntity="\Woojin\GoodsBundle\Entity\Desimg", inversedBy="goodsPassports")
     * @var Desimg
     */
@@ -288,6 +295,11 @@ class GoodsPassport
   protected $isAllowAuction;
 
   /**
+   * @ORM\Column(type="boolean")
+   */
+  protected $isAlanIn;
+
+  /**
    * @ORM\Column(type="string", length=40, nullable=true)
    */
   protected $seoWord;
@@ -306,6 +318,7 @@ class GoodsPassport
         $this->webPrice = 0;
         $this->isBehalf = false;
         $this->isAllowCreditCard = true;
+        $this->isAllowAuction = false;
     }
 
     /**
@@ -1813,5 +1826,77 @@ class GoodsPassport
     public function getIsAllowAuction()
     {
         return $this->isAllowAuction;
+    }
+
+    /**
+     * Add auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     *
+     * @return GoodsPassport
+     */
+    public function addAuction(\Woojin\StoreBundle\Entity\Auction $auction)
+    {
+        $this->auctions[] = $auction;
+
+        return $this;
+    }
+
+    /**
+     * Remove auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     */
+    public function removeAuction(\Woojin\StoreBundle\Entity\Auction $auction)
+    {
+        $this->auctions->removeElement($auction);
+    }
+
+    /**
+     * Get auctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuctions()
+    {
+        return $this->auctions;
+    }
+
+    /**
+     * Add bsoAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $bsoAuction
+     *
+     * @return GoodsPassport
+     */
+    public function addBsoAuction(\Woojin\StoreBundle\Entity\Auction $bsoAuction)
+    {
+        $this->bsoAuctions[] = $bsoAuction;
+
+        return $this;
+    }
+
+    /**
+     * Set isAlanIn
+     *
+     * @param boolean $isAlanIn
+     *
+     * @return GoodsPassport
+     */
+    public function setIsAlanIn($isAlanIn)
+    {
+        $this->isAlanIn = $isAlanIn;
+
+        return $this;
+    }
+
+    /**
+     * Get isAlanIn
+     *
+     * @return boolean
+     */
+    public function getIsAlanIn()
+    {
+        return $this->isAlanIn;
     }
 }

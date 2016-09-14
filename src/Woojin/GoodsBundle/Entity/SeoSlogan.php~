@@ -118,4 +118,37 @@ class SeoSlogan
     {
         return $this->products;
     }
+
+    /**
+     * Add products2
+     *
+     * @param \Woojin\GoodsBundle\Entity\GoodsPassport $products2
+     * @return SeoSlogan
+     */
+    public function addProducts2(\Woojin\GoodsBundle\Entity\GoodsPassport $products2)
+    {
+        $this->products2[] = $products2;
+    
+        return $this;
+    }
+
+    /**
+     * Remove products2
+     *
+     * @param \Woojin\GoodsBundle\Entity\GoodsPassport $products2
+     */
+    public function removeProducts2(\Woojin\GoodsBundle\Entity\GoodsPassport $products2)
+    {
+        $this->products2->removeElement($products2);
+    }
+
+    /**
+     * Get products2
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProducts2()
+    {
+        return $this->products2;
+    }
 }

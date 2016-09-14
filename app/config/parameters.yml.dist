@@ -6,6 +6,12 @@ parameters:
     database_name: dbname
     database_user: dbuser
     database_password: dbpassword
+    test_database_driver: pdo_mysql
+    test_database_host: localhost
+    test_database_port: null
+    test_database_name: dbname
+    test_database_user: dbuser
+    test_database_password: dbpassword
     mailer_transport: smtp
     mailer_host: null
     mailer_user: your@domain
@@ -30,3 +36,5 @@ parameters:
         sslversion: 3
         fresh_connect: false
 
+    test_username: YourUsername
+    test_password: YourPassword

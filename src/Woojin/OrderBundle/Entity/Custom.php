@@ -68,6 +68,20 @@ class Custom
     protected $invoices;
 
     /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="buyer")
+     * @var BuyActions[]
+     */
+    protected $buyActions;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="seller")
+     * @var SellActions[]
+     */
+    protected $sellActions;
+
+    /**
      * @ORM\ManyToOne(targetEntity="\Woojin\StoreBundle\Entity\Store", inversedBy="customs")
      * @var Store
      */
@@ -1148,5 +1162,73 @@ class Custom
     public function getGoogleToken()
     {
         return $this->googleToken;
+    }
+
+    /**
+     * Add buyAction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $buyAction
+     *
+     * @return Custom
+     */
+    public function addBuyAction(\Woojin\StoreBundle\Entity\Auction $buyAction)
+    {
+        $this->buyActions[] = $buyAction;
+
+        return $this;
+    }
+
+    /**
+     * Remove buyAction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $buyAction
+     */
+    public function removeBuyAction(\Woojin\StoreBundle\Entity\Auction $buyAction)
+    {
+        $this->buyActions->removeElement($buyAction);
+    }
+
+    /**
+     * Get buyActions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBuyActions()
+    {
+        return $this->buyActions;
+    }
+
+    /**
+     * Add sellAction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $sellAction
+     *
+     * @return Custom
+     */
+    public function addSellAction(\Woojin\StoreBundle\Entity\Auction $sellAction)
+    {
+        $this->sellActions[] = $sellAction;
+
+        return $this;
+    }
+
+    /**
+     * Remove sellAction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $sellAction
+     */
+    public function removeSellAction(\Woojin\StoreBundle\Entity\Auction $sellAction)
+    {
+        $this->sellActions->removeElement($sellAction);
+    }
+
+    /**
+     * Get sellActions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSellActions()
+    {
+        return $this->sellActions;
     }
 }

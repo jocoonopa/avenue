@@ -4,6 +4,7 @@ namespace Woojin\Utility\Avenue;
 
 abstract class Avenue
 {
+    const IS_ERROR                  = 0;
     const IS_SUCCESS                = 1;
 
     //BRAND order                   : hermes chanel lv gucci paris cloe ysl parada
@@ -31,6 +32,8 @@ abstract class Avenue
     const GS_ACTIVITY               = 6;
     const GS_BEHALF                 = 7;
     const GS_GETBACK                = 8;
+    const GS_BSO_ONBOARD            = 9;
+    const GS_BSO_SOLD               = 10;
 
     const OS_HANDLING               = 1;
     const OS_COMPLETE               = 2;

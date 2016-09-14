@@ -90,12 +90,14 @@
 	{% if app.user|has_auth('ACTIVITY_SELL') or app.user|has_auth('ACTIVITY_MANAGE') %}
 		<div id="orders-specialSell">
 			{% if app.user|has_auth('ACTIVITY_SELL') %}
-				<a href="{{ path('order_special_sale') }}" target="_blank" >前往特殊銷貨</a><p>&nbsp;</p>
+				<a href="{{ path('order_special_sale') }}" target="_blank" >前往特殊銷貨</a><br>
 			{% endif %}
 
 			{% if app.user|has_auth('ACTIVITY_MANAGE') %}
-				<a href="{{ path('activity') }}" target="_blank" >前往活動管理</a>
+				<a href="{{ path('activity') }}" target="_blank" >前往活動管理</a><br>
 			{% endif %}
+
+			<a href="{{ path('auction') }}#/auction" target="_blank" >前往BSO管理</a>
 		</div>
 	{% endif %}
 		

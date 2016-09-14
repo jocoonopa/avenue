@@ -7,7 +7,8 @@ var myApp = angular.module('myApp', [
   'ngAnimate',
   'ngSanitize', // for ngBindhtml
   'activityServices',
-  'activityCtrl'
+  'activityCtrl',
+  'auctionCtrl'
 ]);
 
 myApp.config(['$routeProvider', '$httpProvider',
@@ -20,6 +21,10 @@ myApp.config(['$routeProvider', '$httpProvider',
     when('/activity/:activityId', {
       templateUrl: Routing.generate('activity_template_detail'),
       controller: 'ActDetailCtrl'
+    }).
+    when('/auction', {
+      templateUrl: Routing.generate('auction_template_list'),
+      controller: 'AuctionPunchCtrl'
     }).
     otherwise({
       redirectTo: '/activity'

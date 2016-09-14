@@ -31,7 +31,11 @@
         "klaussilveira/simple-shm": "*",
         "suncat/mobile-detect-bundle": "1.0.*",
         "facebook/graph-sdk": "*",
-        "google/apiclient": "1.0.*@beta"
+        "google/apiclient": "1.0.*@beta",
+        "phpunit/phpunit": "4.8.*",
+        "phpunit/dbunit": ">=1.2",
+        "phpunit/phpunit-selenium": ">=1.2",
+        "mockery/mockery": "dev-master"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev"

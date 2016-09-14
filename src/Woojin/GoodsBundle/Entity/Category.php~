@@ -11,7 +11,7 @@ use JMS\Serializer\Annotation\Exclude;
  * Category
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Woojin\GoodsBundle\Entity\CategoryRepository")
  */
 class Category
 {

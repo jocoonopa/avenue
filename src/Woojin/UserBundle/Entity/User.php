@@ -17,6 +17,20 @@ class User implements AdvancedUserInterface, \Serializable
 {
     /**
      * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="backer")
+     * @var backAuctions[]
+     */
+    protected $backAuctions;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="canceller")
+     * @var cancelAuctions[]
+     */
+    protected $cancelAuctions;
+
+    /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Holiday", mappedBy="user")
      * @var holidays[]
      */
@@ -35,6 +49,13 @@ class User implements AdvancedUserInterface, \Serializable
      * @var Behalfs[]
      */
     protected $behalfs;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="creater")
+     * @var Auctions[]
+     */
+    protected $auctions;
 
     /**
      * @Exclude
@@ -1026,5 +1047,155 @@ class User implements AdvancedUserInterface, \Serializable
     public function getHolidays()
     {
         return $this->holidays;
+    }
+
+    /**
+     * Add holiday
+     *
+     * @param \Woojin\StoreBundle\Entity\Holiday $holiday
+     *
+     * @return User
+     */
+    public function addHoliday(\Woojin\StoreBundle\Entity\Holiday $holiday)
+    {
+        $this->holidays[] = $holiday;
+
+        return $this;
+    }
+
+    /**
+     * Remove holiday
+     *
+     * @param \Woojin\StoreBundle\Entity\Holiday $holiday
+     */
+    public function removeHoliday(\Woojin\StoreBundle\Entity\Holiday $holiday)
+    {
+        $this->holidays->removeElement($holiday);
+    }
+
+    /**
+     * Add clue
+     *
+     * @param \Woojin\UserBundle\Entity\AvenueClue $clue
+     *
+     * @return User
+     */
+    public function addClue(\Woojin\UserBundle\Entity\AvenueClue $clue)
+    {
+        $this->clues[] = $clue;
+
+        return $this;
+    }
+
+    /**
+     * Remove clue
+     *
+     * @param \Woojin\UserBundle\Entity\AvenueClue $clue
+     */
+    public function removeClue(\Woojin\UserBundle\Entity\AvenueClue $clue)
+    {
+        $this->clues->removeElement($clue);
+    }
+
+    /**
+     * Add auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     *
+     * @return User
+     */
+    public function addAuction(\Woojin\StoreBundle\Entity\Auction $auction)
+    {
+        $this->auctions[] = $auction;
+
+        return $this;
+    }
+
+    /**
+     * Remove auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     */
+    public function removeAuction(\Woojin\StoreBundle\Entity\Auction $auction)
+    {
+        $this->auctions->removeElement($auction);
+    }
+
+    /**
+     * Get auctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuctions()
+    {
+        return $this->auctions;
+    }
+
+    /**
+     * Add backAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $backAuction
+     *
+     * @return User
+     */
+    public function addBackAuction(\Woojin\StoreBundle\Entity\Auction $backAuction)
+    {
+        $this->backAuctions[] = $backAuction;
+
+        return $this;
+    }
+
+    /**
+     * Remove backAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $backAuction
+     */
+    public function removeBackAuction(\Woojin\StoreBundle\Entity\Auction $backAuction)
+    {
+        $this->backAuctions->removeElement($backAuction);
+    }
+
+    /**
+     * Get backAuctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBackAuctions()
+    {
+        return $this->backAuctions;
+    }
+
+    /**
+     * Add cancelAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $cancelAuction
+     *
+     * @return User
+     */
+    public function addCancelAuction(\Woojin\StoreBundle\Entity\Auction $cancelAuction)
+    {
+        $this->cancelAuctions[] = $cancelAuction;
+
+        return $this;
+    }
+
+    /**
+     * Remove cancelAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $cancelAuction
+     */
+    public function removeCancelAuction(\Woojin\StoreBundle\Entity\Auction $cancelAuction)
+    {
+        $this->cancelAuctions->removeElement($cancelAuction);
+    }
+
+    /**
+     * Get cancelAuctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCancelAuctions()
+    {
+        return $this->cancelAuctions;
     }
 }

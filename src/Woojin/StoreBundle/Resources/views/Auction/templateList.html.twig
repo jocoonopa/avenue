@@ -1,0 +1,28 @@
+<div ng-controller="AuctionPunchCtrl" class="bs-example bs-example-tabs">
+  
+  <h2>刷入刷出BSO</h2>
+  
+  <ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+      <a ng-tab href="#punch-in" data-toggle="tab">刷入BSO</a>
+    </li>
+    <li>
+      <a ng-tab href="#punch-out" data-toggle="tab">刷回店內</a>
+    </li>
+    <li>
+      <a ng-tab href="#products" data-toggle="tab">本店尚在BSO處理的商品</a>
+    </li>
+  </ul>
+  
+  <div class="tab-content">
+
+    {% include 'WoojinStoreBundle:Auction/tab:punchIn.html.twig' %}
+    {% include 'WoojinStoreBundle:Auction/tab:punchOut.html.twig' %}
+    {% include 'WoojinStoreBundle:Auction/tab:products.html.twig' %}
+    
+  </div>
+  
+  {% include 'WoojinStoreBundle:Auction/component:modal.html.twig' %}
+
+</div>
+

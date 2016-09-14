@@ -68,6 +68,20 @@ class Custom
     protected $invoices;
 
     /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="buyer")
+     * @var BuyActions[]
+     */
+    protected $buyActions;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="seller")
+     * @var SellActions[]
+     */
+    protected $sellActions;
+
+    /**
      * @ORM\ManyToOne(targetEntity="\Woojin\StoreBundle\Entity\Store", inversedBy="customs")
      * @var Store
      */
@@ -150,7 +164,7 @@ class Custom
      *     message = "'{{ value }}' 不是一個合法的信箱",
      *     checkMX = true
      * )
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=30, nullable=true)
      */
     protected $bkemail;
 
@@ -311,6 +325,23 @@ class Custom
 
         $this->email = $userNode['email'];
         $this->name = $userNode['name'];
+        $this->fbToken = $userNode['id'];
+        //$this->sex = $fb->getSex();
+        //$this->birthday = $fb->getBirthday();
+        $this->isActive = true;
+        $this->address = '';
+        $this->mobil = '';
+
+        return $this;
+    }
+
+    public function handleGoogleResponse(array $node)
+    {
+        $this->sex = '保密';
+
+        $this->email = $node['email'];
+        $this->name = $node['name'];
+        $this->googleToken = $node['sub'];
         //$this->sex = $fb->getSex();
         //$this->birthday = $fb->getBirthday();
         $this->isActive = true;
@@ -1062,5 +1093,74 @@ class Custom
     public function getBenefits()
     {
         return $this->benefits;
+    }
+
+    /**
+     * Set bkemail
+     *
+     * @param string $bkemail
+     * @return Custom
+     */
+    public function setBkemail($bkemail)
+    {
+        $this->bkemail = $bkemail;
+    
+        return $this;
+    }
+
+    /**
+     * Get bkemail
+     *
+     * @return string 
+     */
+    public function getBkemail()
+    {
+        return $this->bkemail;
+    }
+
+    /**
+     * Set fbToken
+     *
+     * @param string $fbToken
+     * @return Custom
+     */
+    public function setFbToken($fbToken)
+    {
+        $this->fbToken = $fbToken;
+    
+        return $this;
+    }
+
+    /**
+     * Get fbToken
+     *
+     * @return string 
+     */
+    public function getFbToken()
+    {
+        return $this->fbToken;
+    }
+
+    /**
+     * Set googleToken
+     *
+     * @param string $googleToken
+     * @return Custom
+     */
+    public function setGoogleToken($googleToken)
+    {
+        $this->googleToken = $googleToken;
+    
+        return $this;
+    }
+
+    /**
+     * Get googleToken
+     *
+     * @return string 
+     */
+    public function getGoogleToken()
+    {
+        return $this->googleToken;
     }
 }

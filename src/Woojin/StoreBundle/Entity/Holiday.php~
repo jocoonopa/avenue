@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Woojin\StoreBundle\Entity\HolidayRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Holiday
 {
@@ -48,6 +49,19 @@ class Holiday
      */
     private $updateAt;
 
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function autoSetUpdateAt()
+    {
+        $this->setUpdateAt(new \Datetime());
+    }
+
+    public function getClassName()
+    {
+        return __CLASS__;
+    }
 
     /**
      * Get id
@@ -126,5 +140,28 @@ class Holiday
     public function getUpdateAt()
     {
         return $this->updateAt;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Woojin\UserBundle\Entity\User $user
+     * @return Holiday
+     */
+    public function setUser(\Woojin\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+    
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Woojin\UserBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }
