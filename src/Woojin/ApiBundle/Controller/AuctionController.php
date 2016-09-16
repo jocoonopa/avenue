@@ -58,7 +58,7 @@ class AuctionController extends Controller
          * 
          * @var array
          */
-        $unValid = $this->execValidate($this->getNewActionValidaters(array($product)));
+        $unValid = $this->execValidaters($this->getNewActionValidaters(array($product)));
 
         if (!empty($unValid)) {
             return $this->_getResponse($unValid, $_format);
@@ -94,7 +94,7 @@ class AuctionController extends Controller
          * 
          * @var array
          */
-        $unValid = $this->execValidate($this->getBackActionValidaters(array($product, $auction, $user)));
+        $unValid = $this->execValidaters($this->getBackActionValidaters(array($product, $auction, $user)));
         
         if (!empty($unValid)) {
             return $this->_getResponse($unValid, $_format);
@@ -132,7 +132,7 @@ class AuctionController extends Controller
          * 
          * @var array
          */
-        $unValid = $this->execValidate($this->getSoldActionValidaters(array($product, $auction, $user, $custom)));
+        $unValid = $this->execValidaters($this->getSoldActionValidaters(array($product, $auction, $user, $custom)));
         
         if (!empty($unValid)) {
             return $this->_getResponse($unValid, $_format);
@@ -168,7 +168,7 @@ class AuctionController extends Controller
          * 
          * @var array
          */
-        $unValid = $this->execValidate($this->getCancelActionValidaters(array($product, $auction, $user)));
+        $unValid = $this->execValidaters($this->getCancelActionValidaters(array($product, $auction, $user)));
         
         if (!empty($unValid)) {
             return $this->_getResponse($unValid, $_format);
@@ -234,7 +234,7 @@ class AuctionController extends Controller
      */
     protected function isProductOnSale(GoodsPassport $product)
     {
-        return Avenue::GS_ONSALE === $product->getStatus()->getId();
+        return $product->isProductOnSale();
     }
 
     /**
@@ -245,7 +245,18 @@ class AuctionController extends Controller
      */
     protected function isProductBsoOnBoard(GoodsPassport $product)
     {
-        return Avenue::GS_BSO_ONBOARD === $product->getStatus()->getId();
+        return $product->isProductBsoOnBoard();
+    }
+
+    /**
+     * Is product has uploaded to Yahoo
+     * 
+     * @param  \Woojin\GoodsBundle\Entity\GoodsPassport  $product
+     * @return boolean   
+     */
+    protected function isNotYahooProduct(GoodsPassport $product)
+    {
+        return !$product->isYahooProduct();
     }
 
     /**
@@ -257,7 +268,7 @@ class AuctionController extends Controller
      */
     protected function isProductBelongStoreUser(User $user, GoodsPassport $product)
     {
-        return $user->getStore()->getSn() === substr($product->getSn(), 0, 1);
+        return $product->isOwnProduct($user);
     }
 
     /**
@@ -268,7 +279,7 @@ class AuctionController extends Controller
      */
     protected function isProductBsoSold(GoodsPassport $product)
     {
-        return Avenue::GS_BSO_SOLD === $product->getStatus()->getId();
+        return $product->isProductBsoSold();
     }
 
     /**
@@ -282,7 +293,7 @@ class AuctionController extends Controller
         return $auction instanceof Auction;
     }
 
-    protected function execValidate(array $validaters)
+    protected function execValidaters(array $validaters)
     {
         foreach ($validaters as $methodName => $regists) {
             if (!call_user_func_array(array($this, $methodName), $regists['params'])) {
@@ -316,6 +327,13 @@ class AuctionController extends Controller
                 'response' => array(
                     'status' => Avenue::IS_ERROR, 
                     'msg' => $this->get('translator')->trans('ProductStatusIsNotOnBoard'), 
+                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
+            )),
+            'isNotYahooProduct' => array(
+                'params' => array($product),
+                'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductIsOnYahooStore'), 
                     'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
             ))
         );

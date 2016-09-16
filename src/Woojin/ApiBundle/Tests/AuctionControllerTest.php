@@ -34,12 +34,12 @@ class AuctionControllerTest extends AuthControllerTest
         $responseArr = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'));
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
         $this->assertTrue(array_key_exists('status', $responseArr));
         $this->assertSame(Avenue::IS_SUCCESS, $responseArr['status']);
-   
         $this->assertTrue(array_key_exists('auction', $responseArr) && array_key_exists('product', $responseArr['auction']) && array_key_exists('status', $responseArr['auction']['product']));
         $this->assertSame(Avenue::GS_BSO_ONBOARD, $responseArr['auction']['product']['status']['id']);
+        $this->assertFalse(array_key_exists('yahoo_id', $responseArr['auction']['product']));
     }
 
     public function testBackAction()
@@ -103,9 +103,4 @@ class AuctionControllerTest extends AuthControllerTest
         $this->assertSame(Avenue::IS_SUCCESS, $responseArr['status'], $this->client->getResponse()->getContent());
     }
 }
-
-
-
-
-
 

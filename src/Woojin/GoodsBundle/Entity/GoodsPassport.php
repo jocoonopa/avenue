@@ -466,6 +466,36 @@ class GoodsPassport
     }
 
     /**
+     * Check whether the product status is on board or not
+     * 
+     * @return boolean         
+     */
+    public function isProductOnSale()
+    {
+        return Avenue::GS_ONSALE === $this->getStatus()->getId();
+    }
+
+    /**
+     * Is product status_id equal to Avenue::GS_BSO_ONBOARD?
+     * 
+     * @return boolean         
+     */
+    public function isProductBsoOnBoard()
+    {
+        return Avenue::GS_BSO_ONBOARD === $this->getStatus()->getId();
+    }
+
+    /**
+     * Is product status_id equal to Avenue::GS_BSO_SOLD
+     * 
+     * @return boolean              
+     */
+    public function isProductBsoSold()
+    {
+        return Avenue::GS_BSO_SOLD === $this->getStatus()->getId();
+    }
+
+    /**
      * isOwnProduct 的簡短版
      * 
      * @param  User    $user
@@ -485,7 +515,17 @@ class GoodsPassport
     public function isOwnProduct(User $user)
     {
         return $user->getStore()->getSn() === substr($this->getSn(), 0, 1);
-    }  
+    }
+
+    /**
+     * 檢查商品是否已經同不到Yahoo商城
+     * 
+     * @return boolean
+     */
+    public function isYahooProduct()
+    {
+        return NULL !== $this->getYahooId();
+    }
 
     /**
      * 取得Uitox商品規格資訊
