@@ -81,18 +81,22 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
     public function testOnSoldAuction()
     {    
         $mockPrice = 100;
-        $this->entityManager->shouldReceive('persist', 'flush')->once();
-
-        $this->event->setAuction($this->auction)->setOptions(array(
-            'buyer' => $this->custom, 
+        $options = array(
+            'buyer' => $this->custom,
+            'bsser' => $this->user, 
             'soldAt' => new \DateTime,
             'price' => $mockPrice
-        ));
+        );
+
+        $this->entityManager->shouldReceive('persist', 'flush')->once();
+        $this->auction->shouldReceive('sold')->once()->with($options)->passthru();
+        $this->event->setAuction($this->auction)->setOptions($options);
 
         $subscriber = new AuctionSubscriber($this->entityManager);
         $subscriber->onSold($this->event);
 
         $this->assertEquals($mockPrice, $this->event->getAuction()->getPrice());
+        $this->assertTrue($this->event->getAuction()->getBsser() instanceof  \Woojin\UserBundle\Entity\User);
         $this->assertTrue($this->event->getAuction()->getSoldAt() instanceof \DateTime);
         $this->assertTrue($this->event->getAuction()->getBuyer() instanceof \Woojin\OrderBundle\Entity\Custom);
         $this->assertSame(Auction::STATUS_SOLD, $this->event->getAuction()->getStatus());

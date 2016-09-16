@@ -17,6 +17,13 @@ class User implements AdvancedUserInterface, \Serializable
 {
     /**
      * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="bsser")
+     * @var bssAuctions[]
+     */
+    protected $bssAuctions;
+
+    /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="backer")
      * @var backAuctions[]
      */
@@ -1129,5 +1136,73 @@ class User implements AdvancedUserInterface, \Serializable
     public function getAuctions()
     {
         return $this->auctions;
+    }
+
+    /**
+     * Add backAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $backAuction
+     *
+     * @return User
+     */
+    public function addBackAuction(\Woojin\StoreBundle\Entity\Auction $backAuction)
+    {
+        $this->backAuctions[] = $backAuction;
+
+        return $this;
+    }
+
+    /**
+     * Remove backAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $backAuction
+     */
+    public function removeBackAuction(\Woojin\StoreBundle\Entity\Auction $backAuction)
+    {
+        $this->backAuctions->removeElement($backAuction);
+    }
+
+    /**
+     * Get backAuctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBackAuctions()
+    {
+        return $this->backAuctions;
+    }
+
+    /**
+     * Add cancelAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $cancelAuction
+     *
+     * @return User
+     */
+    public function addCancelAuction(\Woojin\StoreBundle\Entity\Auction $cancelAuction)
+    {
+        $this->cancelAuctions[] = $cancelAuction;
+
+        return $this;
+    }
+
+    /**
+     * Remove cancelAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $cancelAuction
+     */
+    public function removeCancelAuction(\Woojin\StoreBundle\Entity\Auction $cancelAuction)
+    {
+        $this->cancelAuctions->removeElement($cancelAuction);
+    }
+
+    /**
+     * Get cancelAuctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCancelAuctions()
+    {
+        return $this->cancelAuctions;
     }
 }

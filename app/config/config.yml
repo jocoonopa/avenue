@@ -21,7 +21,7 @@ framework:
     session:         
         cookie_lifetime: 7200
     fragments: { path: /_fragment }
-    translator: ~
+    translator: {fallbacks: [zh_tw]}
 
 # Twig Configuration
 twig:

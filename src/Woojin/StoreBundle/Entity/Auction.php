@@ -133,6 +133,11 @@ class Auction
     private $canceller;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Woojin\UserBundle\Entity\User", inversedBy="bssAuctions")
+     */
+    private $bsser;
+
+    /**
      * @ORM\PrePersist
      */
     public function autoSetCreateAt()
@@ -613,5 +618,29 @@ class Auction
     public function getCanceller()
     {
         return $this->canceller;
+    }
+
+    /**
+     * Set bsser
+     *
+     * @param \Woojin\UserBundle\Entity\User $bsser
+     *
+     * @return Auction
+     */
+    public function setBsser(\Woojin\UserBundle\Entity\User $bsser = null)
+    {
+        $this->bsser = $bsser;
+
+        return $this;
+    }
+
+    /**
+     * Get bsser
+     *
+     * @return \Woojin\UserBundle\Entity\User
+     */
+    public function getBsser()
+    {
+        return $this->bsser;
     }
 }

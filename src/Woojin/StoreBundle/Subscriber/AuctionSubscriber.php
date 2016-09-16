@@ -188,6 +188,7 @@ class AuctionSubscriber implements EventSubscriberInterface
         $this->getResolver()
             ->setRequired('price')
             ->setRequired('buyer')
+            ->setRequired('bsser')
             ->setRequired('soldAt')
         ;
     }

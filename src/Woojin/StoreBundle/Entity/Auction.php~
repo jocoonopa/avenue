@@ -3,6 +3,7 @@
 namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Woojin\Utility\Avenue\Avenue;
 
 /**
  * Auction
@@ -132,6 +133,11 @@ class Auction
     private $canceller;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Woojin\UserBundle\Entity\User", inversedBy="bssAuctions")
+     */
+    private $bsser;
+
+    /**
      * @ORM\PrePersist
      */
     public function autoSetCreateAt()
@@ -170,6 +176,54 @@ class Auction
     {
         $this->status = self::STATUS_BACK_TO_STORE;
         $this->backer = $options['backer'];
+
+        return $this;
+    }
+
+    public function sold(array $options)
+    {
+        return $this
+            ->setStatus(Auction::STATUS_SOLD)
+            ->setPrice($options['price'])
+            ->setBuyer($options['buyer'])
+            ->setSoldAt($options['soldAt'])
+        ;
+    }
+
+    public function cancel(array $options)
+    {
+        return $this
+            ->setStatus(self::STATUS_ORDER_CANCEL)
+            ->setCanceller($options['canceller'])
+        ;
+    }
+
+    public function assign()
+    {
+        return $this;
+    }
+
+    public function pay()
+    {
+        return $this;
+    }
+
+    public static function fetchProductStatusId($statusCode)
+    {
+        $map = array(
+            static::STATUS_ONBOARD => Avenue::GS_BSO_ONBOARD,
+            static::STATUS_SOLD => Avenue::GS_BSO_SOLD,
+            static::STATUS_PAYED => Avenue::GS_BSO_SOLD,
+            static::STATUS_PROFIT_ASSIGN_COMPLETE => Avenue::GS_BSO_SOLD,
+            static::STATUS_BACK_TO_STORE => Avenue::GS_ONSALE,
+            static::STATUS_ORDER_CANCEL => Avenue::GS_BSO_ONBOARD
+        );
+
+        if (!array_key_exists($statusCode, $map)) {
+            throw new \Exception('Not valid product status code found!');
+        }
+
+        return $map[$statusCode];
     }
 
     /**
@@ -516,5 +570,53 @@ class Auction
     public function getSoldAt()
     {
         return $this->soldAt;
+    }
+
+    /**
+     * Set backer
+     *
+     * @param \Woojin\UserBundle\Entity\User $backer
+     *
+     * @return Auction
+     */
+    public function setBacker(\Woojin\UserBundle\Entity\User $backer = null)
+    {
+        $this->backer = $backer;
+
+        return $this;
+    }
+
+    /**
+     * Get backer
+     *
+     * @return \Woojin\UserBundle\Entity\User
+     */
+    public function getBacker()
+    {
+        return $this->backer;
+    }
+
+    /**
+     * Set canceller
+     *
+     * @param \Woojin\UserBundle\Entity\User $canceller
+     *
+     * @return Auction
+     */
+    public function setCanceller(\Woojin\UserBundle\Entity\User $canceller = null)
+    {
+        $this->canceller = $canceller;
+
+        return $this;
+    }
+
+    /**
+     * Get canceller
+     *
+     * @return \Woojin\UserBundle\Entity\User
+     */
+    public function getCanceller()
+    {
+        return $this->canceller;
     }
 }

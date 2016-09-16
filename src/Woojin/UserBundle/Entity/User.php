@@ -17,6 +17,13 @@ class User implements AdvancedUserInterface, \Serializable
 {
     /**
      * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="bsser")
+     * @var bssAuctions[]
+     */
+    protected $bssAuctions;
+
+    /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="backer")
      * @var backAuctions[]
      */
@@ -1197,5 +1204,39 @@ class User implements AdvancedUserInterface, \Serializable
     public function getCancelAuctions()
     {
         return $this->cancelAuctions;
+    }
+
+    /**
+     * Add bssAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $bssAuction
+     *
+     * @return User
+     */
+    public function addBssAuction(\Woojin\StoreBundle\Entity\Auction $bssAuction)
+    {
+        $this->bssAuctions[] = $bssAuction;
+
+        return $this;
+    }
+
+    /**
+     * Remove bssAuction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $bssAuction
+     */
+    public function removeBssAuction(\Woojin\StoreBundle\Entity\Auction $bssAuction)
+    {
+        $this->bssAuctions->removeElement($bssAuction);
+    }
+
+    /**
+     * Get bssAuctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBssAuctions()
+    {
+        return $this->bssAuctions;
     }
 }

@@ -4,9 +4,12 @@ namespace Woojin\Service\Store;
 
 use Woojin\OrderBundle\Entity\Custom;
 use Woojin\StoreBundle\Entity\Auction;
-use Woojin\Utility\Avenue;
+use Woojin\StoreBundle\Event\AuctionBackEvent;
 use Woojin\StoreBundle\Event\AuctionCreateEvent;
+use Woojin\StoreBundle\Event\AuctionSoldEvent;
+use Woojin\StoreBundle\Event\AuctionCancelEvent;
 use Woojin\StoreBundle\AuctionEvents;
+use Woojin\Utility\Avenue;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -17,8 +20,6 @@ class AuctionService
     protected $auction;
     protected $dispatcher;
     protected $container;
-    protected $security;
-    protected $em;
     protected $connection;
     
     public function __construct(ContainerInterface $container, EventDispatcherInterface $dispatcher)
@@ -46,12 +47,14 @@ class AuctionService
 
             $event = $this->getDispatcher()->dispatch(AuctionEvents::CREATE, $event);
             $this->getConnection()->commit();
-
+            
+            $this->setAuction($event->getAuction());
+            
             return $event->getAuction();
         } catch (\Exception $e) {
             $this->getConnection()->rollback();
 
-            echo $e->getMessage();
+            return NULL;
         }
     }
 
@@ -62,12 +65,21 @@ class AuctionService
      */
     public function back(array $options)
     {
-        $event = new AuctionBackEvent();
-        $event->setAuction($this->getAuction())->setOptions($options);
+        $this->getConnection()->beginTransaction();
+        try {
+            $event = new AuctionBackEvent();
 
-        $this->getDispatcher()->dispatch(AuctionEvents::BACK, $event);
+            $event->setAuction($this->getAuction())->setOptions($options);
 
-        return $event->getAuction();
+            $this->getDispatcher()->dispatch(AuctionEvents::BACK, $event);
+            $this->getConnection()->commit();
+
+            return $event->getAuction();
+        } catch (\Exception $e) {
+            $this->getConnection()->rollback();
+
+            return NULL;
+        }
     }
 
     /**
@@ -77,32 +89,66 @@ class AuctionService
      */
     public function sold(array $options)
     {
-        $event = new AuctionSoldEvent();
-        $event->setAuction($this->getAuction())->setOptions($options);
+        $this->getConnection()->beginTransaction();
+        try {
+            $event = new AuctionSoldEvent();
+            $event->setAuction($this->getAuction())->setOptions($options);
 
-        $this->getDispatcher()->dispatch(AuctionEvents::SOLD, $event);
+            $this->getDispatcher()->dispatch(AuctionEvents::SOLD, $event);
+            $this->getConnection()->commit();
+            
+            return $event->getAuction();
+        } catch (\Exception $e) {
+            $this->getConnection()->rollback();
+
+            return NULL;
+        }
     }
 
     /**
      * 客戶付費
+     *
+     * @deprecated
      */
     public function pay()
     {
-        $event = new AuctionPayEvent();
-        $event->setAuction($this->getAuction())->setOptions($options);
+        $this->getConnection()->beginTransaction();
+        try {
+            $event = new AuctionPayEvent();
+            $event->setAuction($this->getAuction())->setOptions($options);
 
-        $this->getDispatcher()->dispatch(AuctionEvents::PAY, $event);
+            $this->getDispatcher()->dispatch(AuctionEvents::PAY, $event);
+            $this->getConnection()->commit();
+            
+            return $event->getAuction();
+        } catch (\Exception $e) {
+            $this->getConnection()->rollback();
+
+            return NULL;
+        }
     }
 
     /**
      * 毛利分配
+     *
+     * @deprecated
      */
     public function assign()
     {
-        $event = new AuctionAssignEvent();
-        $event->setAuction($this->getAuction())->setOptions($options);
+        $this->getConnection()->beginTransaction();
+        try {
+            $event = new AuctionAssignEvent();
+            $event->setAuction($this->getAuction())->setOptions($options);
 
-        $this->getDispatcher()->dispatch(AuctionEvents::ASSIGN, $event);
+            $this->getDispatcher()->dispatch(AuctionEvents::ASSIGN, $event);
+            $this->getConnection()->commit();
+            
+            return $event->getAuction();
+        } catch (\Exception $e) {
+            $this->getConnection()->rollback();
+
+            return NULL;
+        }
     }
 
     /**
@@ -110,31 +156,25 @@ class AuctionService
      */
     public function cancel()
     {
-        $event = new AuctionCancelEvent();
-        $event->setAuction($this->getAuction())->setOptions($options);
+        $this->getConnection()->beginTransaction();
+        try {
+            $event = new AuctionCancelEvent();
+            $event->setAuction($this->getAuction())->setOptions($options);
 
-        $this->getDispatcher()->dispatch(AuctionEvents::CANCEL, $event);
-    }
+            $this->getDispatcher()->dispatch(AuctionEvents::CANCEL, $event);
+            $this->getConnection()->commit();
+            
+            return $event->getAuction();
+        } catch (\Exception $e) {
+            $this->getConnection()->rollback();
 
-    public function updateSeller(Custom $custom)
-    {
-        $this->getAuction()->setSeller($custom);
-        $this->getEm()->flush();
-
-        return $this;
-    }
-
-    public function updateBuyer(Custom $custom)
-    {
-        $this->getAuction()->setBuyer($custom);
-        $this->getEm()->flush();
-
-        return $this;
+            return NULL;
+        }
     }
 
     public function setAuction(Auction $auction)
     {
-        $this->setAuction($auction);
+        $this->auction = $auction;
 
         return $this;
     }
@@ -142,18 +182,6 @@ class AuctionService
     public function getAuction()
     {
         return $this->auction;
-    }
-
-    protected function setSecurity(TokenStorage $security)
-    {
-        $this->security = $security;
-
-        return $this;
-    }
-
-    public function getSecurity()
-    {
-        return $this->security;
     }
 
     protected function setDispatcher(EventDispatcherInterface $dispatcher)

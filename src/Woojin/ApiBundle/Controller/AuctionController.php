@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\StoreBundle\Entity\Store;
+use Woojin\StoreBundle\Entity\Auction;
 use Woojin\UserBundle\Entity\User;
 use Woojin\Utility\Avenue\Avenue;
 use Woojin\Utility\Handler\ResponseHandler;
@@ -27,8 +28,11 @@ class AuctionController extends Controller
     public function showAction($auction = NULL, $_format)
     {
         $responseArr = (NULL === $auction)
-            ? array('status' => Avenue::IS_ERROR, 'msg' => '產編不存在', 'http_status_code' => Response::HTTP_NOT_FOUND) 
-            : array('status' => Avenue::IS_SUCCESS, 'auction' => $auction)
+            ? array(
+                'status' => Avenue::IS_ERROR, 
+                'msg' => $this->get('translator')->trans('ProductSnIsNotExist'), 
+                'http_status_code' => Response::HTTP_NOT_FOUND
+            ) : array('status' => Avenue::IS_SUCCESS, 'auction' => $auction)
         ;
 
         return $this->_getResponse($responseArr, $_format);
@@ -40,19 +44,7 @@ class AuctionController extends Controller
      */
     public function newAction(Request $request, $_format)
     {
-        /**
-         * The Current User
-         * 
-         * @var \Woojin\UserBundle\Entity\User
-         */
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        
-        /**
-         * DoctrineManager
-         * 
-         * @var \Doctrine\ORM\EntityManager;
-         */
-        $em = $this->getDoctrine()->getManager();
+        list($user, $em, $product) = $this->initBaseVar($request);
         
         /**
          * Fetch the bsoStore Entity
@@ -60,37 +52,26 @@ class AuctionController extends Controller
          * @var \Woojin\StoreBundle\Entity\Store
          */
         $bsoStore = $em->getRepository('WoojinStoreBundle:Store')->find(Store::STORE_BSO_ID);
-        
-        /**
-         * The given product sn, will be used to fetch product entity
-         * 
-         * @var string
-         */
-        $sn = $request->request->get('sn', NULL);
 
         /**
-         * Find product with sn
+         * Store the valide result
          * 
-         * @var mixed \Woojin\GoodsBundle\Entity\GoodsPassport||NULL
+         * @var array
          */
-        $product = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->findOneBy(array('sn' => $sn));
+        $unValid = $this->execValidate($this->getNewActionValidaters(array($product)));
 
-        if ($this->hasNoFoundProduct($product)) {
-            return $this->_getResponse(array('status' => Avenue::IS_ERROR, 'msg' => '產編不存在', 'http_status_code' => Response::HTTP_NOT_FOUND), $_format);
+        if (!empty($unValid)) {
+            return $this->_getResponse($unValid, $_format);
         }
 
-        if (!$this->isProductOnSale($product)) {
-            return $this->_getResponse(array('status' => Avenue::IS_ERROR, 'msg' => '產品非上架狀態', 'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED), $_format);
-        }
-
-        $auction = $this->get('auction.service')->create([
+        $this->get('auction.service')->create([
             'product' => $product,
             'creater' => $user,
             'createStore' => $user->getStore(),
             'bsoStore' => $bsoStore
         ]);
 
-        return $this->_getResponse(array('status' => Avenue::IS_SUCCESS, 'auction' => $auction), $_format);
+        return $this->_genResponseWithServiceReturnAuction($this->get('auction.service')->getAuction(), $_format);
     }
 
     /**
@@ -99,6 +80,110 @@ class AuctionController extends Controller
      */
     public function backAction(Request $request, $_format)
     {
+        list($user, $em, $product) = $this->initBaseVar($request);
+
+        /**
+         * The auction entity 
+         * 
+         * @var \Woojin\StoreBundle\Entity\Auction
+         */
+        $auction = $em->getRepository('WoojinStoreBundle:Auction')->fetchAuctionByProduct($product);
+
+        /**
+         * Store the valide result
+         * 
+         * @var array
+         */
+        $unValid = $this->execValidate($this->getBackActionValidaters(array($product, $auction, $user)));
+        
+        if (!empty($unValid)) {
+            return $this->_getResponse($unValid, $_format);
+        }
+
+        $this->get('auction.service')->setAuction($auction)->back(['backer' => $user]);
+
+        return $this->_genResponseWithServiceReturnAuction($this->get('auction.service')->getAuction(), $_format);
+    }
+
+    /**
+     * @Route("/auction/sold/{_format}", defaults={"_format"="json"}, name="api_sold_auction", options={"expose"=true})
+     * @Method("PUT")
+     */
+    public function soldAction(Request $request, $_format)
+    {
+        list($user, $em, $product) = $this->initBaseVar($request);
+
+        /**
+         * The custom entity
+         * 
+         * @var \Woojin\OrderBundle\Entity\Custom
+         */
+        $custom = $em->getRepository('WoojinOrderBundle:Custom')->findOneBy(array('mobil' => $request->request->get('mobil'), 'store' => $user->getStore()));
+
+        /**
+         * The auction entity 
+         * 
+         * @var \Woojin\StoreBundle\Entity\Auction
+         */
+        $auction = $em->getRepository('WoojinStoreBundle:Auction')->fetchAuctionByProduct($product);
+        
+        /**
+         * Store the valide result
+         * 
+         * @var array
+         */
+        $unValid = $this->execValidate($this->getSoldActionValidaters(array($product, $auction, $user, $custom)));
+        
+        if (!empty($unValid)) {
+            return $this->_getResponse($unValid, $_format);
+        }
+
+        $this->get('auction.service')->setAuction($auction)->sold([
+            'price' => $request->request->get('price'),
+            'buyer' => $custom,
+            'bsser' => $user,
+            'soldAt' => new \DateTime
+        ]);
+
+        return $this->_genResponseWithServiceReturnAuction($this->get('auction.service')->getAuction(), $_format);
+    }
+
+    /**
+     * @Route("/auction/cancel/{_format}", defaults={"_format"="json"}, name="api_cancel_auction", options={"expose"=true})
+     * @Method("PUT")
+     */
+    public function cancelAction(Request $request, $_format)
+    {
+        list($user, $em, $product) = $this->initBaseVar($request);
+
+        /**
+         * The auction entity 
+         * 
+         * @var \Woojin\StoreBundle\Entity\Auction
+         */
+        $auction = $em->getRepository('WoojinStoreBundle:Auction')->fetchAuctionByProduct($product);
+        
+        /**
+         * Store the valide result
+         * 
+         * @var array
+         */
+        $unValid = $this->execValidate($this->getCancelActionValidaters(array($product, $auction, $user)));
+        
+        if (!empty($unValid)) {
+            return $this->_getResponse($unValid, $_format);
+        }
+
+        $this->get('auction.service')->setAuction($auction)->cancel([
+            'price' => $request->request->get('price'),
+            'canceller' => $user
+        ]);
+
+        return $this->_genResponseWithServiceReturnAuction($this->get('auction.service')->getAuction(), $_format);
+    }
+
+    protected function initBaseVar(Request $request)
+    {
         /**
          * The Current User
          * 
@@ -127,44 +212,7 @@ class AuctionController extends Controller
          */
         $product = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->findOneBy(array('sn' => $sn));
 
-        if ($this->hasNoFoundProduct($product)) {
-            return $this->_getResponse(array('status' => Avenue::IS_ERROR, 'msg' => '產編不存在', 'http_status_code' => Response::HTTP_NOT_FOUND), $_format);
-        }
-
-        if (!$this->isProductBsoOnBoard($product)) {
-            return $this->_getResponse(array('status' => Avenue::IS_ERROR, 'msg' => '產品非競拍狀態', 'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED), $_format);
-        }
-
-        if (!$user->getStore()->getSn() !== substr($product->getSn(), 0, 1)) {
-            return $this->_getResponse(array('status' => Avenue::IS_ERROR, 'msg' => '非產品所屬門市人員', 'http_status_code' => Response::HTTP_FORBIDDEN), $_format);
-        }
-
-        $auction = $this->get('auction.service')->back([
-            'product' => $product,
-            'backer' => $user,
-            'createStore' => $user->getStore(),
-            'bsoStore' => $bsoStore
-        ]);
-
-        return $this->_getResponse(array('status' => Avenue::IS_SUCCESS, 'auction' => $auction), $_format);
-    }
-
-    /**
-     * @Route("/auction/sold/{_format}", defaults={"_format"="json"}, name="api_sold_auction", options={"expose"=true})
-     * @Method("PUT")
-     */
-    public function soldAction()
-    {
-
-    }
-
-    /**
-     * @Route("/auction/cancel/{_format}", defaults={"_format"="json"}, name="api_cancel_auction", options={"expose"=true})
-     * @Method("PUT")
-     */
-    public function cancelAction()
-    {
-
+        return array($user, $em, $product);
     }
 
     /**
@@ -173,9 +221,9 @@ class AuctionController extends Controller
      * @param  mixed  $product
      * @return boolean         
      */
-    protected function hasNoFoundProduct($product)
+    protected function hasFoundProduct($product)
     {
-        return NULL === $product;
+        return $product instanceof GoodsPassport;
     }
 
     /**
@@ -190,7 +238,7 @@ class AuctionController extends Controller
     }
 
     /**
-     * Is product status equal to Avenue::GS_BSO_ONBOARD?
+     * Is product status_id equal to Avenue::GS_BSO_ONBOARD?
      * 
      * @param  \Woojin\GoodsBundle\Entity\GoodsPassport  $product
      * @return boolean         
@@ -210,6 +258,206 @@ class AuctionController extends Controller
     protected function isProductBelongStoreUser(User $user, GoodsPassport $product)
     {
         return $user->getStore()->getSn() === substr($product->getSn(), 0, 1);
+    }
+
+    /**
+     * Is product status_id equal to Avenue::GS_BSO_SOLD
+     * 
+     * @param  \Woojin\GoodsBundle\Entity\GoodsPassport  $product
+     * @return boolean              
+     */
+    protected function isProductBsoSold(GoodsPassport $product)
+    {
+        return Avenue::GS_BSO_SOLD === $product->getStatus()->getId();
+    }
+
+    /**
+     * Has found auction
+     * 
+     * @param  mixed  $auction
+     * @return boolean         
+     */
+    protected function hasFoundAuction($auction)
+    {
+        return $auction instanceof Auction;
+    }
+
+    protected function execValidate(array $validaters)
+    {
+        foreach ($validaters as $methodName => $regists) {
+            if (!call_user_func_array(array($this, $methodName), $regists['params'])) {
+                return $regists['response'];
+            }
+        }
+
+        return array();
+    }
+
+    /**
+     * Provide the validators to newAction
+     *
+     * @param  array $compose
+     * @return array
+     */
+    protected function getNewActionValidaters(array $compose)
+    {
+        list($product) = $compose;
+
+        return array(
+            'hasFoundProduct' => array(
+                'params' => array($product), 
+                'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductSnIsNotExist'), 
+                    'http_status_code' => Response::HTTP_NOT_FOUND
+            )),
+            'isProductOnSale' => array(
+                'params' => array($product), 
+                'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductStatusIsNotOnBoard'), 
+                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
+            ))
+        );
+    }
+
+    /**
+     * Provide the validators to soldAction
+     *
+     * @param  array $compose
+     * @return array
+     */
+    protected function getSoldActionValidaters(array $compose)
+    {
+        list($product, $auction, $user, $custom) = $compose;
+
+        return array(
+            'hasFoundProduct' => array(
+                'params' => array($product), 
+                'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductSnIsNotExist'), 
+                    'http_status_code' => Response::HTTP_NOT_FOUND
+                )),
+            'hasFoundAuction' => array(
+                'params' => array($auction), 
+                'response' => array(
+                    'status' => Avenue::IS_ERROR,
+                    'msg' => $this->get('translator')->trans('AuctionNotFound'),
+                    'http_status_code' => Response::HTTP_NOT_FOUND
+                )),
+            'isProductBelongStoreUser' => array(
+                'params' => array($user, $product), 
+                'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductNotBelongToYou'), 
+                    'http_status_code' => Response::HTTP_FORBIDDEN
+                )),
+            'isProductBsoOnBoard' => array(
+                'params' => array($product), 
+                'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductStatusIsNotBSO'), 
+                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
+                ))
+        );
+    }
+
+    /**
+     * Provide the validators to backAction
+     *
+     * @param  array $compose
+     * @return array
+     */
+    protected function getBackActionValidaters(array $compose)
+    {
+        list($product, $auction, $user) = $compose;
+
+        return array(
+            'hasFoundProduct' => array(
+                'params' => array($product), 
+                    'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductSnIsNotExist'), 
+                    'http_status_code' => Response::HTTP_NOT_FOUND
+                )),
+            'hasFoundAuction' => array(
+                'params' => array($auction), 
+                    'response' => array(
+                    'status' => Avenue::IS_ERROR,
+                    'msg' => $this->get('translator')->trans('AuctionNotFound'),
+                    'http_status_code' => Response::HTTP_NOT_FOUND
+                )),
+            'isProductBelongStoreUser' => array(
+                'params' => array($user, $product),
+                'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductNotBelongToYou'), 
+                    'http_status_code' => Response::HTTP_FORBIDDEN
+                )),
+            'isProductBsoOnBoard' => array(
+                'params' => array($product), 
+                'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductStatusIsNotBSO'), 
+                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
+                ))
+        );
+    }
+
+    /**
+     * Provide the validators to cancelAction
+     *
+     * @param  array $compose
+     * @return array
+     */
+    protected function getCancelActionValidaters(array $compose)
+    {
+        list($product, $auction, $user) = $compose;
+
+        return array(
+            'hasFoundProduct' => array(
+                'params' => array($product), 
+                    'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductSnIsNotExist'), 
+                    'http_status_code' => Response::HTTP_NOT_FOUND
+                )),
+            'hasFoundAuction' => array(
+                'params' => array($auction), 
+                    'response' => array(
+                    'status' => Avenue::IS_ERROR,
+                    'msg' => $this->get('translator')->trans('AuctionNotFound'),
+                    'http_status_code' => Response::HTTP_NOT_FOUND
+                )),
+            'isProductBelongStoreUser' => array(
+                'params' => array($user, $product),
+                'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductNotBelongToYou'), 
+                    'http_status_code' => Response::HTTP_FORBIDDEN
+                )),
+            'isProductBsoSold' => array(
+                'params' => array($product), 
+                'response' => array(
+                    'status' => Avenue::IS_ERROR, 
+                    'msg' => $this->get('translator')->trans('ProductStatusIsNotBsoSold'), 
+                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
+                ))
+        );
+    }
+
+    private function _genResponseWithServiceReturnAuction($auction, $_format)
+    {
+        $responseArr = (NULL === $auction) 
+            ? array(
+                'status' => Avenue::IS_ERROR, 
+                'msg' => $this->get('translator')->trans('DatabaseException'), 
+                'http_status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
+            ) : array('status' => Avenue::IS_SUCCESS, 'auction' => $auction)
+        ;
+
+        return $this->_getResponse($responseArr, $_format);
     }
 
     private function _getResponse($data, $_format)

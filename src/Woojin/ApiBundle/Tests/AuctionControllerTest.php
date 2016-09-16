@@ -51,5 +51,61 @@ class AuctionControllerTest extends AuthControllerTest
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertTrue(array_key_exists('status', $responseArr), $this->client->getResponse()->getContent());
         $this->assertSame(Avenue::IS_ERROR, $responseArr['status'], $this->client->getResponse()->getContent());
+
+        $crawler = $this->client->request('POST', '/api/v1/auction/back', array('_method' => 'PUT', 'sn' => 'Y102031380052'));
+        $responseArr = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'), $this->client->getResponse()->headers->get('Content-Type'));
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertTrue(array_key_exists('status', $responseArr), $this->client->getResponse()->getContent());
+        $this->assertSame(Avenue::IS_SUCCESS, $responseArr['status'], $this->client->getResponse()->getContent());
+
+    }
+
+    public function testSoldAction()
+    {
+        $price = 500;
+        $crawler = $this->client->request('POST', '/api/v1/auction/sold', array('_method' => 'PUT', 'sn' => 'Y102031380052', 'price' => $price));
+        $responseArr = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'), $this->client->getResponse()->headers->get('Content-Type'));
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        $this->assertTrue(array_key_exists('status', $responseArr), $this->client->getResponse()->getContent());
+        $this->assertSame(Avenue::IS_SUCCESS, $responseArr['status'], $this->client->getResponse()->getContent());
+
+        $this->assertTrue(array_key_exists('auction', $responseArr), $this->client->getResponse()->getContent());
+
+        $crawler = $this->client->request('POST', '/api/v1/auction/sold', array('_method' => 'PUT', 'sn' => 'Y000004250091', 'price' => $price));
+        $responseArr = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'), $this->client->getResponse()->headers->get('Content-Type'));
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        $this->assertTrue(array_key_exists('status', $responseArr), $this->client->getResponse()->getContent());
+        $this->assertSame(Avenue::IS_ERROR, $responseArr['status'], $this->client->getResponse()->getContent());
+    }
+
+    public function testCancelAction()
+    {
+        $crawler = $this->client->request('POST', '/api/v1/auction/cancel', array('_method' => 'PUT', 'sn' => 'Y102031380052'));
+        $responseArr = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'), $this->client->getResponse()->headers->get('Content-Type'));
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        $this->assertTrue(array_key_exists('status', $responseArr), $this->client->getResponse()->getContent());
+        $this->assertSame(Avenue::IS_ERROR, $responseArr['status'], $this->client->getResponse()->getContent());
+
+        $crawler = $this->client->request('POST', '/api/v1/auction/cancel', array('_method' => 'PUT', 'sn' => 'Y001159880270'));
+        $responseArr = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'), $this->client->getResponse()->headers->get('Content-Type'));
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        $this->assertTrue(array_key_exists('status', $responseArr), $this->client->getResponse()->getContent());
+        $this->assertSame(Avenue::IS_SUCCESS, $responseArr['status'], $this->client->getResponse()->getContent());
     }
 }
+
+
+
+
+
+
