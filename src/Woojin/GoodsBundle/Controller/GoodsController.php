@@ -1824,7 +1824,8 @@ class GoodsController extends Controller
          * @var array(\StdClass)
          */
         $sc = $apiClient->storeCategoryGet();
-        $storeCategorys = NULL === $sc ? $sc : $sc->Response->StoreCategoryList->StoreCategory;
+
+        $storeCategorys = NULL === $sc || 'fail' === $sc->Response->Status ? $sc : $sc->Response->StoreCategoryList->StoreCategory;
         
         /**
          * 店內允許付費方式
@@ -1832,7 +1833,7 @@ class GoodsController extends Controller
          * @var array(\StdClass)
          */
         $sp = $apiClient->storePaymentGet();
-        $storePayments = NULL === $sp ? $sp : $sp->Response->PayTypeList->PayType;//$apiClient->storePaymentGet()->Response->PayTypeList->PayType;
+        $storePayments = NULL === $sp || 'fail' === $sp->Response->Status ? $sp : $sp->Response->PayTypeList->PayType;//$apiClient->storePaymentGet()->Response->PayTypeList->PayType;
         
         /**
          * 店內允許物流方式
@@ -1840,7 +1841,7 @@ class GoodsController extends Controller
          * @var array(\StdClass)
          */
         $ss = $apiClient->storeShippingGet();
-        $storeShippings = NULL === $ss ? $ss : $ss->Response->ShippingTypeList->ShippingType;//$apiClient->storeShippingGet()->Response->ShippingTypeList->ShippingType;
+        $storeShippings = NULL === $ss || 'fail' === $ss->Response->Status ? $ss : $ss->Response->ShippingTypeList->ShippingType;//$apiClient->storeShippingGet()->Response->ShippingTypeList->ShippingType;
 
         return array(
             'goods' => $goods,
@@ -1898,21 +1899,24 @@ class GoodsController extends Controller
          * 
          * @var array(\StdClass)
          */
-        $storeCategorys = $apiClient->storeCategoryGet()->Response->StoreCategoryList->StoreCategory;
+        $sc = $apiClient->storeCategoryGet();
+        $storeCategorys = NULL === $sc || 'fail' === $sc->Response->Status ? $sc : $sc->Response->StoreCategoryList->StoreCategory;
         
         /**
          * 店內允許付費方式
          * 
          * @var array(\StdClass)
          */
-        $storePayments = $apiClient->storePaymentGet()->Response->PayTypeList->PayType;
+        $sp = $apiClient->storePaymentGet();
+        $storePayments = NULL === $sp || 'fail' === $sp->Response->Status ? $sp : $sp->Response->PayTypeList->PayType;//$apiClient->storePaymentGet()->Response->PayTypeList->PayType;
         
         /**
          * 店內允許物流方式
          * 
          * @var array(\StdClass)
          */
-        $storeShippings = $apiClient->storeShippingGet()->Response->ShippingTypeList->ShippingType;
+        $ss = $apiClient->storeShippingGet();
+        $storeShippings = NULL === $ss || 'fail' === $ss->Response->Status ? $ss : $ss->Response->ShippingTypeList->ShippingType;//$apiClient->storeShippingGet()->Response->ShippingTypeList->ShippingType;
 
         return array(
             'goods' => $goods,

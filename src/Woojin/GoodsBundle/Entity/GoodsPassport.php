@@ -747,7 +747,7 @@ class GoodsPassport
      */
     public function getName($isOrigin = false)
     {
-        return ($isOrigin) ? $this->name : strtoupper($this->name);
+        return true === $isOrigin ? $this->name : strtoupper($this->name);
     }
 
     /**

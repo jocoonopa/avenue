@@ -2,80 +2,63 @@
 
 /* Controllers */
 
+/**
+ * Based on below three principles to edit
+ * 
+ * 1. punchSuccessSns
+ * 2. currentPunchSn
+ * 3. returnObj
+ */
 auctionCtrl.controller('PunchInCtrl', ['$scope', '$routeParams', '$http',
   function ($scope, $routeParams, $http) { 
 
-  $scope.punchInBarcode           = '';
-  $scope.punchInBarcodes          = [];
-  $scope.successPunchInBarcodes   = [];
-  $scope.failPunchInBarcodes      = [];
-  
-  /**
-   * 新增條碼到刷入清單
-   * 
-   * @return void
-   */
-  $scope.addPunchInList = function () {
-    if (0 < $scope.punchInBarcode.length) {
-      $scope.punchInBarcodes.push({sn: $scope.punchInBarcode});
-      $scope.punchInBarcode = '';
+  $scope.config = {
+    headers : {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
     }
-  }; 
-
-  /**
-   * 移除刷入清單上的某項
-   * 
-   * @param  {integer} index [索引]
-   * @return void
-   */
-  $scope.removePunchInList = function (index) {
-    $scope.punchInBarcodes.splice(index, 1);
   };
 
-  /**
-   * 刷入BSO
-   *
-   * @return void
-   */
-  $scope.savePunchInList = function () {
-    $scope.successPunchInBarcodes   = $scope.punchInBarcodes;
-    $scope.failPunchInBarcodes      = ['ABC', 'CDE', 'EFG'];
-    $scope.punchInBarcodes          = [];
+  $scope.currentPunchSn = '';
+  $scope.punchSuccessSns = [];
+  $scope.punchFailedSns = [];
+  $scope.returnObj = {};
+
+  $scope.punch = function (sn) {
+    var data = $.param({sn: sn});
+
+    return $scope.request(data).success(function (res) {
+      $scope.callback(res, sn);
+    });;
   };
 
-  /**
-   * 檢查有無刷入成功的條碼
-   * 
-   * @return {Boolean}
-   */
-  $scope.hasSuccessPunchIn = function () {
-    return ($scope.successPunchInBarcodes.length > 0);
+  $scope.request = function (data) {
+    return $http.post($scope.getUrl(), data, $scope.config);
   };
 
-  /**
-   * 清空刷入成功條碼的陣列
-   * 
-   * @return {array} [Should be empty]
-   */
-  $scope.emptySuccessPunchInBarcodes = function (index) {
-    return (typeof index !== 'number') ? $scope.successPunchInBarcodes = [] : $scope.successPunchInBarcodes.splice(index, 1);
+  $scope.callback = function (res, sn) {
+    if ($scope.isActSuccess(res.status)) {
+      $scope.punchSuccessSns.push(sn);
+
+      $.unique($scope.punchSuccessSns);
+    } else {
+      $scope.punchFailedSns.push(sn);
+
+      $.unique($scope.punchFailedSns);
+    }
+    
+    $scope.returnObj = res;
+    $scope.currentPunchSn = '';
+  };
+
+  $scope.isActSuccess = function (status) {
+    return 1 === parseInt(status);
   }
 
-  /**
-   * 檢查有無刷入失敗的條碼
-   * 
-   * @return {Boolean}
-   */
-  $scope.hasFailPunchIn = function () {
-    return ($scope.failPunchInBarcodes.length > 0);
-  }
+  $scope.genProductUrl = function (sn) {
+    return Routing.generate('goods_edit_v2_from_sn', {sn: sn});
+  };
 
-  /**
-   * 清空刷入失敗條碼的陣列
-   * 
-   * @return {array} [Should be empty]
-   */
-  $scope.emptyFailPunchInBarcodes = function (index) {
-    return (typeof index !== 'number') ? $scope.failPunchInBarcodes = [] : $scope.failPunchInBarcodes.splice(index, 1);
+  $scope.getUrl = function () {
+    return Routing.generate('api_new_auction', {_format: 'json'});
   }
 }]);

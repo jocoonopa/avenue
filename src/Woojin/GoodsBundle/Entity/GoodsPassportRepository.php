@@ -320,6 +320,25 @@ class GoodsPassportRepository extends EntityRepository
         
         return $qb->getQuery()->getResult();
     }
+
+    public function findBsoProductsUserStoreOwn(Store $store)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select('gd')
+            ->from('WoojinGoodsBundle:GoodsPassport', 'gd') 
+            ->where( 
+                $qb->expr()->andX(
+                    $qb->expr()->eq('SUBSTRING(gd.sn, 1, 1)', $qb->expr()->literal($store->getSn())),
+                    $qb->expr()->eq('gd.status', Avenue::GS_BSO_ONBOARD)
+                )
+            )
+            ->groupBy('gd.id')
+            ->orderBy('gd.sn')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
 }
 
 

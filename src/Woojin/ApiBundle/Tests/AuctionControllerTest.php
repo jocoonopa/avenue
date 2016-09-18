@@ -28,6 +28,16 @@ class AuctionControllerTest extends AuthControllerTest
         $this->assertSame(Avenue::IS_ERROR, $responseArr['status'], $this->client->getResponse()->getContent());
     }
 
+    public function testListAction()
+    {
+        $crawler = $this->client->request('GET', '/api/v1/auction');
+        $responseArr = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'), $this->client->getResponse()->headers->get('Content-Type'));
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        $this->assertTrue(is_array($responseArr), $this->client->getResponse()->getContent());
+    }
+
     public function testNewAction()
     {
         $crawler = $this->client->request('POST', '/api/v1/auction', array('sn' => 'Y000004250091'));

@@ -1,4 +1,20 @@
 {% verbatim %}
-<div ng-controller="ProductsCtrl" class="tab-pane fade active in" id="products">
+<div ng-controller="ProductsCtrl" class="tab-pane fade " id="products">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>產編</th>
+                <th>品名</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="product in products">
+                <td>
+                    <a href="{{genProductUrl(product.sn)}}" class="btn btn-info" target="_blank">{{ product.sn }}</a>
+                </td>
+                <td>{{ product.name }}</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 {% endverbatim %}

@@ -9,10 +9,14 @@
                 label-primary
             {% elseif goods.status.id in [
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_OTHERSTORE'), 
-                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_BSO_ONBOARD')
             ] %}
                 label-info
-            {% elseif goods.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_SOLDOUT')%}
+            {% elseif goods.status.id in [
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_SOLDOUT'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_BSO_SOLD')
+            ]%}
                 label-success
             {% elseif goods.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_OFFSALE')%}
                 label-danger
@@ -142,9 +146,9 @@
                 (app.user|is_own(goods) and app.user|has_auth('EDIT_PRODUCT_OWN')) 
                 or app.user|has_auth('EDIT_PRODUCT_ALL')
             %}
-                <input type="text" name="goods_name" class="form-control" value="{{ goods.name }}" />
+                <input type="text" name="goods_name" class="form-control" value="{{ goods.getName(true) }}" />
             {% else %}
-                <span>{{ goods.name }}</span>
+                <span>{{ goods.getName(true) }}</span>
             {% endif %}
         </div>
     </div>
