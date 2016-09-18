@@ -4,6 +4,7 @@ namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Woojin\Utility\Avenue\Avenue;
+use Woojin\UserBundle\Entity\User;
 
 /**
  * Auction
@@ -224,6 +225,21 @@ class Auction
         }
 
         return $map[$statusCode];
+    }
+
+    /**
+     * Is auction belong to the given user's store
+     * 
+     * @param  \Woojin\UserBundle\Entity\User  User    $user    
+     * @return boolean          
+     */
+    public function isAuctionBelongGivenUsersStore(User $user)
+    {
+        if (NULL === $this->getBsoStore()) {
+            return false;
+        }
+
+        return $this->getBsoStore()->getId() === $user->getStore()->getId();
     }
 
     /**

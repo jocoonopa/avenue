@@ -283,6 +283,18 @@ class AuctionController extends Controller
     }
 
     /**
+     * Is auction belong to the given user's store
+     * 
+     * @param  \Woojin\UserBundle\Entity\User  User    $user    
+     * @param  \Woojin\StoreBundle\Entity\Auction  Auction $auction 
+     * @return boolean          
+     */
+    protected function isAuctionBelongGivenUsersStore(User $user, Auction $auction)
+    {
+        return $auction->isAuctionBelongGivenUsersStore($user);
+    }
+
+    /**
      * Has found auction
      * 
      * @param  mixed  $auction
@@ -364,11 +376,11 @@ class AuctionController extends Controller
                     'msg' => $this->get('translator')->trans('AuctionNotFound'),
                     'http_status_code' => Response::HTTP_NOT_FOUND
                 )),
-            'isProductBelongStoreUser' => array(
-                'params' => array($user, $product), 
+            'isAuctionBelongGivenUsersStore' => array(
+                'params' => array($user, $auction),
                 'response' => array(
                     'status' => Avenue::IS_ERROR, 
-                    'msg' => $this->get('translator')->trans('ProductNotBelongToYou'), 
+                    'msg' => $this->get('translator')->trans('AuctionNotBelongToYou'), 
                     'http_status_code' => Response::HTTP_FORBIDDEN
                 )),
             'isProductBsoOnBoard' => array(
@@ -448,11 +460,11 @@ class AuctionController extends Controller
                     'msg' => $this->get('translator')->trans('AuctionNotFound'),
                     'http_status_code' => Response::HTTP_NOT_FOUND
                 )),
-            'isProductBelongStoreUser' => array(
-                'params' => array($user, $product),
+            'isAuctionBelongGivenUsersStore' => array(
+                'params' => array($user, $auction),
                 'response' => array(
                     'status' => Avenue::IS_ERROR, 
-                    'msg' => $this->get('translator')->trans('ProductNotBelongToYou'), 
+                    'msg' => $this->get('translator')->trans('AuctionNotBelongToYou'), 
                     'http_status_code' => Response::HTTP_FORBIDDEN
                 )),
             'isProductBsoSold' => array(
