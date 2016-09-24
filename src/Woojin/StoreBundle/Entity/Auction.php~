@@ -4,6 +4,7 @@ namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Woojin\Utility\Avenue\Avenue;
+use Woojin\UserBundle\Entity\User;
 
 /**
  * Auction
@@ -138,6 +139,11 @@ class Auction
     private $bsser;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $memo;
+
+    /**
      * @ORM\PrePersist
      */
     public function autoSetCreateAt()
@@ -224,6 +230,21 @@ class Auction
         }
 
         return $map[$statusCode];
+    }
+
+    /**
+     * Is auction belong to the given user's store
+     *
+     * @param  \Woojin\UserBundle\Entity\User  User    $user
+     * @return boolean
+     */
+    public function isAuctionBelongGivenUsersStore(User $user)
+    {
+        if (NULL === $this->getBsoStore()) {
+            return false;
+        }
+
+        return $this->getBsoStore()->getId() === $user->getStore()->getId();
     }
 
     /**
@@ -618,5 +639,29 @@ class Auction
     public function getCanceller()
     {
         return $this->canceller;
+    }
+
+    /**
+     * Set bsser
+     *
+     * @param \Woojin\UserBundle\Entity\User $bsser
+     *
+     * @return Auction
+     */
+    public function setBsser(\Woojin\UserBundle\Entity\User $bsser = null)
+    {
+        $this->bsser = $bsser;
+
+        return $this;
+    }
+
+    /**
+     * Get bsser
+     *
+     * @return \Woojin\UserBundle\Entity\User
+     */
+    public function getBsser()
+    {
+        return $this->bsser;
     }
 }

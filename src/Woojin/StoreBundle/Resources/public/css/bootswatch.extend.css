@@ -1,0 +1,7 @@
+input.alert-error, input.alert-error:focus {
+  border: 3px solid red;
+}
+
+intpu.alert-ok, input.alert-ok:focus {
+  border: 3px solid green;
+}

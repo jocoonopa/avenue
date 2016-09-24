@@ -2,7 +2,7 @@
 
 {% block title %}競拍刷入頁面{% endblock %}
 
-{% block head %} 
+{% block head %}
 
 {{ parent() }}
 
@@ -23,6 +23,7 @@
 <script src="/bundles/woojinstore/js/controller/detail/tab/punch_out.js"></script>
 <script src="/bundles/woojinstore/js/controller/detail/tab/activity_goods.js"></script>
 
+<script src="/bundles/woojinstore/js/auction/controller/AuctionSoldCtrl.js"></script>
 <script src="/bundles/woojinstore/js/auction/controller/AuctionPunchCtrl.js"></script>
 <script src="/bundles/woojinstore/js/auction/controller/productDetail.js"></script>
 <script src="/bundles/woojinstore/js/auction/controller/punchIn.js"></script>
@@ -34,5 +35,3 @@
 {% block body -%}
     <div ng-view class="slide"></div>
 {% endblock %}
- 
-

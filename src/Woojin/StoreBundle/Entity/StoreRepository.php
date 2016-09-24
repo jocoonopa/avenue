@@ -18,6 +18,18 @@ class StoreRepository extends EntityRepository
         ;
     }
 
+    public function findIsShow()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return $qb->select('s')
+            ->from('WoojinStoreBundle:Store', 's')
+            ->where($qb->expr()->eq('s.isShow', true))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findAll()
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
@@ -33,7 +45,7 @@ class StoreRepository extends EntityRepository
     public function genStoreSnMap()
     {
         $map = array();
-        $stores = $this->findAll(); 
+        $stores = $this->findAll();
 
         foreach ($stores as $store) {
             $map[$store->getSn()] = $store;
@@ -42,6 +54,3 @@ class StoreRepository extends EntityRepository
         return $map;
     }
 }
-
-
-

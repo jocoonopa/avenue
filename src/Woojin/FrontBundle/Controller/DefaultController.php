@@ -67,7 +67,7 @@ class DefaultController extends Controller
         if ($mobileDetector->isM()) {
             return $this->redirect($this->generateUrl('mobile_front_product', array('id' => $goods->getId())));
         }
-        
+
         $historys = array();
         $relatives = array();
 
@@ -138,7 +138,7 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        return array('stores' => $em->getRepository('WoojinStoreBundle:Store')->findReal());
+        return array('stores' => $em->getRepository('WoojinStoreBundle:Store')->findIsShow());
     }
 
     /**
@@ -196,5 +196,5 @@ class DefaultController extends Controller
     public function countdownAction()
     {
         return array();
-    }   
+    }
 }

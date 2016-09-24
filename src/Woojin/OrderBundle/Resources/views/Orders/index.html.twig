@@ -15,83 +15,85 @@
 		{% if app.user|has_auth('SELL') %}
 			<li><a href="#orders-sale" data-icon="w">商品銷貨</a></li>
 		{% endif %}
-		
+
 		{% if app.user|has_auth('MULTI_SELL') %}
 			<li><a href="#orders-multisale" data-icon="w">多筆銷貨</a></li>
 		{% endif %}
-		
+
 		{% if app.user|has_auth('SELL') %}
 			<li><a href="#orders-turnchange" data-icon="p">退貨換貨</a></li>
 		{% endif %}
-		
+
 		{% if app.user|has_auth('READ_CUSTOM') %}
 			<li><a href="#orders-custom" data-icon="d">客戶資料</a></li>
 		{% endif %}
-		
+
 		{% if app.user|has_auth('PAYTYPE') %}
 			<li><a href="#orders-payType" data-icon="b">付費方式</a></li>
 		{% endif %}
-		
+
 		{% if app.user|has_auth('PAYTYPE') %}
 			<li><a href="#orders-rate" data-icon="a">匯率設定</a></li>
 		{% endif %}
-		
+
 		{% if app.user|has_auth('ACTIVITY_SELL') or app.user|has_auth('ACTIVITY_MANAGE') %}
 			<li><a href="#orders-specialSell" data-icon="w">特殊銷貨</a></li>
 		{% endif %}
-		
+
 		{% if app.user|has_auth('HAND_GEN_INVOICE') %}
 			<li><a href="#orders-keyInvoiceByhand">手key出貨憑證</a></li>
 		{% endif %}
-		
+
 		{% if app.user|has_auth('WEB_ORDER_MANAGE') %}
 			<li><a href="#invoice-webindex">官網訂單管理</a></li>
 		{% endif %}
 	</ul>
-	
+
 	{% if app.user|has_auth('PURCHASE') %}
 		<div id="orders-purchase">
 			{% include 'WoojinOrderBundle:Orders/UIpartial:purchase.html.twig' %}
 		</div>
 	{% endif %}
-		
+
 	{% if app.user|has_auth('SELL') %}
 		<div id="orders-sale" >
 			{% include 'WoojinOrderBundle:Orders/UIpartial:sale.html.twig' %}
 		</div>
 	{% endif %}
-		
+
 	{% if app.user|has_auth('MULTI_SELL') %}
 		<div id="orders-multisale" ><a href="{{ path('order_multisale') }}" target="_blank">前往多筆銷貨</a></div>
 	{% endif %}
-		
+
 	{% if app.user|has_auth('SELL') %}
 		<div id="orders-turnchange"	>
 			{% include 'WoojinOrderBundle:Orders/UIpartial:turnchange.html.twig' %}
 		</div>
 	{% endif %}
-		
+
 	{% if app.user|has_auth('READ_CUSTOM') %}
 		<div id="orders-custom" >
 			<a href="{{ path('order_custom_temp') }}" target="_blank">前往客戶資料管理</a>
 		</div>
 	{% endif %}
-		
+
 	{% if app.user|has_auth('PAYTYPE') %}
 		<div id="orders-payType" >
 			<a href="{{ path('paytype') }}" target="_blank" >設定付費方式</a>
 		</div>
 	{% endif %}
-		
+
 	{% if app.user|has_auth('PAYTYPE') %}
 		<div id="orders-rate"><a href="{{ path('exchange_rate') }}" target="_blank">匯率設定</a></div>
 	{% endif %}
-		
+
 	{% if app.user|has_auth('ACTIVITY_SELL') or app.user|has_auth('ACTIVITY_MANAGE') %}
 		<div id="orders-specialSell">
 			{% if app.user|has_auth('ACTIVITY_SELL') %}
 				<a href="{{ path('order_special_sale') }}" target="_blank" >前往特殊銷貨</a><br>
 			{% endif %}
+
+			<a href="{{ path('auction') }}#/bso" target="_blank" >前往BSO銷貨</a><br>
 
 			{% if app.user|has_auth('ACTIVITY_MANAGE') %}
 				<a href="{{ path('activity') }}" target="_blank" >前往活動管理</a><br>
@@ -100,20 +102,20 @@
 			<a href="{{ path('auction') }}#/auction" target="_blank" >前往BSO管理</a>
 		</div>
 	{% endif %}
-		
+
 	{% if app.user|has_auth('HAND_GEN_INVOICE') %}
 		<div id="orders-keyInvoiceByhand">
 			<a href="{{ path('orders_keyinvoicebyhand') }}" target="_blank">前往手key出貨憑證</a>
 		</div>
 	{% endif %}
-		
+
 	{% if app.user|has_auth('WEB_ORDER_MANAGE') %}
 		<div id="invoice-webindex">
 			<a href="{{ path('admin_invoice_web_index') }}" target="_blank">官網訂單管理</a>
-			<br>	
+			<br>
 			<a href="{{ path('behalf') }}" target="_blank">官網代購管理</a>
 		</div>
-	{% endif %}	
+	{% endif %}
 </div>
 
 <div class="ordersEditFormDialog" title="修改訂單"></div>

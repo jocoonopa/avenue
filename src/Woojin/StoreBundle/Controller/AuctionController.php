@@ -30,12 +30,24 @@ class AuctionController extends Controller
 
     /**
     * List template
-    * 
+    *
     * @Route("/template/list", name="auction_template_list", options={"expose"=true})
     * @Method("GET")
     * @Template()
     */
     public function templateListAction()
+    {
+        return array();
+    }
+
+    /**
+     * Sold template
+     *
+     * @Route("/template/sold", name="auction_template_sold", options={"expose"=true})
+     * @Method("GET")
+     * @Template()
+     */
+    public function templateSoldAction()
     {
         return array();
     }

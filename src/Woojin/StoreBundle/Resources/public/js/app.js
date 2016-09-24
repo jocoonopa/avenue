@@ -26,6 +26,10 @@ myApp.config(['$routeProvider', '$httpProvider',
       templateUrl: Routing.generate('auction_template_list'),
       controller: 'AuctionPunchCtrl'
     }).
+    when('/auction_sold', {
+        templateUrl: Routing.generate('auction_template_sold'),
+        controller: 'AuctionSoldCtrl'
+    }).
     otherwise({
       redirectTo: '/activity'
     });
@@ -34,7 +38,7 @@ myApp.config(['$routeProvider', '$httpProvider',
 
   var blockUIFunction = function blockUIFunction(data, headersGetter) {
     $.blockUI({ message: null });
-    $('.modal-footer button').prop('disabled', true); 
+    $('.modal-footer button').prop('disabled', true);
     return data;
   };
 
@@ -45,11 +49,11 @@ myApp.factory('myHttpInterceptor', function ($q, $window) {
   return function (promise) {
     return promise.then(function (response) {
       $.unblockUI();
-      $('.modal-footer button').prop('disabled', false); 
+      $('.modal-footer button').prop('disabled', false);
       return response;
     }, function (response) {
       $.unblockUI();
-      $('.modal-footer button').rprop('disabled', false); 
+      $('.modal-footer button').rprop('disabled', false);
       return $q.reject(response);
     });
   };

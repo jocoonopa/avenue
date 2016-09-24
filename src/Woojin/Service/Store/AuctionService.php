@@ -21,7 +21,7 @@ class AuctionService
     protected $dispatcher;
     protected $container;
     protected $connection;
-    
+
     public function __construct(ContainerInterface $container, EventDispatcherInterface $dispatcher)
     {
         $this
@@ -33,7 +33,7 @@ class AuctionService
 
     /**
      * 新增新的競拍實體
-     * 
+     *
      * @param array $options
      */
     public function create(array $options)
@@ -47,14 +47,14 @@ class AuctionService
 
             $event = $this->getDispatcher()->dispatch(AuctionEvents::CREATE, $event);
             $this->getConnection()->commit();
-            
+
             $this->setAuction($event->getAuction());
-            
+
             return $event->getAuction();
         } catch (\Exception $e) {
             $this->getConnection()->rollback();
 
-            return NULL;
+            return $e;
         }
     }
 
@@ -78,13 +78,13 @@ class AuctionService
         } catch (\Exception $e) {
             $this->getConnection()->rollback();
 
-            return NULL;
+            return $e;
         }
     }
 
     /**
      * 售出
-     * 
+     *
      * @param array $options
      */
     public function sold(array $options)
@@ -96,12 +96,33 @@ class AuctionService
 
             $this->getDispatcher()->dispatch(AuctionEvents::SOLD, $event);
             $this->getConnection()->commit();
-            
+
             return $event->getAuction();
         } catch (\Exception $e) {
             $this->getConnection()->rollback();
 
-            return NULL;
+            return $e;
+        }
+    }
+
+    /**
+     * 售出取消
+     */
+    public function cancel(array $options)
+    {
+        $this->getConnection()->beginTransaction();
+        try {
+            $event = new AuctionCancelEvent();
+            $event->setAuction($this->getAuction())->setOptions($options);
+
+            $this->getDispatcher()->dispatch(AuctionEvents::CANCEL, $event);
+            $this->getConnection()->commit();
+
+            return $event->getAuction();
+        } catch (\Exception $e) {
+            $this->getConnection()->rollback();
+
+            return $e;
         }
     }
 
@@ -119,12 +140,12 @@ class AuctionService
 
             $this->getDispatcher()->dispatch(AuctionEvents::PAY, $event);
             $this->getConnection()->commit();
-            
+
             return $event->getAuction();
         } catch (\Exception $e) {
             $this->getConnection()->rollback();
 
-            return NULL;
+            return $e;
         }
     }
 
@@ -142,33 +163,12 @@ class AuctionService
 
             $this->getDispatcher()->dispatch(AuctionEvents::ASSIGN, $event);
             $this->getConnection()->commit();
-            
+
             return $event->getAuction();
         } catch (\Exception $e) {
             $this->getConnection()->rollback();
 
-            return NULL;
-        }
-    }
-
-    /**
-     * 售出取消
-     */
-    public function cancel()
-    {
-        $this->getConnection()->beginTransaction();
-        try {
-            $event = new AuctionCancelEvent();
-            $event->setAuction($this->getAuction())->setOptions($options);
-
-            $this->getDispatcher()->dispatch(AuctionEvents::CANCEL, $event);
-            $this->getConnection()->commit();
-            
-            return $event->getAuction();
-        } catch (\Exception $e) {
-            $this->getConnection()->rollback();
-
-            return NULL;
+            return $e;
         }
     }
 
@@ -230,24 +230,24 @@ class AuctionService
             $options['customPercentage'] = 0.8;
             $options['storePercentage'] = 0;
             $options['bsoPercentage'] = 0.2;
-        } 
+        }
 
         if (false === $options['product']->getIsAllowAuction() && true === $options['product']->getIsAlanIn()) {
             $options['customPercentage'] = 0;
             $options['storePercentage'] = 0;
             $options['bsoPercentage'] = 1.0;
-        } 
+        }
 
         if (true === $options['product']->getIsAllowAuction() && false === $options['product']->getIsAlanIn()) {
             $options['customPercentage'] = 0.8;
             $options['storePercentage'] = 0.1;
             $options['bsoPercentage'] = 0.1;
-        } 
+        }
 
         if (false === $options['product']->getIsAllowAuction() && false === $options['product']->getIsAlanIn()) {
             $options['customPercentage'] = 0;
             $options['storePercentage'] = 0.5;
             $options['bsoPercentage'] = 0.5;
-        } 
+        }
     }
 }

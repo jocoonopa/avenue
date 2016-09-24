@@ -20,7 +20,7 @@ class Auction
     const STATUS_PAYED                      = 2;
     const STATUS_PROFIT_ASSIGN_COMPLETE     = 3;
     const STATUS_BACK_TO_STORE              = 10;
-    const STATUS_ORDER_CANCEL               = 100;
+    const STATUS_ORDER_CANCEL               = 0;
 
     protected $options;
 
@@ -139,6 +139,11 @@ class Auction
     private $bsser;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $memo;
+
+    /**
      * @ORM\PrePersist
      */
     public function autoSetCreateAt()
@@ -193,10 +198,27 @@ class Auction
 
     public function cancel(array $options)
     {
+        $memo = "{$this->getMemo()}{$this->attachCancelMemo($options)}";
+
         return $this
             ->setStatus(self::STATUS_ORDER_CANCEL)
+            ->setPrice(NULL)
+            ->setBuyer(NULL)
             ->setCanceller($options['canceller'])
+            ->setMemo($memo)
         ;
+    }
+
+    protected function attachCancelMemo(array $options)
+    {
+        $date = new \DateTime();
+
+        return "原售出金額:{$this->getPrice()}，購買人:{$this->getBuyerName()}，{$options['canceller']->getUsername()}於{$date->format('Y-m-d H:i:s')}取消<br/>";
+    }
+
+    public function getBuyerName()
+    {
+        return NULL === $this->getBuyer() ? '?' : $this->getBuyer()->getName();
     }
 
     public function assign()
@@ -229,9 +251,9 @@ class Auction
 
     /**
      * Is auction belong to the given user's store
-     * 
-     * @param  \Woojin\UserBundle\Entity\User  User    $user    
-     * @return boolean          
+     *
+     * @param  \Woojin\UserBundle\Entity\User  User    $user
+     * @return boolean
      */
     public function isAuctionBelongGivenUsersStore(User $user)
     {
@@ -658,5 +680,29 @@ class Auction
     public function getBsser()
     {
         return $this->bsser;
+    }
+
+    /**
+     * Set memo
+     *
+     * @param string $memo
+     *
+     * @return Auction
+     */
+    public function setMemo($memo)
+    {
+        $this->memo = $memo;
+
+        return $this;
+    }
+
+    /**
+     * Get memo
+     *
+     * @return string
+     */
+    public function getMemo()
+    {
+        return $this->memo;
     }
 }

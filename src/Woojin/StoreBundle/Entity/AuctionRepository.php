@@ -44,6 +44,19 @@ class AuctionRepository extends \Doctrine\ORM\EntityRepository
             ->getResult()
         ;
 
-        return NULL === $res ? NULL : $res[0];
+        return empty($res) ? NULL : $res[0];
+    }
+
+    public function fetchAuctionsByProduct(GoodsPassport $product)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return $qb->select('auction')
+            ->from('WoojinStoreBundle:Auction', 'auction')
+            ->where($qb->expr()->eq('auction.product', $product->getId()))
+            ->orderBy('auction.id', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }
