@@ -45,7 +45,7 @@ woojin_store:
     type:     annotation
     prefix:   "/admin"
 
-woojin_order:  
+woojin_order:
     resource: "@WoojinOrderBundle/Controller/"
     type:     annotation
     prefix:   "/admin"

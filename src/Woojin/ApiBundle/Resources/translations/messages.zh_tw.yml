@@ -7,3 +7,14 @@ DatabaseException: 資料庫異常
 ProductIsOnYahooStore: 產品已經上架Yahoo商城
 AuctionNotBelongToYou: 非該競拍所屬門市人員
 PriceIsNotValid: 價格非合法數字
+CustomNotFound: 未找到符合條件之客戶
+CustomNotBelongToThisStore: 客戶非目前使用者之所屬門市
+CustomMobilDuplicate: 客戶手機重複
+name: 姓名
+birthday: 生日
+mobil: 手機
+address: 地址
+email: 電子郵件
+sex: 性別
+response format: 回應格式
+CustomHasOrder: 客戶已經有訂購記錄

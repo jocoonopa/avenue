@@ -21,7 +21,7 @@ class CustomController extends Controller
     /**
      * @Route("/custom/whishlist/{_format}", defaults={"_format"="json"}, name="api_custom_whishlist", options={"expose"=true})
      * @Method("GET")
-     * 
+     *
      * @ApiDoc(
      *  resource=true,
      *  description="取得該用戶的願望清單(json)"
@@ -38,7 +38,7 @@ class CustomController extends Controller
         }
 
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
-        
+
         $jsonWhishlist = $serializer->serialize($custom->getWhishlist(), $_format);
 
         return $responseHandler->getResponse($jsonWhishlist, $_format);
@@ -47,7 +47,7 @@ class CustomController extends Controller
     /**
      * @Route("/custom/whishlist/add", name="api_custom_whishlist_add", options={"expose"=true})
      * @Method("PUT")
-     * 
+     *
      * @ApiDoc(
      *  description="將商品加入用戶的願望清單"
      * )
@@ -107,7 +107,7 @@ class CustomController extends Controller
     /**
      * @Route("/custom/whishlist/remove", name="api_custom_whishlist_remove", options={"expose"=true})
      * @Method("PUT")
-     * 
+     *
      * @ApiDoc(
      *  description="將商品從用戶的願望清單移除"
      * )
@@ -134,7 +134,7 @@ class CustomController extends Controller
         $em->flush();
 
         $responseHandler = new ResponseHandler;
-       
+
         $msg = array(
             'status' => 1,
             'msg' => 'ok',
@@ -147,7 +147,7 @@ class CustomController extends Controller
     /**
      * @Route("/custom/whishlist/empty", name="api_custom_whishlist_empty", options={"expose"=true})
      * @Method("PUT")
-     * 
+     *
      * @ApiDoc(
      *  description="清空用戶的願望清單"
      * )
@@ -167,7 +167,7 @@ class CustomController extends Controller
         $em->flush();
 
         $responseHandler = new ResponseHandler;
-       
+
         $msg = array(
             'status' => 1,
             'msg' => 'ok',

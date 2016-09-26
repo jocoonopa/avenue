@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Woojin\OrderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -7,6 +7,7 @@ use JMS\Serializer\Annotation\Exclude;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Woojin\Utility\Handler\FacebookResponseHandler;
+use Woojin\UserBundle\Entity\User;
 
 /**
  * @ORM\Entity(repositoryClass="Woojin\OrderBundle\Entity\CustomRepository")
@@ -70,16 +71,16 @@ class Custom
     /**
      * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="buyer")
-     * @var BuyActions[]
+     * @var BuyAuctions[]
      */
-    protected $buyActions;
+    protected $buyAuctions;
 
     /**
      * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="seller")
-     * @var SellActions[]
+     * @var SellAuctions[]
      */
-    protected $sellActions;
+    protected $sellAuctions;
 
     /**
      * @ORM\ManyToOne(targetEntity="\Woojin\StoreBundle\Entity\Store", inversedBy="customs")
@@ -211,14 +212,14 @@ class Custom
      * 願望清單，會把 商品id 陣列序列化成 json 字串儲存
      *
      * @example {1, 24, 155, 1889}
-     * 
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     protected $whishlist;
 
     /**
      * 激活帳號的 key
-     * 
+     *
      * @ORM\Column(type="string", length=255)
      */
     protected $activeKey;
@@ -226,20 +227,20 @@ class Custom
     /**
      * 帳號是否激活(僅用來判斷網站客戶，實體門市客戶不受限)
      * 如果帳號未激活，將無法進行結帳動作
-     * 
+     *
      * @ORM\Column(type="boolean")
      */
     protected $isActive;
 
     /**
      * fb 登入token
-     * @ORM\Column(type="string", length=255, nullable=true) 
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $fbToken;
 
     /**
      * google 登入token
-     * @ORM\Column(type="string", length=255, nullable=true) 
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $googleToken;
 
@@ -276,7 +277,7 @@ class Custom
 
     /**
      * 根據所屬店家判斷是否為官網會員
-     * 
+     *
      * @return boolean
      */
     public function isWeb()
@@ -284,25 +285,6 @@ class Custom
         return ($this->store->getSn() === '#');
     }
 
-    /**
-     * 將 FB 的回應套入 Custom 實體中
-     * 
-     * @param  Woojin\Utility\Handler\FacebookHandler $fb
-     * @return Custom
-     */
-    // public function handleFbResponse(FacebookResponseHandler $fb)
-    // {
-    //     $this->email = $fb->getEmail();
-    //     $this->name = $fb->getName();
-    //     $this->sex = $fb->getSex();
-    //     $this->birthday = $fb->getBirthday();
-    //     $this->isActive = true;
-    //     $this->address = '';
-    //     $this->mobil = '';
-
-    //     return $this;
-    // }
-    
     public function handleFbResponse($userNode)
     {
         switch($userNode['gender'])
@@ -326,8 +308,6 @@ class Custom
         $this->email = $userNode['email'];
         $this->name = $userNode['name'];
         $this->fbToken = $userNode['id'];
-        //$this->sex = $fb->getSex();
-        //$this->birthday = $fb->getBirthday();
         $this->isActive = true;
         $this->address = '';
         $this->mobil = '';
@@ -342,8 +322,6 @@ class Custom
         $this->email = $node['email'];
         $this->name = $node['name'];
         $this->googleToken = $node['sub'];
-        //$this->sex = $fb->getSex();
-        //$this->birthday = $fb->getBirthday();
         $this->isActive = true;
         $this->address = '';
         $this->mobil = '';
@@ -353,9 +331,9 @@ class Custom
 
     /**
      * 取得密碼加鹽後字串
-     * 
-     * @param  string $password 
-     * @return string         
+     *
+     * @param  string $password
+     * @return string
      */
     private function crypt($password)
     {
@@ -364,7 +342,7 @@ class Custom
 
     /**
      * 密碼規格為 email 前兩個字元 + 密碼 + 特殊常數
-     * 
+     *
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -376,7 +354,7 @@ class Custom
 
         $this->setCrypPassword($this->crypt($this->password));
 
-        //暗碼設置完成後，將原本的密碼用預設密碼覆蓋掉     
+        //暗碼設置完成後，將原本的密碼用預設密碼覆蓋掉
         $this->setPassword(self::DEFAULT_PASSWORD);
 
         return $this;
@@ -384,20 +362,41 @@ class Custom
 
     /**
      * 驗證登入，特別注意密碼會加鹽 id
-     * 
-     * @param  string $password 
-     * @param  string $email    
-     * @return boolean          
+     *
+     * @param  string $password
+     * @param  string $email
+     * @return boolean
      */
     public function verifyLogin($password, $email)
     {
         return (($this->crypPassword == $this->crypt($password)) && ($this->email == $email));
     }
-    
+
+    /**
+     * Is the custom belong to the given user?
+     *
+     * @param  \Woojin\UserBundle\Entity\User   $user
+     * @return boolean
+     */
+    public function isBelongUserStore(User $user)
+    {
+        return $this->getStore()->getId() === $user->getStore()->getId();
+    }
+
+    /**
+     * Check if this custom has no orders
+     *
+     * @return boolean
+     */
+    public function hasNoOrders()
+    {
+        return 0 === $this->getOrders()->count();
+    }
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -413,14 +412,14 @@ class Custom
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -436,14 +435,14 @@ class Custom
     public function setSex($sex)
     {
         $this->sex = $sex;
-    
+
         return $this;
     }
 
     /**
      * Get sex
      *
-     * @return string 
+     * @return string
      */
     public function getSex()
     {
@@ -459,14 +458,14 @@ class Custom
     public function setAddress($address)
     {
         $this->address = $address;
-    
+
         return $this;
     }
 
     /**
      * Get address
      *
-     * @return string 
+     * @return string
      */
     public function getAddress()
     {
@@ -482,14 +481,14 @@ class Custom
     public function setCreatetime($createtime)
     {
         $this->createtime = $createtime;
-    
+
         return $this;
     }
 
     /**
      * Get createtime
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatetime()
     {
@@ -505,14 +504,14 @@ class Custom
     public function setBirthday($birthday)
     {
         $this->birthday = $birthday;
-    
+
         return $this;
     }
 
     /**
      * Get birthday
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getBirthday()
     {
@@ -528,14 +527,14 @@ class Custom
     public function setMobil($mobil)
     {
         $this->mobil = $mobil;
-    
+
         return $this;
     }
 
     /**
      * Get mobil
      *
-     * @return string 
+     * @return string
      */
     public function getMobil()
     {
@@ -551,14 +550,14 @@ class Custom
     public function setEmail($email)
     {
         $this->email = $email;
-    
+
         return $this;
     }
 
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -574,14 +573,14 @@ class Custom
     public function setMemo($memo)
     {
         $this->memo = $memo;
-    
+
         return $this;
     }
 
     /**
      * Get memo
      *
-     * @return string 
+     * @return string
      */
     public function getMemo()
     {
@@ -597,7 +596,7 @@ class Custom
     public function addGoodsPassport(\Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports)
     {
         $this->goodsPassports[] = $goodsPassports;
-    
+
         return $this;
     }
 
@@ -614,7 +613,7 @@ class Custom
     /**
      * Get goodsPassports
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGoodsPassports()
     {
@@ -630,7 +629,7 @@ class Custom
     public function addObject(\Woojin\AgencyBundle\Entity\Object $objects)
     {
         $this->objects[] = $objects;
-    
+
         return $this;
     }
 
@@ -647,7 +646,7 @@ class Custom
     /**
      * Get objects
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getObjects()
     {
@@ -663,7 +662,7 @@ class Custom
     public function addOrder(\Woojin\OrderBundle\Entity\Orders $orders)
     {
         $this->orders[] = $orders;
-    
+
         return $this;
     }
 
@@ -680,7 +679,7 @@ class Custom
     /**
      * Get orders
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOrders()
     {
@@ -696,7 +695,7 @@ class Custom
     public function addInvoice(\Woojin\OrderBundle\Entity\Invoice $invoices)
     {
         $this->invoices[] = $invoices;
-    
+
         return $this;
     }
 
@@ -713,7 +712,7 @@ class Custom
     /**
      * Get invoices
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getInvoices()
     {
@@ -729,14 +728,14 @@ class Custom
     public function setStore(\Woojin\StoreBundle\Entity\Store $store = null)
     {
         $this->store = $store;
-    
+
         return $this;
     }
 
     /**
      * Get store
      *
-     * @return \Woojin\StoreBundle\Entity\Store 
+     * @return \Woojin\StoreBundle\Entity\Store
      */
     public function getStore()
     {
@@ -752,14 +751,14 @@ class Custom
     public function setPassword($password)
     {
         $this->password = $password;
-    
+
         return $this;
     }
 
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -775,14 +774,14 @@ class Custom
     public function setCsrf($csrf)
     {
         $this->csrf = md5($csrf . $this->id . time() . rand(0, 1000) . $csrf);
-    
+
         return $this;
     }
 
     /**
      * Get csrf
      *
-     * @return string 
+     * @return string
      */
     public function getCsrf()
     {
@@ -798,14 +797,14 @@ class Custom
     public function setIsProhibit($isProhibit)
     {
         $this->isProhibit = $isProhibit;
-    
+
         return $this;
     }
 
     /**
      * Get isProhibit
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsProhibit()
     {
@@ -821,14 +820,14 @@ class Custom
     public function setCrypPassword($crypPassword)
     {
         $this->crypPassword = $crypPassword;
-    
+
         return $this;
     }
 
     /**
      * Get crypPassword
      *
-     * @return string 
+     * @return string
      */
     public function getCrypPassword()
     {
@@ -844,14 +843,14 @@ class Custom
     public function setWhishlist($whishlist)
     {
         $this->whishlist = $whishlist;
-    
+
         return $this;
     }
 
     /**
      * Get whishlist
      *
-     * @return string 
+     * @return string
      */
     public function getWhishlist()
     {
@@ -867,14 +866,14 @@ class Custom
     public function setActiveKey($activeKey)
     {
         $this->activeKey = $activeKey;
-    
+
         return $this;
     }
 
     /**
      * Get activeKey
      *
-     * @return string 
+     * @return string
      */
     public function getActiveKey()
     {
@@ -890,14 +889,14 @@ class Custom
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-    
+
         return $this;
     }
 
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
@@ -913,14 +912,14 @@ class Custom
     public function setPreCsrf($preCsrf)
     {
         $this->preCsrf = $preCsrf;
-    
+
         return $this;
     }
 
     /**
      * Get preCsrf
      *
-     * @return string 
+     * @return string
      */
     public function getPreCsrf()
     {
@@ -936,14 +935,14 @@ class Custom
     public function setCounty($county)
     {
         $this->county = $county;
-    
+
         return $this;
     }
 
     /**
      * Get county
      *
-     * @return string 
+     * @return string
      */
     public function getCounty()
     {
@@ -959,14 +958,14 @@ class Custom
     public function setDistrict($district)
     {
         $this->district = $district;
-    
+
         return $this;
     }
 
     /**
      * Get district
      *
-     * @return string 
+     * @return string
      */
     public function getDistrict()
     {
@@ -982,14 +981,14 @@ class Custom
     public function setDividend($dividend)
     {
         $this->dividend = $dividend;
-    
+
         return $this;
     }
 
     /**
      * Get dividend
      *
-     * @return integer 
+     * @return integer
      */
     public function getDividend()
     {
@@ -1005,7 +1004,7 @@ class Custom
     public function addCustomOpe(\Woojin\OrderBundle\Entity\CustomOpe $customOpes)
     {
         $this->customOpes[] = $customOpes;
-    
+
         return $this;
     }
 
@@ -1022,7 +1021,7 @@ class Custom
     /**
      * Get customOpes
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCustomOpes()
     {
@@ -1038,7 +1037,7 @@ class Custom
     public function addBehalf(\Woojin\GoodsBundle\Entity\Behalf $behalfs)
     {
         $this->behalfs[] = $behalfs;
-    
+
         return $this;
     }
 
@@ -1055,7 +1054,7 @@ class Custom
     /**
      * Get behalfs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getBehalfs()
     {
@@ -1071,7 +1070,7 @@ class Custom
     public function addBenefit(\Woojin\OrderBundle\Entity\Benefit $benefits)
     {
         $this->benefits[] = $benefits;
-    
+
         return $this;
     }
 
@@ -1088,7 +1087,7 @@ class Custom
     /**
      * Get benefits
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getBenefits()
     {
@@ -1104,14 +1103,14 @@ class Custom
     public function setBkemail($bkemail)
     {
         $this->bkemail = $bkemail;
-    
+
         return $this;
     }
 
     /**
      * Get bkemail
      *
-     * @return string 
+     * @return string
      */
     public function getBkemail()
     {
@@ -1127,14 +1126,14 @@ class Custom
     public function setFbToken($fbToken)
     {
         $this->fbToken = $fbToken;
-    
+
         return $this;
     }
 
     /**
      * Get fbToken
      *
-     * @return string 
+     * @return string
      */
     public function getFbToken()
     {
@@ -1150,17 +1149,85 @@ class Custom
     public function setGoogleToken($googleToken)
     {
         $this->googleToken = $googleToken;
-    
+
         return $this;
     }
 
     /**
      * Get googleToken
      *
-     * @return string 
+     * @return string
      */
     public function getGoogleToken()
     {
         return $this->googleToken;
+    }
+
+    /**
+     * Add buyAction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $buyAction
+     *
+     * @return Custom
+     */
+    public function addBuyAction(\Woojin\StoreBundle\Entity\Auction $buyAction)
+    {
+        $this->buyActions[] = $buyAction;
+
+        return $this;
+    }
+
+    /**
+     * Remove buyAction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $buyAction
+     */
+    public function removeBuyAction(\Woojin\StoreBundle\Entity\Auction $buyAction)
+    {
+        $this->buyActions->removeElement($buyAction);
+    }
+
+    /**
+     * Get buyActions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBuyActions()
+    {
+        return $this->buyActions;
+    }
+
+    /**
+     * Add sellAction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $sellAction
+     *
+     * @return Custom
+     */
+    public function addSellAction(\Woojin\StoreBundle\Entity\Auction $sellAction)
+    {
+        $this->sellActions[] = $sellAction;
+
+        return $this;
+    }
+
+    /**
+     * Remove sellAction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $sellAction
+     */
+    public function removeSellAction(\Woojin\StoreBundle\Entity\Auction $sellAction)
+    {
+        $this->sellActions->removeElement($sellAction);
+    }
+
+    /**
+     * Get sellActions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSellActions()
+    {
+        return $this->sellActions;
     }
 }

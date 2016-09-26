@@ -11,15 +11,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
-use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\StoreBundle\Entity\Store;
-use Woojin\StoreBundle\Entity\Auction;
-use Woojin\UserBundle\Entity\User;
 use Woojin\Utility\Avenue\Avenue;
 use Woojin\Utility\Handler\ResponseHandler;
 
 class AuctionController extends Controller
 {
+    use HelperTrait;
+
     /**
      * @Route("/auction/{id}/{_format}", requirements={"id"="\d+"}, defaults={"_format"="json"}, name="api_auction_show", options={"expose"=true})
      * @ParamConverter("auction", class="WoojinStoreBundle:Auction")
@@ -318,118 +317,6 @@ class AuctionController extends Controller
     }
 
     /**
-     * Check whether given variable is NULL or NOT
-     *
-     * @param  mixed  $product
-     * @return boolean
-     */
-    protected function hasFoundProduct($product)
-    {
-        return $product instanceof GoodsPassport;
-    }
-
-    /**
-     * Check whether the product status is on board or not
-     *
-     * @param  \Woojin\GoodsBundle\Entity\GoodsPassport $product
-     * @return boolean
-     */
-    protected function isProductOnSale(GoodsPassport $product)
-    {
-        return $product->isProductOnSale();
-    }
-
-    /**
-     * Is product status_id equal to Avenue::GS_BSO_ONBOARD?
-     *
-     * @param  \Woojin\GoodsBundle\Entity\GoodsPassport  $product
-     * @return boolean
-     */
-    protected function isProductBsoOnBoard(GoodsPassport $product)
-    {
-        return $product->isProductBsoOnBoard();
-    }
-
-    /**
-     * Is product has uploaded to Yahoo
-     *
-     * @param  \Woojin\GoodsBundle\Entity\GoodsPassport  $product
-     * @return boolean
-     */
-    protected function isNotYahooProduct(GoodsPassport $product)
-    {
-        return !$product->isYahooProduct();
-    }
-
-    /**
-     * Is product belong store the same as user belongs?
-     *
-     * @param  \Woojin\UserBundle\Entity\User           $user
-     * @param  \Woojin\GoodsBundle\Entity\GoodsPassport $product
-     * @return boolean
-     */
-    protected function isProductBelongStoreUser(User $user, GoodsPassport $product)
-    {
-        return $product->isOwnProduct($user);
-    }
-
-    /**
-     * Is product status_id equal to Avenue::GS_BSO_SOLD
-     *
-     * @param  \Woojin\GoodsBundle\Entity\GoodsPassport  $product
-     * @return boolean
-     */
-    protected function isProductBsoSold(GoodsPassport $product)
-    {
-        return $product->isProductBsoSold();
-    }
-
-    /**
-     * Is auction belong to the given user's store
-     *
-     * @param  \Woojin\UserBundle\Entity\User  User    $user
-     * @param  \Woojin\StoreBundle\Entity\Auction  Auction $auction
-     * @return boolean
-     */
-    protected function isAuctionBelongGivenUsersStore(User $user, Auction $auction)
-    {
-        return $auction->isAuctionBelongGivenUsersStore($user);
-    }
-
-    /**
-     * Has found auction
-     *
-     * @param  mixed  $auction
-     * @return boolean
-     */
-    protected function hasFoundAuction($auction)
-    {
-        return $auction instanceof Auction;
-    }
-
-    /**
-     * Is price a valid number
-     *
-     * @param  integer $price
-     * @return boolean
-     */
-    protected function isPriceValidNumber($price)
-    {
-        return is_numeric($price);
-    }
-
-    protected function execValidaters(array $validaters)
-    {
-        foreach ($validaters as $methodName => $regists) {
-            if (!call_user_func_array(array($this, $methodName), $regists['params'])) {
-                return $regists['response'];
-            }
-        }
-
-        return array();
-    }
-
-    /**
      * Provide the validators to newAction
      *
      * @param  array $compose
@@ -602,47 +489,5 @@ class AuctionController extends Controller
                     'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
                 ))
         );
-    }
-
-    /**
-     * Gen show auction return array
-     *
-     * @param  mixed Woojin\StoreBundle\Entity\Auction|NULL $auction
-     * @return array
-     */
-    private function _genShowAuctionReturn($auction)
-    {
-        return (NULL === $auction)
-            ? array(
-                'status' => Avenue::IS_ERROR,
-                'msg' => $this->get('translator')->trans('ProductSnIsNotExist'),
-                'http_status_code' => Response::HTTP_NOT_FOUND
-            ) : array('status' => Avenue::IS_SUCCESS, 'auction' => $auction)
-        ;
-    }
-
-    private function _genResponseWithServiceReturnAuction($result, $_format)
-    {
-        $responseArr = $result instanceof Auction
-            ? array(
-                'status' => Avenue::IS_SUCCESS,
-                'auction' => $result,
-                'http_status_code' => Response::HTTP_OK
-            ) : array(
-                'status' => Avenue::IS_ERROR,
-                'msg' => $result->getMessage(),
-                'http_status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-
-        return $this->_getResponse($responseArr, $_format);
-    }
-
-    private function _getResponse($data, $_format)
-    {
-        $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
-        $jsonResponse = $serializer->serialize($data, $_format);
-        $responseHandler = new ResponseHandler;
-
-        return $responseHandler->getResponse($jsonResponse, $_format);
     }
 }

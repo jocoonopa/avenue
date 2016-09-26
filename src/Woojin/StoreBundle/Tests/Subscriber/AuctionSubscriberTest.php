@@ -16,9 +16,9 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
     private $event;
     private $entityManager;
     private $container;
-    
+
     public function setUp()
-    {        
+    {
         $this->container = m::mock('Symfony\Component\DependencyInjection\ContainerInterface');
         $this->entityManager = m::mock('Doctrine\ORM\EntityManager');
         $this->event = m::mock('Woojin\StoreBundle\Event\AuctionEvent')->makePartial();
@@ -36,7 +36,7 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
             'createStore' => true,
             'bsoStore' => true
         ));
-        
+
         $this->entityManager->shouldReceive('getRepository->find')->atMost(1)->andReturn(new GoodsStatus);
         $this->entityManager->shouldReceive('persist', 'flush')->once();
 
@@ -49,22 +49,22 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It seems the Mock object was defined in the previous method, 
+     * It seems the Mock object was defined in the previous method,
      * but contain data doesn't keep
-     * 
+     *
      * @depends testOnCreateAuction
      */
     public function testOnUpdateProductStatus(array $compose)
     {
         list($subscriber, $event) = $compose;
-        
+
         $subscriber->onUpdateProductStatus($event);
 
         $this->assertTrue($event->getAuction()->getProduct()->getStatus() instanceof GoodsStatus);
     }
-    
+
     public function testOnBackAuction()
-    {    
+    {
         $this->entityManager->shouldReceive('persist', 'flush')->once();
 
         $this->event->setAuction($this->auction)->setOptions(array('backer' => $this->user));
@@ -79,11 +79,11 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testOnSoldAuction()
-    {    
+    {
         $mockPrice = 100;
         $options = array(
             'buyer' => $this->custom,
-            'bsser' => $this->user, 
+            'bsser' => $this->user,
             'soldAt' => new \DateTime,
             'price' => $mockPrice
         );
@@ -104,10 +104,11 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
 
     /**
      * - The status of event's auction is setted to what we expect
-     * - Auction's canceller is setted to what we expect 
+     * - Auction's canceller is setted to what we expect
      */
     public function testOnCancelAuction()
-    {    
+    {
+        $this->user->shouldReceive('getUsername')->once();
         $this->event->setAuction($this->auction);
         $this->entityManager->shouldReceive('persist', 'flush')->once();
         $subscriber = new AuctionSubscriber($this->entityManager);
@@ -123,7 +124,7 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
      * @expectedException Symfony\Component\OptionsResolver\Exception\MissingOptionsException
      */
     public function testOnCancelMissingOptionsException()
-    {        
+    {
         $subscriber = new AuctionSubscriber($this->entityManager);
         $this->event->setOptions(array());
         $subscriber->onCancel($this->event);
@@ -138,7 +139,7 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->event->setOptions(array('__canceller__' => 'x'));
         $subscriber->onCancel($this->event);
     }
-    
+
     public function tearDown()
     {
         m::close();

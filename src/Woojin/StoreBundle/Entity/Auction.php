@@ -191,6 +191,7 @@ class Auction
         return $this
             ->setStatus(Auction::STATUS_SOLD)
             ->setPrice($options['price'])
+            ->setBsser($options['bsser'])
             ->setBuyer($options['buyer'])
             ->setSoldAt($options['soldAt'])
         ;
