@@ -97,7 +97,7 @@ BeginAuction
     position: fixed;
     margin-top: 0px;
     margin-left: 0px;
-    background-color: #f1c40f;
+    background-color: #222222;
     left: 0;
     top: 0;
     z-index: 11;
@@ -110,5 +110,4 @@ BeginAuction
 
 .auction-modal.ng-hide-remove {
   animation: 1s slideInRight ease;
-  display: block !important;
 }

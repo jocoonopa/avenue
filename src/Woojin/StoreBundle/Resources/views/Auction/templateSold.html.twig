@@ -1,10 +1,79 @@
 {% verbatim %}
 <div ng-controller="AuctionSoldCtrl" class="bs-example bs-example-tabs">
-  <div class="auction-modal" ng-show="!isAu" ng-click="isAu = !isAu">
-    I'm the modal window!
+  <div class="auction-modal" ng-show="!isAu" >
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <h2>
+          <button type="button" class="close pull-left" ng-click="isAu = !isAu">
+            <i class="glyphicon glyphicon-remove-circle"></i>
+          </button>客戶資料
+        </h2>
+
+        <form role="form" class="text-left">
+          <div ng-show="isSuccess(customHandleResponse) && 0 == customHandleResponse.optype" class="alert alert-info">
+             <span>客戶{{customHandleResponse.custom.name}}新增完成!</span>
+
+             <button class="btn btn-sm btn-danger" ng-click="deleteCustom()">
+              <i class="glyphicon glyphicon-trash"></i>
+               誤建刪除
+             </button>
+          </div>
+          <div ng-show="isSuccess(customHandleResponse) && 1 == customHandleResponse.optype" class="alert alert-info">
+             <span>客戶{{customHandleResponse.custom.name}}更新完成!</span>
+          </div>
+          <div ng-show="isSuccess(customHandleResponse) && 2 == customHandleResponse.optype" class="alert alert-info">
+             <span>客戶{{customHandleResponse.custom.name}}刪除完成!</span>
+          </div>
+
+          <div class="form-group"><label for="">姓名:</label><input type="text" class="form-control" ng-model="custom.name"></div>
+          <div class="form-group"><label for="">性別:</label>
+            <label class="radio-inline">
+              <input type="radio" name="inlineRadioOptions" id="inlineRadio1" ng-model="custom.sex" value="先生">先生
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="inlineRadioOptions" id="inlineRadio2" ng-model="custom.sex" value="小姐">小姐
+            </label>
+          </div>
+          <div class="form-group"><label for="">手機:</label><input type="text" class="form-control" ng-model="custom.mobil"></div>
+          <div class="form-group"><label for="">住址:</label><input type="text" class="form-control" ng-model="custom.address"></div>
+          <div class="form-group"><label for="">信箱:</label><input type="text" class="form-control" ng-model="custom.email"></div>
+          <div class="form-group"><label for="">生日:</label>
+            <input type="text" id="birthday"  class="form-control" name="birthday" role="date"
+              ng-datepicker
+              ng-model="custom.birthday"
+            />
+          </div>
+          <div class="group">
+            <button class="btn btn-primary"
+              ng-show="!custom.hasExist"
+              ng-click="createCustom()"
+              ng-disabled="!isCustomFormValid(custom)"
+            >
+              <i class="glyphicon glyphicon-saved"></i>
+              新增</button>
+
+            <button class="btn btn-info"
+                ng-click="updateCustom()"
+                ng-show="custom.hasExist"
+                ng-disabled="!isCustomFormValid(custom)"
+              >
+            <i class="glyphicon glyphicon-saved"></i>
+                更新</button>
+
+            <button class="btn btn-default pull-right" ng-click="isAu = !isAu">
+              <i class="glyphicon glyphicon-remove"></i>取消
+            </button>
+          </div>
+        </form>
+
+        <div ng-show="isError(customHandleResponse)" class="alert alert-error">
+           {{customHandleResponse.msg}}
+        </div>
+      </div>
+    </div>
   </div>
 
-  <h2>BSO銷貨介面 <small ng-click="isAu = !isAu">modal</small></h2>
+  <h2>BSO銷貨介面 <button class="btn btn-default" ng-click="isAu = !isAu">新增客戶</button></h2>
 
   <form role="form">
     <div class="form-group">
@@ -23,14 +92,20 @@
   >
     <div class="panel-heading">
       <h3 class="panel-title">
-        <a class="text-info" href="{{ genProductUrl(soldResponse.auction.product.sn) }}" target="_blank">{{ soldResponse.auction.product.sn }}</a>
-        競拍售出完成</h3>
+        <a class="text-info" href="{{ genProductUrl(soldResponse.auction.product.sn) }}" target="_blank">
+          {{ soldResponse.auction.product.sn }}
+        </a>
+        競拍售出完成
+      </h3>
     </div>
     <div class="panel-body">
       <ul class="text-left">
         <li>售價:{{soldResponse.auction.price}}</li>
-        <li>客戶分配:{{getProfit(soldResponse.auction.custom_percentage, soldResponse.auction.price)}}</li>
-        <li>門市分配:{{getProfit(soldResponse.auction.store_percentage, soldResponse.auction.price)}}</li>
+        <li ng-show="0 === soldResponse.auction.buyer.name">購買人: {{soldResponse.auction.buyer.name}}, {{soldResponse.auction.buyer.mobil}}</li>
+        <li>售出操作人員: {{soldResponse.auction.bsser.username}}</li>
+        <li ng-show="0 < soldResponse.auction.seller.name.length">競拍賣家: {{soldResponse.auction.seller.name}}, {{soldResponse.auction.seller.mobil}}</li>
+        <li ng-show="0 < soldResponse.auction.custom_percentage">客戶分配:{{getProfit(soldResponse.auction.custom_percentage, soldResponse.auction.price)}}</li>
+        <li ng-show="0 < soldResponse.auction.store_percentage">門市分配:{{getProfit(soldResponse.auction.store_percentage, soldResponse.auction.price)}}</li>
         <li>BSO分配:{{getProfit(soldResponse.auction.bso_percentage, soldResponse.auction.price)}}</li>
         <li>售出時間:{{soldResponse.auction.sold_at}}</li>
         <li ng-bind-html="soldResponse.auction.memo"></li>
@@ -78,13 +153,21 @@
           ng-enter="sold(productSn, price, customMobil)"
         />
         <span class="input-group-btn">
-          <button class="btn btn-info" type="button" ng-click="bind()">綁定客戶!</button>
+          <button class="btn btn-info" type="button" ng-click="fetchCustom(customMobil)" ng-disabled="isMobilEmpty(customMobil)">
+            <i class="glyphicon glyphicon-search"></i>
+            檢查客戶
+          </button>
         </span>
       </div>
     </div>
 
     <div class="form-group">
-      <button type="button" class="btn btn-sm btn-primary pull-left" ng-click="sold(productSn, price, customMobil)">售出</button>
+      <button type="button" class="btn btn-sm btn-primary pull-left" ng-click="sold(productSn, price, customMobil)"
+        ng-disabled="!isInputValid(price)"
+      >
+        <i class="glyphicon glyphicon-send"></i>
+          售出
+      </button>
     </div>
   </form>
   <br>

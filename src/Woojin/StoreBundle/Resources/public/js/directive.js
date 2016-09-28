@@ -32,12 +32,12 @@ myApp.directive('ngTab', function () {
     element.click(function (e) {
       e.preventDefault();
       $(this).tab('show');
-    }); 
+    });
   }
 });
 
 myApp.directive('ngStatusColor', function () {
-  return function (scope, element) { 
+  return function (scope, element) {
     if ( scope.goods.status === '售出') {
       element.parent().addClass('active');
     }

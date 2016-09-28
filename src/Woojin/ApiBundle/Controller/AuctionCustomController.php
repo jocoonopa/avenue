@@ -23,7 +23,7 @@ class AuctionCustomController extends Controller
      * @Route(
      *      "/auction_custom/list/{_format}",
      *      defaults={"_format"="json"},
-     *      name="api_auction_custom_show",
+     *      name="api_auction_custom_list",
      *      options={"expose"=true}
      *  )
      * @ApiDoc(
@@ -77,7 +77,7 @@ class AuctionCustomController extends Controller
      *      "/auction_custom/{id}/{_format}",
      *      requirements={"id"="\d+"},
      *      defaults={"_format"="json"},
-     *      name="api_auction_customer_show",
+     *      name="api_auction_custom_show",
      *      options={"expose"=true}
      *  )
      * @ParamConverter("custom", class="WoojinOrderBundle:Custom")
@@ -176,12 +176,13 @@ class AuctionCustomController extends Controller
 
         try {
             $custom = new Custom;
+            $birthday = NULL === $request->get('birthday') ? NULL : new \DateTime($request->get('birthday'));
             $custom
                 ->setName($request->get('name'))
                 ->setMobil($request->get('mobil'))
                 ->setSex($request->get('sex'))
                 ->setAddress($request->get('address'))
-                ->setBirthday($request->get('birthday'))
+                ->setBirthday($birthday)
                 ->setEmail($request->get('email'))
                 ->setStore($user->getStore())
             ;
@@ -246,12 +247,14 @@ class AuctionCustomController extends Controller
 
         try {
             $custom = new Custom;
+
+            $birthday = NULL === $request->get('birthday') ? NULL : new \DateTime($request->get('birthday'));
             $custom
                 ->setName($request->get('name'))
                 ->setMobil($request->get('mobil'))
                 ->setSex($request->get('sex'))
                 ->setAddress($request->get('address'))
-                ->setBirthday($request->get('birthday'))
+                ->setBirthday($birthday)
                 ->setEmail($request->get('email'))
                 ->setStore($user->getStore())
             ;

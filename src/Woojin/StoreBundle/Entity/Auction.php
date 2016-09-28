@@ -214,7 +214,12 @@ class Auction
     {
         $date = new \DateTime();
 
-        return "原售出金額:{$this->getPrice()}，購買人:{$this->getBuyerName()}，{$options['canceller']->getUsername()}於{$date->format('Y-m-d H:i:s')}取消<br/>";
+        return "原售出金額:{$this->getPrice()}，購買人:{$this->getBuyerName()}，手機:{$this->getBuyerMobil()}，{$options['canceller']->getUsername()}於{$date->format('Y-m-d H:i:s')}取消<br/>";
+    }
+
+    public function getBuyerMobil()
+    {
+        return NULL === $this->getBuyer() ? '?' : $this->getBuyer()->getMobil();
     }
 
     public function getBuyerName()
