@@ -11,6 +11,15 @@ use Woojin\Utility\Avenue\Avenue;
  */
 class AuctionControllerTest extends AuthControllerTest
 {
+    public function testListFilterAction()
+    {
+        $crawler = $this->client->request('POST', '/api/v1/auction_filter', array());
+        $responseArr = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'), $this->client->getResponse()->headers->get('Content-Type'));
+        $this->assertTrue(isset($responseArr[0]['id']), $this->client->getResponse()->headers->get('Content-Type'));
+    }
+
     public function testShowAction()
     {
         $crawler = $this->client->request('GET', '/api/v1/auction/1');

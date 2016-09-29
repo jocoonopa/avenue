@@ -13,8 +13,12 @@
 		{% if app.user|has_auth('STOCK_REPORT_OWN') %}
 			<li><a href="#orders-instore" data-icon="e">進貨報表</a></li>
 		{% endif %}
+
+		{% if app.user|has_auth('BENEFIT_REPORT_OWN') %}
+			<li><a href="#orders-bso">bso毛利檢視報表</a></li>
+		{% endif %}
 	</ul>
-	
+
 	{% if app.user|has_auth('BENEFIT_REPORT_OWN') %}
 		<div id="orders-financial">
 			{% include('WoojinStoreBundle:Report/partial:profit.html.twig') with {'activitys': activitys} %}
@@ -25,6 +29,10 @@
 		<div id="orders-instore">
 			{% include('WoojinStoreBundle:Report/partial:instore.html.twig') with {'brands': brands} %}
 		</div>
+	{% endif %}
+
+	{% if app.user|has_auth('BENEFIT_REPORT_OWN') %}
+		<a href="{{ path('auction') }}#/auction_profit" target="_blank">BSO毛利檢視</a>
 	{% endif %}
 </div>
 

@@ -12,6 +12,28 @@ use Woojin\GoodsBundle\Entity\GoodsPassport;
  */
 class AuctionRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findByCriteria(array $criteria)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select(array('a'))
+            ->from('WoojinStoreBundle:Auction', 'a')
+            ->leftJoin('a.product', 'product')
+            ->leftJoin('product.status', 'product_status')
+            ->leftJoin('product.color', 'product_color')
+            ->leftJoin('product.brand', 'product_brand')
+            ->leftJoin('a.buyer', 'buyer')
+            ->leftJoin('a.seller', 'seller')
+            ->leftJoin('a.creater', 'creater')
+            ->leftJoin('a.bsser', 'bsser')
+            ->leftJoin('a.createStore', 'create_store')
+        ;
+
+        $criteria = new AuctionCriteria($criteria, $qb);
+
+        return $criteria->getQb()->getQuery()->getResult();
+    }
+
     public function fetchHandlingBelongStore(Store $store)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();

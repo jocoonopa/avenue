@@ -1,0 +1,15 @@
+<div ng-controller="AuctionProfitCtrl" class="bs-example bs-example-tabs">
+    <div class="auction-profit-list" ng-show="!isAu">
+        {% include 'WoojinStoreBundle:Auction/_profit:list.html.twig' %}
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            {% include 'WoojinStoreBundle:Auction/_profit:criteria.html.twig' %}
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 200px;">
+        <div class="col-md-12"></div>
+    </div>
+</div>

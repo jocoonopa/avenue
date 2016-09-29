@@ -30,6 +30,10 @@ myApp.config(['$routeProvider', '$httpProvider',
         templateUrl: Routing.generate('auction_template_sold'),
         controller: 'AuctionSoldCtrl'
     }).
+    when('/auction_profit', {
+        templateUrl: Routing.generate('auction_template_profit'),
+        controller: 'AuctionProfitCtrl'
+    }).
     otherwise({
       redirectTo: '/activity'
     });

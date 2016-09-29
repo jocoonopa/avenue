@@ -51,4 +51,16 @@ class AuctionController extends Controller
     {
         return array();
     }
+
+    /**
+     *  Profit view template
+     *
+     * @Route("/template/profit", name="auction_template_profit", options={"expose"=true})
+     * @Template()
+     * @Method("GET")
+     */
+    public function templateProfitAction()
+    {
+        return array();
+    }
 }

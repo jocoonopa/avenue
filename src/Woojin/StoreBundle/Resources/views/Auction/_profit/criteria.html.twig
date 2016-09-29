@@ -1,0 +1,92 @@
+{% verbatim %}
+<h2>
+    <small>
+        <a class="pull-left" href="#/auction_sold">
+            <i class="glyphicon glyphicon-arrow-left"></i>
+            前往BSO銷售頁面
+        </a>
+    </small>
+    競拍毛利檢視頁面
+    <button class="btn btn-default" ng-click="isAu = !isAu">
+        <i class="glyphicon glyphicon-th-list"></i>
+        資料顯示
+    </button>
+</h2>
+
+<form role="form" class="text-left">
+    <div class="form-group">
+        <label for="">買家客戶手機:</label>
+        <input type="text" class="form-control" placeholder="0988162330,0915776321,0922111000" ng-model="criteria.buyer_mobil">
+    </div>
+    <div class="form-group">
+        <label for="">賣家客戶手機:</label>
+        <input type="text" class="form-control" placeholder="0988162330,0915776321,0922111000" ng-model="criteria.seller_mobil">
+    </div>
+    <div class="form-group">
+        <label for="">入倉人員帳號:</label>
+        <input type="text" class="form-control" placeholder="amanda,vivian" ng-model="criteria.creater_username">
+    </div>
+    <div class="form-group">
+        <label for="">BSO售出人員帳號:</label>
+        <input type="text" class="form-control" placeholder="amanda,vivian" ng-model="criteria.bsser_username">
+    </div>
+    <div class="form-group">
+        <label for="">狀態:</label>
+        <div class="checkbox-inline" ng-repeat="auction_status in auction_statuses">
+            <label for="">
+                <input type="checkbox" data-checklist-model="criteria.auction_statuses" data-checklist-value="auction_status">
+                {{auction_status.name}}
+            </label>
+        </div>
+
+        <button class="btn btn-sm btn-default" ng-click="checkAllStatus()">
+            <i class="glyphicon glyphicon-check"></i>
+        </button>
+        <button class="btn btn-sm btn-default" ng-click="uncheckAllStatus()">
+            <i class="glyphicon glyphicon-unchecked"></i>
+        </button>
+    </div>
+    <div class="form-group">
+        <label for="">來源門市:</label>
+        <div class="checkbox" ng-repeat="store in stores">
+            <label for="">
+                <input type="checkbox" data-checklist-model="criteria.stores" data-checklist-value="store"> {{store.name}}
+            </label>
+        </div>
+
+        <button class="btn btn-sm btn-default" ng-click="checkAllStores()">
+            <i class="glyphicon glyphicon-check"></i>
+        </button>
+        <button class="btn btn-sm btn-default" ng-click="uncheckAllStores()">
+            <i class="glyphicon glyphicon-unchecked"></i>
+        </button>
+    </div>
+    <div class="form-group">
+        <label for="">入倉時間:</label>
+        <div class="input-group input-daterange">
+            <input type="text" class="form-control" ng-datepicker ng-model="criteria.create_at.start">
+            <span class="input-group-addon">to</span>
+            <input type="text" class="form-control" ng-datepicker ng-model="criteria.create_at.end">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="">售出時間:</label>
+        <div class="input-group input-daterange">
+            <input type="text" class="form-control" ng-datepicker ng-model="criteria.sold_at.start">
+            <span class="input-group-addon">to</span>
+            <input type="text" class="form-control" ng-datepicker ng-model="criteria.sold_at.end">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-primary pull-left" ng-click="submit()" style="position: fixed; bottom: 20px; right: 50px;">
+            <i class="glyphicon glyphicon-search"></i>
+            查詢
+        </button>
+        <button class="btn btn-default pull-right" ng-click="reset()" style="position: fixed; bottom: 20px; left: 50px;">
+            <i class="glyphicon glyphicon-refresh"></i>
+            重設
+        </button>
+    </div>
+</form>
+{% endverbatim %}

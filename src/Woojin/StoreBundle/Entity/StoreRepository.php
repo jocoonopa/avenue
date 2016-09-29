@@ -42,6 +42,18 @@ class StoreRepository extends EntityRepository
         ;
     }
 
+    public function findBsoOptions()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return $qb->select('s')
+            ->from('WoojinStoreBundle:Store', 's')
+            ->where($qb->expr()->in('s.sn', array('Y', 'Z', 'X', 'P', '!')))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function genStoreSnMap()
     {
         $map = array();

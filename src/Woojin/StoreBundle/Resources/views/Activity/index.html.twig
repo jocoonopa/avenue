@@ -1,6 +1,6 @@
 {% extends '::activity.html.twig' %}
 
-{% block head %} 
+{% block head %}
 
 {{ parent() }}
 
@@ -10,9 +10,9 @@
 <script src="/bundles/woojinstore/plugin/datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="/bundles/woojinstore/plugin/datetimepicker/js/locales/bootstrap-datepicker.zh-TW.js"></script>
 <script src="/bundles/woojinstore/js/app.js"></script>
-	
+
 <script src="/bundles/woojinstore/js/directive.js"></script>
-	
+
 <script src="/bundles/woojinstore/js/service.js"></script>
 
 <script src="/bundles/woojinstore/js/controller/controller.js"></script>
@@ -27,6 +27,7 @@
 <script src="/bundles/woojinstore/js/auction/controller/punchIn.js"></script>
 <script src="/bundles/woojinstore/js/auction/controller/punchOut.js"></script>
 <script src="/bundles/woojinstore/js/auction/controller/products.js"></script>
+<script src="/bundles/woojinstore/js/auction/controller/AuctionProfitCtrl.js"></script>
 
 {% endblock %}
 
@@ -35,5 +36,3 @@
         <div ng-view class="slide"></div>
     {% endif %}
 {% endblock %}
- 
-

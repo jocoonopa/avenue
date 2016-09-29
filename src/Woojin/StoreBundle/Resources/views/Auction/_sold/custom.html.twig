@@ -1,0 +1,74 @@
+{% verbatim %}
+<div class="auction-modal" ng-show="!isAu" >
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <h2>
+        <button type="button" class="close pull-left" ng-click="isAu = !isAu">
+          <i class="glyphicon glyphicon-remove-circle"></i>
+        </button>客戶資料
+      </h2>
+
+      <form role="form" class="text-left">
+        <div ng-show="isSuccess(customHandleResponse) && 0 == customHandleResponse.optype" class="alert alert-info">
+           <span>客戶{{customHandleResponse.custom.name}}新增完成!</span>
+
+           <button class="btn btn-sm btn-danger" ng-click="deleteCustom()">
+            <i class="glyphicon glyphicon-trash"></i>
+             誤建刪除
+           </button>
+        </div>
+        <div ng-show="isSuccess(customHandleResponse) && 1 == customHandleResponse.optype" class="alert alert-info">
+           <span>客戶{{customHandleResponse.custom.name}}更新完成!</span>
+        </div>
+        <div ng-show="isSuccess(customHandleResponse) && 2 == customHandleResponse.optype" class="alert alert-info">
+           <span>客戶{{customHandleResponse.custom.name}}刪除完成!</span>
+        </div>
+
+        <div class="form-group"><label for="">姓名:</label><input type="text" class="form-control" ng-model="custom.name"></div>
+        <div class="form-group"><label for="">性別:</label>
+          <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" ng-model="custom.sex" value="先生">先生
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" ng-model="custom.sex" value="小姐">小姐
+          </label>
+        </div>
+        <div class="form-group"><label for="">手機:</label><input type="text" class="form-control" ng-model="custom.mobil"></div>
+        <div class="form-group"><label for="">住址:</label><input type="text" class="form-control" ng-model="custom.address"></div>
+        <div class="form-group"><label for="">信箱:</label><input type="text" class="form-control" ng-model="custom.email"></div>
+        <div class="form-group"><label for="">生日:</label>
+          <input type="text" id="birthday"  class="form-control" name="birthday" role="date"
+            ng-datepicker
+            ng-model="custom.birthday"
+          />
+        </div>
+        <div class="group">
+          <button class="btn btn-primary"
+            ng-show="!custom.hasExist"
+            ng-click="createCustom()"
+            ng-disabled="!isCustomFormValid(custom)"
+          >
+            <i class="glyphicon glyphicon-saved"></i>
+            新增</button>
+
+          <button class="btn btn-info"
+              ng-click="updateCustom()"
+              ng-show="custom.hasExist"
+              ng-disabled="!isCustomFormValid(custom)"
+            >
+          <i class="glyphicon glyphicon-saved"></i>
+              更新</button>
+
+          <button class="btn btn-default pull-right" ng-click="isAu = !isAu">
+            <i class="glyphicon glyphicon-remove"></i>取消
+          </button>
+        </div>
+      </form>
+
+      <div ng-show="isError(customHandleResponse)" class="alert alert-error">
+         {{customHandleResponse.msg}}
+      </div>
+    </div>
+  </div>
+</div>
+{% endverbatim %}

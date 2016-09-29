@@ -1,0 +1,68 @@
+{% verbatim %}
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <button class="btn btn-sm btn-default" ng-click="isAu = !isAu" style="position: fixed;top: 20px;left: 20px;">
+            <i class="glyphicon glyphicon-arrow-left"></i>
+        </button>
+        <h3>資料顯示區塊</h3>
+        <table class="table" stlye="text-align: left;">
+            <thead>
+                <tr>
+                    <th>產編</th>
+                    <th>序號</th>
+                    <th>品牌</th>
+                    <th>
+                        <a href ng-click="sortBy('create_store.id')">來源</a>
+                    </th>
+                    <th>賣家</th>
+                    <th>買家</th>
+                    <th>
+                        <a href ng-click="sortBy('price')">得標價</a>
+                    </th>
+                    <th>
+                        <a href ng-click="sortBy('customProfit')">客戶潤比</a>
+                    </th>
+                    <th>
+                        <a href ng-click="sortBy('storeProfit')">門市潤比</a>
+                    </th>
+                    <th>
+                        <a href ng-click="sortBy('bsoProfit')">BSO潤比</a>
+                    </th>
+                    <th>
+                        <a href ng-click="sortBy('sold_at')">售出時間</a>
+                    </th>
+                    <th>
+                        <a href ng-click="sortBy('create_at')">入倉時間</a>
+                    </th>
+                    <th>歷程記錄</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="auction in auctions | orderBy:propertyName:reverse">
+                    <td>
+                        <a href="{{genProductUrl(auction.product.sn)}}" target="_blank">{{ auction.product.sn }}</a>
+                        <p>{{ printProductName(auction.product.name) }}</p>
+                    </td>
+                    <td>{{auction.product.org_sn}}</td>
+                    <td>{{ auction.brand.name }}</td>
+                    <td><p class="text-primary">{{ auction.create_store.name }}</p></td>
+                    <td>
+                        <p class="text-muted">{{ auction.seller.name }}({{ auction.seller.mobil }})</p>
+                    </td>
+                    <td><p class="text-success">{{ auction.buyer.name }}({{ auction.buyer.mobil }})</p></td>
+                    <td><p class="text-warning">{{ auction.price }}</p></td>
+                    <td><p class="text-info">{{ auction.customProfit }}</p></td>
+                    <td><p class="text-info">{{ auction.storeProfit }}</p></td>
+                    <td><p class="text-info">{{ auction.bsoProfit }}</p></td>
+                    <td>{{ auction.sold_at.substr(0, 10) }}</td>
+                    <td>{{ auction.create_at.substr(0, 10) }}</td>
+                    <td>
+                        <button class="btn btn-xs btn-info" ng-show="0 < auction.memo.length" ng-click="auction.isAu = !auction.isAu">點我查看歷史紀錄</button>
+                        <div class="well" ng-show="auction.isAu" style="text-align: left;" ng-bind-html="auction.memo"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endverbatim %}

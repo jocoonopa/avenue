@@ -8,9 +8,9 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-use Woojin\StoreBundle\Entity\Store; 
-use Woojin\UserBundle\Entity\User; 
-use Woojin\GoodsBundle\Entity\GoodsPassport; 
+use Woojin\StoreBundle\Entity\Store;
+use Woojin\UserBundle\Entity\User;
+use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\Utility\Avenue\Avenue;
 
 class GoodsPassportRepository extends EntityRepository
@@ -36,11 +36,11 @@ class GoodsPassportRepository extends EntityRepository
             ->join('g.orders', 'od')
             ->join('od.opes', 'op')
             ->join('op.user', 'u')
-            ->where( 
+            ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq('g.status', Avenue::GS_ONSALE),
                     $qb->expr()->eq('SUBSTRING(g.sn, 1, 1)', $qb->expr()->literal($store_sn))
-                ) 
+                )
             )
             ->getQuery()
             ->getResult()
@@ -77,11 +77,11 @@ class GoodsPassportRepository extends EntityRepository
         return $qb->select(array('gp', 'b'))
             ->from('WoojinGoodsBundle:GoodsPassport' , 'gp')
             ->join('gp.brand', 'b')
-            ->where( 
+            ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq('gp.status', Avenue::GS_ONSALE),
-                    $qb->expr()->eq( 
-                        $qb->expr()->substring('gp.sn', 1, 1), 
+                    $qb->expr()->eq(
+                        $qb->expr()->substring('gp.sn', 1, 1),
                         $qb->expr()->literal($storeSn)
                     )
                 )
@@ -98,11 +98,11 @@ class GoodsPassportRepository extends EntityRepository
 
         return $qb->select('gd')
             ->from('WoojinGoodsBundle:GoodsPassport', 'gd')
-            ->where( 
-                $qb->expr()->andX( 
-                    $qb->expr()->eq('gd.sn', $qb->expr()->literal($goodsSn)), 
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('gd.sn', $qb->expr()->literal($goodsSn)),
                     $qb->expr()->eq('gd.status', Avenue::GS_ACTIVITY)
-                )  
+                )
             )
             ->getQuery()
             ->getResult()
@@ -120,10 +120,10 @@ class GoodsPassportRepository extends EntityRepository
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq(
-                        $qb->expr()->substring('g.sn', 1, 1), 
+                        $qb->expr()->substring('g.sn', 1, 1),
                         $qb->expr()->literal($user->getStore()->getSn())
                     ),
-                    $qb->expr()->eq('g.status', Avenue::GS_SOLDOUT),
+                    $qb->expr()->in('g.status', array(Avenue::GS_SOLDOUT, Avenue::GS_BSO_SOLD)),
                     $qb->expr()->isNotNull('g.custom'),
                     $qb->expr()->eq('o.status', Avenue::OS_HANDLING),
                     $qb->expr()->eq('o.kind', Avenue::OK_FEEDBACK)
@@ -156,23 +156,23 @@ class GoodsPassportRepository extends EntityRepository
 
         return $qb->getQuery()->getResult();
     }
-    
+
     //=== 取得相關商品 ===//
     /**
      * 取得該商品的相關商品
-     * 
-     * @param  GoodsPassport $goods 
-     * @return Collention GoodsPassport              
+     *
+     * @param  GoodsPassport $goods
+     * @return Collention GoodsPassport
      */
     public function getRelative(GoodsPassport $goods){}
     //=== End 取得相關商品 ===//
-    
+
     /**
      * 亂數取得上架商品
      *
      * 從最新的300樣商品亂數取 $num 件
      *
-     * @param  integer $num 
+     * @param  integer $num
      * @return Collention GoodsPassport
      */
     public function getRandOnSale($num = 1)
@@ -195,7 +195,7 @@ class GoodsPassportRepository extends EntityRepository
                 $qb->expr()->andX(
                     $qb->expr()->orX(
                         $qb->expr()->in('g.status', array(
-                            Avenue::GS_ONSALE, 
+                            Avenue::GS_ONSALE,
                             Avenue::GS_ACTIVITY
                         )),
                         $qb->expr()->andX(
@@ -203,7 +203,7 @@ class GoodsPassportRepository extends EntityRepository
                                 Avenue::GS_SOLDOUT,
                                 Avenue::GS_BEHALF
                             )),
-                            $qb->expr()->eq('g.isBehalf', true) 
+                            $qb->expr()->eq('g.isBehalf', true)
                         )
                     ),
                     $qb->expr()->eq('g.isAllowWeb', true),
@@ -221,7 +221,7 @@ class GoodsPassportRepository extends EntityRepository
         $arrayOfGoods = $qb->getQuery()->getResult();
 
         if (!empty($arrayOfGoods)) {
-            $keys = array_rand($arrayOfGoods, (count($arrayOfGoods) < $num) ? count($arrayOfGoods) : $num);       
+            $keys = array_rand($arrayOfGoods, (count($arrayOfGoods) < $num) ? count($arrayOfGoods) : $num);
 
             foreach ($keys as $key) {
                 $rands[] = $arrayOfGoods[$key];
@@ -233,7 +233,7 @@ class GoodsPassportRepository extends EntityRepository
 
     /**
      * 取得促銷活動中新舊程度最高的12筆商品
-     * 
+     *
      * @return array
      */
     public function getTimelineProducts($num = 1)
@@ -269,9 +269,9 @@ class GoodsPassportRepository extends EntityRepository
 
     /**
      * 多筆銷貨和促銷活動的介面都用這個方法去取得資料~
-     * 
+     *
      * @param  Request $request
-     * @param  Store   $store  
+     * @param  Store   $store
      * @return array
      */
     public function getMultile(Request $request, Store $store)
@@ -279,8 +279,8 @@ class GoodsPassportRepository extends EntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb
             ->select('gd')
-            ->from('WoojinGoodsBundle:GoodsPassport', 'gd') 
-            ->where( 
+            ->from('WoojinGoodsBundle:GoodsPassport', 'gd')
+            ->where(
                 //$qb->expr()->andX(
                     //$qb->expr()->eq('SUBSTRING(gd.sn, 1, 1)', $qb->expr()->literal($store->getSn())),
                     $qb->expr()->in('gd.status', array(Avenue::GS_ONSALE, Avenue::GS_ACTIVITY))
@@ -317,7 +317,7 @@ class GoodsPassportRepository extends EntityRepository
         if ($isAllowWeb = $request->request->get('isAllowWeb')) {
             $qb->andWhere($qb->expr()->eq('gd.isAllowWeb', $isAllowWeb));
         }
-        
+
         return $qb->getQuery()->getResult();
     }
 
@@ -326,8 +326,8 @@ class GoodsPassportRepository extends EntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb
             ->select('gd')
-            ->from('WoojinGoodsBundle:GoodsPassport', 'gd') 
-            ->where( 
+            ->from('WoojinGoodsBundle:GoodsPassport', 'gd')
+            ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq('SUBSTRING(gd.sn, 1, 1)', $qb->expr()->literal($store->getSn())),
                     $qb->expr()->eq('gd.status', Avenue::GS_BSO_ONBOARD)
@@ -340,6 +340,3 @@ class GoodsPassportRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 }
-
-
-

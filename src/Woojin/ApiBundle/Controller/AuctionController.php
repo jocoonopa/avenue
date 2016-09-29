@@ -20,6 +20,41 @@ class AuctionController extends Controller
     use HelperTrait;
 
     /**
+     * @Route("/auction_filter/{_format}", defaults={"_format"="json"}, name="api_list_filter_auction", options={"expose"=true})
+     * @Method("POST")
+     */
+    public function listFilterAction(Request $request, $_format)
+    {
+        /**
+         * The Current User
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        /**
+         * DoctrineManager
+         *
+         * @var \Doctrine\ORM\EntityManager;
+         */
+        $em = $this->getDoctrine()->getManager();
+
+        /**
+         * The query criteria
+         *
+         * @var array
+         */
+        $criteria = $request->request->all();
+
+        /**
+         * Fetch auctions we would return into response
+         */
+        $auctions = $em->getRepository('WoojinStoreBundle:Auction')->findByCriteria($criteria);
+
+        return $this->_getResponse($auctions, $_format);
+    }
+
+    /**
      * @Route("/auction/{id}/{_format}", requirements={"id"="\d+"}, defaults={"_format"="json"}, name="api_auction_show", options={"expose"=true})
      * @ParamConverter("auction", class="WoojinStoreBundle:Auction")
      * @Method("GET")
@@ -63,7 +98,7 @@ class AuctionController extends Controller
      * @Route("/auction/{_format}", defaults={"_format"="json"}, name="api_list_auction", options={"expose"=true})
      * @Method("GET")
      */
-    public function listAction($_format)
+    public function listAction(Request $request, $_format)
     {
         /**
          * The Current User

@@ -5,3 +5,10 @@ input.alert-error, input.alert-error:focus {
 intpu.alert-ok, input.alert-ok:focus {
   border: 3px solid green;
 }
+
+.sortorder:after {
+  content: '\25b2';   // BLACK UP-POINTING TRIANGLE
+}
+.sortorder.reverse:after {
+  content: '\25bc';   // BLACK DOWN-POINTING TRIANGLE
+}
