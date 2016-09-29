@@ -4,11 +4,11 @@
         <label class="col-md-2">狀態</label>
 
         <div class="col-md-10">
-            <span class="label 
+            <span class="label
             {% if goods.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') %}
                 label-primary
             {% elseif goods.status.id in [
-                constant('Woojin\\Utility\\Avenue\\Avenue::GS_OTHERSTORE'), 
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_OTHERSTORE'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_BSO_ONBOARD')
             ] %}
@@ -54,7 +54,7 @@
                         &nbsp;他店狀態:<span class="label {% if inherit.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') %}
             label-primary
             {% elseif inherit.status.id in [
-                constant('Woojin\\Utility\\Avenue\\Avenue::GS_OTHERSTORE'), 
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_OTHERSTORE'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
             ] %}
             label-info
@@ -95,11 +95,11 @@
         <label class="col-md-2">選擇關鍵字</label>
 
         <div class="col-md-10">
-            <select name="seoSlogan_id" class="form-control" 
+            <select name="seoSlogan_id" class="form-control"
             {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled="disabled"{% endif %}
             >
                 <option value="">請選擇</option>
-                
+
                 {% for seoSlogan in seoSlogans %}
                     <option value="{{ seoSlogan.id }}" {% if goods.seoSlogan2 and goods.seoSlogan2.id == seoSlogan.id %}selected{% endif %}>{{ seoSlogan.name }}</option>
                 {% endfor %}
@@ -111,11 +111,11 @@
         <label class="col-md-2">選擇關鍵字2</label>
 
         <div class="col-md-10">
-            <select name="seoSlogan2_id" class="form-control" 
+            <select name="seoSlogan2_id" class="form-control"
             {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled="disabled"{% endif %}
             >
                 <option value="">請選擇</option>
-                
+
                 {% for seoSlogan in seoSlogans %}
                     <option value="{{ seoSlogan.id }}" {% if goods.seoSlogan and goods.seoSlogan.id == seoSlogan.id %}selected{% endif %}>{{ seoSlogan.name }}</option>
                 {% endfor %}
@@ -127,8 +127,8 @@
         <label class="col-md-2">輸入關鍵字</label>
 
         <div class="col-md-10">
-            {% if 
-                (app.user|is_own(goods) and app.user|has_auth('EDIT_PRODUCT_OWN')) 
+            {% if
+                (app.user|is_own(goods) and app.user|has_auth('EDIT_PRODUCT_OWN'))
                 or app.user|has_auth('EDIT_PRODUCT_ALL')
             %}
                 <input type="text" name="seoWord" class="form-control" value="{{ goods.seoWord }}" />
@@ -142,8 +142,8 @@
         <label class="col-md-2">品名</label>
 
         <div class="col-md-10">
-            {% if 
-                (app.user|is_own(goods) and app.user|has_auth('EDIT_PRODUCT_OWN')) 
+            {% if
+                (app.user|is_own(goods) and app.user|has_auth('EDIT_PRODUCT_OWN'))
                 or app.user|has_auth('EDIT_PRODUCT_ALL')
             %}
                 <input type="text" name="goods_name" class="form-control" value="{{ goods.getName(true) }}" />
@@ -157,7 +157,7 @@
         <label class="col-md-2">售價</label>
 
         <div class="col-md-10">
-            {% if 
+            {% if
             goods.status.id in [
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY'),
@@ -167,7 +167,7 @@
                 or app.user|has_auth('EDIT_PRICE_ALL'))
             )
             %}
-                <input type="text" name="goods_price" class="form-control numeric" 
+                <input type="text" name="goods_price" class="form-control numeric"
              value="{{ goods.price }}" />
             {% else %}
                 <span>{{ goods.price|number_format }}</span>
@@ -193,7 +193,7 @@
         <label class="col-md-2">網路售價</label>
 
         <div class="col-md-10">
-            {% if 
+            {% if
             goods.status.id in [
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY'),
@@ -214,12 +214,12 @@
         <label class="col-md-2">成本</label>
 
         <div class="col-md-10">
-            {% if  
+            {% if
                 (app.user|is_own(goods) and app.user|has_auth('READ_COST_OWN'))
                 or app.user|has_auth('READ_COST_ALL')
             %}
-                {% if 
-                    ((app.user|is_own(goods) and app.user|has_auth('EDIT_COST_OWN')) 
+                {% if
+                    ((app.user|is_own(goods) and app.user|has_auth('EDIT_COST_OWN'))
                     or app.user|has_auth('EDIT_COST_ALL'))
                 %}
                 <input type="text" name="goods_cost" class="form-control numeric" value="{{ goods.cost }}" />
@@ -236,11 +236,11 @@
         <label class="col-md-2">款式</label>
 
         <div class="col-md-10">
-            <select name="pattern" class="form-control" 
+            <select name="pattern" class="form-control"
             {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled="disabled"{% endif %}
             >
                 <option value="">請選擇</option>
-                
+
                 {% for pattern in patterns %}
                     <option value="{{ pattern.id }}" {% if goods.pattern and goods.pattern.id == pattern.id %}selected{% endif %}>{{ pattern.name }}</option>
                 {% endfor %}
@@ -278,7 +278,7 @@
         <div class="col-md-10 color-div">
             <select name="color" class="form-control" {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and  app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled="disabled"{% endif %}>
                 <option value="">請選擇</option>
-                
+
                 {% for color in colors %}
                     <option value="{{ color.id }}" {% if goods.color and (goods.color.id == color.id) %}selected{% endif %}>{{ color.name }}</option>
                 {% endfor %}
@@ -300,7 +300,7 @@
         <div class="col-md-10">
             <select name="mt" class="form-control" {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and  app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled="disabled"{% endif %}>
                 <option value="">請選擇</option>
-                
+
                 {% for mt in mts %}
                     <option value="{{ mt.id }}" {% if goods.mt and (goods.mt.id == mt.id) %}selected{% endif %}>{{ mt.name }}</option>
                 {% endfor %}
@@ -314,7 +314,7 @@
         <div class="col-md-10">
             <select name="level" class="form-control" {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and  app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled="disabled"{% endif %}>
                 <option value="">請選擇</option>
-                
+
                 {% for level in levels %}
                     <option value="{{ level.id }}" {% if goods.level and (goods.level.id == level.id) %}selected{% endif %}>{{ level.name }}</option>
                 {% endfor %}
@@ -340,7 +340,7 @@
 
         <div class="col-md-5">
             {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and  app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}<input type="file" name="img" accept=".gif,.jpg,.jpeg,.png" />{% endif %}
-            
+
             <img class="select-image" style="width: 100%;"/>
         </div>
 
@@ -378,10 +378,10 @@
 
      <div class="form-group">
         <label class="col-md-2">附圖</label>
-        
+
         <div class="col-md-5">
             {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and  app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}<input type="file" name="desimg" accept=".gif,.jpg,.jpeg,.png" />{% endif %}
-            
+
             <img class="select-desimage" style="width: 100%;"/>
         </div>
 
@@ -397,7 +397,7 @@
         <div class="col-md-10">
            {% for category in categorys %}
                 <label>{{ category.name }}</label>
-                <input type="checkbox" name="category[]" value="{{ category.id }}" 
+                <input type="checkbox" name="category[]" value="{{ category.id }}"
                 {% if goods.hasCategory(category) %}checked{% endif %}
                 {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and  app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
                >
@@ -408,8 +408,8 @@
     <div class="form-group">
         <label class="col-md-2">官網是否上架</label>
 
-        <div class="col-md-10">        
-            <input type="checkbox" name="isAllowWeb" value="1" 
+        <div class="col-md-10">
+            <input type="checkbox" name="isAllowWeb" value="1"
                 {% if goods.isAllowWeb %}checked{% endif %}
                 {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
                >
@@ -419,8 +419,8 @@
     <div class="form-group">
         <label class="col-md-2">是否允許刷卡</label>
 
-        <div class="col-md-10">        
-            <input type="checkbox" name="isAllowCreditCard" value="1" 
+        <div class="col-md-10">
+            <input type="checkbox" name="isAllowCreditCard" value="1"
                 {% if goods.isAllowCreditCard %}checked{% endif %}
                 {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
                >
@@ -430,9 +430,39 @@
     <div class="form-group">
         <label class="col-md-2">是否允許預購</label>
 
-        <div class="col-md-10">        
-            <input type="checkbox" name="isBehalf" data-id="{{ goods.id }}" value="1" 
+        <div class="col-md-10">
+            <input type="checkbox" name="isBehalf" data-id="{{ goods.id }}" value="1"
                 {% if goods.isBehalf %}checked{% endif %}
+                {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
+               >
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2">是否允許BSO競拍</label>
+
+        <div class="col-md-10">
+            <input type="checkbox" name="isAllowAuction" data-id="{{ goods.id }}" value="1"
+            {% if goods.status.id in [
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
+            ] and goods.isOrigin() %}{% else %} disabled {% endif %}
+                {% if goods.isAllowAuction %}checked{% endif %}
+                {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
+               >
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2">是否為Alan進貨</label>
+
+        <div class="col-md-10">
+            <input type="checkbox" name="isAlanIn" data-id="{{ goods.id }}" value="1"
+            {% if goods.status.id in [
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
+            ] and goods.isOrigin() %}{% else %} disabled {% endif %}
+                {% if goods.isAlanIn %}checked{% endif %}
                 {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
                >
         </div>
@@ -446,7 +476,7 @@
                 <span class="label {% if loop.last %}label-primary{% else %}label-default{% endif %}">{{ family.sn }}</span>
 
                 {% if loop.last %}{% else %}<i class="glyphicon glyphicon-arrow-right"></i>{% endif %}
-            {% endfor %} 
+            {% endfor %}
         </div>
     </div>
 

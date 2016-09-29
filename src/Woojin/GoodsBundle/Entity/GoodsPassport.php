@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Woojin\GoodsBundle\Entity;
 
@@ -19,7 +19,7 @@ use Woojin\Utility\Avenue\Avenue;
  * @ORM\HasLifecycleCallbacks()
  */
 class GoodsPassport
-{   
+{
     /**
      * @ORM\ManyToOne(targetEntity="SeoSlogan", inversedBy="products")
      * @var SeoSlogan
@@ -322,19 +322,29 @@ class GoodsPassport
     }
 
     /**
+     * 檢查是否為始祖
+     *
+     * @return boolean
+     */
+    public function isOrigin()
+    {
+        return $this->getId() === $this->getParent()->getId();
+    }
+
+    /**
      * 檢查是否為代購商品
-     * 
+     *
      * @return boolean
      */
     public function isBehalfAndSold()
     {
-        return (in_array($this->status->getId(), array(Avenue::GS_SOLDOUT, Avenue::GS_BEHALF)) 
+        return (in_array($this->status->getId(), array(Avenue::GS_SOLDOUT, Avenue::GS_BEHALF))
             && ($this->isBehalf));
     }
 
     /**
      * 取得符合 SEO 的商品名稱
-     * 
+     *
      * @return string
      */
     public function getSeoName()
@@ -360,7 +370,7 @@ class GoodsPassport
         $seoName .= str_replace(array('無型號', '無'), array('', ''), $this->getModel()) . ' ';
 
         if ($this->getLevel()) {
-            $seoName .= ' ' . $this->getLevel()->getConvertName();   
+            $seoName .= ' ' . $this->getLevel()->getConvertName();
         }
 
         return $seoName;
@@ -368,14 +378,14 @@ class GoodsPassport
 
     /**
      * 取得合法的出售訂單，匯出毛利報表時可用
-     * 
+     *
      * @return \Woojin\OrderBundle\Entity\Orders $order [存在時]
      *         boolean                           null   [不存在時]
      */
     public function getValidOutOrder()
     {
         foreach ($this->orders as $order) {
-            if ($order->getKind()->getType() === Avenue::OKT_OUT 
+            if ($order->getKind()->getType() === Avenue::OKT_OUT
                 && $order->getStatus()->getId() === Avenue::OS_COMPLETE
             ) {
                 return $order;
@@ -394,7 +404,7 @@ class GoodsPassport
      *  -> 不累計(單次)
      *  -> 商品獨自計算
      *  -> 滿額贈不可和折扣並用
-     * 
+     *
      * ======== flow =========
      *
      * 如果不允許網路顯示，直接返回 null
@@ -407,9 +417,9 @@ class GoodsPassport
      *         返回原始售價 * 活動折扣金額
      *     若否
      *         返回 null
-     * 
+     *
      * ======= End Flow =======
-     *     
+     *
      * @return integer | boolean
      */
     public function getPromotionPrice($price = null)
@@ -452,12 +462,12 @@ class GoodsPassport
 
     /**
      * 官網是否可以顯示的判斷
-     * 
+     *
      * @return boolean
      */
     public function isValidToShow()
     {
-        return ($this->isAllowWeb 
+        return ($this->isAllowWeb
             && (
                 in_array($this->status->getId(), array(Avenue::GS_ONSALE, Avenue::GS_ACTIVITY))
                 || (in_array($this->status->getId(), array(Avenue::GS_SOLDOUT, Avenue::GS_BEHALF)) &&$this->isBehalf)
@@ -467,8 +477,8 @@ class GoodsPassport
 
     /**
      * Check whether the product status is on board or not
-     * 
-     * @return boolean         
+     *
+     * @return boolean
      */
     public function isProductOnSale()
     {
@@ -477,8 +487,8 @@ class GoodsPassport
 
     /**
      * Is product status_id equal to Avenue::GS_BSO_ONBOARD?
-     * 
-     * @return boolean         
+     *
+     * @return boolean
      */
     public function isProductBsoOnBoard()
     {
@@ -487,8 +497,8 @@ class GoodsPassport
 
     /**
      * Is product status_id equal to Avenue::GS_BSO_SOLD
-     * 
-     * @return boolean              
+     *
+     * @return boolean
      */
     public function isProductBsoSold()
     {
@@ -497,20 +507,20 @@ class GoodsPassport
 
     /**
      * isOwnProduct 的簡短版
-     * 
+     *
      * @param  User    $user
-     * @return boolean      
+     * @return boolean
      */
     public function isOwn(User $user)
     {
         return $this->isOwnProduct($user);
-    } 
+    }
 
     /**
      * 檢查該商品是否為所屬店的商品
-     * 
+     *
      * @param  User    $user
-     * @return boolean      
+     * @return boolean
      */
     public function isOwnProduct(User $user)
     {
@@ -519,7 +529,7 @@ class GoodsPassport
 
     /**
      * 檢查商品是否已經同不到Yahoo商城
-     * 
+     *
      * @return boolean
      */
     public function isYahooProduct()
@@ -529,7 +539,7 @@ class GoodsPassport
 
     /**
      * 取得Uitox商品規格資訊
-     * 
+     *
      * @return string
      */
     public function getSpec()
@@ -557,10 +567,10 @@ class GoodsPassport
 
     /**
      * 搭配權限檢查後回傳的成本，若是判斷權限不足預設回傳無閱讀權限
-     * 
+     *
      * @param  User   $user
      * @return integer $cost [權限合法時]
-     *         string $msg [權限不合法時]      
+     *         string $msg [權限不合法時]
      */
     public function getCostVerifyed(User $user, $msg = '無閱讀權限')
     {
@@ -575,7 +585,7 @@ class GoodsPassport
 
     /**
      * 取得寄賣回扣(一般來說就是成本，此找法是透過訂單查找準確性會更高但較耗效能)
-     * 
+     *
      * @return integer [存在寄賣回扣]
      *         null [不存在寄賣回扣]
      */
@@ -597,7 +607,7 @@ class GoodsPassport
             if ($order->getKind()->getId() === Avenue::OK_FEEDBACK) {
                 return $order;
             }
-        } 
+        }
 
         return false;
     }
@@ -612,27 +622,27 @@ class GoodsPassport
 
     /**
      * 產生商品產編，因為店碼現在很難判斷一定就是更改者所屬店，因此必須當做開放引數處理
-     * 
+     *
      * @param  string $storeSn
-     * @return string         
+     * @return string
      */
-    public function genSn($storeSn) 
+    public function genSn($storeSn)
     {
         $sn = null;
         $id = ($this->id > 9999) ? substr($this->id, 1) : str_pad($this->id, 4, 0, STR_PAD_LEFT);
         $cost = str_pad($this->cost/Avenue::SN_RATE, 4, 0, STR_PAD_LEFT);
         $price = str_pad($this->price/Avenue::SN_RATE, 4, 0, STR_PAD_LEFT);
-        
+
         for ($i = 0; $i < 4; $i ++) {
             if ($this->id > 9999) {
                 $sn .= substr($id, 3 - $i, 1) . substr($cost, $i, 1);
             } else {
                 $sn .= substr($id, $i, 1) . substr($cost, $i, 1);
-            }   
+            }
         }
 
         return $storeSn . $sn . $price;
-    }   
+    }
 
     /**
      * @ORM\PrePersist
@@ -672,7 +682,7 @@ class GoodsPassport
 
     /**
      * 製造歐付寶需要的商品陣列
-     * 
+     *
      * @return array
      */
     public function genItem()
@@ -696,7 +706,7 @@ class GoodsPassport
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -712,14 +722,14 @@ class GoodsPassport
     public function setSn($sn)
     {
         $this->sn = $sn;
-    
+
         return $this;
     }
 
     /**
      * Get sn
      *
-     * @return string 
+     * @return string
      */
     public function getSn()
     {
@@ -735,7 +745,7 @@ class GoodsPassport
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -743,7 +753,7 @@ class GoodsPassport
      * Get name
      *
      * @param boolean $isOrigin
-     * @return string 
+     * @return string
      */
     public function getName($isOrigin = false)
     {
@@ -759,14 +769,14 @@ class GoodsPassport
     public function setCost($cost)
     {
         $this->cost = $cost;
-    
+
         return $this;
     }
 
     /**
      * Get cost
      *
-     * @return integer 
+     * @return integer
      */
     public function getCost()
     {
@@ -782,14 +792,14 @@ class GoodsPassport
     public function setPrice($price)
     {
         $this->price = $price;
-    
+
         return $this;
     }
 
     /**
      * Get price
      *
-     * @return integer 
+     * @return integer
      */
     public function getPrice()
     {
@@ -805,14 +815,14 @@ class GoodsPassport
     public function setOrgSn($orgSn)
     {
         $this->org_sn = trim($orgSn);
-    
+
         return $this;
     }
 
     /**
      * Get org_sn
      *
-     * @return string 
+     * @return string
      */
     public function getOrgSn()
     {
@@ -828,14 +838,14 @@ class GoodsPassport
     public function setMemo($memo)
     {
         $this->memo = $memo;
-    
+
         return $this;
     }
 
     /**
      * Get memo
      *
-     * @return string 
+     * @return string
      */
     public function getMemo()
     {
@@ -851,14 +861,14 @@ class GoodsPassport
     public function setColorSn($colorSn)
     {
         $this->colorSn = $colorSn;
-    
+
         return $this;
     }
 
     /**
      * Get colorSn
      *
-     * @return string 
+     * @return string
      */
     public function getColorSn()
     {
@@ -874,14 +884,14 @@ class GoodsPassport
     public function setCreatedAt($createdAt)
     {
         $this->created_at = $createdAt;
-    
+
         return $this;
     }
 
     /**
      * Get created_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -897,14 +907,14 @@ class GoodsPassport
     public function setModel($model)
     {
         $this->model = trim($model);
-    
+
         return $this;
     }
 
     /**
      * Get model
      *
-     * @return string 
+     * @return string
      */
     public function getModel()
     {
@@ -920,14 +930,14 @@ class GoodsPassport
     public function setCustomSn($customSn)
     {
         $this->customSn = $customSn;
-    
+
         return $this;
     }
 
     /**
      * Get customSn
      *
-     * @return string 
+     * @return string
      */
     public function getCustomSn()
     {
@@ -943,14 +953,14 @@ class GoodsPassport
     public function setBrand(\Woojin\GoodsBundle\Entity\Brand $brand = null)
     {
         $this->brand = $brand;
-    
+
         return $this;
     }
 
     /**
      * Get brand
      *
-     * @return \Woojin\GoodsBundle\Entity\Brand 
+     * @return \Woojin\GoodsBundle\Entity\Brand
      */
     public function getBrand()
     {
@@ -966,14 +976,14 @@ class GoodsPassport
     public function setColor(\Woojin\GoodsBundle\Entity\Color $color = null)
     {
         $this->color = $color;
-    
+
         return $this;
     }
 
     /**
      * Get color
      *
-     * @return \Woojin\GoodsBundle\Entity\Color 
+     * @return \Woojin\GoodsBundle\Entity\Color
      */
     public function getColor()
     {
@@ -989,14 +999,14 @@ class GoodsPassport
     public function setPattern(\Woojin\GoodsBundle\Entity\Pattern $pattern = null)
     {
         $this->pattern = $pattern;
-    
+
         return $this;
     }
 
     /**
      * Get pattern
      *
-     * @return \Woojin\GoodsBundle\Entity\Pattern 
+     * @return \Woojin\GoodsBundle\Entity\Pattern
      */
     public function getPattern()
     {
@@ -1012,14 +1022,14 @@ class GoodsPassport
     public function setCustom(\Woojin\OrderBundle\Entity\Custom $custom = null)
     {
         $this->custom = $custom;
-    
+
         return $this;
     }
 
     /**
      * Get custom
      *
-     * @return \Woojin\OrderBundle\Entity\Custom 
+     * @return \Woojin\OrderBundle\Entity\Custom
      */
     public function getCustom()
     {
@@ -1035,7 +1045,7 @@ class GoodsPassport
     public function addOrder(\Woojin\OrderBundle\Entity\Orders $orders)
     {
         $this->orders[] = $orders;
-    
+
         return $this;
     }
 
@@ -1052,7 +1062,7 @@ class GoodsPassport
     /**
      * Get orders
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOrders()
     {
@@ -1068,7 +1078,7 @@ class GoodsPassport
     public function addOrgMove(\Woojin\GoodsBundle\Entity\Move $orgMoves)
     {
         $this->orgMoves[] = $orgMoves;
-    
+
         return $this;
     }
 
@@ -1085,7 +1095,7 @@ class GoodsPassport
     /**
      * Get orgMoves
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOrgMoves()
     {
@@ -1101,7 +1111,7 @@ class GoodsPassport
     public function addNewMove(\Woojin\GoodsBundle\Entity\Move $newMoves)
     {
         $this->newMoves[] = $newMoves;
-    
+
         return $this;
     }
 
@@ -1118,7 +1128,7 @@ class GoodsPassport
     /**
      * Get newMoves
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getNewMoves()
     {
@@ -1134,14 +1144,14 @@ class GoodsPassport
     public function setParent(\Woojin\GoodsBundle\Entity\GoodsPassport $parent = null)
     {
         $this->parent = $parent;
-    
+
         return $this;
     }
 
     /**
      * Get parent
      *
-     * @return \Woojin\GoodsBundle\Entity\GoodsPassport 
+     * @return \Woojin\GoodsBundle\Entity\GoodsPassport
      */
     public function getParent()
     {
@@ -1157,7 +1167,7 @@ class GoodsPassport
     public function addInherit(\Woojin\GoodsBundle\Entity\GoodsPassport $inherits)
     {
         $this->inherits[] = $inherits;
-    
+
         return $this;
     }
 
@@ -1174,7 +1184,7 @@ class GoodsPassport
     /**
      * Get inherits
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getInherits()
     {
@@ -1190,14 +1200,14 @@ class GoodsPassport
     public function setStatus(\Woojin\GoodsBundle\Entity\GoodsStatus $status = null)
     {
         $this->status = $status;
-    
+
         return $this;
     }
 
     /**
      * Get status
      *
-     * @return \Woojin\GoodsBundle\Entity\GoodsStatus 
+     * @return \Woojin\GoodsBundle\Entity\GoodsStatus
      */
     public function getStatus()
     {
@@ -1213,14 +1223,14 @@ class GoodsPassport
     public function setSource(\Woojin\GoodsBundle\Entity\GoodsSource $source = null)
     {
         $this->source = $source;
-    
+
         return $this;
     }
 
     /**
      * Get source
      *
-     * @return \Woojin\GoodsBundle\Entity\GoodsSource 
+     * @return \Woojin\GoodsBundle\Entity\GoodsSource
      */
     public function getSource()
     {
@@ -1236,14 +1246,14 @@ class GoodsPassport
     public function setImg(\Woojin\GoodsBundle\Entity\Img $img = null)
     {
         $this->img = $img;
-    
+
         return $this;
     }
 
     /**
      * Get img
      *
-     * @return \Woojin\GoodsBundle\Entity\Img 
+     * @return \Woojin\GoodsBundle\Entity\Img
      */
     public function getImg()
     {
@@ -1259,14 +1269,14 @@ class GoodsPassport
     public function setActivity(\Woojin\StoreBundle\Entity\Activity $activity = null)
     {
         $this->activity = $activity;
-    
+
         return $this;
     }
 
     /**
      * Get activity
      *
-     * @return \Woojin\StoreBundle\Entity\Activity 
+     * @return \Woojin\StoreBundle\Entity\Activity
      */
     public function getActivity()
     {
@@ -1282,14 +1292,14 @@ class GoodsPassport
     public function setMt(\Woojin\GoodsBundle\Entity\GoodsMT $mt = null)
     {
         $this->mt = $mt;
-    
+
         return $this;
     }
 
     /**
      * Get mt
      *
-     * @return \Woojin\GoodsBundle\Entity\GoodsMT 
+     * @return \Woojin\GoodsBundle\Entity\GoodsMT
      */
     public function getMt()
     {
@@ -1305,14 +1315,14 @@ class GoodsPassport
     public function setLevel(\Woojin\GoodsBundle\Entity\GoodsLevel $level = null)
     {
         $this->level = $level;
-    
+
         return $this;
     }
 
     /**
      * Get level
      *
-     * @return \Woojin\GoodsBundle\Entity\GoodsLevel 
+     * @return \Woojin\GoodsBundle\Entity\GoodsLevel
      */
     public function getLevel()
     {
@@ -1328,7 +1338,7 @@ class GoodsPassport
     public function addStockTakeRecord(\Woojin\StoreBundle\Entity\StockTakeRecord $stockTakeRecord)
     {
         $this->stock_take_record[] = $stockTakeRecord;
-    
+
         return $this;
     }
 
@@ -1345,7 +1355,7 @@ class GoodsPassport
     /**
      * Get stock_take_record
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getStockTakeRecord()
     {
@@ -1372,7 +1382,7 @@ class GoodsPassport
     public function addCategory(\Woojin\GoodsBundle\Entity\Category $categorys)
     {
         $this->categorys[] = $categorys;
-    
+
         return $this;
     }
 
@@ -1389,7 +1399,7 @@ class GoodsPassport
     /**
      * Get categorys
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCategorys()
     {
@@ -1405,14 +1415,14 @@ class GoodsPassport
     public function setPromotion(\Woojin\GoodsBundle\Entity\Promotion $promotion = null)
     {
         $this->promotion = $promotion;
-    
+
         return $this;
     }
 
     /**
      * Get promotion
      *
-     * @return \Woojin\GoodsBundle\Entity\Promotion 
+     * @return \Woojin\GoodsBundle\Entity\Promotion
      */
     public function getPromotion()
     {
@@ -1428,14 +1438,14 @@ class GoodsPassport
     public function setUpdateAt($updateAt)
     {
         $this->updateAt = $updateAt;
-    
+
         return $this;
     }
 
     /**
      * Get updateAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdateAt()
     {
@@ -1451,14 +1461,14 @@ class GoodsPassport
     public function setStore(\Woojin\StoreBundle\Entity\Store $store = null)
     {
         $this->store = $store;
-    
+
         return $this;
     }
 
     /**
      * Get store
      *
-     * @return \Woojin\StoreBundle\Entity\Store 
+     * @return \Woojin\StoreBundle\Entity\Store
      */
     public function getStore()
     {
@@ -1474,14 +1484,14 @@ class GoodsPassport
     public function setDesimg(\Woojin\GoodsBundle\Entity\Desimg $desimg = null)
     {
         $this->desimg = $desimg;
-    
+
         return $this;
     }
 
     /**
      * Get desimg
      *
-     * @return \Woojin\GoodsBundle\Entity\Desimg 
+     * @return \Woojin\GoodsBundle\Entity\Desimg
      */
     public function getDesimg()
     {
@@ -1497,14 +1507,14 @@ class GoodsPassport
     public function setDescription(\Woojin\GoodsBundle\Entity\Description $description = null)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return \Woojin\GoodsBundle\Entity\Description 
+     * @return \Woojin\GoodsBundle\Entity\Description
      */
     public function getDescription()
     {
@@ -1520,14 +1530,14 @@ class GoodsPassport
     public function setBrief(\Woojin\GoodsBundle\Entity\Brief $brief = null)
     {
         $this->brief = $brief;
-    
+
         return $this;
     }
 
     /**
      * Get brief
      *
-     * @return \Woojin\GoodsBundle\Entity\Brief 
+     * @return \Woojin\GoodsBundle\Entity\Brief
      */
     public function getBrief()
     {
@@ -1551,14 +1561,14 @@ class GoodsPassport
         }
 
         $this->isAllowWeb = $isAllowWeb;
-    
+
         return $this;
     }
 
     /**
      * Get isAllowWeb
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsAllowWeb()
     {
@@ -1574,14 +1584,14 @@ class GoodsPassport
     public function setWebPrice($webPrice)
     {
         $this->webPrice = $webPrice;
-    
+
         return $this;
     }
 
     /**
      * Get webPrice
      *
-     * @return integer 
+     * @return integer
      */
     public function getWebPrice()
     {
@@ -1597,14 +1607,14 @@ class GoodsPassport
     public function setProductTl(\Woojin\GoodsBundle\Entity\ProductTl $productTl = null)
     {
         $this->productTl = $productTl;
-    
+
         return $this;
     }
 
     /**
      * Get productTl
      *
-     * @return \Woojin\GoodsBundle\Entity\ProductTl 
+     * @return \Woojin\GoodsBundle\Entity\ProductTl
      */
     public function getProductTl()
     {
@@ -1628,14 +1638,14 @@ class GoodsPassport
         }
 
         $this->isBehalf = $isBehalf;
-    
+
         return $this;
     }
 
     /**
      * Get isBehalf
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsBehalf()
     {
@@ -1651,14 +1661,14 @@ class GoodsPassport
     public function setWantBehalf(\Woojin\GoodsBundle\Entity\Behalf $wantBehalf = null)
     {
         $this->wantBehalf = $wantBehalf;
-    
+
         return $this;
     }
 
     /**
      * Get wantBehalf
      *
-     * @return \Woojin\GoodsBundle\Entity\Behalf 
+     * @return \Woojin\GoodsBundle\Entity\Behalf
      */
     public function getWantBehalf()
     {
@@ -1674,14 +1684,14 @@ class GoodsPassport
     public function setGotBehalf(\Woojin\GoodsBundle\Entity\Behalf $gotBehalf = null)
     {
         $this->gotBehalf = $gotBehalf;
-    
+
         return $this;
     }
 
     /**
      * Get gotBehalf
      *
-     * @return \Woojin\GoodsBundle\Entity\Behalf 
+     * @return \Woojin\GoodsBundle\Entity\Behalf
      */
     public function getGotBehalf()
     {
@@ -1697,7 +1707,7 @@ class GoodsPassport
     public function addWantBehalf(\Woojin\GoodsBundle\Entity\Behalf $wantBehalfs)
     {
         $this->wantBehalfs[] = $wantBehalfs;
-    
+
         return $this;
     }
 
@@ -1714,7 +1724,7 @@ class GoodsPassport
     /**
      * Get wantBehalfs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getWantBehalfs()
     {
@@ -1730,14 +1740,14 @@ class GoodsPassport
     public function setYahooId($yahooId)
     {
         $this->yahooId = $yahooId;
-    
+
         return $this;
     }
 
     /**
      * Get yahooId
      *
-     * @return string 
+     * @return string
      */
     public function getYahooId()
     {
@@ -1753,14 +1763,14 @@ class GoodsPassport
     public function setSeoWord($seoWord)
     {
         $this->seoWord = $seoWord;
-    
+
         return $this;
     }
 
     /**
      * Get seoWord
      *
-     * @return string 
+     * @return string
      */
     public function getSeoWord()
     {
@@ -1776,14 +1786,14 @@ class GoodsPassport
     public function setSeoSlogan(\Woojin\GoodsBundle\Entity\SeoSlogan $seoslogan = null)
     {
         $this->seoSlogan = $seoslogan;
-    
+
         return $this;
     }
 
     /**
      * Get seoslogan
      *
-     * @return \Woojin\GoodsBundle\Entity\SeoSlogan 
+     * @return \Woojin\GoodsBundle\Entity\SeoSlogan
      */
     public function getSeoSlogan()
     {
@@ -1799,14 +1809,14 @@ class GoodsPassport
     public function setSeoSlogan2(\Woojin\GoodsBundle\Entity\SeoSlogan $seoSlogan2 = null)
     {
         $this->seoSlogan2 = $seoSlogan2;
-    
+
         return $this;
     }
 
     /**
      * Get seoSlogan2
      *
-     * @return \Woojin\GoodsBundle\Entity\SeoSlogan 
+     * @return \Woojin\GoodsBundle\Entity\SeoSlogan
      */
     public function getSeoSlogan2()
     {
@@ -1830,14 +1840,14 @@ class GoodsPassport
         }
 
         $this->isAllowCreditCard = $isAllowCreditCard;
-    
+
         return $this;
     }
 
     /**
      * Get isAllowCreditCard
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsAllowCreditCard()
     {

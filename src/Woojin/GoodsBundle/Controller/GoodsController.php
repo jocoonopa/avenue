@@ -2159,7 +2159,16 @@ class GoodsController extends Controller
              *
              * @var boolean
              */
-            $isAllowAuction = ($request->request->get('isAllowWeb', null) == 1) ? true : false;
+            $isAllowAuction = ($request->request->get('isAllowAuction', null) == 1) ? true : false;
+
+            /**
+             * 是否為Alan進貨
+             *
+             * @var boolean
+             */
+            $isAlanIn = ($request->request->get('isAlanIn', null) == 1) ? true : false;
+
+
             /**
              * 上傳的圖片檔案
              *
@@ -2269,6 +2278,16 @@ class GoodsController extends Controller
                 ->setIsAllowAuction($isAllowAuction)
                 ->setWebPrice($webPrice)
             ;
+
+            if (in_array($goods->getStatus()->getId(), array(
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
+            )) && $goods->isOrigin()) {
+                $goods
+                    ->setIsAllowAuction($isAllowAuction)
+                    ->setIsAlanIn($isAlanIn)
+                ;
+            }
 
             /**
              * 商品產編
