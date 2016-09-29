@@ -91,4 +91,29 @@ trait AuctionTrait
     {
         return NULL === $this->bsser ? '' : $this->bsser->getUsername();
     }
+
+    public function getStatusName()
+    {
+        $name = '';
+
+        switch ($this->status)
+        {
+            case Auction::STATUS_ONBOARD:
+                $name = '待競拍';
+                break;
+
+            case Auction::STATUS_SOLD:
+                $name = '拍賣完畢';
+                break;
+
+            case Auction::STATUS_BACK_TO_STORE:
+                $name = '歸還門市';
+                break;
+
+            default:
+                break;
+        }
+
+        return $name;
+    }
 }

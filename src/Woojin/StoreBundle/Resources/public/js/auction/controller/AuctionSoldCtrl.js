@@ -59,8 +59,8 @@ auctionCtrl.controller('AuctionSoldCtrl', ['$scope', '$routeParams', '$http',
           $scope.showResponse = {};
           $scope.cancelResponse = {};
           $scope.price = '';
-          $scope.mobil = '';
           $scope.productSn = '';
+          $scope.customMobil = '';
         }
       });
     };

@@ -40,7 +40,11 @@
         <div class="col-md-12">
             {% include 'WoojinGoodsBundle:Goods/v2:orders.html.twig' with {goods: goods} %}
         </div>
-    </div>    
+
+        <div class="col-md-12">
+            {% include 'WoojinGoodsBundle:Goods/v2:auction.html.twig' with {product: goods} %}
+        </div>
+    </div>
 
 <script src="{{ asset('/js/jquery.form.js')}}"></script>
 <script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
@@ -52,6 +56,25 @@
 <script src="/bundles/woojingoods/js/ckeditor/ckeditor.js"></script>
 <script src="{{ asset('/js/editV2.js') }}"></script>
 <script src="{{ asset('/js/editv2/yahoosdk.js')}}"></script>
+
+{% if app.user|has_auth('CANCEL_ORDER') %}
+<script>
+$('#auction_cancel').click(function () {
+    var $this = $(this);
+    loaded();
+    $.post(Routing.generate('api_cancel_auction'), {sn: $this.data('sn'), _method: 'PUT'})
+    .success(function (res) {
+        if ({{constant('Woojin\\Utility\\Avenue\\Avenue::IS_SUCCESS')}} === parseInt(res.status)) {
+            location.reload();
+        } else {
+            $this.text(res.msg).prop('disabled', true);
+        }
+
+        $.unblockUI();
+    });
+});
+</script>
+{% endif %}
 
 {% if goods.yahooId %}
 <script>

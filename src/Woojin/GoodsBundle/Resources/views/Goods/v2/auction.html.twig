@@ -1,0 +1,76 @@
+<ul class="nav nav-tabs" role="tablist">
+    {% for auction in product.auctions %}
+        <li role="presentation" class="{% if loop.first %}active{% endif %}">
+            <a href="#auction_{{ auction.id }}" role="tab" data-toggle="tab">
+                <span class="label
+                {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_ONBOARD') %}
+                    label-info
+                {% endif %}
+                {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD') %}
+                    label-success
+                {% endif %}
+                {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_BACK_TO_STORE') %}
+                    label-default
+                {% endif %}">{{ auction.getStatusName() }}</span>
+            </a>
+        </li>
+    {% endfor %}
+
+
+    <div class="tab-content">
+    {% for auction in product.auctions %}
+        <div role="tabpanel" class="tab-pane {% if loop.first %}active{% endif %}" id="auction_{{ auction.id }}">
+            <div class="row margin-only-left-10">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            {{ auction.getCreaterName() }}@{{ auction.createAt|date('Y-m-d H:i:s') }}建立
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-unstyled">
+                                <li><b>客戶{{ auction.getSellerName() }}{{ auction.getSellerMobil() }}佔比:</b>
+                                    <span class="text-info">{{ auction.customPercentage }}</span>
+                                </li>
+                                <li><b>{{auction.getCreateStoreName()}}佔比:</b> <span class="text-info">{{ auction.storePercentage() }}</span></li>
+                                <li><b>BSO佔比:</b> <span class="text-info">{{ auction.bsoPercentage() }}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD') %}
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            {{ auction.getBsserName() }}@{{ auction.getSoldAtString() }}售出{{ auction.price }}元
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-unstyled">
+                                <li><b>買家:</b> {{ auction.getBuyerName()}} <span class="badge">{{ auction.getBuyerMobil}}</span> </li>
+                                <li><b>客戶{{ auction.getSellerName() }}{{ auction.getSellerMobil() }}分潤:</b> <span class="text-danger">{{ auction.getCustomProfit() }}</span></li>
+                                <li><b>{{auction.getCreateStoreName()}}分潤:</b> <span class="text-danger">{{ auction.getStoreProfit() }}</span></li>
+                                <li><b>BSO分潤:</b> <span class="text-danger">{{ auction.getBsoProfit() }}</span></li>
+                            </ul>
+                        </div>
+
+                        {% if app.user|has_auth('CANCEL_ORDER') and app.user.store.id == auction.bsoStore.id %}
+                        <div class="panel-footer">
+                            <button id="auction_cancel" data-sn="{{product.sn}}" class="btn btn-danger">
+                                <i class="glyphicon glyphicon-remove-sign"></i>
+                                取消售出
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">歷程:</div>
+                        <div class="panel-body">
+                            {% autoescape %}{{ auction.memo|raw }}{% endautoescape %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</ul>

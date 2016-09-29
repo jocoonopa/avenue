@@ -37,7 +37,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 
 use Woojin\Utility\Avenue\Avenue;
 
-class GoodsController extends Controller 
+class GoodsController extends Controller
 {
     const SN_RATE       = 100;
     const LV_DEFAULT    = 22;
@@ -56,7 +56,7 @@ class GoodsController extends Controller
      * @Route("/", name="goods")
      * @Template("WoojinGoodsBundle:Goods:goods.html.twig")
      */
-    public function indexAction() 
+    public function indexAction()
     {
         return array();
     }
@@ -65,16 +65,16 @@ class GoodsController extends Controller
      * @Route("/search_old", name="goods_search")
      * @Template("WoojinGoodsBundle:Goods:goods.search.html.twig")
      */
-    public function goodsSearchAction (Request $request) 
+    public function goodsSearchAction (Request $request)
     {
         $oUser = $this->get('security.token_storage')->getToken()->getUser();
-        
+
         $nUserId = $oUser->getId();
-        
+
         $_token = $this->get('security.csrf.token_manager')->getToken('unknown');
-        
+
         $sUsersHabitValue = '["1","2"]';
-        
+
         $oUsersHabitName = 'goods_search';
 
         $rCondition = array('user' => $nUserId,'name' => $oUsersHabitName);
@@ -93,7 +93,7 @@ class GoodsController extends Controller
                 ->setValue($sUsersHabitValue)
                 ->setUser($oUser)
             ;
-            
+
             $em->persist($oUsersHabit);
             $em->flush();
         }
@@ -103,7 +103,7 @@ class GoodsController extends Controller
         $rStore = $this->getDoctrine()->getRepository('WoojinStoreBundle:Store')->findAll();
 
         return array(
-            'users_habit' => $oUsersHabit, 
+            'users_habit' => $oUsersHabit,
             'rStore' => $rStore,
             '_token' => $_token
         );
@@ -113,7 +113,7 @@ class GoodsController extends Controller
      * @Route("/new_search", name="goods_new_search")
      * @Template("WoojinGoodsBundle:New:search.html.twig")
      */
-    public function goodsNewSearchAction (Request $request) 
+    public function goodsNewSearchAction (Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -133,10 +133,10 @@ class GoodsController extends Controller
      * @Route("/search/ajax", name="goods_search_ajax", options={"expose"=true})
      * @Template("WoojinGoodsBundle:Goods:new.goods.search.ajax.html.twig")
      */
-    public function goodsSearchAjaxAction(Request $request) 
+    public function goodsSearchAjaxAction(Request $request)
     {
         $userStore = $this->get('security.token_storage')->getToken()->getUser()->getStore();
-        
+
         $em = $this->getDoctrine()->getManager();
 
         $stores = $this->getDoctrine()->getRepository('WoojinStoreBundle:Store')->findAll();
@@ -168,12 +168,12 @@ class GoodsController extends Controller
         foreach ($request->request->all() as $key => $eachCon) {
             switch ($key) {
                 case 'goods_passport_id':
-                    
+
                     $qb->andWhere($qb->expr()->in('gd.id', $eachCon));
-                    
+
                     break;
-                
-                case 'goods_search_store':                    
+
+                case 'goods_search_store':
                     $rTempStoreSn = array();
 
                     foreach ($eachCon as $eachStoreId) {
@@ -183,44 +183,44 @@ class GoodsController extends Controller
                     $qb->andWhere($qb->expr()->in('SUBSTRING(gd.sn, 1, 1)', $rTempStoreSn));
 
                     break;
-                
+
                 case 'goods_search_goods_name':
                     $dql = '';
-                    
+
                     foreach ($eachCon as $key_ => $cost_min) {
                         $rArr = $request->request->get($key);
                         $goods_name = $rArr[$key_];
                         $dql .= '(gd.name like \'%'.$goods_name.'%\') OR ';
                         $dql .= '(gd.org_sn = \''.$goods_name.'\') OR ';
                     }
-                    
+
                     $dql = substr($dql, 0, -3);
-                    
+
                     $qb->andWhere($dql);
-                    
+
                     break;
-                
+
                 case 'goods_search_goods_sn':
-                    
-                    $qb->andWhere($qb->expr()->in('gd.sn', $eachCon));                    
-                    
+
+                    $qb->andWhere($qb->expr()->in('gd.sn', $eachCon));
+
                     break;
-                
+
                 case 'goods_search_cost_min':
                     $dql = '';
-                    
+
                     foreach ($eachCon as $key_ => $cost_min) {
                         $rArr = $request->request->get('goods_search_cost_max');
                         $cost_max = $rArr[$key_];
                         $dql .= '(gd.cost <='.$cost_max.' AND gd.cost >='.$cost_min.') OR ';
                     }
-                    
+
                     $dql = substr($dql, 0, -3);
-                    
+
                     $qb->andWhere($dql);
-                    
+
                     break;
-                
+
                 case 'goods_search_price_min':
                     $dql = '';
 
@@ -233,9 +233,9 @@ class GoodsController extends Controller
                     $dql = substr($dql, 0, -3);
 
                     $qb->andWhere($dql);
-                    
+
                     break;
-                
+
                 case 'goods_search_create_time_start':
                     $dql = '';
 
@@ -245,45 +245,45 @@ class GoodsController extends Controller
                         $time_end = date('Y-m-d', strtotime($time_end.' +1 day'));
                         $dql .= '(op.datetime <=\''.$time_end.'\' AND op.datetime >=\''.$time_start.'\') OR ';
                     }
-                    
+
                     $dql = substr($dql, 0, -3);
-                    
+
                     $qb->andWhere($dql);
-                    
+
                     break;
-                
+
                 case 'base_ajax_brand':
 
                     $qb->andWhere($qb->expr()->in('gd.brand', $eachCon));
-                    
+
                     break;
-                
+
                 case 'goods_search_has_picture':
-                    
+
                     if ($eachCon[0] == 1) {
                         $qb->andWhere($qb->expr()->isNull('gd.img'));
                     } else {
                         $qb->andWhere($qb->expr()->isNotNull('gd.img'));
                     }
-                    
+
                     break;
 
                 case 'goods_search_has_memo':
-                    
+
                     if ($eachCon[0] == 1) {
                         $qb->andWhere($qb->expr()->neq('gd.memo', ''));
                     } else {
                         $qb->andWhere($qb->expr()->eq('gd.memo', ''));
                     }
-                    
+
                     break;
-                
+
                 case 'goods_search_goods_level':
-                    
-                    $qb->andWhere($qb->expr()->in('gd.level', $eachCon));  
-                    
+
+                    $qb->andWhere($qb->expr()->in('gd.level', $eachCon));
+
                     break;
-                
+
                 case 'goods_search_goods_status':
                     if (in_array(Avenue::GS_BEHALF, $eachCon)) {
                         $qb->andWhere(
@@ -298,35 +298,35 @@ class GoodsController extends Controller
                     } else {
                         $qb->andWhere($qb->expr()->in('gd.status', $eachCon));
                     }
-                    
+
                     break;
-                
+
                 case 'nOrdersKindId':
-                    
+
                     $qb->andWhere($qb->expr()->in('od.kind', $eachCon));
-                    
+
                     break;
-                
+
                 case 'nOrdersStatusId':
-                    
+
                     $qb->andWhere($qb->expr()->in('od.status', $eachCon));
-                    
+
                     break;
-                
+
                 case 'nGoodsMTId':
-                    
+
                     $qb->andWhere($qb->expr()->in('gd.mt', $eachCon));
-                    
+
                     break;
-                
+
                 case 'nGoodsSourceId':
-                    
+
                     $qb->andWhere($qb->expr()->in('gd.source', $eachCon));
-                    
+
                     break;
-                
+
                 case 'nActivityId':
-                    
+
                     $qb->andWhere($qb->expr()->in('gd.activity', $eachCon) );
 
                     break;
@@ -389,9 +389,9 @@ class GoodsController extends Controller
                         $qb->andWhere($qb->expr()->isNull('gd.yahooId'));
                     }
                     break;
-      
+
                 default:
-                    
+
                     break;
             }
         }
@@ -401,12 +401,12 @@ class GoodsController extends Controller
         // 死在這段吧....
         //$qbCount = $qb;
         //$nCount = count( $qbCount->getQuery()->getResult() );
-        $orderCondition = ($request->request->get('orderCondition') == '') ? 
-            'gd.id': $request->request->get('orderCondition', 'gd.id'); 
-        
-        $orderSort = ($request->request->get('orderSort') == '') ? 
-            'DESC': $request->request->get('orderSort', 'DESC'); 
-        
+        $orderCondition = ($request->request->get('orderCondition') == '') ?
+            'gd.id': $request->request->get('orderCondition', 'gd.id');
+
+        $orderSort = ($request->request->get('orderSort') == '') ?
+            'DESC': $request->request->get('orderSort', 'DESC');
+
         $paginator = new Paginator($qb, $fetchJoinCollection = true);
 
         $c = count($paginator);
@@ -416,12 +416,12 @@ class GoodsController extends Controller
             ->setMaxResults(40)
             ->setFirstResult(($request->request->get('page', 1) - 1) * 40)
         ;
-        
+
         $rGoodsPassport = $qb->getQuery()->getResult();
 
         return array(
             'GoodsPassports' => $rGoodsPassport,
-            'rGoodsSnHistory' => $this->historyIterator($rGoodsPassport), 
+            'rGoodsSnHistory' => $this->historyIterator($rGoodsPassport),
             'nCount' => $c,
             'nNowPage' => $request->request->get('page', 1),
             'bGoods' => $request->request->get('bGoods', 0)
@@ -430,37 +430,37 @@ class GoodsController extends Controller
 
     /**
      * 專門為了多筆銷貨做的查詢功能
-     * 
+     *
      * @Route("/multisale", name="goods_search_multisale", options={"expose"=true})
      * @Template("WoojinGoodsBundle:Goods:goods.multisale.html.twig")
      */
-    public function goodsSearchMultiSaleAction (Request $request) 
+    public function goodsSearchMultiSaleAction (Request $request)
     {
         $store = $this->get('security.token_storage')->getToken()->getUser()->getStore();
 
         $em = $this->getDoctrine()->getManager();
-        
+
         $rGd = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->getMultile($request, $store);
-        
+
         return array('rGd' => $rGd);
     }
 
     /**
      * 專門為了多筆銷貨做的產編查詢功能
-     * 
+     *
      * @Route("/multisale/goodsSn", name="goods_search_multisale_goodsSn", options={"expose"=true})
      * @Template("WoojinGoodsBundle:Goods:goods.multisale.html.twig")
      */
-    public function goodsSearchMultiSaleGoodsSnAction (Request $request) 
+    public function goodsSearchMultiSaleGoodsSnAction (Request $request)
     {
         $store = $this->get('security.token_storage')->getToken()->getUser()->getStore();
-        
+
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $qb
             ->select('gd')
             ->from('WoojinGoodsBundle:GoodsPassport', 'gd')
-            ->where( 
+            ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq(
                         'gd.sn', $qb->expr()->literal($request->request->get('sGoodsSn', ''))
@@ -474,7 +474,7 @@ class GoodsController extends Controller
         ;
 
         $rGd = $qb->getQuery()->getResult();
-        
+
         return array(
             'rGd' => $rGd,
             'brands' => $em->getRepository('WoojinGoodsBundle:Brand')->findAll(),
@@ -488,14 +488,14 @@ class GoodsController extends Controller
      * @Template("WoojinGoodsBundle:Goods:goods.search.ajax.html.twig")
      * @Method("POST")
      */
-    public function goodsBatchResAjaxAction (Request $request) 
+    public function goodsBatchResAjaxAction (Request $request)
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        
+
         $time = $request->request->get('time');
-        
+
         $em = $this->getDoctrine()->getManager();
-        
+
         $qb = $em->createQueryBuilder();
         $qb
             ->select('gd')
@@ -512,7 +512,7 @@ class GoodsController extends Controller
                 $qb->expr()->andX(
                     $qb->expr()->between('op.datetime', ':date_from', ':date_to'),
                     $qb->expr()->eq('st.id', $user->getStore()->getId())
-                ) 
+                )
             )
             ->setParameter('date_from', new \DateTime($time))
             ->setParameter('date_to', new \DateTime($time))
@@ -523,12 +523,12 @@ class GoodsController extends Controller
         $nCount = count($qbCount->getQuery()->getResult());
 
         $qb->setMaxResults(10)->setFirstResult(($nNowPage-1)*10);
-        
+
         $products = $qb->getQuery()->getResult();
-        
+
         return array(
             'GoodsPassports' => $products,
-            'rGoodsSnHistory' => $this->historyIterator($products), 
+            'rGoodsSnHistory' => $this->historyIterator($products),
             'nCount' => $nCount,
             'nNowPage' => $nNowPage
         );
@@ -539,14 +539,14 @@ class GoodsController extends Controller
      * @Template("WoojinGoodsBundle:Goods:goods.search.ajax.html.twig")
      * @Method("POST")
      */
-    public function goodsFixResShowAction (Request $request) 
+    public function goodsFixResShowAction (Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-            
+
         $product = $em->find('WoojinGoodsBundle:GoodsPassport', $request->request->get('nGoodsPassportId'));
 
         $rGoodsPassport[0] = $product;
-            
+
         return array(
             'GoodsPassports' => $rGoodsPassport,
             'rGoodsSnHistory' => $this->historyIterator($product),
@@ -559,14 +559,14 @@ class GoodsController extends Controller
      * @Template("WoojinGoodsBundle:Goods:goods.search.ajax.html.twig")
      * @Method("POST")
      */
-    public function goodsFixResShowJsonAction (Request $request) 
-    {      
+    public function goodsFixResShowJsonAction (Request $request)
+    {
         foreach ($request->request->keys() as $key) {
             $$key = $request->request->get( $key );
         }
 
         $em = $this->getDoctrine()->getManager();
-        
+
         $qb = $em->createQueryBuilder();
         $qb
             ->select('gd')
@@ -577,38 +577,38 @@ class GoodsController extends Controller
         ;
 
         $rGoodsPassport = $qb->getQuery()->getResult();
-        
+
         return array(
-            'GoodsPassports' => $rGoodsPassport, 
-            'rGoodsSnHistory' => $this->historyIterator($rGoodsPassport), 
-            'bGoods' => $request->request->get('bGoods', 0) 
+            'GoodsPassports' => $rGoodsPassport,
+            'rGoodsSnHistory' => $this->historyIterator($rGoodsPassport),
+            'bGoods' => $request->request->get('bGoods', 0)
         );
     }
-    
+
     /**
      * @Route("/ajax/edit", name="goods_ajax_edit", options={"expose"=true})
      */
-    public function goodsAjaxEditAction (Request $request) 
+    public function goodsAjaxEditAction (Request $request)
     {
         if ( !$this->postCRSFCheck($request) ) {
             return new Response('error');
         }
-      
+
         foreach ($request->request->keys() as $key) {
             $$key = $request->request->get($key);
-        }       
-        
+        }
+
         $em = $this->getDoctrine()->getManager();
 
         $em->getConnection()->beginTransaction();
-    
+
         try {
             $oUser = $this->get('security.token_storage')->getToken()->getUser();
-            
+
             $userStore = $oUser->getStore();
-            
+
             $sStoreSn = $userStore->getSn();
-            
+
             $nGoodsLevelId = $goods_search_goods_level[0];
 
             $oGoodsPassport = $em->find('WoojinGoodsBundle:GoodsPassport', $nGoodsPassportId);
@@ -637,7 +637,7 @@ class GoodsController extends Controller
             $oImg = $oGoodsPassport->getImg();
 
             $sOldCreatedAt = is_null($oGoodsPassport->getCreatedAt())
-                ? null 
+                ? null
                 : $oGoodsPassport->getCreatedAt()->format('Y-m-d');
 
             $sMsg = '修改商品資訊:['.$nGoodsPassportId.']';
@@ -656,7 +656,7 @@ class GoodsController extends Controller
             }
 
             $sMsg.= '{備註:['.$oGoodsPassport->getMemo().']['.$sGoodsMemo.']}';
-          
+
             $oMetaRecord = $this->get('my_meta_record_method');
             $oMetaRecord->recordMeta($sMsg);
 
@@ -704,7 +704,7 @@ class GoodsController extends Controller
 
                     if (file_exists($sFilePath)) {
                         unlink($sFilePath);
-                    }      
+                    }
                 } else {
                     $oImg = new Img();
                 }
@@ -723,35 +723,35 @@ class GoodsController extends Controller
             } else if (isset($oImg)) {
                 $nImgId     = $oGoodsPassport->getImg()->getId();
                 $sImgPath   = $oGoodsPassport->getImg()->getPath();
-            }         
+            }
 
             $em->persist($oGoodsPassport);
             $em->flush();
             $em->getConnection()->commit();
-        
+
         } catch (Exception $e) {
             $em->getConnection()->rollback();
-          
+
             throw $e;
-        }    
+        }
 
         $h['sGoodsSn'] = $sGoodsSn;
 
         if (!isset($nImgId)) {
             $nImgId = '';
         }
-    
+
         $h['nImgId'] = $nImgId;
 
         if (!isset($sImgPath)) {
             $sImgPath = '/img/nothing.png';
         }
-        
+
         $h['sImgPath'] = $sImgPath;
 
         return new Response(json_encode($h));
     }
-    
+
     /**
      * @Route("/ajax/refresh/goods_info", name="goods_ajax_refresh_goods_info", options={"expose"=true})
      * @Template("WoojinGoodsBundle:Goods:goods.ajax.refresh.goodsInfo.html.twig")
@@ -762,11 +762,11 @@ class GoodsController extends Controller
         foreach ($request->request->keys() as $key) {
             $$key = $request->request->get($key);
         }
-            
+
         $product = $this->getDoctrine()->getRepository('WoojinGoodsBundle:GoodsPassport')->find($nGoodsPassportId);
 
         return array(
-            'oGoodsPassport' => $product, 
+            'oGoodsPassport' => $product,
             'rGoodsSnHistory' => $this->historyIterator($product)
         );
     }
@@ -778,7 +778,7 @@ class GoodsController extends Controller
     public function goodsSearchAjaxImgAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        
+
         $img = $em->find('WoojinGoodsBundle:Img', $request->request->get('img_id'));
 
         return new Response($img->getPath());
@@ -803,14 +803,14 @@ class GoodsController extends Controller
 
         if (is_array($goods)) {
             $name_container = array();
-            foreach ($goods as $good) 
+            foreach ($goods as $good)
                 $name_container[] = $good->getName();
 
             $name_json_str = json_encode($name_container);
 
             return new Response($name_json_str);
         }
-        
+
         return new Response('');
     }
 
@@ -863,7 +863,7 @@ class GoodsController extends Controller
         $moves = $qb
             ->select('m')
             ->from('WoojinGoodsBundle:Move' , 'm')
-            ->where( 
+            ->where(
                 $qb->expr()->andX(
                     $qb->expr()->in('m.status', array(1,2)),
                     $qb->expr()->eq('m.from', $store->getId()),
@@ -902,7 +902,7 @@ class GoodsController extends Controller
     * @Method("POST")
     */
     public function goodsMTCUDAction (Request $request)
-    {            
+    {
         $em = $this->getDoctrine()->getManager();
 
         switch ($request->request->get('flow')) {
@@ -940,7 +940,7 @@ class GoodsController extends Controller
     * @Route("/ajax/add/GoodsSource", name="goods_ajax_add_goodsSource", options={"expose"=true})
     * @Method("POST")
     */
-    public function goodsAjaxAddGoodsSourceAction (Request $request) 
+    public function goodsAjaxAddGoodsSourceAction (Request $request)
     {
         $source = new GoodsSource();
         $source->setName($request->request->get('sGoodsSourceName'));
@@ -962,17 +962,17 @@ class GoodsController extends Controller
     * @Route("/ajax/update/GoodsSource", name="goods_ajax_update_goodsSource", options={"expose"=true})
     * @Method("POST")
     */
-    public function goodsAjaxUpdateGoodsSourceAction (Request $request) 
+    public function goodsAjaxUpdateGoodsSourceAction (Request $request)
     {
         if (is_null($sGoodsSourceName = $request->request->get('sGoodsSourceName', null))) {
             return new Response ('Bad Request!');
         }
 
         $em = $this->getDoctrine()->getManager();
-          
+
         $oGoodsSource = $em->getRepository('WoojinGoodsBundle:GoodsSource')->find($request->request->get('nGoodsSourceId'));
 
-        $oGoodsSource->setName($request->request->get('sGoodsSourceName'));   
+        $oGoodsSource->setName($request->request->get('sGoodsSourceName'));
 
         $sMsg = '';
         $sMsg .= '更改來源:['.$oGoodsSource->getId().']';
@@ -991,8 +991,8 @@ class GoodsController extends Controller
      * @Route("/ajax/delete/GoodsSource", name="goods_ajax_delete_goodsSource", options={"expose"=true})
      * @Method("POST")
      */
-    public function goodsAjaxDeleteGoodsSourceAction (Request $request) 
-    {        
+    public function goodsAjaxDeleteGoodsSourceAction (Request $request)
+    {
         $sMsg = '';
         $dc = $this->getDoctrine();
         $oGoodsSource = $dc->getRepository('WoojinGoodsBundle:GoodsSource')->find($request->request->get('nGoodsSourceId'));
@@ -1006,7 +1006,7 @@ class GoodsController extends Controller
 
         $oMetaRecord = $this->get('my_meta_record_method');
         $oMetaRecord->recordMeta($sMsg);
-        
+
         return new Response('ok');
     }
 
@@ -1014,7 +1014,7 @@ class GoodsController extends Controller
      * @Route("/ajax/add/GoodsLevel", name="goods_ajax_add_GoodsLevel", options={"expose"=true})
      * @Method("POST")
      */
-    public function goodsAjaxAddGoodsLevelAction ( Request $request ) 
+    public function goodsAjaxAddGoodsLevelAction ( Request $request )
     {
         $oGoodsLevel = new GoodsLevel;
 
@@ -1036,15 +1036,15 @@ class GoodsController extends Controller
      * @Route("/ajax/update/GoodsLevel", name="goods_ajax_update_GoodsLevel", options={"expose"=true})
      * @Method("POST")
      */
-    public function goodsAjaxUpdateGoodsLevelAction (Request $request) 
+    public function goodsAjaxUpdateGoodsLevelAction (Request $request)
     {
         $sMsg = '';
         $dc = $this->getDoctrine();
-        
+
         $oGoodsLevel = $dc->getRepository('WoojinGoodsBundle:GoodsLevel')->find($request->request->get('nGoodsLevelId'));
-        
+
         if ($request->request->get('sGoodsLevelName')) {
-          $oGoodsLevel->setName($request->request->get('sGoodsLevelName')); 
+          $oGoodsLevel->setName($request->request->get('sGoodsLevelName'));
 
           $sMsg .= '更改新舊程度:['.$oGoodsLevel->getId().']';
           $sMsg .= '{名稱:['.$oGoodsLevel->getName().']['.$request->request->get('sGoodsLevelName').']}';
@@ -1064,7 +1064,7 @@ class GoodsController extends Controller
      * @Route("/ajax/delete/GoodsLevel", name="goods_ajax_delete_GoodsLevel", options={"expose"=true})
      * @Method("POST")
      */
-    public function goodsAjaxDeleteGoodsLevelAction (Request $request) 
+    public function goodsAjaxDeleteGoodsLevelAction (Request $request)
     {
         $sMsg = '';
 
@@ -1079,10 +1079,10 @@ class GoodsController extends Controller
 
         $sMsg = '移除新舊程度:['.$oGoodsLevel->getId().']';
         $sMsg.= '{名稱:['.$oGoodsLevel->getName().']}';
-        
+
         $oMetaRecord = $this->get('my_meta_record_method');
         $oMetaRecord->recordMeta($sMsg);
-        
+
         return new Response('ok');
     }
 
@@ -1091,43 +1091,43 @@ class GoodsController extends Controller
      * @Template("WoojinGoodsBundle:Goods:goods.edit.form.html.twig")
      * @Method("POST")
      */
-    public function goodsEditFormLoadedAction (Request $request) 
+    public function goodsEditFormLoadedAction (Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-          
+
         foreach ($request->request->keys() as $key) {
             $$key = $request->request->get($key);
         }
-            
+
         $_token = $this->get('security.csrf.token_manager')->getToken('unknown');
 
         $oGoodsPassport = $this->getDoctrine()->getRepository('WoojinGoodsBundle:GoodsPassport')->find($nGoodsPassportId);
 
         return array(
-            '_token' => $_token, 
-            'oGoodsPassport' => $oGoodsPassport, 
+            '_token' => $_token,
+            'oGoodsPassport' => $oGoodsPassport,
             'bGoods' => $request->request->get('bGoods', 0),
             'brands' => $em->getRepository('WoojinGoodsBundle:Brand')->findAll(),
             'colors' => $em->getRepository('WoojinGoodsBundle:Color')->findAll(),
             'patterns' => $em->getRepository('WoojinGoodsBundle:Pattern')->findAll()
         );
     }
-    
+
     /**
      * @Route("/one/detail/info", name="goods_one_detail_info", options={"expose"=true})
      * @Template("WoojinGoodsBundle:Goods:goods.one.detail.info.html.twig")
      * @Method("POST")
      */
-    public function goodsOneDetailInfoAction (Request $request) 
+    public function goodsOneDetailInfoAction (Request $request)
     {
         foreach($request->request->keys() as $key) {
             $$key = $request->request->get($key);
         }
 
         $oGoodsPassport = $this->getDoctrine()->getRepository('WoojinGoodsBundle:GoodsPassport')->find($nGoodsPassportId);
-        
+
         return array(
-            'oGoodsPassport' => $oGoodsPassport, 
+            'oGoodsPassport' => $oGoodsPassport,
             'rGoodsSnHistory' => $this->historyIterator( $oGoodsPassport )
         );
     }
@@ -1136,7 +1136,7 @@ class GoodsController extends Controller
      * @Route("/check/onsale", name="goods_checkonsale")
      * @Template("WoojinGoodsBundle:Goods:goods.checkonsale.html.twig")
      */
-    public function goodsCheckonsaleAction () 
+    public function goodsCheckonsaleAction ()
     {
         $sStoreSn = $this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn();
 
@@ -1151,23 +1151,23 @@ class GoodsController extends Controller
      * @Route("/batch", name="goods_batch")
      * @Template("WoojinGoodsBundle:Goods:goods.batch.html.twig")
      */
-    public function goodsBatchAction () 
+    public function goodsBatchAction ()
     {
         $_token = $this->get('security.csrf.token_manager')->getToken('unknown');
-        
+
         return array('_token' => $_token);
     }
 
     /**
      * @Route("/batch/process", name="goods_batch_process", options={"expose"=true})
      */
-    public function goodsBatchProcessAction(Request $request) 
-    {   
+    public function goodsBatchProcessAction(Request $request)
+    {
         // CRSF攻擊檢查
         if ($this->postCRSFCheck($request) !== true) {
             return new Response('error');
         }
-        
+
         // 取得上傳檔案以及檢驗是否合法
         $files = $request->files->get('fBatchUploadGoods');
 
@@ -1180,21 +1180,21 @@ class GoodsController extends Controller
 
         // 目前使用者所屬店家
         $sStoreSn = $this->oUser->getStore()->getSn();
-        
+
         // 欄位對應判斷陣列
         $rFlag = array();
 
-        // 資料夾前段字串              
+        // 資料夾前段字串
         $sDirHead = '/csv/' . $sStoreSn . '/';
 
         // 根目錄和資料夾前段字串組合 = 完整存放路徑
         $sDirHeadRoot = $request->server->get('DOCUMENT_ROOT') . $sDirHead;
 
         // 亂數形成檔案名稱
-        $sFileName = rand(1000000, 9999999) . '_goods_batch.xls';       
+        $sFileName = rand(1000000, 9999999) . '_goods_batch.xls';
 
-        // 移動檔案到完整存放路徑      
-        $files->move($sDirHeadRoot, $sFileName);   
+        // 移動檔案到完整存放路徑
+        $files->move($sDirHeadRoot, $sFileName);
 
         // 將實體管理員存放至屬性方便其他方法直接調用 ( 其實好像不是好作法 )
         $this->em = $em = $this->getDoctrine()->getManager();
@@ -1206,12 +1206,12 @@ class GoodsController extends Controller
         // 以此陣列最迭代進行上傳程序
         $objPHPExcel = $excelService->load($sDirHeadRoot . $sFileName);
         $objWorksheet = $objPHPExcel->getActiveSheet();
-        
+
         foreach ($objWorksheet->getRowIterator() as $nRows => $row) {
             $i = 0;
             $cellIterator = $row->getCellIterator();
-            $cellIterator->setIterateOnlyExistingCells(false); 
-            
+            $cellIterator->setIterateOnlyExistingCells(false);
+
             foreach ($cellIterator as $cell) {
                 // 如果是第一次 , 則行程表單頭
                 if ($nRows == 1) {
@@ -1229,51 +1229,51 @@ class GoodsController extends Controller
                     $rFlag[$i] = strval($cell);
 
                     $i ++;
-                } else { 
+                } else {
                     $colorName = '';
 
                     // Data size limit
                     if (($nRows > self::BATCH_LIMIT)) {
                         break;
                     }
-                            
+
                     switch ($rFlag[$i]) {
                         case '包名':
-                            $rData['sGoodsName'] = strval($cell); 
+                            $rData['sGoodsName'] = strval($cell);
                             break;
-                        
+
                         case '品牌':
                             $sBrandName = strval($cell);
                             break;
-                        
+
                         case '包型':
                             $sBrandTypeName = strval($cell);
                             break;
-                        
+
                         case '序號':
-                            $rData['sGoodsOrgSn'] = strval($cell);  
+                            $rData['sGoodsOrgSn'] = strval($cell);
                             break;
-                        
+
                         case '訂價':
                             $rData['nGoodsPrice'] = intval(strval($cell));
                             break;
-                        
+
                         case '成本':
-                            $rData['nGoodsCost'] = intval(strval($cell));       
+                            $rData['nGoodsCost'] = intval(strval($cell));
                             break;
-                        
+
                         case '備註':
                             $rData['sGoodsMemo'] = strval($cell);
                             break;
-                        
+
                         case '色號':
                             $rData['colorSn'] = strval($cell);
                             break;
-                        
+
                         case '型號':
                             $rData['model'] = strval($cell);
                             break;
-                        
+
                         case '狀態':
                             $sGoodsLevelName = strval($cell);
                             break;
@@ -1285,34 +1285,34 @@ class GoodsController extends Controller
                         default:
                             break;
                     }
-                        
+
                     $i++;
 
                     if (($i < count($rFlag))) {
                         continue;
                     }
-                        
+
                     if (
-                        $rData['sGoodsName']== '' || 
-                        $sBrandName == '' || 
+                        $rData['sGoodsName']== '' ||
+                        $sBrandName == '' ||
                         $rData['model'] == ''
                     ) {
                         continue;
                     }
-                            
-                    $this->oGoodsStatus = $em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_ONSALE);              
-                    $this->oOrdersKind = $em->find('WoojinOrderBundle:OrdersKind', Avenue::OK_IN);                  
-                    $this->oOrdersStatus = $em->find('WoojinOrderBundle:OrdersStatus', Avenue::OS_COMPLETE);              
+
+                    $this->oGoodsStatus = $em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_ONSALE);
+                    $this->oOrdersKind = $em->find('WoojinOrderBundle:OrdersKind', Avenue::OK_IN);
+                    $this->oOrdersStatus = $em->find('WoojinOrderBundle:OrdersStatus', Avenue::OS_COMPLETE);
                     $this->oPayType = $em->find('WoojinOrderBundle:PayType', Avenue::PT_CASH);
 
                     $rGoodsLevel = $this->getDoctrine()->getRepository('WoojinGoodsBundle:GoodsLevel')->findBy(array('name' => $sGoodsLevelName));
-                
-                    $this->oGoodsLevel = isset($rGoodsLevel[0]) 
-                        ? $rGoodsLevel[0] 
-                        : $this->getDoctrine()->getRepository('WoojinGoodsBundle:GoodsLevel')->find(self::LV_DEFAULT);                                                                                              
-                    
+
+                    $this->oGoodsLevel = isset($rGoodsLevel[0])
+                        ? $rGoodsLevel[0]
+                        : $this->getDoctrine()->getRepository('WoojinGoodsBundle:GoodsLevel')->find(self::LV_DEFAULT);
+
                     $this
-                        ->brandAutoProcess($sBrandName, $sBrandTypeName, (array_key_exists('model', $rData)) ? $rData['model'] : null, (array_key_exists('colorSn', $rData)) ? $rData['colorSn'] : null, $colorName)                                                
+                        ->brandAutoProcess($sBrandName, $sBrandTypeName, (array_key_exists('model', $rData)) ? $rData['model'] : null, (array_key_exists('colorSn', $rData)) ? $rData['colorSn'] : null, $colorName)
                         ->batchAddEachProcess($rData)
                     ;
                 }
@@ -1321,23 +1321,23 @@ class GoodsController extends Controller
 
         $oFilesManager = $this->get('files_manager');
         $oFilesManager->deleteDirFiles($sDirHeadRoot . '*');
-        
+
         return new Response($rData['time']);
     }
 
     /**
      * 取消上傳動作, 套用orphanRemove 以及佔位子用法
      * 按照傳入的訂單時間, 種類, 操作者為條件進行還原
-     * 
+     *
      * @Route("/batch/rolback", name="goods_batch_rollback", options={"expose"=true})
      * @Method("POST")
      */
-    public function goodsBatchRollbackAction (Request $request) 
+    public function goodsBatchRollbackAction (Request $request)
     {
         if (is_null($sTime = $request->request->get('time', null))) {
-            return new Response('error!'); 
+            return new Response('error!');
         }
-        
+
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $rGoods = $qb
@@ -1345,13 +1345,13 @@ class GoodsController extends Controller
                 ->from('WoojinGoodsBundle:GoodsPassport', 'g')
                 ->join('g.orders', 'od')
                 ->join('od.opes', 'op')
-                ->where( 
+                ->where(
                     $qb->expr()->andX(
                         $qb->expr()->eq('op.datetime', ':sTime'),
                         $qb->expr()->eq('op.act', ':sOpeAct'),
                         $qb->expr()->eq('op.user', ':nId'),
                         $qb->expr()->eq('od.kind', ':nOrdersKindId')
-                    ) 
+                    )
                 )
                 ->setParameter('nId', $this->get('security.token_storage')->getToken()->getUser()->getId())
                 ->setParameter('sOpeAct', '批次成立進貨訂單')
@@ -1366,13 +1366,13 @@ class GoodsController extends Controller
         }
 
         $em->flush();
-        
+
         return new Response('ok');
     }
 
     /**
     * Get the specify goods detail information, 這邊其實可以用 JMS  serialize 直接序列物件
-    * 
+    *
     * @Route("/api/{id}", requirements={"id" = "\d+"}, name="api_get_goods_detail", options={"expose"=true})
     * @ParamConverter("goods", class="WoojinGoodsBundle:GoodsPassport")
     * @Method("GET")
@@ -1380,7 +1380,7 @@ class GoodsController extends Controller
     public function apiShowActivityGoodsDetailAction(Request $request, GoodsPassport $goods)
     {
         $rData = array();
-        
+
         $em = $this->getDoctrine()->getManager();
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -1397,7 +1397,7 @@ class GoodsController extends Controller
         $rData['name'] = $goods->getName();
         $rData['price'] = $goods->getPrice();
         $rData['cost'] = (
-            ($role->hasAuth('READ_COST_OWN') && $goods->isOwnProduct($user)) 
+            ($role->hasAuth('READ_COST_OWN') && $goods->isOwnProduct($user))
             || $role->hasAuth('READ_COST_ALL'))
             ? $goods->getCost() : null;
 
@@ -1420,7 +1420,7 @@ class GoodsController extends Controller
 
     /**
      * 查貨api, 回傳商品的json字串
-     * 
+     *
      * @Route("api/query/{jCondition}", name="goods_api_query", options={"expose"=true})
      * @Method("GET")
      */
@@ -1440,9 +1440,9 @@ class GoodsController extends Controller
         ;
 
         if (!empty($rCondition['goodsName'])) {
-            $qb->andWhere( 
+            $qb->andWhere(
                 $qb->expr()->like(
-                    'g.name', 
+                    'g.name',
                     $qb->expr()->literal('%' . $rCondition['goodsName'] . '%')
                 )
             );
@@ -1514,14 +1514,14 @@ class GoodsController extends Controller
 
     /**
      * 品牌批次上傳自動添加程序
-     * 
+     *
      * @param  [string] $sBrandName     [品牌名稱]
      * @param  [string] $sBrandTypeName [款式名稱]
      * @param  [string] $sBrandSnName   [型號名稱]
      * @param  [string] $sBrandSnColor  [型號顏色]
      * @return [object]                 [this]
      */
-    protected function brandAutoProcess($sBrandName, $sBrandTypeName, $sBrandSnName, $sBrandSnColor, $colorName) 
+    protected function brandAutoProcess($sBrandName, $sBrandTypeName, $sBrandSnName, $sBrandSnColor, $colorName)
     {
         // 取得實體管理員
         $em = $this->em;
@@ -1529,7 +1529,7 @@ class GoodsController extends Controller
         // 判斷品牌是否存在
         // 若存在則繼續檢查款式是否存在
         // 若不存在則新增傳入的品牌, 款式, 型號
-        // $this->oBrandSn 這行是用來讓商品綁上此型號物件用 , 
+        // $this->oBrandSn 這行是用來讓商品綁上此型號物件用 ,
         // 透過屬性比較快, 直接回傳也是可以可是失去鏈結性有點不喜歡
         $rBrand = $this
             ->getDoctrine()
@@ -1542,7 +1542,7 @@ class GoodsController extends Controller
         } else {
             $oBrand = new Brand();
             $oBrand->setName($sBrandName);
-            
+
             $em->persist($oBrand);
         }
 
@@ -1563,7 +1563,7 @@ class GoodsController extends Controller
         } else {
             $color = null;
         }
-        
+
         if ($sBrandTypeName != '') {
             // 判斷款式是否存在
             // 若存在則繼續檢查型號是否存在
@@ -1576,10 +1576,10 @@ class GoodsController extends Controller
 
             if ($patterns) {
                 $pattern = $patterns[0];
-            } else {    
+            } else {
                 $pattern = new Pattern();
                 $pattern->setName($sBrandTypeName);
-            
+
                 $em->persist($pattern);
             }
         }
@@ -1597,18 +1597,18 @@ class GoodsController extends Controller
      * 取得商品轉店歷程記錄, 共有兩層迭代
      * 先是商品資訊的迭代->各個商品
      * 各個商品的入境記錄陣列迭代->各個身分
-     * 
+     *
      * 1.商品結果陣列迭代
      * 2.每個商品分別根據指紋( goods_index_id )找出自己的所有入境記錄( 進貨類型定單)
      * 3.根據入境記錄陣列迭代, 取出產編部分組成陣列
      * 4.組成的陣列放入 和商品資料同層級的歷史紀錄陣列內, 輸出到模版
-     * 
+     *
      * @param  [array] $rGoodsPassport [商品資料物件陣列]
      * @return [array]                 [歷史紀錄二維陣列]
      */
-    protected function historyIterator($rGoodsPassport) 
+    protected function historyIterator($rGoodsPassport)
     {
-        // 記錄轉店歷程的陣列 
+        // 記錄轉店歷程的陣列
         $rGoodsSnHistory = array();
 
         // 如果傳入為單一物件, 將其轉化為陣列
@@ -1625,7 +1625,7 @@ class GoodsController extends Controller
 
             // 存放該商品的所有身分
             $rGoodsPassportHistory = array();
-            
+
             // 產編字串陣列
             $rGoodsSn = array();
 
@@ -1640,12 +1640,12 @@ class GoodsController extends Controller
                 ->join('od.goods_passport', 'g')
                 ->where(
                     $qb->expr()->andX(
-                        $qb->expr()->in('od.kind', array( 
-                                Avenue::OK_MOVE_IN, 
-                                Avenue::OK_IN, 
-                                Avenue::OK_CONSIGN_IN, 
+                        $qb->expr()->in('od.kind', array(
+                                Avenue::OK_MOVE_IN,
+                                Avenue::OK_IN,
+                                Avenue::OK_CONSIGN_IN,
                                 Avenue::OK_EXCHANGE_IN
-                            ) 
+                            )
                         ),
                         $qb->expr()->neq('od.status', Avenue::OS_CANCEL),
                         $qb->expr()->eq('g.parent', $oGoodsPassport->getParent()->getId())
@@ -1669,7 +1669,7 @@ class GoodsController extends Controller
                 $rGoodsSn[] = $oGoodsPassportHistory->getSn();
 
                 // 如果迭代進行到最後一個身分時,
-                // 對其產編字首做分析, 
+                // 對其產編字首做分析,
                 // 得到該店店名,並接在產編後面一同塞入陣列
                 // @ 2013-12-31 客戶的要求
                 if ($key_ == (count( $rGoodsPassportHistory ) - 1)) {
@@ -1696,7 +1696,7 @@ class GoodsController extends Controller
         return (is_array($rGoodsSnHistory)) ? $rGoodsSnHistory : array();
     }
 
-    protected function batchAddEachProcess($rData) 
+    protected function batchAddEachProcess($rData)
     {
         $em = $this->em;
 
@@ -1720,7 +1720,7 @@ class GoodsController extends Controller
             ->setOrgSn((array_key_exists('sGoodsOrgSn', $rData)) ? $rData['sGoodsOrgSn'] : '')
             ->setMemo((array_key_exists('sGoodsMemo', $rData)) ? $rData['sGoodsMemo'] : '')
         ;
-        
+
 
         $em->persist($oGoodsPassport);
         $em->flush();
@@ -1752,7 +1752,7 @@ class GoodsController extends Controller
         $em->flush();
         $nOrdersId = $oOrders->getId();
 
-        //Ope實體新增                  
+        //Ope實體新增
         $oOpe
             ->setOrders($oOrders)
             ->setUser($this->oUser )
@@ -1761,15 +1761,15 @@ class GoodsController extends Controller
         ;
 
         $em->persist($oOpe);
-        $em->flush();    
+        $em->flush();
     }
 
-    protected function postCRSFCheck($req) 
+    protected function postCRSFCheck($req)
     {
         if ($req->getMethod() != 'POST') {
             return 'Not Post!';
-        } 
-          
+        }
+
         $form = $this->get('form.factory')->createBuilder('form')->getForm();
 
         $form->bind($req);
@@ -1800,7 +1800,7 @@ class GoodsController extends Controller
 
         /**
          * 該商品的所有身分
-         * 
+         *
          * @var array
          */
         $goodsFamilys = $qb
@@ -1813,31 +1813,31 @@ class GoodsController extends Controller
 
         /**
          * Yahoo api 的一個 facade
-         * 
+         *
          * @var \Woojin\Utility\YahooApi\Client
          */
         $apiClient = $this->get('yahoo.api.client');
 
         /**
          * 店內分類
-         * 
+         *
          * @var array(\StdClass)
          */
         $sc = $apiClient->storeCategoryGet();
 
         $storeCategorys = NULL === $sc || 'fail' === $sc->Response->Status ? $sc : $sc->Response->StoreCategoryList->StoreCategory;
-        
+
         /**
          * 店內允許付費方式
-         * 
+         *
          * @var array(\StdClass)
          */
         $sp = $apiClient->storePaymentGet();
         $storePayments = NULL === $sp || 'fail' === $sp->Response->Status ? $sp : $sp->Response->PayTypeList->PayType;//$apiClient->storePaymentGet()->Response->PayTypeList->PayType;
-        
+
         /**
          * 店內允許物流方式
-         * 
+         *
          * @var array(\StdClass)
          */
         $ss = $apiClient->storeShippingGet();
@@ -1876,7 +1876,7 @@ class GoodsController extends Controller
 
         /**
          * 該商品的所有身分
-         * 
+         *
          * @var array
          */
         $goodsFamilys = $qb
@@ -1889,30 +1889,30 @@ class GoodsController extends Controller
 
         /**
          * Yahoo api 的一個 facade
-         * 
+         *
          * @var \Woojin\Utility\YahooApi\Client
          */
         $apiClient = $this->get('yahoo.api.client');
 
         /**
          * 店內分類
-         * 
+         *
          * @var array(\StdClass)
          */
         $sc = $apiClient->storeCategoryGet();
         $storeCategorys = NULL === $sc || 'fail' === $sc->Response->Status ? $sc : $sc->Response->StoreCategoryList->StoreCategory;
-        
+
         /**
          * 店內允許付費方式
-         * 
+         *
          * @var array(\StdClass)
          */
         $sp = $apiClient->storePaymentGet();
         $storePayments = NULL === $sp || 'fail' === $sp->Response->Status ? $sp : $sp->Response->PayTypeList->PayType;//$apiClient->storePaymentGet()->Response->PayTypeList->PayType;
-        
+
         /**
          * 店內允許物流方式
-         * 
+         *
          * @var array(\StdClass)
          */
         $ss = $apiClient->storeShippingGet();
@@ -1944,22 +1944,22 @@ class GoodsController extends Controller
      * @Method("POST")
      */
     public function updateV2Action(Request $request, GoodsPassport $goods)
-    {        
+    {
         $em = $this->getDoctrine()->getManager();
 
         $em->getConnection()->beginTransaction();
-    
+
         try {
             /**
              * 商品成本
-             * 
+             *
              * @var integer
              */
             $cost = (int) $request->request->get('goods_cost', $goods->getCost());
 
             /**
              * 商品售價
-             * 
+             *
              * @var integer
              */
             $price = (int) $request->request->get('goods_price', $goods->getPrice());
@@ -1968,10 +1968,10 @@ class GoodsController extends Controller
                 ((int) $cost !== (int) $goods->getCost())
                 || ((int) $price !== (int) $goods->getPrice())
             );
-            
+
             /**
              * 目前登入的使用者實體
-             * 
+             *
              * @var \Woojin\UserBundle\Entity\User
              */
             $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -1983,45 +1983,45 @@ class GoodsController extends Controller
                 $sculp = $this->get('sculper.clue');
                 $sculp->initProductModify()->setBefore($goods);
             }
-            
+
             /**
              * 目前使用者的所屬店家
-             * 
+             *
              * @var \Woojin\UserBundle\Entity\Store
              */
-            $store = $user->getStore();        
-            
+            $store = $user->getStore();
+
             /**
              * 貨幣符號
-             * 
+             *
              * @var string
              */
             $sym = $this->get('base_method')->getSymbol();
 
             /**
              * 產編換算使用位數
-             * 
+             *
              * @var integer
              */
             $minDigit = ($sym == 'NT') ? self::SN_RATE : 10;
 
             /**
-             * 商品id 
-             * 
+             * 商品id
+             *
              * @var integer
              */
             $id = $goods->getId();
 
             /**
              * 產編是否會有更動
-             * 
+             *
              * @var boolean
              */
             $isSnDiff = ($goods->getCost() !== $cost || $goods->getPrice() !== $price);
 
             /**
              * 網路售價
-             * 
+             *
              * @var integer
              */
             $webPrice = $request->request->get('web_price', $goods->getWebPrice());
@@ -2031,70 +2031,70 @@ class GoodsController extends Controller
 
             /**
              * 型號
-             * 
+             *
              * @var string
              */
             $model = $request->request->get('model', $goods->getModel());
 
             /**
              * 品名
-             * 
+             *
              * @var string
              */
             $name = $request->request->get('goods_name', $goods->getName());
 
             /**
              * 品牌序號
-             * 
+             *
              * @var string
              */
             $colorSn = $request->request->get('color_sn', $goods->getColorSn());
 
             /**
              * 自定義品牌內碼
-             * 
+             *
              * @var string
              */
             $customSn = $request->request->get('custom_sn', $goods->getCustomSn());
 
             /**
              * 品牌序號
-             * 
+             *
              * @var string
              */
             $orgSn = $request->request->get('org_sn', $goods->getOrgSn());
 
             /**
              * 商品備註
-             * 
+             *
              * @var string
              */
             $memo = $request->request->get('goods_memo', $goods->getMemo());
 
             /**
              * 進貨時間
-             * 
+             *
              * @var datetime
              */
             $createAt = is_null($goods->getCreatedAt()) ? null : $goods->getCreatedAt()->format('Y-m-d');
 
             /**
              * 商品新舊實體
-             * 
+             *
              * @var \Woojin\GoodsBundle\Entity\GoodsLevel
              */
             $level = $em->find('WoojinGoodsBundle:GoodsLevel', $request->request->get('level'));
 
             /**
              * 商品材質實體
-             * 
+             *
              * @var \Woojin\GoodsBundle\Entity\GoodsMT
              */
             $mt = $em->find('WoojinGoodsBundle:GoodsMT', $request->request->get('mt'));
 
             /**
              * 商品來源實體
-             * 
+             *
              * @var \Woojin\GoodsBundle\Entity\GoodsSource
              */
             if ($goods->getSource()) {
@@ -2104,72 +2104,72 @@ class GoodsController extends Controller
                     $source = null;
                 }
             }
-            
+
             /**
              * 顏色實體
-             * 
+             *
              * @var \Woojin\GoodsBundle\Entity\Color
              */
             $color = $em->find('WoojinGoodsBundle:Color', $request->request->get('color'));
 
             /**
              * 款式實體
-             * 
+             *
              * @var \Woojin\GoodsBundle\Entity\Pattern
              */
             $pattern = $em->find('WoojinGoodsBundle:Pattern', $request->request->get('pattern'));
 
             /**
              * 品牌實體
-             * 
+             *
              * @var \Woojin\GoodsBundle\Entity\Brand
              */
             $brand = $em->find('WoojinGoodsBundle:Brand', $request->request->get('brand'));
 
             /**
              * 圖片實體
-             * 
+             *
              * @var \Woojin\GoodsBundle\Entity\Img
              */
             $img = $goods->getImg();
 
             /**
              * 副圖實體
-             * 
+             *
              * @var \Woojin\GoodsBundle\Entity\Img
              */
             $desimg = $goods->getDesimg();
 
             /**
              * 是否允許官網上架
-             * 
+             *
              * @var boolean
              */
             $isAllowWeb = ($request->request->get('isAllowWeb', null) == 1) ? true : false;
 
             /**
              * 是否允許刷卡付費
-             * 
+             *
              * @var boolean
              */
             $isAllowCreditCard = ($request->request->get('isAllowCreditCard', null) == 1) ? true : false;
 
             /**
              * 是否允許競拍
-             * 
+             *
              * @var boolean
              */
             $isAllowAuction = ($request->request->get('isAllowWeb', null) == 1) ? true : false;
             /**
              * 上傳的圖片檔案
-             * 
+             *
              * @var \Symfony\Component\HttpFoundation\File\UploadedFile
              */
             $files = $request->files->get('img');
 
             /**
              * 上傳的副圖片檔案
-             * 
+             *
              * @var \Symfony\Component\HttpFoundation\File\UploadedFile
              */
             $desFiles = $request->files->get('desimg');
@@ -2206,7 +2206,7 @@ class GoodsController extends Controller
 
             /**
              * POST 過來的category ids
-             * 
+             *
              * @var [array]
              */
             $postCategoryIds = $request->request->get('category', array());
@@ -2243,7 +2243,7 @@ class GoodsController extends Controller
             if ($price != $goods->getPrice() || $cost != $goods->getCost()) {
                 $isDiffMoney = true;
             }
-            
+
             // 更改商品屬性
             $goods
                 ->setSeoSlogan($em->find('WoojinGoodsBundle:SeoSlogan', $request->request->get('seoSlogan_id')))
@@ -2272,7 +2272,7 @@ class GoodsController extends Controller
 
             /**
              * 商品產編
-             * 
+             *
              * @var string
              */
             $sn = $goods->genSn(substr($goods->getSn(), 0, 1));
@@ -2283,7 +2283,7 @@ class GoodsController extends Controller
 
             /**
              * 商品變更記錄儲存
-             * 
+             *
              * @var [object]
              */
             $metaRecorder = $this->get('my_meta_record_method');
@@ -2292,7 +2292,7 @@ class GoodsController extends Controller
             $rootDir = $request->server->get('DOCUMENT_ROOT');
             $sepDir = $goods->getImgRelDir($user);
             $comDir = $rootDir . $sepDir;
-            
+
             //--- 圖片路徑更動 ---//
             if (!is_dir($comDir)) {
                 mkdir($comDir, 0777, true);
@@ -2300,17 +2300,17 @@ class GoodsController extends Controller
 
             //--- 新的圖片蓋掉舊的圖片 ---//
             // 如果有上傳主圖
-            if (is_object($files)) { 
+            if (is_object($files)) {
                 /**
                  * 根據上傳檔案取得圖片名稱
-                 * 
+                 *
                  * @var string
                  */
                 $fileName = $goods->getImgName($files);
 
                 /**
                  * 存放的圖片路徑
-                 * 
+                 *
                  * @var string
                  */
                 $srcPath = $sepDir . '/' . $fileName;
@@ -2318,7 +2318,7 @@ class GoodsController extends Controller
                 /**
                  * 如果原本沒有圖片，新增一個圖片實體
                  */
-                if (!$img) {    
+                if (!$img) {
                     $goods->setImg($img = new Img());
 
                     $inherits = $goods->getInherits();
@@ -2356,7 +2356,7 @@ class GoodsController extends Controller
                 $fileName = $goods->getImgName($desFiles, 'des');
                 $srcPath = $sepDir . '/' . $fileName;
 
-                if (!$desimg) {    
+                if (!$desimg) {
                     $goods->setDesimg($desimg = new Desimg());
 
                     $inherits = $goods->getInherits();
@@ -2387,21 +2387,21 @@ class GoodsController extends Controller
                 }
             }
             //--- End 新的圖片蓋掉舊的圖片 ---//
-            
+
             if ($isPriceDiff) {
                 $sculp->setAfter($goods);
                 $clue->setContent($sculp->getContent());
                 $em->persist($clue);
             }
-            
+
             $em->persist($goods);
             $em->flush();
             $em->getConnection()->commit();
         } catch (Exception $e) {
             $em->getConnection()->rollback();
-          
+
             throw $e;
-        }    
+        }
 
         // 若產編有更動，同步更新yahoo商城資訊
         if ($isSnDiff && $goods->getYahooId()) {
@@ -2448,7 +2448,7 @@ class GoodsController extends Controller
         $foundProducts = array();
 
         $file = $request->files->get('file');
-        
+
         if ($file) {
             $snMappingCustomSnArr = array(array());
             $storeSn = $this->getUser()->getStore()->getSn();
@@ -2461,10 +2461,10 @@ class GoodsController extends Controller
             $dirRoot = $request->server->get('DOCUMENT_ROOT') . $dir;
 
             // 亂數形成檔案名稱
-            $fileName = rand(1000000, 9999999) . 'custom_sn_import.xls';       
+            $fileName = rand(1000000, 9999999) . 'custom_sn_import.xls';
 
-            // 移動檔案到完整存放路徑      
-            $file->move($dirRoot, $fileName);   
+            // 移動檔案到完整存放路徑
+            $file->move($dirRoot, $fileName);
 
             // 將實體管理員存放至屬性方便其他方法直接調用 ( 其實好像不是好作法 )
             $this->em = $em = $this->getDoctrine()->getManager();
@@ -2476,10 +2476,10 @@ class GoodsController extends Controller
             // 以此陣列最迭代進行上傳程序
             $phpExcel = $excelService->load($dirRoot . $fileName);
             $workSheet = $phpExcel->getActiveSheet();
-            
+
             foreach ($workSheet->getRowIterator() as $rowIndex => $row) {
                 $snArr[] = $sn = $workSheet->getCellByColumnAndRow(1, $rowIndex)->getValue();
-                $snMappingCustomSnArr[$sn] = $workSheet->getCellByColumnAndRow(0, $rowIndex)->getValue();               
+                $snMappingCustomSnArr[$sn] = $workSheet->getCellByColumnAndRow(0, $rowIndex)->getValue();
             }
 
             $qb = $em->createQueryBuilder();
@@ -2490,7 +2490,7 @@ class GoodsController extends Controller
                     $qb->expr()->andX(
                         $qb->expr()->in('g.sn', $snArr),
                         $qb->expr()->eq(
-                            $qb->expr()->substring('g.sn', 1, 1), 
+                            $qb->expr()->substring('g.sn', 1, 1),
                             $qb->expr()->literal($storeSn)
                         )
                     )
@@ -2548,7 +2548,7 @@ class GoodsController extends Controller
     {
         set_time_limit(0);
         ini_set('memory_limit', '128M');
-        
+
         $products = array();
         $i = 0;
         $batchSize = 20;
@@ -2588,7 +2588,7 @@ class GoodsController extends Controller
             if (($i % $batchSize) === 0) {
                 $em->clear(); // Detaches all objects from Doctrine!
             }
-            
+
             $em->detach($row[0]);
 
             ++$i;
@@ -2616,6 +2616,3 @@ class GoodsController extends Controller
         return json_encode($msgArr);
     }
 }
-
-
-
