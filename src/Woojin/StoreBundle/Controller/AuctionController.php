@@ -2,12 +2,13 @@
 
 namespace Woojin\StoreBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Woojin\StoreBundle\Entity\Auction;
 
 /**
  * Auction controller.
@@ -16,6 +17,29 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
  */
 class AuctionController extends Controller
 {
+    /**
+     * Export profit excel report
+     *
+     * @Route("/export_profit", name="auction_export_profit", options={"expose"=true})
+     * @Method("POST")
+     */
+    public function exportProfitAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $auctions = $em->getRepository('WoojinStoreBundle:Auction')->findByCriteria($this->convertCriteria($request->request->all()));
+
+        return $this->get('exporter.bsoprofit')->create($auctions)->getResponse();
+    }
+
+    protected function convertCriteria(array $criteria)
+    {
+        $criteria['stores'] = explode(',', array_key_exists('stores_str', $criteria) ? $criteria['stores_str'] : '');
+        $criteria['auction_statuses'] = explode(',', array_key_exists('auction_statuses_str', $criteria) ? $criteria['auction_statuses_str'] : '');
+
+        return $criteria;
+    }
+
     /**
      * SPA template
      *

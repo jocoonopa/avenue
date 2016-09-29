@@ -32,19 +32,30 @@ auctionCtrl.controller('AuctionProfitCtrl', ['$scope', '$routeParams', '$http',
         sold_at: {start: '', end: ''}
     };
 
-    $http.get(Routing.generate('api_store_valid_list')).success(function (res) {
-        var stores = [];
+    $scope.init = function () {
+        $http.get(Routing.generate('api_store_valid_list')).success(function (res) {
+            var stores = [];
 
-        for (var i = 0; i < res.length; i ++) {
-            var store = res[i];
+            for (var i = 0; i < res.length; i ++) {
+                var store = res[i];
 
-            stores.push({
-                id: store.id,
-                name: store.name
-            });
-        }
-        $scope.stores = stores;
-    });
+                stores.push({
+                    id: store.id,
+                    name: store.name
+                });
+            }
+            $scope.stores = stores;
+        });
+    };
+
+    $scope.download = function () {
+        var postData = genPostData();
+
+        $('input[name="stores_str"]').val(postData.stores.join());
+        $('input[name="auction_statuses_str"]').val(postData.auction_statuses.join());
+
+        $('form').attr('action', Routing.generate('auction_export_profit')).submit();
+    };
 
     $scope.printProductName = function (name) {
         return 8 < name.length ? name.substr(0, 8) + '...' : name;
@@ -83,7 +94,7 @@ auctionCtrl.controller('AuctionProfitCtrl', ['$scope', '$routeParams', '$http',
                 res[i].storeProfit = $scope.getProfit(res[i].store_percentage, res[i].price);
                 res[i].bsoProfit = $scope.getProfit(res[i].bso_percentage, res[i].price);
             }
-            
+
             $scope.auctions = res;
         });
     };
@@ -122,6 +133,4 @@ auctionCtrl.controller('AuctionProfitCtrl', ['$scope', '$routeParams', '$http',
 
         return post;
     };
-
-
 }]);

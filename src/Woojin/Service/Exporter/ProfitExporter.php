@@ -30,7 +30,7 @@ class ProfitExporter implements IExporter
 
         /**
          * 使用者實體
-         * 
+         *
          * @var \Woojin\UserBundle\Entity\User
          */
         $this->user = $this->security->getToken()->getUser();
@@ -51,7 +51,7 @@ class ProfitExporter implements IExporter
     {
         /**
          * 商品實體陣列, 過濾留下為售出狀態的實體
-         * 
+         *
          * @var array
          */
         $products = array_filter($products, array($this, 'filter'));
@@ -72,7 +72,7 @@ class ProfitExporter implements IExporter
     {
         $excel = $this->excel;
 
-        foreach ($products as $key => $product) { 
+        foreach ($products as $key => $product) {
             if (($key === Avenue::START_FROM) && ($this->index === 2)) {
                 $excel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
                 $excel->getActiveSheet()->getColumnDimension('C')->setWidth(7);
@@ -80,17 +80,17 @@ class ProfitExporter implements IExporter
                 $excel->getActiveSheet()->getColumnDimension('E')->setWidth(12);
                 $excel->getActiveSheet()->getColumnDimension('F')->setWidth(30);
                 $excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
-            } 
+            }
 
             $sheet = $excel->setActiveSheetIndex(Avenue::START_FROM);
 
             $order = $this->getColMap($product);
-            
+
             foreach ($order as $key => $val) {
                 $sheet->setCellValue($key . $this->index, $val);
-            }    
+            }
 
-            $this->index ++;                     
+            $this->index ++;
         }
 
         return $this->setExcel($excel);
@@ -163,7 +163,7 @@ class ProfitExporter implements IExporter
         return (
             ($product->isOwn($this->user) && $this->user->getRole()->hasAuth('READ_ORDER_OWN'))
             || $this->user->getRole()->hasAuth('READ_ORDER_ALL')
-        ) 
+        )
             ? array(
                 'A' => $order->getOpes()->last()->getDatetime()->format('Y-m-d H:i:s'),
                 'B' => ($brand = $product->getBrand()) ? $brand->getName() : null,
@@ -178,7 +178,7 @@ class ProfitExporter implements IExporter
                 'K' => $order->getKind()->getName(),
                 'L' => $order->getRequired(),
                 'M' => $product->getCostVerifyed($this->user),
-                'N' => ($profit = ($order->getRequired() - $product->getCostVerifyed($this->user))) > 0 ? $profit : 0,     
+                'N' => ($profit = ($order->getRequired() - $product->getCostVerifyed($this->user))) > 0 ? $profit : 0,
                 'O' => $order->getOrgRequired(), // 原始應付
                 'P' => ($order->getRequired() === 0) ? 0 : round($order->getOrgRequired() * ($order->getPaid()/$order->getRequired())), //'原始已付'
                 'Q' => ($order->getOrgRequired() - $product->getCostVerifyed($this->user)),
@@ -229,7 +229,7 @@ class ProfitExporter implements IExporter
         $response->headers->set('Pragma', 'public');
         $response->headers->set('Cache-Control', 'maxage=1');
         $response->headers->set('Content-Disposition', $dispositionHeader);
-   
+
         return $response;
     }
 
@@ -238,7 +238,7 @@ class ProfitExporter implements IExporter
         $excel = $this->service->createPHPExcelObject();
 
         $sheet = $excel->setActiveSheetIndex(Avenue::START_FROM);
-        
+
         $excel->getActiveSheet()->setTitle('毛利報表');
         foreach ($this->getTitileMap() as $key => $title) {
             $sheet->setCellValue($key, $title);

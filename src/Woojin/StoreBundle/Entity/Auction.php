@@ -15,6 +15,8 @@ use Woojin\UserBundle\Entity\User;
  */
 class Auction
 {
+    use AuctionTrait;
+
     const STATUS_ONBOARD                    = 0;
     const STATUS_SOLD                       = 1;
     const STATUS_PAYED                      = 2;
@@ -215,16 +217,6 @@ class Auction
         $date = new \DateTime();
 
         return "原售出金額:{$this->getPrice()}，購買人:{$this->getBuyerName()}，手機:{$this->getBuyerMobil()}，{$options['canceller']->getUsername()}於{$date->format('Y-m-d H:i:s')}取消<br/>";
-    }
-
-    public function getBuyerMobil()
-    {
-        return NULL === $this->getBuyer() ? '?' : $this->getBuyer()->getMobil();
-    }
-
-    public function getBuyerName()
-    {
-        return NULL === $this->getBuyer() ? '?' : $this->getBuyer()->getName();
     }
 
     public function assign()
@@ -707,8 +699,8 @@ class Auction
      *
      * @return string
      */
-    public function getMemo()
+    public function getMemo($isBr2n = false)
     {
-        return $this->memo;
+        return true === $isBr2n ? str_replace(['<br>', '<br/>', '<br />'], "\r\n", $this->memo) : $this->memo;
     }
 }

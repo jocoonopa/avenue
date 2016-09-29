@@ -1,6 +1,6 @@
 services:
     # override symfony default, because we need the trans feature
-    test.client: 
+    test.client:
        class: Woojin\Utility\Test\TransactionalClient
        arguments: ['@kernel']
     business.stock:
@@ -155,6 +155,10 @@ services:
     exporter.profit:
         class: Woojin\Service\Exporter\ProfitExporter
         arguments: ["@phpexcel", "@security.token_storage"]
+
+    exporter.bsoprofit:
+        class: Woojin\Service\Exporter\BsoProfitExporter
+        arguments: ["@phpexcel"]
 
     exporter.uitox:
         class: Woojin\Service\Exporter\UitoxExporter

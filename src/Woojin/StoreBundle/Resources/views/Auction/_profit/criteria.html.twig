@@ -13,28 +13,28 @@
     </button>
 </h2>
 
-<form role="form" class="text-left">
+<form role="form" class="text-left" method="post">
     <div class="form-group">
-        <label for="">買家客戶手機:</label>
-        <input type="text" class="form-control" placeholder="0988162330,0915776321,0922111000" ng-model="criteria.buyer_mobil">
+        <label for="buyer_mobil">買家客戶手機:</label>
+        <input id="buyer_mobil" type="text" class="form-control" name="buyer_mobil" placeholder="0988162330,0915776321,0922111000" ng-model="criteria.buyer_mobil">
     </div>
     <div class="form-group">
-        <label for="">賣家客戶手機:</label>
-        <input type="text" class="form-control" placeholder="0988162330,0915776321,0922111000" ng-model="criteria.seller_mobil">
+        <label for="seller_mobil">賣家客戶手機:</label>
+        <input id="seller_mobil" type="text" class="form-control" name="seller_mobil" placeholder="0988162330,0915776321,0922111000" ng-model="criteria.seller_mobil">
     </div>
     <div class="form-group">
-        <label for="">入倉人員帳號:</label>
-        <input type="text" class="form-control" placeholder="amanda,vivian" ng-model="criteria.creater_username">
+        <label for="creater_username">入倉人員帳號:</label>
+        <input id="creater_username" type="text" class="form-control" name="creater_username" placeholder="amanda,vivian" ng-model="criteria.creater_username">
     </div>
     <div class="form-group">
-        <label for="">BSO售出人員帳號:</label>
-        <input type="text" class="form-control" placeholder="amanda,vivian" ng-model="criteria.bsser_username">
+        <label for="bsser_username">BSO售出人員帳號:</label>
+        <input id="bsser_username" type="text" class="form-control" name="bsser_username" placeholder="amanda,vivian" ng-model="criteria.bsser_username">
     </div>
     <div class="form-group">
         <label for="">狀態:</label>
         <div class="checkbox-inline" ng-repeat="auction_status in auction_statuses">
-            <label for="">
-                <input type="checkbox" data-checklist-model="criteria.auction_statuses" data-checklist-value="auction_status">
+            <label for="auction_statuses_{{auction_status.id}}">
+                <input id="auction_statuses_{{auction_status.id}}" name="auction_statuses[]" type="checkbox" name="auction_statuses[]" data-checklist-model="criteria.auction_statuses" data-checklist-value="auction_status">
                 {{auction_status.name}}
             </label>
         </div>
@@ -47,10 +47,10 @@
         </button>
     </div>
     <div class="form-group">
-        <label for="">來源門市:</label>
+        <label for="stores">來源門市:</label>
         <div class="checkbox" ng-repeat="store in stores">
-            <label for="">
-                <input type="checkbox" data-checklist-model="criteria.stores" data-checklist-value="store"> {{store.name}}
+            <label for="stores_{{store.id}}">
+                <input id="stores_{{store.id}}" type="checkbox" name="stores[]" data-checklist-model="criteria.stores" data-checklist-value="store"> {{store.name}}
             </label>
         </div>
 
@@ -62,28 +62,34 @@
         </button>
     </div>
     <div class="form-group">
-        <label for="">入倉時間:</label>
+        <label for="create_at">入倉時間:</label>
         <div class="input-group input-daterange">
-            <input type="text" class="form-control" ng-datepicker ng-model="criteria.create_at.start">
+            <input id="create_at" type="text" name="create_at['start']" class="form-control" ng-datepicker ng-model="criteria.create_at.start">
             <span class="input-group-addon">to</span>
-            <input type="text" class="form-control" ng-datepicker ng-model="criteria.create_at.end">
+            <input type="text" name="create_at['end']" class="form-control" ng-datepicker ng-model="criteria.create_at.end">
         </div>
     </div>
     <div class="form-group">
-        <label for="">售出時間:</label>
+        <label for="sold_at">售出時間:</label>
         <div class="input-group input-daterange">
-            <input type="text" class="form-control" ng-datepicker ng-model="criteria.sold_at.start">
+            <input id="sold_at" type="text" name="sold_at['start']" class="form-control" ng-datepicker ng-model="criteria.sold_at.start">
             <span class="input-group-addon">to</span>
-            <input type="text" class="form-control" ng-datepicker ng-model="criteria.sold_at.end">
+            <input type="text" name="sold_at['end']" class="form-control" ng-datepicker ng-model="criteria.sold_at.end">
         </div>
     </div>
 
     <div class="form-group">
-        <button class="btn btn-primary pull-left" ng-click="submit()" style="position: fixed; bottom: 20px; right: 50px;">
+        <input type="hidden" name="stores_str" />
+        <input type="hidden" name="auction_statuses_str" />
+        <button class="btn btn-primary pull-left" ng-click="submit()" style="position: fixed; bottom: 90px; right: 50px;">
             <i class="glyphicon glyphicon-search"></i>
             查詢
         </button>
-        <button class="btn btn-default pull-right" ng-click="reset()" style="position: fixed; bottom: 20px; left: 50px;">
+        <button class="btn btn-info pull-left" ng-click="download()" style="position: fixed; bottom: 35px; right: 50px;">
+            <i class="glyphicon glyphicon-save-file"></i>
+            匯出
+        </button>
+        <button class="btn btn-default pull-right" ng-click="reset()" style="position: fixed; bottom: 35px; left: 50px;">
             <i class="glyphicon glyphicon-refresh"></i>
             重設
         </button>
