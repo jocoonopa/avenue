@@ -1,5 +1,5 @@
 {% extends 'WoojinBaseBundle:Base:woojin.layout.html.twig' %}
-		
+
 {% block form %}
 
 {% if app.user|has_auth('PURCHASE') %}
@@ -14,7 +14,17 @@ window.phone_length = 10;
 		<label for="purRadio1"><span data-icon="B">一般進貨</span></label>
 		<input type="radio" name="purchasetype" id="purRadio2" value="purConsign"/>
 		<label for="purRadio2"><span data-icon="X">客戶寄賣</span></label>
-	</div>	
+	</div>
+
+	<div>
+		<label class="vader">是否為委拍:</label>
+		<input type="checkbox" name="isAllowAuction" value="1">
+	</div>
+
+	<div>
+		<label class="vader">是否為香榭進貨:</label>
+		<input type="checkbox" name="isAlanIn" value="1">
+	</div>
 
 	<div class="customMobil">
 		<label class="vader">*電話號碼:</label>
@@ -24,8 +34,9 @@ window.phone_length = 10;
 	<div>
 		<label class="vader" for="sn">*商品序號:</label>
 		<input type="text" id="sn" name="sn" value="{{ app.user.store.sn }}" class="numeric "readonly /><br />
-		<input type="text" id="cost" name="cost" class="numeric" placeholder="成本" /><br />
+		<input type="text" id="cost" name="cost" class="numeric" placeholder="成本" /><button id="make-cost-0" type="button" class="btn btn-danger">設置成本為0</button><br />
 		<input type="text" id="price" name="price" class="numeric" placeholder="售價" />
+
 	</div>
 
 	<div>
@@ -39,10 +50,10 @@ window.phone_length = 10;
 
 	<div>
 		<label class="vader" for="brand">*選擇品牌:</label>
-		
+
 		<select name="brand" id="brand">
 			<option data-ratio="1" value="0">請選擇</option>
-			
+
 			{% for brand in brands %}
 				<option data-ratio="{{ brand.ratio }}" value="{{ brand.id }}">{{ brand.name }}</option>
 			{% endfor %}
@@ -73,10 +84,10 @@ window.phone_length = 10;
 
 	<div>
 		<label class="vader" for="seoSlogan">選擇關鍵字:</label>
-		
+
 		<select name="seoSlogan" id="seoSlogan">
 			<option value="0">請選擇</option>
-			
+
 			{% for seoSlogan in seoSlogans %}
 				<option value="{{ seoSlogan.id }}">{{ seoSlogan.name }}</option>
 			{% endfor %}
@@ -85,10 +96,10 @@ window.phone_length = 10;
 
 	<div>
 		<label class="vader" for="seoSlogan2">選擇關鍵字2:</label>
-		
+
 		<select name="seoSlogan2" id="seoSlogan2">
 			<option value="0">請選擇</option>
-			
+
 			{% for seoSlogan in seoSlogans %}
 				<option value="{{ seoSlogan.id }}">{{ seoSlogan.name }}</option>
 			{% endfor %}
@@ -154,11 +165,6 @@ window.phone_length = 10;
 		<input type="checkbox" name="isAllowCreditCard" value="1">
 	</div>
 
-	<div>
-		<label class="vader">是否允許競拍:</label>
-		<input type="checkbox" name="isAllowAuction" value="1">
-	</div>
-
 	<script>
 	$('div.colorButton').click(function () {
 		var title = $(this).data('title');
@@ -199,7 +205,7 @@ window.phone_length = 10;
 
 	<div style="width: 80%">
 		<label class="vader">分類</label>
-		
+
 		{% for category in categorys %}
 			<div>
 				<input type="checkbox" name="category[{{ category.id }}]" value="{{ category.id }}">
@@ -275,8 +281,8 @@ function CKupdate() {
         CKEDITOR.instances[instance].updateElement();
 }
 
-$(function () {	
-	var 
+$(function () {
+	var
     $tab_ = $('#orders-purchase'),
     $customAjaxRes = $tab_.find('.ajaxResMsgRight'),
     $tabAllInput = $tab_.find('input'),
@@ -298,11 +304,11 @@ $(function () {
 	function editDialogRefresh(nCustomId){
 		$.post(sEditFormUrl, {'nCustomId' : nCustomId}, function(res){
 			$editDialog.html(res);
-			var 
+			var
 				$form = $('.editCustomForm'),
 				sOrgCustomEmail = $form.find('[name="sCustomEmail"]').val(),
 				sOrgCustomMobil = $form.find('[name="mobil"]').val();
-			
+
 			$form.find('.datepicker').datepicker({
 				changeYear: true,
 				dateFormat: "yy-mm-dd",
@@ -311,7 +317,7 @@ $(function () {
 			});
 
 			$form.find('[name="sCustomEmail"]').on('blur', function(){
-				var 
+				var
 					$this = $(this),
 					sEmail = $this.val();
 
@@ -325,25 +331,25 @@ $(function () {
 							if (res != '') {
 								alert('電子信箱已存在');
 								$this.val('');
-							}         
+							}
 						});
 					}
 				}
 			});
 
 			$form.find('[name="mobil"]').numeric().on('blur', function () {
-				var 
+				var
 					$this = $(this),
 					sMobil = $this.val();
 				if (sOrgCustomMobil != sMobil && sMobil != '') {
 					$.post(
-						sCheckExistUrl, 
-						{'custom_mobil' : sMobil}, 
+						sCheckExistUrl,
+						{'custom_mobil' : sMobil},
 						function ( res ) {
 						if (res != '') {
 							alert('電話號碼已存在');
 							$this.val(sOrgCustomMobil);
-						}         
+						}
 					});
 				}
 			});
@@ -383,12 +389,12 @@ $(function () {
 			editDialogRefresh( $this.data('id') );
 			$editDialog.dialog('open');
 		});
-		
+
 		$customAjaxRes.find('.detail_goods').each(function () {
 			var $this = $(this);
-			
+
 			$this.on('click', function () {
-				var 
+				var
 					nGoodsId = $(this).data('id'),
 					sOneGoodsDetailUrl = Routing.generate('goods_one_detail_info');
 
@@ -413,12 +419,12 @@ $(function () {
 	};
 
 	function atttchEventOnAjaxResponse_pur () {
-		var 
+		var
 			$goodsSearchAjaxLoadImg     = $('#orders-purchase').find('.ajaxResLeft'),
 			$ajaxTabs                   = $('.goodsResTabs'),
 			$ajaxButton                 = $ajaxTabs.find('button'),
 			$ajaxEditGoodsDialog        = $('.ajaxEditGoodsDialog'),
-			$tab                        = $('#orders-purchase'), 
+			$tab                        = $('#orders-purchase'),
 			$h3                         = $tab.find('h3').not('.hasAttachedAjaxEvent'),
 			sFormLoadedUrl              = Routing.generate('goods_edit_form_loaded');
 
@@ -433,14 +439,14 @@ $(function () {
 
 		var $inputCreateAt = $('table.ope_list').not('.has_attached').find('input.opeDatetime');
 
-		var createAt = $inputCreateAt.val(); 
+		var createAt = $inputCreateAt.val();
 
 		$inputCreateAt.parent().html('<span>' + createAt + '</span>');
 
 		$inputCreateAt.closest('.ope_list').addClass('has_attached');
 
 		$ajaxButton.filter('.edit_goods').on('click', function(){
-			var 
+			var
 				$this = $(this),
 				nGoodsPassportId = $this.parent().data('id');
 
@@ -458,13 +464,13 @@ $(function () {
 	}
 
 	function createImage_pur (file) {
-		var 
-			$tab = $('#orders-purchase'), 
+		var
+			$tab = $('#orders-purchase'),
 			$image = $tab.find('.imgContainer'),
 			reader;
 
 		try{
-			var 
+			var
 				max_file_size = 1048576 * 1;
 				reader = new FileReader();
 
@@ -481,12 +487,12 @@ $(function () {
 			console.log(e.target.result);
 			$image.attr('src', e.target.result).css({'width': 300, 'height': 300}).fadeIn(500);
 		};     
-			
+
 		reader.readAsDataURL(file);
 		$.data(file);
 	}
-	
-	var 
+
+	var
     $tab = $('#orders-purchase'),
 	$ajaxResponse = $tab.find('.ajaxResMsgRight'),
     $purchaseForm = $tab.find('.woojinForm'),
@@ -523,7 +529,7 @@ $(function () {
 
 	$ajaxResponse.accordion();
 	$purchaseForm.attr('action', sUrl);
-	$createAt.datepicker({ 
+	$createAt.datepicker({
 		changeYear      : true,
 		dateFormat      : "yy-mm-dd",
 		yearRange       : "2013:2023",
@@ -554,20 +560,20 @@ $(function () {
 
 	// 手機欄位檢查是建綁定
 	$mobil.numeric().tooltip().on('blur', function(){
-		var 
+		var
 			$this = $(this),
 			$div = $this.parent(),
 			sMobil = $(this).val();
 
 		$div.find('span').remove();
- 
+
 		$this.attr('title','');
 		$.post(
-			sMobilFindUrl, 
-			{ 
-				'custom_mobil[]' : sMobil, 
-				'form[_token]' : '{{ _token }}' 
-			}, 
+			sMobilFindUrl,
+			{
+				'custom_mobil[]' : sMobil,
+				'form[_token]' : '{{ _token }}'
+			},
 			function ( res ) {
 				if (res != '') {
 					refreshAccordion(res);
@@ -623,7 +629,7 @@ $(function () {
   $purchaseForm.find('button').filter('.btn-default').click(function () {
   	CKupdate();
 
-  	var 
+  	var
   		_isOk = true,
   		_errorMsg =[],
   		_cost = parseInt($purGoodsCost.val()),
@@ -635,7 +641,7 @@ $(function () {
 
   		_name = $purGoodsName.val();
 
-  	if ( isNaN( _cost ) || isNaN( _sale ) ) {
+  	if (isNaN(_cost) || isNaN(_sale)) {
   		_errorMsg.push('請檢查您的成本和售價!')
   		//alert(  );
   		_isOk = false;
@@ -651,10 +657,10 @@ $(function () {
 	  		_isOk = false;
 	  	}
   	}
-  	
+
   	if (_name.length < 3) {
   		_errorMsg.push('您的商品名稱長度不夠喔!(三個字以上)');
-	  		
+
   		_isOk = false;
   	}
 
@@ -663,12 +669,6 @@ $(function () {
 
   		_isOk = false;
   	}
-
-  	// if (_model == '') {
-  	// 	_errorMsg.push('型號尚未填寫');
-
-  	// 	_isOk = false;
-  	// }
 
   	if (_isOk) {
   		ajaxLoaded();
@@ -680,13 +680,13 @@ $(function () {
   });
 
   // 表單綁上ajaxForm
-	$purchaseForm.ajaxForm({ 
+	$purchaseForm.ajaxForm({
 		dataType: 'json',
 		error: function () {
 			$.unblockUI();
-			alert('新增發生錯誤!'); 
+			alert('新增發生錯誤!');
 		},
-		success: function (ids) { 
+		success: function (ids) {
 			var sFixUrl = Routing.generate('goods_fix_res_show_json');
 			$.post(sFixUrl, {'nGoodsPassportId': ids}, function (response) {
 
@@ -698,32 +698,32 @@ $(function () {
 				$tab.find('input').not('#sn, [name^="tabs_purchase_brand_"], [name="form[_token]"], [name="purchasetype"], .opeDatetime, [type="checkbox"]').val('');
 				$tab.find(' [name="created_at"] ').val('{{ "now"|date("Y-m-d") }}');
 				$tab.find('input[name="purchase_amount"]').val(1);
-				
+
 				$purGoodsMemo.val('');
 				$mobil.next().text( '' );
 				$imgContainer.attr('src', '').hide();
 
 				// 回應訊息綁上ajax事件
 				atttchEventOnAjaxResponse_pur();
-				
+
 				// 回應手風琴自動展開
 				$ajaxResponse.find('h3').last().click();
 				$addGoodsOperateOpen.click();
-				$mobil.next().text('');					
+				$mobil.next().text('');
 				$.unblockUI();
-				scrollToPageTop();		        
+				scrollToPageTop();
 			});
-		} 
+		}
 	});
 
 	// 產編輸入限制
 	$purGoodsCost.add($purGoodsSale).numeric().blur(function () {
 		var
 			_rate = 100;
-			$this = $(this), 
-			_money = $( this ).val();
+			$this = $(this),
+			_money = $(this).val();
 
-		if ((parseInt(_money) < _rate) || isNaN(parseInt(_money))) {
+		if (parseInt(_money) < _rate || isNaN(parseInt(_money))) {
 			$this.val('');
 		} else {
 			_money = (Math.floor(_money/_rate) * _rate);
@@ -731,6 +731,20 @@ $(function () {
 		}
 
 		$nFeedBackInput.val($purGoodsCost.val());
+	});
+
+	$purGoodsSale.numeric().blur(function () {
+		var
+			_rate = 100;
+			$this = $(this),
+			_money = $(this).val();
+
+		if ((parseInt(_money) < _rate) || isNaN(parseInt(_money))) {
+			$this.val('');
+		} else {
+			_money = (Math.floor(_money/_rate) * _rate);
+			$this.val(_money);
+		}
 	});
 
 	$purGoodsSale.keyup(function () {
@@ -758,5 +772,8 @@ $(function () {
 	$('#orders .operatePanel').eq(0).css({height: 2400, width: '30%'});
 });
 
+$('#make-cost-0').click(function () {
+	$('#cost').val(0);
+});
 </script>
 {% endblock %}

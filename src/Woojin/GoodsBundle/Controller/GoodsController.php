@@ -2275,7 +2275,6 @@ class GoodsController extends Controller
                 ->setMemo($memo)
                 ->setIsAllowWeb($isAllowWeb)
                 ->setIsAllowCreditCard($isAllowCreditCard)
-                ->setIsAllowAuction($isAllowAuction)
                 ->setWebPrice($webPrice)
             ;
 

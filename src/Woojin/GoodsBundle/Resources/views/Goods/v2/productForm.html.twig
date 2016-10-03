@@ -92,6 +92,36 @@
     </div>
 
     <div class="form-group">
+        <label class="col-md-2 text-warning">是否為委拍</label>
+
+        <div class="col-md-10">
+            <input type="checkbox" name="isAllowAuction" data-id="{{ goods.id }}" value="1"
+            {% if goods.status.id in [
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
+            ] and goods.isOrigin() %}{% else %} disabled {% endif %}
+                {% if goods.isAllowAuction %}checked{% endif %}
+                {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
+               >
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2 text-warning">是否為香榭進貨</label>
+
+        <div class="col-md-10">
+            <input type="checkbox" name="isAlanIn" data-id="{{ goods.id }}" value="1"
+            {% if goods.status.id in [
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
+            ] and goods.isOrigin() %}{% else %} disabled {% endif %}
+                {% if goods.isAlanIn %}checked{% endif %}
+                {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
+               >
+        </div>
+    </div>
+
+    <div class="form-group">
         <label class="col-md-2">選擇關鍵字</label>
 
         <div class="col-md-10">
@@ -433,36 +463,6 @@
         <div class="col-md-10">
             <input type="checkbox" name="isBehalf" data-id="{{ goods.id }}" value="1"
                 {% if goods.isBehalf %}checked{% endif %}
-                {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
-               >
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-md-2">是否允許BSO競拍</label>
-
-        <div class="col-md-10">
-            <input type="checkbox" name="isAllowAuction" data-id="{{ goods.id }}" value="1"
-            {% if goods.status.id in [
-                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
-                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
-            ] and goods.isOrigin() %}{% else %} disabled {% endif %}
-                {% if goods.isAllowAuction %}checked{% endif %}
-                {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
-               >
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-md-2">是否為Alan進貨</label>
-
-        <div class="col-md-10">
-            <input type="checkbox" name="isAlanIn" data-id="{{ goods.id }}" value="1"
-            {% if goods.status.id in [
-                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
-                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
-            ] and goods.isOrigin() %}{% else %} disabled {% endif %}
-                {% if goods.isAlanIn %}checked{% endif %}
                 {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
                >
         </div>

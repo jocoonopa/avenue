@@ -38,7 +38,7 @@ class InController extends Controller
      * @Method("POST")
      */
     public function purchaseAction(Request $request)
-    {       
+    {
         $em = $this->getDoctrine()->getManager();
         $em->getConnection()->beginTransaction();
 
@@ -56,7 +56,7 @@ class InController extends Controller
         $sculper->initPurchaseIn();
 
         $dispatcher = $this->get('event_dispatcher');
-        
+
         $event = new PurchaseEvent($options);
         $dispatcher->dispatch(StoreEvents::STORE_PURCHASE_IN, $event);
 
@@ -77,22 +77,22 @@ class InController extends Controller
                 $product->setSn($product->genSn($user->getStore()->getSn()));
             }
 
-            $imgFactory = $this->get('factory.img');          
+            $imgFactory = $this->get('factory.img');
             $imgFactory->create(array(
                 'file' => $request->files->get('img'),
                 'products' => $products,
-                'user' => $user 
+                'user' => $user
             ));
 
             if ($img = $imgFactory->getImg()) {
                 $em->persist($img);
             }
-           
+
             $desimgFactory = $this->get('factory.desimg');
             $desimgFactory->create(array(
                 'file' => $request->files->get('desimg'),
                 'products' => $products,
-                'user' => $user 
+                'user' => $user
             ));
 
             if ($desimg = $desimgFactory->getDesimg()) {
@@ -126,7 +126,7 @@ class InController extends Controller
             $em->getConnection()->rollback();
 
             throw $e;
-        }    
+        }
 
         foreach ($products as $product) {
             $ids[] = $product->getId();
@@ -168,6 +168,7 @@ class InController extends Controller
             'isAllowWeb' => $request->request->get('isAllowWeb', false),
             'isAllowCreditCard' => $request->request->get('isAllowCreditCard', false),
             'isAllowAuction' => $request->request->get('isAllowAuction', false),
+            'isAlanIn' => $request->request->get('isAlanIn', false),
             'isBehalf' => $request->request->get('isBehalf', false),
             'description' => $description,
             'brief' => $brief,
@@ -179,6 +180,6 @@ class InController extends Controller
             'orderKindConsign' => $em->find('WoojinOrderBundle:OrdersKind', Avenue::OK_CONSIGN_IN),
             'orderKindFeedback' => $em->find('WoojinOrderBundle:OrdersKind', Avenue::OK_FEEDBACK),
             'paytype' => $em->find('WoojinOrderBundle:PayType', Avenue::PT_CASH)
-        );     
+        );
     }
 }

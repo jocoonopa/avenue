@@ -21,12 +21,12 @@ class ProductFactory
         $this->storage = array();
 
         $this->resolver = new OptionsResolver();
-        
+
         $this->configureOptions($this->resolver);
     }
 
     protected function configureOptions(OptionsResolver $resolver)
-    {     
+    {
         $resolver->setDefined(array(
             'seoWord',
             'orgSn',
@@ -56,7 +56,9 @@ class ProductFactory
             'orderKindConsign',
             'orderKindFeedback',
             'paytype',
-            'webPrice'
+            'webPrice',
+            'isAlanIn',
+            'isAllowAuction'
         ));
 
         $resolver->setRequired(array('amount' ,'price', 'cost', 'name', 'status'));
@@ -97,6 +99,8 @@ class ProductFactory
                 ->setIsAllowCreditCard($options['isAllowCreditCard'])
                 ->setWebPrice($options['webPrice'])
                 ->setIsBehalf($options['isBehalf'])
+                ->setIsAlanIn($options['isAlanIn'])
+                ->setIsAllowAuction($options['isAllowAuction'])
                 ->setParent($product)
             ;
 
@@ -105,9 +109,9 @@ class ProductFactory
                     $product->addCategory($category);
                 }
             }
-            
+
             $this->storage[] = $product;
-        }        
+        }
 
         return $this;
     }
@@ -146,6 +150,8 @@ class ProductFactory
             ->setSeoSlogan2($product->getSeoSlogan2())
             ->setIsAllowCreditCard($product->getIsAllowCreditCard())
             ->setYahooId($product->getYahooId())
+            ->setIsAlanIn($options['isAlanIn'])
+            ->setIsAllowAuction($options['isAllowAuction'])
         ;
 
         foreach ($product->getCategorys() as $category) {
