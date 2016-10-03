@@ -20,18 +20,21 @@ class AuctionTest extends \PHPUnit_Framework_TestCase
     {
         $this->product->shouldReceive('getCustom')->once()->andReturn(NULL);
         $this->product->shouldReceive('getIsAlanIn')->once()->andReturn(false);
+        $this->product->shouldReceive('getBsoCustomPercentage')->andReturn(Auction::DEFAULT_CUSTOM_PERCENTAGE);
 
         $this->assertSame(array(0, 0.5, 0.5), Auction::calculatePercentage($this->product));
 
         $this->product->shouldReceive('getCustom')->once()->andReturn('1');
         $this->product->shouldReceive('getIsAllowAuction')->once()->andReturn(true);
         $this->product->shouldReceive('getIsAlanIn')->once()->andReturn(true);
+        $this->product->shouldReceive('getBsoCustomPercentage')->andReturn(Auction::DEFAULT_CUSTOM_PERCENTAGE);
 
         $this->assertSame(array(0.8, 0, 0.2), Auction::calculatePercentage($this->product));
 
         $this->product->shouldReceive('getCustom')->once()->andReturn('1');
         $this->product->shouldReceive('getIsAllowAuction')->once()->andReturn(true);
         $this->product->shouldReceive('getIsAlanIn')->once()->andReturn(false);
+        $this->product->shouldReceive('getBsoCustomPercentage')->andReturn(Auction::DEFAULT_CUSTOM_PERCENTAGE);
 
         $this->assertSame(array(0.8, 0.1, 0.1), Auction::calculatePercentage($this->product));
     }

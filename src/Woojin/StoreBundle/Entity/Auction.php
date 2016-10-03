@@ -18,8 +18,8 @@ class Auction
 {
     use AuctionTrait;
 
-    const DEFAULT_CUSTOM_PERCENTAGE     = 8;
-    const DEFAULT_STORE_PERCENTAGE      = 5;
+    const DEFAULT_CUSTOM_PERCENTAGE     = 80;
+    const DEFAULT_STORE_PERCENTAGE      = 50;
     const STATUS_ONBOARD                = 0;
     const STATUS_SOLD                   = 1;
     const STATUS_BACK_TO_STORE          = 10;
@@ -247,15 +247,15 @@ class Auction
         $stages = array();
         $percentages = array();
 
-        $stages[] = NULL === $product->getCustom() || false === $product->getIsAllowAuction() ? 0 : self::DEFAULT_CUSTOM_PERCENTAGE;
+        $stages[] = NULL === $product->getCustom() || false === $product->getIsAllowAuction() ? 0 : $product->getBsoCustomPercentage();
         $stages[] = true === $product->getIsAlanIn() ? 0 : self::DEFAULT_STORE_PERCENTAGE;
 
         $percentages[] = $stages[0];
-        $percentages[] = (10 - $stages[0]) * $stages[1]/10;
-        $percentages[] = 10 - $percentages[0] - $percentages[1];
+        $percentages[] = (100 - $stages[0]) * $stages[1]/100;
+        $percentages[] = 100 - $percentages[0] - $percentages[1];
 
         foreach ($percentages as $key => $val) {
-            $percentages[$key] = $val/10;
+            $percentages[$key] = $val/100;
         }
 
         return $percentages;

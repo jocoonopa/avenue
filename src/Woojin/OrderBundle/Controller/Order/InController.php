@@ -16,6 +16,7 @@ use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\GoodsBundle\Entity\Description;
 use Woojin\GoodsBundle\Entity\Brief;
 
+use Woojin\StoreBundle\Entity\Auction;
 use Woojin\StoreBundle\Event\PurchaseEvent;
 use Woojin\StoreBundle\StoreEvents;
 
@@ -179,7 +180,8 @@ class InController extends Controller
             'orderKindIn' => $em->find('WoojinOrderBundle:OrdersKind', Avenue::OK_IN),
             'orderKindConsign' => $em->find('WoojinOrderBundle:OrdersKind', Avenue::OK_CONSIGN_IN),
             'orderKindFeedback' => $em->find('WoojinOrderBundle:OrdersKind', Avenue::OK_FEEDBACK),
-            'paytype' => $em->find('WoojinOrderBundle:PayType', Avenue::PT_CASH)
+            'paytype' => $em->find('WoojinOrderBundle:PayType', Avenue::PT_CASH),
+            'bsoCustomPercentage' => $request->request->get('bso_custom_percentage', Auction::DEFAULT_CUSTOM_PERCENTAGE)
         );
     }
 }

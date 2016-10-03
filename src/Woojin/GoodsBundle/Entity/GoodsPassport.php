@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Exclude;
 
+use Woojin\StoreBundle\Entity\Auction;
 use Woojin\UserBundle\Entity\User;
 use Woojin\Utility\Avenue\Avenue;
 
@@ -303,6 +304,11 @@ class GoodsPassport
    * @ORM\Column(type="string", length=40, nullable=true)
    */
   protected $seoWord;
+
+  /**
+   * @ORM\Column(type="integer", nullable=true)
+   */
+  protected $bsoCustomPercentage;
 
     /**
      * Constructor
@@ -1931,5 +1937,29 @@ class GoodsPassport
     public function getIsAlanIn()
     {
         return $this->isAlanIn;
+    }
+
+    /**
+     * Set bsoCustomPercentage
+     *
+     * @param integer $bsoCustomPercentage
+     *
+     * @return GoodsPassport
+     */
+    public function setBsoCustomPercentage($bsoCustomPercentage)
+    {
+        $this->bsoCustomPercentage = $bsoCustomPercentage;
+
+        return $this;
+    }
+
+    /**
+     * Get bsoCustomPercentage
+     *
+     * @return integer
+     */
+    public function getBsoCustomPercentage()
+    {
+        return NULL === $this->bsoCustomPercentage ? Auction::DEFAULT_CUSTOM_PERCENTAGE : $this->bsoCustomPercentage;
     }
 }

@@ -58,7 +58,8 @@ class ProductFactory
             'paytype',
             'webPrice',
             'isAlanIn',
-            'isAllowAuction'
+            'isAllowAuction',
+            'bsoCustomPercentage'
         ));
 
         $resolver->setRequired(array('amount' ,'price', 'cost', 'name', 'status'));
@@ -101,6 +102,7 @@ class ProductFactory
                 ->setIsBehalf($options['isBehalf'])
                 ->setIsAlanIn($options['isAlanIn'])
                 ->setIsAllowAuction($options['isAllowAuction'])
+                ->setBsoCustomPercentage($options['bsoCustomPercentage'])
                 ->setParent($product)
             ;
 
@@ -152,6 +154,7 @@ class ProductFactory
             ->setYahooId($product->getYahooId())
             ->setIsAlanIn($options['isAlanIn'])
             ->setIsAllowAuction($options['isAllowAuction'])
+            ->setBsoCustomPercentage($options['bsoCustomPercentage'])
         ;
 
         foreach ($product->getCategorys() as $category) {

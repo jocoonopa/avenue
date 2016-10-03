@@ -20,6 +20,7 @@ use Woojin\OrderBundle\Entity\Orders;
 use Woojin\OrderBundle\Entity\Ope;
 use Woojin\StoreBundle\Entity\Store;
 use Woojin\StoreBundle\Entity\Activity;
+use Woojin\StoreBundle\Entity\Auction;
 use Woojin\UserBundle\Entity\UsersHabit;
 use Woojin\UserBundle\Entity\AvenueClue;
 
@@ -2285,6 +2286,7 @@ class GoodsController extends Controller
                 $goods
                     ->setIsAllowAuction($isAllowAuction)
                     ->setIsAlanIn($isAlanIn)
+                    ->setBsoCustomPercentage($request->request->get('bso_custom_percentage', Auction::DEFAULT_CUSTOM_PERCENTAGE))
                 ;
             }
 

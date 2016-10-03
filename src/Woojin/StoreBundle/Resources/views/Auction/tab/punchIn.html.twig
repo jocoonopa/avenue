@@ -4,8 +4,8 @@
 
   <form role="form">
     <div class="form-group">
-    
-    <input type="text" class="form-control" placeholder="條碼" 
+
+    <input type="text" class="form-control" placeholder="條碼"
       ng-enter="punch(currentPunchSn);"
       ng-model="currentPunchSn"
     />
@@ -19,6 +19,9 @@
   <a ng-repeat="sn in punchFailedSns" href="{{ genProductUrl(sn) }}" class="label label-danger pull-left" style="margin-left: 5px;" target="_blank">{{ sn }}</a>
   <br/>
 
+  <div class="alert alert-warning" ng-show="isActSuccess(returnObj.status) && returnObj.auction.product.is_alan_in">
+    此商品為香榭進貨
+  </div>
   <table class="table table-striped" ng-show="isActSuccess(returnObj.status)">
     <tr>
       <td>產編</td>
