@@ -2,6 +2,7 @@
 
 namespace Woojin\Service\Store;
 
+use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\OrderBundle\Entity\Custom;
 use Woojin\StoreBundle\Entity\Auction;
 use Woojin\StoreBundle\Event\AuctionBackEvent;
@@ -220,34 +221,23 @@ class AuctionService
         return $this->connection;
     }
 
+    /**
+     * Setting auction profit assign percentage
+     *
+     * @param array $options
+     */
     protected function setOptionPercentage(array &$options)
     {
         if (!array_key_exists('product', $options)) {
             throw new \Exception('Options doesnt include product');
         }
 
-        if (true === $options['product']->getIsAllowAuction() && true === $options['product']->getIsAlanIn()) {
-            $options['customPercentage'] = 0.8;
-            $options['storePercentage'] = 0;
-            $options['bsoPercentage'] = 0.2;
-        }
+        $percentages = Auction::calculatePercentage($options['product']);
+        
+        $options['customPercentage'] = $percentages[0];
+        $options['storePercentage'] = $percentages[1];
+        $options['bsoPercentage'] = $percentages[2];
 
-        if (false === $options['product']->getIsAllowAuction() && true === $options['product']->getIsAlanIn()) {
-            $options['customPercentage'] = 0;
-            $options['storePercentage'] = 0;
-            $options['bsoPercentage'] = 1.0;
-        }
-
-        if (true === $options['product']->getIsAllowAuction() && false === $options['product']->getIsAlanIn()) {
-            $options['customPercentage'] = 0.8;
-            $options['storePercentage'] = 0.1;
-            $options['bsoPercentage'] = 0.1;
-        }
-
-        if (false === $options['product']->getIsAllowAuction() && false === $options['product']->getIsAlanIn()) {
-            $options['customPercentage'] = 0;
-            $options['storePercentage'] = 0.5;
-            $options['bsoPercentage'] = 0.5;
-        }
+        return $this;
     }
 }

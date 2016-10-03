@@ -3,6 +3,7 @@
 namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\Utility\Avenue\Avenue;
 use Woojin\UserBundle\Entity\User;
 
@@ -17,12 +18,12 @@ class Auction
 {
     use AuctionTrait;
 
-    const STATUS_ONBOARD                    = 0;
-    const STATUS_SOLD                       = 1;
-    const STATUS_PAYED                      = 2;
-    const STATUS_PROFIT_ASSIGN_COMPLETE     = 3;
-    const STATUS_BACK_TO_STORE              = 10;
-    const STATUS_ORDER_CANCEL               = 0;
+    const DEFAULT_CUSTOM_PERCENTAGE     = 8;
+    const DEFAULT_STORE_PERCENTAGE      = 5;
+    const STATUS_ONBOARD                = 0;
+    const STATUS_SOLD                   = 1;
+    const STATUS_BACK_TO_STORE          = 10;
+    const STATUS_ORDER_CANCEL           = 0;
 
     protected $options;
 
@@ -219,23 +220,11 @@ class Auction
         return "原售出金額:{$this->getPrice()}，購買人:{$this->getBuyerName()}，手機:{$this->getBuyerMobil()}，{$options['canceller']->getUsername()}於{$date->format('Y-m-d H:i:s')}取消<br/>";
     }
 
-    public function assign()
-    {
-        return $this;
-    }
-
-    public function pay()
-    {
-        return $this;
-    }
-
     public static function fetchProductStatusId($statusCode)
     {
         $map = array(
             static::STATUS_ONBOARD => Avenue::GS_BSO_ONBOARD,
             static::STATUS_SOLD => Avenue::GS_BSO_SOLD,
-            static::STATUS_PAYED => Avenue::GS_BSO_SOLD,
-            static::STATUS_PROFIT_ASSIGN_COMPLETE => Avenue::GS_BSO_SOLD,
             static::STATUS_BACK_TO_STORE => Avenue::GS_ONSALE,
             static::STATUS_ORDER_CANCEL => Avenue::GS_BSO_ONBOARD
         );
@@ -245,6 +234,31 @@ class Auction
         }
 
         return $map[$statusCode];
+    }
+
+    /**
+     * Calculate the auction percentages for each by passing GoodsPassport entity
+     *
+     * @param  Woojin\GoodsBundle\Entity\GoodsPassport $product
+     * @return array $percentages
+     */
+    public static function calculatePercentage(GoodsPassport $product)
+    {
+        $stages = array();
+        $percentages = array();
+
+        $stages[] = NULL === $product->getCustom() || false === $product->getIsAllowAuction() ? 0 : self::DEFAULT_CUSTOM_PERCENTAGE;
+        $stages[] = true === $product->getIsAlanIn() ? 0 : self::DEFAULT_STORE_PERCENTAGE;
+
+        $percentages[] = $stages[0];
+        $percentages[] = (10 - $stages[0]) * $stages[1]/10;
+        $percentages[] = 10 - $percentages[0] - $percentages[1];
+
+        foreach ($percentages as $key => $val) {
+            $percentages[$key] = $val/10;
+        }
+
+        return $percentages;
     }
 
     /**

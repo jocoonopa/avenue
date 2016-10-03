@@ -48,6 +48,10 @@ auctionCtrl.controller('AuctionProfitCtrl', ['$scope', '$routeParams', '$http',
         });
     };
 
+    /**
+     * Download export excel,
+     * which contains result fetch by the criteria gen from genPostData()
+     */
     $scope.download = function () {
         var postData = genPostData();
 

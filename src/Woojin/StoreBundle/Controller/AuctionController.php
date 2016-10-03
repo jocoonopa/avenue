@@ -34,8 +34,11 @@ class AuctionController extends Controller
 
     protected function convertCriteria(array $criteria)
     {
-        $criteria['stores'] = explode(',', array_key_exists('stores_str', $criteria) ? $criteria['stores_str'] : '');
-        $criteria['auction_statuses'] = explode(',', array_key_exists('auction_statuses_str', $criteria) ? $criteria['auction_statuses_str'] : '');
+        $storesStr = array_key_exists('stores_str', $criteria) && !empty($criteria['stores_str']) ? $criteria['stores_str'] : NULL;
+        $acStr = array_key_exists('auction_statuses_str', $criteria) && !empty($criteria['auction_statuses_str']) ? $criteria['auction_statuses_str'] : NULL;
+
+        $criteria['stores'] = NULL === $storesStr ? array() : explode(',', $storesStr);
+        $criteria['auction_statuses'] = NULL === $acStr ? array() : explode(',', $acStr);
 
         return $criteria;
     }
