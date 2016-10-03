@@ -3,15 +3,15 @@
     <div class="item" title="{{ goods.status.name }}-{{ goods.name }}-{{ goods.sn }}">
         <a href="{{ path('goods_edit_v2', {id: goods.id}) }}?iframe=true&width=100%&height=100%" rel="prettyPhoto[iframes]">
             <img src="{% if goods.img %}{{ goods.img.path }}?t={{ 'now'|date('U') }}{% else %}{{ NothingPng }}{% endif %}" style="width: 100%;">
-            
+
         </a>
         {% if true == goods.isAllowAuction  %}
-            <div style="position: absolute; left: 0; top: 0; background-color: #ec0b0b;">{{ goods.sn }}</div>
+            <div style="position: absolute; left: 0; top: 0; background-color: #ec0b0b;">{{ goods.getSn(true) }}</div>
         {% else %}
             {% if NULL == goods.custom%}
-                <div style="position: absolute; left: 0; top: 0; background-color: #000;">{{ goods.sn }}</div>
+                <div style="position: absolute; left: 0; top: 0; background-color: #000;">{{ goods.getSn(true) }}</div>
             {% else %}
-                <div style="position: absolute; left: 0; top: 0; background-color: #032cf3;">{{ goods.sn }}</div>
+                <div style="position: absolute; left: 0; top: 0; background-color: #032cf3;">{{ goods.getSn(true) }}</div>
             {% endif %}
         {% endif %}
     </div>

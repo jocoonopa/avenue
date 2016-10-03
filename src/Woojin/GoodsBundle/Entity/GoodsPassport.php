@@ -544,24 +544,6 @@ class GoodsPassport
      */
     public function getSpec()
     {
-        // $spec = null;
-
-        // $spec .= '商品品牌：' . (($this->brand) ? $this->brand->getName() : null);
-        // $spec .= "\n";
-        // $spec .= '商品材質：' . (($this->mt) ? $this->mt->getName() : null);
-        // $spec .= "\n";
-        // $spec .= '商品新舊：' . (($this->level) ? $this->level->getConvertName() . ' / 約' . $this->level->getName() : null);
-        // $spec .= "\n";
-        // $spec .= '商品顏色：' . (($this->color) ? $this->color->getName() : null);
-        // $spec .= "\n";
-        // $spec .= '商品尺寸：';
-        // $spec .= '商品配件： 本店購買憑證';
-        // $spec .= "\n";
-        // $spec .= '※圖片顏色會因拍攝燈光或個人螢幕設定差異，造成部份色差現象，請以實際商品顏色為準。
-        // (鑑賞期間如需退換貨,請保持商品包裝的完整性,且須全新未使用及手把膠膜與拆封條未破壞狀態
-        // (包含商品.附件.內外包裝.隨機文件等..均務必保持完整齊全)';
-
-        // return $spec;
         return $this->description->getContent();
     }
 
@@ -731,9 +713,10 @@ class GoodsPassport
      *
      * @return string
      */
-    public function getSn()
+    public function getSn($isAdvanceCall = false)
     {
-        return $this->sn;
+        return true === $isAdvanceCall && in_array($this->status->getId(), array(Avenue::GS_BSO_SOLD, Avenue::GS_BSO_ONBOARD)) ?
+            "{$this->sn}%" : $this->sn;
     }
 
     /**

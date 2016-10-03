@@ -27,7 +27,7 @@ class GoodsPassportController extends Controller
     public function deleteAction()
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        
+
         if ($user->getId() !== Avenue::USER_ENGINEER_ID) {
             throw $this->createNotFoundException('Not exists');
         }
@@ -46,7 +46,7 @@ class GoodsPassportController extends Controller
         foreach ($products as $product) {
             $em->remove($product);
         }
-        
+
         $em->flush();
 
         return new Response('ok');
@@ -56,22 +56,22 @@ class GoodsPassportController extends Controller
      * @Route("/goods_passport/{id}/{_format}", requirements={"id"="\d+"}, defaults={"_format"="json"}, name="api_goodsPassport_show", options={"expose"=true})
      * @ParamConverter("goods", class="WoojinGoodsBundle:GoodsPassport")
      * @Method("GET")
-     * 
+     *
      * @ApiDoc(
      *  resource=true,
      *  description="取得商品資訊，ETag cache",
      *  requirements={
      *      {
-     *          "name"="id", 
+     *          "name"="id",
      *          "requirement"="\d+",
-     *          "dataType"="integer", 
-     *          "required"=true, 
+     *          "dataType"="integer",
+     *          "required"=true,
      *          "description"="Entity GoodsPassport's id"
      *      },
      *      {
-     *          "name"="_format", 
-     *          "dataType"="string", 
-     *          "required"=false, 
+     *          "name"="_format",
+     *          "dataType"="string",
+     *          "required"=false,
      *          "description"="回傳的格式，支援 json, xml, html"
      *      }
      *  }
@@ -80,13 +80,14 @@ class GoodsPassportController extends Controller
     public function showAction(Request $request, $goods, $_format)
     {
         $goods->setCost(0);
+        $goods->setSn($goods->getSn(true));
 
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
-        
+
         $jsonGoodsPassport = $serializer->serialize($goods, $_format);
 
         $responseHandler = new ResponseHandler;
-       
+
         return $responseHandler->getETag($request, $jsonGoodsPassport, $_format);
     }
 
@@ -98,19 +99,33 @@ class GoodsPassportController extends Controller
     public function showBySnAction(Request $request, $goods, $_format)
     {
         $goods->setCost(0);
-        
+        $goods->setSn($goods->getSn(true));
+
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
-        
+
         $jsonGoodsPassport = $serializer->serialize($goods, $_format);
 
         $responseHandler = new ResponseHandler;
-       
+
         return $responseHandler->getETag($request, $jsonGoodsPassport, $_format);
     }
 
     /**
      * @Route("/goods_passport/multiSn/{longSn}/{_format}", defaults={"_format"="json"}, name="api_goodsPassport_show_byMultiSn", options={"expose"=true})
      * @Method("GET")
+     *
+     * @ApiDoc(
+     *  resource=true,
+     *  description="輸入多筆產編取得商品資訊",
+     *  requirements={
+     *      {
+     *          "name"="longSn",
+     *          "dataType"="string",
+     *          "required"=true,
+     *          "description"="Entity GoodsPassport's sn"
+     *      }
+     *  }
+     * )
      */
     public function showByMultiSnAction(Request $request, $longSn, $_format)
     {
@@ -131,36 +146,37 @@ class GoodsPassportController extends Controller
 
         foreach ($products as $product) {
             $product->setCost(0);
+            $product->setSn($product->getSn(true));
         }
-        
+
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
-        
+
         $jsonProducts = $serializer->serialize($products, $_format);
 
         $responseHandler = new ResponseHandler;
-       
+
         return $responseHandler->getETag($request, $jsonProducts, $_format);
     }
 
     /**
      * @Route("/goods_passport/{jIds}/{_format}", defaults={"_format"="json"}, name="api_goodsPassport_multishow", options={"expose"=true})
      * @Method("GET")
-     * 
+     *
      * @ApiDoc(
      *  resource=true,
      *  description="取得商品資訊",
      *  requirements={
      *      {
-     *          "name"="id", 
+     *          "name"="id",
      *          "requirement"="\d+",
-     *          "dataType"="integer", 
-     *          "required"=true, 
+     *          "dataType"="integer",
+     *          "required"=true,
      *          "description"="Entity GoodsPassport's id"
      *      },
      *      {
-     *          "name"="_format", 
-     *          "dataType"="string", 
-     *          "required"=false, 
+     *          "name"="_format",
+     *          "dataType"="string",
+     *          "required"=false,
      *          "description"="回傳的格式，支援 json, xml, html"
      *      }
      *  }
@@ -180,21 +196,22 @@ class GoodsPassportController extends Controller
 
         foreach ($products as $product) {
             $product->setCost(0);
+            $product->setSn($product->getSn(true));
         }
 
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
-        
+
         $jsonProducts = $serializer->serialize($products, $_format);
 
         $responseHandler = new ResponseHandler;
-       
+
         return $responseHandler->getNoncached($request, $jsonProducts, $_format);
     }
 
     /**
      * @Route("/goods_passport/fetch/{_format}", defaults={"_format"="json"}, name="api_goodsPassport_fetchWithCondition", options={"expose"=true})
      * @Method("POST")
-     * 
+     *
      * @ApiDoc(
      *  resource=true,
      *  description="根據搜尋條件取得商品資訊，不需要作 cache"
@@ -204,18 +221,18 @@ class GoodsPassportController extends Controller
     {
         /**
          * 字串流
-         * 
+         *
          * @var [string]
          */
         $content = $request->getContent();
 
         /**
          * stdClass, 有一個 jsonCondition屬性，該屬性內容為 json 字串
-         * 
+         *
          * @var [\stdClass]
          */
         $conditionClass = json_decode($content);
-       
+
         /**
          * 條件物件, 格式如下
          *
@@ -252,7 +269,7 @@ class GoodsPassportController extends Controller
          *        )
          *
          *)
-         * 
+         *
          * @var [\stdClass]
          */
         $condition = json_decode($conditionClass->jsonCondition);
@@ -265,17 +282,18 @@ class GoodsPassportController extends Controller
          */
         $gdConverter = $this->get('gd.converter');
         $gdConverter->gen($condition, false, false, true);
-        
+
         // 除錯的時候拿掉這段註解可以看 condition 的詳情和實際執行的 Dql 語句
         //
         //$gdConverter->dump()->_print();
-        
+
         $goodses = $gdConverter->getResult();
 
         // 對於權限不夠的，成本必須要隱藏起來，否則客人看到成本不就好笑了?
         if (!$this->get('authority.judger')->isCostValid()) {
             foreach ($goodses as $key => $goods) {
                 $goods->setCost('0');
+                $goods->setSn($goods->getSn(true));
             }
         }
 
@@ -289,14 +307,14 @@ class GoodsPassportController extends Controller
         $jsonResponse = $serializer->serialize($res, $_format);
 
         $responseHandler = new ResponseHandler;
-       
+
         return $responseHandler->getNoncached($request, $jsonResponse, $_format);
     }
 
     /**
      * @Route("/goods_passport/custom_cart/{_format}", defaults={"_format"="json"}, name="api_goodsPassport_customCart", options={"expose"=true})
      * @Method("POST")
-     * 
+     *
      * @ApiDoc(
      *  resource=true,
      *  description="客戶端傳送 cookie 的購物車商品索引陣列，用該陣列取得商品資料，並且計算出總價和活動後價格"
@@ -306,7 +324,7 @@ class GoodsPassportController extends Controller
 
     /**
      * 查詢條件增加 "上架" 且 "允許官網顯示"，防止有心人士看到不該看的東西
-     * 
+     *
      * @param stdClass &$condition [查詢條件]
      */
     private function addOnBoardAndIsWebConstraint(&$condition)
@@ -316,7 +334,7 @@ class GoodsPassportController extends Controller
         // if (!property_exists($condition, 'gd')) {
         //     $condition->gd = new \stdClass;
         // }
-        
+
         // $condition->gd->status = new \stdClass;
         // $condition->gd->status->id = Avenue::GS_ONSALE;
     }
