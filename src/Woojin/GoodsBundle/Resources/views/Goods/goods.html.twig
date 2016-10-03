@@ -15,7 +15,7 @@
 <div id="tabs">
 	<ul>
 		<li><a href="#tabs-search" data-icon="i">商品查詢</a></li>
-		
+
 		{% if app.user|has_auth('BRAND') %}
 			<li><a href="#tabs-brand" data-icon="k">品牌管理</a></li>
 		{% endif %}
@@ -78,83 +78,85 @@
 			<li><a href="#seoslogan">關鍵字設定</a></li>
 		{% endif %}
 	</ul>
-	
+
 	<div id="tabs-search">{{ render(controller('WoojinGoodsBundle:Goods:goodsSearch')) }}</div>
-	
+
 	{% if app.user|has_auth('BRAND') %}
-		<div id="tabs-brand"><a href="{{ path('brand') }}" target="_blank">前往品牌管理</a></div>
+		<div id="tabs-brand"><a class="btn btn-success" href="{{ path('brand') }}" target="_blank"><i data-icon="w"></i>前往品牌管理</a></div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('COLOR') %}
-		<div id="tabs-color"><a href="{{ path('color') }}" target="_blank">前往顏色管理</a></div>
+		<div id="tabs-color"><a class="btn btn-success" href="{{ path('color') }}" target="_blank"><i data-icon="w"></i>前往顏色管理</a></div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('PATTERN') %}
-		<div id="tabs-pattern"><a href="{{ path('pattern') }}" target="_blank">前往款式管理</a></div>
+		<div id="tabs-pattern"><a class="btn btn-success" href="{{ path('pattern') }}" target="_blank"><i data-icon="w"></i>前往款式管理</a></div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('SOURCE') %}
-		<div id="tabs-source"><a href="{{ path('goods_source') }}" target="_blank">前往產地管理</a></div>
+		<div id="tabs-source"><a class="btn btn-success" href="{{ path('goods_source') }}" target="_blank"><i data-icon="w"></i>前往產地管理</a></div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('LEVEL') %}
-		<div id="tabs-level"><a href="{{ path('goods_level') }}" target="_blank">前往商品新舊管理</a></div>
+		<div id="tabs-level"><a class="btn btn-success" href="{{ path('goods_level') }}" target="_blank"><i data-icon="w"></i>前往商品新舊管理</a></div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('MT') %}
-		<div id="tabs-material"><a href="{{ path('goods_material') }}" target="_blank">前往材質管理</a></div>
+		<div id="tabs-material"><a class="btn btn-success" href="{{ path('goods_material') }}" target="_blank"><i data-icon="w"></i>前往材質管理</a></div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('BATCH_UPLOAD') %}
 		<div id="tabs-batch">{{ render(controller('WoojinGoodsBundle:Goods:goodsBatch')) }}</div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('CHECK_STOCK') %}
-		<div id="tabs-check"><a href="{{ path('goods_checkonsale')}}" target="_blank">前往盤點</a></div>
+		<div id="tabs-check"><a class="btn btn-success" href="{{ path('goods_checkonsale')}}" target="_blank"><i data-icon="w"></i>前往盤點</a></div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('MOVE_RELATE') %}
 		<div id="tabs-move">
-			<a href="{{ path('goods_assigndaylist') }}" target="_blank">前往今日調貨</a><br/>
-			<a href="{{ path('move') }}" target="_blank">調貨管理</a>
+			<a class="btn btn-success" href="{{ path('goods_assigndaylist') }}" target="_blank"><i data-icon="w"></i>前往今日調貨</a>
+			<a class="btn btn-success" href="{{ path('move') }}" target="_blank"><i data-icon="w"></i>調貨管理</a>
 		</div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('CONSIGN_INFORM') %}
 		<div id="tabs-consign">
-			<a href="{{ path('order_consign_done_list') }}" target="_blank">前往查看寄賣清單</a>
+			<a class="btn btn-success" href="{{ path('order_consign_done_list') }}" target="_blank"><i data-icon="w"></i>前往查看寄賣清單</a>
 		</div>
 	{% endif %}
-	
-	<div id="uitox-excel"><a href="{{ path('uitox_index') }}">生成uitox批次上傳檔案</a></div>
-	
+
+	<div id="uitox-excel">
+		<a class="btn btn-success" href="{{ path('uitox_index') }}"><i data-icon="w"></i>生成uitox批次上傳檔案</a>
+	</div>
+
 	{% if app.user|has_auth('STORE_SETTING') %}
 		<div id="store-setting">
-			<a href="{{ path('admin_store_edit', {id: app.user.store.id }) }}">前往設定門市資訊</a>
+			<a class="btn btn-success" href="{{ path('admin_store_edit', {id: app.user.store.id }) }}">前往設定門市資訊</a>
 		</div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('PROMOTION_MANAGE') %}
 		<div id="front-promotion">
-			<a href="{{ path('promotion') }}" target="_blank">前往管理促銷活動</a>
+			<a class="btn btn-success" href="{{ path('promotion') }}" target="_blank"><i data-icon="w"></i>前往管理促銷活動</a>
 		</div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('CUSTOM_SN_IMPORT') %}
 		<div id="customSn-import">
-			<a href="{{ path('customSn_import') }}">前往自定義代碼匯入</a>
+			<a class="btn btn-success" href="{{ path('customSn_import') }}">前往自定義代碼匯入</a>
 		</div>
 	{% endif %}
-	
+
 	{% if app.user|has_auth('TIMELINESS_SETTINGS') %}
 		<div id="product-tl">
-			<a href="{{ path('producttl') }}" target="_blank">前往搶購商品設定</a>	
+			<a class="btn btn-success" href="{{ path('producttl') }}" target="_blank"><i data-icon="w"></i>前往搶購商品設定</a>
 		</div>
 	{% endif %}
 
 	{% if app.user|has_auth('EDIT_SEO_SLOGAN') %}
 		<div id="seoslogan">
-			<a href="{{ path('seoslogan') }}" target="_blank">前往關鍵字設定</a>	
+			<a class="btn btn-success" href="{{ path('seoslogan') }}" target="_blank"><i data-icon="w"></i>前往關鍵字設定</a>
 		</div>
 	{% endif %}
 </div>
@@ -168,9 +170,3 @@
 	<script src="{{ asset('/js/goods.js') }}"></script>
 	<script src="{{ asset('/js/brand.js') }}"></script>
 {% endblock %}
-
-
-
-
-
-

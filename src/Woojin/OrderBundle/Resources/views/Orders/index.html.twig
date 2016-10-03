@@ -40,6 +40,8 @@
 			<li><a href="#orders-specialSell" data-icon="w">特殊銷貨</a></li>
 		{% endif %}
 
+		<li><a href="#orders-bso" data-icon="w">BSO銷貨管理</a></li>
+
 		{% if app.user|has_auth('HAND_GEN_INVOICE') %}
 			<li><a href="#orders-keyInvoiceByhand">手key出貨憑證</a></li>
 		{% endif %}
@@ -62,7 +64,7 @@
 	{% endif %}
 
 	{% if app.user|has_auth('MULTI_SELL') %}
-		<div id="orders-multisale" ><a href="{{ path('order_multisale') }}" target="_blank">前往多筆銷貨</a></div>
+		<div id="orders-multisale" ><a class="btn btn-success" href="{{ path('order_multisale') }}" target="_blank"><i data-icon="w"></i>前往多筆銷貨</a></div>
 	{% endif %}
 
 	{% if app.user|has_auth('SELL') %}
@@ -73,47 +75,51 @@
 
 	{% if app.user|has_auth('READ_CUSTOM') %}
 		<div id="orders-custom" >
-			<a href="{{ path('order_custom_temp') }}" target="_blank">前往客戶資料管理</a>
+			<a class="btn btn-success" href="{{ path('order_custom_temp') }}" target="_blank"><i data-icon="w"></i>前往客戶資料管理</a>
 		</div>
 	{% endif %}
 
 	{% if app.user|has_auth('PAYTYPE') %}
 		<div id="orders-payType" >
-			<a href="{{ path('paytype') }}" target="_blank" >設定付費方式</a>
+			<a class="btn btn-success" href="{{ path('paytype') }}" target="_blank"><i data-icon="w"></i>設定付費方式</a>
 		</div>
 	{% endif %}
 
 	{% if app.user|has_auth('PAYTYPE') %}
-		<div id="orders-rate"><a href="{{ path('exchange_rate') }}" target="_blank">匯率設定</a></div>
+		<div id="orders-rate"><a class="btn btn-success" href="{{ path('exchange_rate') }}" target="_blank"><i data-icon="w"></i>匯率設定</a></div>
 	{% endif %}
 
 	{% if app.user|has_auth('ACTIVITY_SELL') or app.user|has_auth('ACTIVITY_MANAGE') %}
 		<div id="orders-specialSell">
 			{% if app.user|has_auth('ACTIVITY_SELL') %}
-				<a href="{{ path('order_special_sale') }}" target="_blank" >前往特殊銷貨</a><br>
+				<a class="btn btn-success" href="{{ path('order_special_sale') }}" target="_blank"><i data-icon="w"></i>前往特殊銷貨</a>
 			{% endif %}
-
-			<a href="{{ path('auction') }}#/bso" target="_blank" >前往BSO銷貨</a><br>
 
 			{% if app.user|has_auth('ACTIVITY_MANAGE') %}
-				<a href="{{ path('activity') }}" target="_blank" >前往活動管理</a><br>
+				<a class="btn btn-success" href="{{ path('activity') }}" target="_blank"><i data-icon="w"></i>前往活動管理</a>
 			{% endif %}
-
-			<a href="{{ path('auction') }}#/auction" target="_blank" >前往BSO管理</a>
 		</div>
 	{% endif %}
 
+	<div id="orders-bso">
+		<a class="btn btn-success" href="{{ path('auction') }}#/bso" target="_blank">
+			<i data-icon="w"></i>
+			前往BSO銷貨
+		</a>
+		<a class="btn btn-success" href="{{ path('auction') }}#/auction" target="_blank"><i data-icon="w"></i>前往BSO管理</a>
+	</div>
+
 	{% if app.user|has_auth('HAND_GEN_INVOICE') %}
 		<div id="orders-keyInvoiceByhand">
-			<a href="{{ path('orders_keyinvoicebyhand') }}" target="_blank">前往手key出貨憑證</a>
+			<a class="btn btn-success" href="{{ path('orders_keyinvoicebyhand') }}" target="_blank"><i data-icon="w"></i>前往手key出貨憑證</a>
 		</div>
 	{% endif %}
 
 	{% if app.user|has_auth('WEB_ORDER_MANAGE') %}
 		<div id="invoice-webindex">
-			<a href="{{ path('admin_invoice_web_index') }}" target="_blank">官網訂單管理</a>
-			<br>
-			<a href="{{ path('behalf') }}" target="_blank">官網代購管理</a>
+			<a class="btn btn-success" href="{{ path('admin_invoice_web_index') }}" target="_blank"><i data-icon="w"></i>官網訂單管理</a>
+
+			<a class="btn btn-success" href="{{ path('behalf') }}" target="_blank"><i data-icon="w"></i>官網代購管理</a>
 		</div>
 	{% endif %}
 </div>

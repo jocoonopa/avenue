@@ -15,17 +15,17 @@
 		<li><a href="#store-holiday" data-icon="c">排假管理</a></li>
 	</ul>
 	{# <div id="users-history">{% include('WoojinUserBundle:User:user.record.history.html.twig') with {'users': users} %}</div> #}
-	
+
 	<div id="users-manage">{% include('WoojinUserBundle:User:user.manage.html.twig') with {'users': users} %}</div>
-	
+
 	{% if app.user|has_auth('ROLE_MANAGE') %}
 	<div id="role-manage">
-		<a href="{{ path('admin_role_index') }}" target="_blank">前往職務管理</a>
+		<a class="btn btn-success" href="{{ path('admin_role_index') }}" target="_blank"><i data-icon="w"></i>前往職務管理</a>
 	</div>
 	{% endif %}
 
 	<div id="store-holiday">
-		<a href="{{ path('admin_store_holiday_list')}}" target="_blank">前往排假</a>
+		<a class="btn btn-success" href="{{ path('admin_store_holiday_list')}}" target="_blank"><i data-icon="w"></i>前往排假</a>
 	</div>
 </div>
 

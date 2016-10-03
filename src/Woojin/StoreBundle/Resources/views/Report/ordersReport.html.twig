@@ -32,7 +32,9 @@
 	{% endif %}
 
 	{% if app.user|has_auth('BENEFIT_REPORT_OWN') %}
-		<a href="{{ path('auction') }}#/auction_profit" target="_blank">BSO毛利檢視</a>
+		<div id="orders-bso">
+			<a class="btn btn-success" href="{{ path('auction') }}#/auction_profit" target="_blank"><i data-icon="w"></i>BSO毛利檢視</a>
+		</div>
 	{% endif %}
 </div>
 
