@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-auctionCtrl.controller('AuctionProfitCtrl', ['$scope', '$routeParams', '$http',
-  function ($scope, $routeParams, $http) {
+auctionCtrl.controller('AuctionProfitCtrl', ['AuctionHelper', '$scope', '$routeParams', '$http',
+  function (AuctionHelper, $scope, $routeParams, $http) {
     document.title = '競拍毛利檢視';
 
     $scope.config = {
@@ -65,8 +65,8 @@ auctionCtrl.controller('AuctionProfitCtrl', ['$scope', '$routeParams', '$http',
         return 8 < name.length ? name.substr(0, 8) + '...' : name;
     };
 
-    $scope.getProfit = function (perc, price) {
-      return isNaN(price) ? '' : Math.floor(perc * price);
+    $scope.getProfit = function (cost, perc, price) {
+        return AuctionHelper.getProfit(cost, perc, price);
     };
 
     $scope.sortBy = function(propertyName) {
@@ -94,9 +94,9 @@ auctionCtrl.controller('AuctionProfitCtrl', ['$scope', '$routeParams', '$http',
         $http.post(Routing.generate('api_list_filter_auction'), $.param(genPostData()), $scope.config)
         .success(function (res) {
             for (var i = 0; i < res.length; i ++) {
-                res[i].customProfit = $scope.getProfit(res[i].custom_percentage, res[i].price);
-                res[i].storeProfit = $scope.getProfit(res[i].store_percentage, res[i].price);
-                res[i].bsoProfit = $scope.getProfit(res[i].bso_percentage, res[i].price);
+                res[i].customProfit = $scope.getProfit(res[i].product.cost, res[i].custom_percentage, res[i].price);
+                res[i].storeProfit = $scope.getProfit(res[i].product.cost, res[i].store_percentage, res[i].price);
+                res[i].bsoProfit = $scope.getProfit(res[i].product.cost, res[i].bso_percentage, res[i].price);
             }
 
             $scope.auctions = res;

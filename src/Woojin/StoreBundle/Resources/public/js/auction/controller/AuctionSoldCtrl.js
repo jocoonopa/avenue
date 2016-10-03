@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-auctionCtrl.controller('AuctionSoldCtrl', ['$scope', '$routeParams', '$http',
-  function ($scope, $routeParams, $http) {
+auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routeParams', '$http',
+  function (AuctionHelper, $scope, $routeParams, $http) {
     document.title = '競拍銷售頁面';
 
     $scope.defaultDate = new Date(1980, 5, 1);
@@ -196,8 +196,8 @@ auctionCtrl.controller('AuctionSoldCtrl', ['$scope', '$routeParams', '$http',
       return 0 === mobil.length;
     };
 
-    $scope.getProfit = function (perc, price) {
-      return perc * price;
+    $scope.getProfit = function (cost, perc, price) {
+      return AuctionHelper.getProfit(cost, perc, price);
     };
 
     $scope.isCustomFormValid = function (custom) {

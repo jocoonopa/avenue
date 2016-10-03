@@ -116,7 +116,7 @@ class AuctionCriteria
         }
 
         $this->qb->andWhere($this->qb->expr()->gte('a.createAt', '?4'));
-        $this->qb->setParameter(4, $this->criteria['create_at']['start']);
+        $this->qb->setParameter(4, "{$this->criteria['create_at']['start']} 00:00:00");
 
         return $this;
     }
@@ -128,7 +128,7 @@ class AuctionCriteria
         }
 
         $this->qb->andWhere($this->qb->expr()->lte('a.createAt', '?5'));
-        $this->qb->setParameter(5, $this->criteria['create_at']['end']);
+        $this->qb->setParameter(5, "{$this->criteria['create_at']['end']} 24:00:00");
 
         return $this;
     }
@@ -149,7 +149,7 @@ class AuctionCriteria
         }
 
         $this->qb->andWhere($this->qb->expr()->gte('a.soldAt', '?6'));
-        $this->qb->setParameter(6, $this->criteria['sold_at']['start']);
+        $this->qb->setParameter(6, "{$this->criteria['sold_at']['start']} 00:00:00");
 
         return $this;
     }
@@ -161,7 +161,7 @@ class AuctionCriteria
         }
 
         $this->qb->andWhere($this->qb->expr()->lte('a.soldAt', '?7'));
-        $this->qb->setParameter(7, $this->criteria['sold_at']['end']);
+        $this->qb->setParameter(7, "{$this->criteria['sold_at']['end']} 24:00:00");
 
         return $this;
     }

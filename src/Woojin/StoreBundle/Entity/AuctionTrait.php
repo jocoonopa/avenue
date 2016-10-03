@@ -69,12 +69,20 @@ trait AuctionTrait
 
     public function getStoreProfit()
     {
-        return NULL === $this->price ? '' : floor($this->price * $this->storePercentage);
+        if (NULL === $this->price) {
+            return '';
+        }
+
+        return ($this->price - $this->product->getCost()) * $this->storePercentage;
     }
 
     public function getBsoProfit()
     {
-        return NULL === $this->price ? '' : floor($this->price * $this->bsoPercentage);
+        if (NULL === $this->price) {
+            return '';
+        }
+
+        return ($this->price - $this->product->getCost()) * $this->bsoPercentage;
     }
 
     public function getCreaterName()

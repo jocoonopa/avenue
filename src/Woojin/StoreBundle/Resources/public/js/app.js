@@ -8,7 +8,8 @@ var myApp = angular.module('myApp', [
   'ngSanitize', // for ngBindhtml
   'activityServices',
   'activityCtrl',
-  'auctionCtrl'
+  'auctionCtrl',
+  'AuctionHelper'
 ]);
 
 myApp.config(['$routeProvider', '$httpProvider',
