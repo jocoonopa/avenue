@@ -104,14 +104,15 @@ class BsoProfitExporter implements IExporter
             'L1' => '客戶毛利比',
             'M1' => '門市毛利比',
             'N1' => 'BSO毛利比',
-            'O1' => '客戶分潤',
-            'P1' => '門市分潤',
-            'Q1' => 'BSO分潤',
-            'R1' => '建立時間',
-            'S1' => '建立人員',
-            'T1' => '售出時間',
-            'U1' => '販售操作人員',
-            'V1' => '歷史記錄'
+            'O1' => '客戶分潤(含稅)',
+            'P1' => '客戶分潤(不含稅)',
+            'Q1' => '門市分潤',
+            'R1' => 'BSO分潤',
+            'S1' => '建立時間',
+            'T1' => '建立人員',
+            'U1' => '售出時間',
+            'V1' => '販售操作人員',
+            'W1' => '歷史記錄'
         );
     }
 
@@ -133,13 +134,14 @@ class BsoProfitExporter implements IExporter
             'M' => $auction->getStorePercentage(),
             'N' => $auction->getBsoPercentage(),
             'O' => $auction->getCustomProfit(),
-            'P' => $auction->getStoreProfit(),
-            'Q' => $auction->getBsoProfit(),
-            'R' => $auction->getCreateAt()->format('Y-m-d H:i:s'),
-            'S' => $auction->getCreaterName(),
-            'T' => $auction->getSoldAtString(),
-            'U' => $auction->getBsserName(),
-            'V' => $auction->getMemo(true)
+            'P' => $auction->getCustomProfit(true),
+            'Q' => $auction->getStoreProfit(),
+            'R' => $auction->getBsoProfit(),
+            'S' => $auction->getCreateAt()->format('Y-m-d H:i:s'),
+            'T' => $auction->getCreaterName(),
+            'U' => $auction->getSoldAtString(),
+            'V' => $auction->getBsserName(),
+            'W' => $auction->getMemo(true)
         );
     }
 

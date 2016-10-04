@@ -62,9 +62,13 @@ trait AuctionTrait
         return NULL === $this->buyer ? '' : $this->buyer->getMobil();
     }
 
-    public function getCustomProfit()
+    public function getCustomProfit($isNonTax = true)
     {
-        return NULL === $this->price ? '' : floor($this->price * $this->customPercentage);
+        if (NULL === $this->price) {
+          return '';
+        }
+
+        return true === $isNonTax ? floor($this->price * $this->customPercentage * 0.95) : floor($this->price * $this->customPercentage);
     }
 
     public function getStoreProfit()

@@ -95,6 +95,7 @@ auctionCtrl.controller('AuctionProfitCtrl', ['AuctionHelper', '$scope', '$routeP
         .success(function (res) {
             for (var i = 0; i < res.length; i ++) {
                 res[i].customProfit = $scope.getProfit(res[i].product.cost, res[i].custom_percentage, res[i].price);
+                res[i].customNonTaxProfit = Math.floor(res[i].customProfit * 0.95);
                 res[i].storeProfit = $scope.getProfit(res[i].product.cost, res[i].store_percentage, res[i].price);
                 res[i].bsoProfit = $scope.getProfit(res[i].product.cost, res[i].bso_percentage, res[i].price);
             }

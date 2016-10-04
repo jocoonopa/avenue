@@ -20,13 +20,16 @@
                         <a href ng-click="sortBy('price')">得標價</a>
                     </th>
                     <th>
-                        <a href ng-click="sortBy('customProfit')">客戶潤比</a>
+                        <a href ng-click="sortBy('customProfit')">客戶(含稅)</a>
                     </th>
                     <th>
-                        <a href ng-click="sortBy('storeProfit')">門市潤比</a>
+                        <a href ng-click="sortBy('customProfit')">客戶(不含稅)</a>
                     </th>
                     <th>
-                        <a href ng-click="sortBy('bsoProfit')">BSO潤比</a>
+                        <a href ng-click="sortBy('storeProfit')">門市</a>
+                    </th>
+                    <th>
+                        <a href ng-click="sortBy('bsoProfit')">BSO</a>
                     </th>
                     <th>
                         <a href ng-click="sortBy('sold_at')">售出時間</a>
@@ -52,6 +55,7 @@
                     <td><p class="text-success">{{ auction.buyer.name }}({{ auction.buyer.mobil }})</p></td>
                     <td><p class="text-warning">{{ auction.price }}</p></td>
                     <td><p class="text-info">{{ auction.customProfit }}</p></td>
+                    <td><p class="text-info">{{ auction.customNonTaxProfit }}</p></td>
                     <td><p class="text-info">{{ auction.storeProfit }}</p></td>
                     <td><p class="text-info">{{ auction.bsoProfit }}</p></td>
                     <td>{{ auction.sold_at.substr(0, 10) }}</td>
