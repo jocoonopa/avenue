@@ -45,6 +45,7 @@ class Role implements RoleInterface
     const EDIT_OPE_DATETIME             = 18;
     const EDIT_SEO_SLOGAN               = 55;
     const EDIT_OTHER_HOLIDAY            = 56;
+    const EDIT_ACTIVITY_DISPLAY         = 58;
 
     const HAND_GEN_INVOICE              = 31;
 
@@ -83,7 +84,7 @@ class Role implements RoleInterface
     const USER_SELF_MANAGE              = 46;
     const USER_OWN_MANAGE               = 47;
     const USER_ALL_MANAGE               = 48;
-    
+
     const WEB_ORDER_MANAGE              = 29;
 
     /**
@@ -123,8 +124,8 @@ class Role implements RoleInterface
     /**
      * 判斷是否擁有權限
      *
-     * @param  string 
-     * @return boolean      
+     * @param  string
+     * @return boolean
      */
     public function hasAuth($str)
     {
@@ -141,13 +142,13 @@ class Role implements RoleInterface
     public function setRole($role)
     {
         $this->role = $role;
-    
+
         return $this;
     }
 
     /**
      * 開發者自行新增之方法
-     * 
+     *
      * @return \Woojin\UserBundle\Entity\User $user
      */
     public function getUsers()
@@ -158,7 +159,7 @@ class Role implements RoleInterface
             if (!$iterator->current()->getIsActive() || $iterator->current()->getId() === Avenue::WEB_CHIEF) {
                 $this->user->removeElement($iterator->current());
             }
-            
+
             $iterator->next();
         }
 
@@ -178,7 +179,7 @@ class Role implements RoleInterface
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -194,14 +195,14 @@ class Role implements RoleInterface
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -217,7 +218,7 @@ class Role implements RoleInterface
     public function addUser(\Woojin\UserBundle\Entity\User $user)
     {
         $this->user[] = $user;
-    
+
         return $this;
     }
 
@@ -234,7 +235,7 @@ class Role implements RoleInterface
     /**
      * Get user
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUser()
     {
@@ -250,14 +251,14 @@ class Role implements RoleInterface
     public function setChmod($chmod)
     {
         $this->chmod = $chmod;
-    
+
         return $this;
     }
 
     /**
      * Get chmod
      *
-     * @return string 
+     * @return string
      */
     public function getChmod()
     {

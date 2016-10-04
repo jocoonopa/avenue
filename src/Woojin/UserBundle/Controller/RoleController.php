@@ -14,14 +14,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class RoleController extends Controller
-{ 
+{
     /**
     * @Route("/role", name="admin_role_index", options={"expose"=true})
     * @Template("WoojinUserBundle:Role:index.html.twig")
     * @Method("GET")
     */
     public function indexAction()
-    {   
+    {
         $em = $this->getDoctrine()->getManager();
 
         $roles = $em->getRepository('WoojinUserBundle:Role')->findBy(array(), array('chmod' => 'DESC'));
@@ -36,7 +36,7 @@ class RoleController extends Controller
     * @Method("GET")
     */
     public function editAction(Role $role)
-    {   
+    {
         return array(
             'role' => $role,
             'lists' => $this->getList()
@@ -49,7 +49,7 @@ class RoleController extends Controller
     * @Method("PUT")
     */
     public function updateAction(Request $request, Role $role)
-    {   
+    {
         $em = $this->getDoctrine()->getManager();
 
         $lists = $this->getList();
@@ -58,7 +58,7 @@ class RoleController extends Controller
         for ($i = 0; $i <= 53; $i ++) {
             $a[] = null;
         }
-                
+
         foreach ($lists as $key => $list) {
             $a[constant('Woojin\UserBundle\Entity\Role::' . strtoupper($key))] = (int) $request->request->get(strtolower($key), 0);
         }
@@ -80,7 +80,7 @@ class RoleController extends Controller
     * @Method("GET")
     */
     public function newAction()
-    {   
+    {
         return array('lists' => $this->getList());
     }
 
@@ -89,7 +89,7 @@ class RoleController extends Controller
     * @Method("POST")
     */
     public function addAction(Request $request)
-    {   
+    {
         $em = $this->getDoctrine()->getManager();
 
         $lists = $this->getList();
@@ -98,7 +98,7 @@ class RoleController extends Controller
         for ($i = 0; $i <= 53; $i ++) {
             $a[] = null;
         }
-        
+
         foreach ($lists as $key => $list) {
             $a[constant('Woojin\UserBundle\Entity\Role::' . strtoupper($key))] = (int) $request->request->get(strtolower($key), 0);
         }
@@ -129,7 +129,7 @@ class RoleController extends Controller
     * @Method("DELETE")
     */
     public function deleteAction(Role $role)
-    {   
+    {
         $em = $this->getDoctrine()->getManager();
         $em->remove($role);
         $em->flush();
@@ -143,17 +143,17 @@ class RoleController extends Controller
     protected function getList()
     {
         return array(
-            'BRAND'                         => '編輯品牌',        
-            'PATTERN'                       => '編輯款式',        
-            'MT'                            => '編輯材質',        
-            'LEVEL'                         => '編輯新舊',        
-            'SOURCE'                        => '編輯來源',        
-            'COLOR'                         => '編輯顏色',        
-            'PAYTYPE'                       => '編輯付費方式',       
+            'BRAND'                         => '編輯品牌',
+            'PATTERN'                       => '編輯款式',
+            'MT'                            => '編輯材質',
+            'LEVEL'                         => '編輯新舊',
+            'SOURCE'                        => '編輯來源',
+            'COLOR'                         => '編輯顏色',
+            'PAYTYPE'                       => '編輯付費方式',
 
-            'EDIT_WEBPRICE_OWN'             => '編輯本店商品網路售價',        
-            'EDIT_WEBPRICE_ALL'             => '編輯所有商品網路售價',        
-            'EDIT_PRICE_OWN'                => '編輯本店商品價格',        
+            'EDIT_WEBPRICE_OWN'             => '編輯本店商品網路售價',
+            'EDIT_WEBPRICE_ALL'             => '編輯所有商品網路售價',
+            'EDIT_PRICE_OWN'                => '編輯本店商品價格',
             'EDIT_PRICE_ALL'                => '編輯所有店商品價格',
             'EDIT_PRODUCT_OWN'              => '編輯本店商品',
             'EDIT_PRODUCT_ALL'              => '編輯所有商品',
@@ -178,6 +178,7 @@ class RoleController extends Controller
             'MULTI_SELL'                    => '多筆銷貨',
             'ACTIVITY_SELL'                 => '活動銷貨',
             'ACTIVITY_MANAGE'               => '活動管理',
+            'EDIT_ACTIVITY_DISPLAY'         => '編輯活動顯示',
             'WEB_ORDER_MANAGE'              => '官網訂單管理',
             'BEHALF_MANAGE'                 => '代購管理',
             'HAND_GEN_INVOICE'              => '手KEY建立銷貨憑證',
@@ -205,6 +206,3 @@ class RoleController extends Controller
         );
     }
 }
-
-
-
