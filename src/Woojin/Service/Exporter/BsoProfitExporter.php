@@ -112,7 +112,9 @@ class BsoProfitExporter implements IExporter
             'T1' => '建立人員',
             'U1' => '售出時間',
             'V1' => '販售操作人員',
-            'W1' => '歷史記錄'
+            'W1' => '銷售時間更新次數',
+            'X1' => '銷售記錄更新次數',
+            'Y1' => '歷史記錄'
         );
     }
 
@@ -141,7 +143,9 @@ class BsoProfitExporter implements IExporter
             'T' => $auction->getCreaterName(),
             'U' => $auction->getSoldAtString(),
             'V' => $auction->getBsserName(),
-            'W' => $auction->getMemo(true)
+            'W' => $auction->getSoldAtUpdateCount(),
+            'X' => $auction->getSoldUpdateCount(),
+            'Y' => $auction->getMemo(true),
         );
     }
 
