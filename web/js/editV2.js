@@ -1,5 +1,5 @@
 var loaded = function () {
-    var oCss = { 
+    var oCss = {
         'border' : 'none',
         'padding' : '15px',
         'backgroundColor' : '#000',
@@ -9,7 +9,7 @@ var loaded = function () {
         'color' : '#fff'
     };
 
-    return $.blockUI({css: oCss, message: '處理中請稍後...'}); 
+    return $.blockUI({css: oCss, message: '處理中請稍後...'});
 };
 
 var goodsApp = function () {
@@ -22,7 +22,7 @@ var goodsApp = function () {
     this.$brand = this.$formGoods.find('select[name="brand"]');
 
     CKEDITOR.replace('description');
-    
+
     this.init();
 };
 
@@ -32,7 +32,7 @@ goodsApp.prototype.init = function () {
 
 goodsApp.prototype.webCrossPrice = function () {
     var self = this;
-    
+
     self.$brand.change(function () {
         self.$webPrice.val(parseInt(self.$goodsPrice.val() * self.$brand.find('option:selected').data('ratio')));
     });
@@ -121,10 +121,10 @@ moveOut.prototype.init = function () {
 moveOut.prototype.move = function () {
     var self = this;
 
-    $.post(Routing.generate('order_backOrder_request'), 
+    $.post(Routing.generate('order_backOrder_request'),
         {
-            nGoodsPassportId: self.$button.data('id'), 
-            sStoreSn: self.$input.val() 
+            nGoodsPassportId: self.$button.data('id'),
+            sStoreSn: self.$input.val()
         })
         .success(function (res) {
             $.unblockUI();
@@ -150,7 +150,7 @@ opeDatetimeUpdate.prototype.init = function () {
     this.$input.datetimepicker({
         dateFormat: 'yy-mm-dd',
         timeFormat: 'hh:mm:ss',
-        onSelect: function () { 
+        onSelect: function () {
             $this = $(this);
             loaded();
             self.update($this);
@@ -194,7 +194,7 @@ imgHtmlReader.prototype.init = function () {
         reader.onload = function (e) {
             self.$image.attr('src', e.target.result);
         };     
-            
+
         reader.readAsDataURL(file);
     });
 };
@@ -409,4 +409,9 @@ ordersUpdateForm.prototype.setPaid = function () {
 
 $(function () {
     var iGoodsApp = new goodsApp();
+
+    $('#auction_sold_at').find('input[name="sold_at"]').datetimepicker({
+        dateFormat: 'yy-mm-dd',
+        timeFormat: 'hh:mm:ss'
+    });
 });

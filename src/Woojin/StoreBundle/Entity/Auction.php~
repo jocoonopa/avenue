@@ -3,6 +3,7 @@
 namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\Utility\Avenue\Avenue;
 use Woojin\UserBundle\Entity\User;
 
@@ -15,12 +16,14 @@ use Woojin\UserBundle\Entity\User;
  */
 class Auction
 {
-    const STATUS_ONBOARD                    = 0;
-    const STATUS_SOLD                       = 1;
-    const STATUS_PAYED                      = 2;
-    const STATUS_PROFIT_ASSIGN_COMPLETE     = 3;
-    const STATUS_BACK_TO_STORE              = 10;
-    const STATUS_ORDER_CANCEL               = 100;
+    use AuctionTrait;
+
+    const DEFAULT_CUSTOM_PERCENTAGE     = 80;
+    const DEFAULT_STORE_PERCENTAGE      = 50;
+    const STATUS_ONBOARD                = 0;
+    const STATUS_SOLD                   = 1;
+    const STATUS_BACK_TO_STORE          = 10;
+    const STATUS_ORDER_CANCEL           = 0;
 
     protected $options;
 
@@ -144,6 +147,20 @@ class Auction
     protected $memo;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="sau_count", type="integer", nullable=true)
+     */
+    protected $soldAtUpdateCount;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="su_count", type="integer", nullable=true)
+     */
+    protected $soldUpdateCount;
+
+    /**
      * @ORM\PrePersist
      */
     public function autoSetCreateAt()
@@ -191,6 +208,7 @@ class Auction
         return $this
             ->setStatus(Auction::STATUS_SOLD)
             ->setPrice($options['price'])
+            ->setBsser($options['bsser'])
             ->setBuyer($options['buyer'])
             ->setSoldAt($options['soldAt'])
         ;
@@ -198,20 +216,37 @@ class Auction
 
     public function cancel(array $options)
     {
+        $memo = "{$this->getMemo()}{$this->attachCancelMemo($options)}";
+
         return $this
             ->setStatus(self::STATUS_ORDER_CANCEL)
+            ->setPrice(NULL)
+            ->setBuyer(NULL)
             ->setCanceller($options['canceller'])
+            ->setMemo($memo)
         ;
     }
 
-    public function assign()
+    /**
+     * Update soldAt
+     *
+     * @return $this
+     */
+    public function updateSoldAt()
     {
-        return $this;
+
     }
 
-    public function pay()
+    protected function attachSoldAtUpdateMemo()
     {
-        return $this;
+
+    }
+
+    protected function attachCancelMemo(array $options)
+    {
+        $date = new \DateTime();
+
+        return "原售出金額:{$this->getPrice()}，購買人:{$this->getBuyerName()}，手機:{$this->getBuyerMobil()}，{$options['canceller']->getUsername()}於{$date->format('Y-m-d H:i:s')}取消<br/>";
     }
 
     public static function fetchProductStatusId($statusCode)
@@ -219,8 +254,6 @@ class Auction
         $map = array(
             static::STATUS_ONBOARD => Avenue::GS_BSO_ONBOARD,
             static::STATUS_SOLD => Avenue::GS_BSO_SOLD,
-            static::STATUS_PAYED => Avenue::GS_BSO_SOLD,
-            static::STATUS_PROFIT_ASSIGN_COMPLETE => Avenue::GS_BSO_SOLD,
             static::STATUS_BACK_TO_STORE => Avenue::GS_ONSALE,
             static::STATUS_ORDER_CANCEL => Avenue::GS_BSO_ONBOARD
         );
@@ -230,6 +263,31 @@ class Auction
         }
 
         return $map[$statusCode];
+    }
+
+    /**
+     * Calculate the auction percentages for each by passing GoodsPassport entity
+     *
+     * @param  Woojin\GoodsBundle\Entity\GoodsPassport $product
+     * @return array $percentages
+     */
+    public static function calculatePercentage(GoodsPassport $product)
+    {
+        $stages = array();
+        $percentages = array();
+
+        $stages[] = NULL === $product->getCustom() || false === $product->getIsAllowAuction() ? 0 : $product->getBsoCustomPercentage();
+        $stages[] = true === $product->getIsAlanIn() ? 0 : self::DEFAULT_STORE_PERCENTAGE;
+
+        $percentages[] = $stages[0];
+        $percentages[] = (100 - $stages[0]) * $stages[1]/100;
+        $percentages[] = 100 - $percentages[0] - $percentages[1];
+
+        foreach ($percentages as $key => $val) {
+            $percentages[$key] = $val/100;
+        }
+
+        return $percentages;
     }
 
     /**
@@ -663,5 +721,29 @@ class Auction
     public function getBsser()
     {
         return $this->bsser;
+    }
+
+    /**
+     * Set memo
+     *
+     * @param string $memo
+     *
+     * @return Auction
+     */
+    public function setMemo($memo)
+    {
+        $this->memo = $memo;
+
+        return $this;
+    }
+
+    /**
+     * Get memo
+     *
+     * @return string
+     */
+    public function getMemo($isBr2n = false)
+    {
+        return true === $isBr2n ? str_replace(['<br>', '<br/>', '<br />'], "\r\n", $this->memo) : $this->memo;
     }
 }

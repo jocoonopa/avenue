@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Woojin\StoreBundle\Entity\Auction;
 
 /**
@@ -17,6 +18,55 @@ use Woojin\StoreBundle\Entity\Auction;
  */
 class AuctionController extends Controller
 {
+    /**
+     * Update Auction sold_at column
+     *
+     * @Route("/sold_at/{id}", name="auction_update_soldat", options={"expose"=true})
+     * @ParamConverter("auction", class="WoojinStoreBundle:Auction")
+     * @Method("PUT")
+     */
+    public function updateSoldAtAction(Auction $auction, Request $request)
+    {
+        if (Auction::STATUS_SOLD !== $auction->getStatus()) {
+            $response = new Response('This auction is not allowed to edit soldAt');
+
+            return $response->setStatusCode(Response::HTTP_FORBIDDEN);
+        }
+        /**
+         * DoctrineManager
+         *
+         * @var \Doctrine\ORM\EntityManager;
+         */
+        $em = $this->getDoctrine()->getManager();
+
+        /**
+         * 目前登入的使用者實體
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        /**
+         * Session
+         *
+         * @var \Symfony\Component\HttpFoundation\Session\Session
+         */
+        $session = $this->get('session');
+
+        try {
+            $auction->updateSoldAt(new \DateTime($request->request->get('sold_at')), $user);
+
+            $em->persist($auction);
+            $em->flush();
+
+            $session->getFlashBag()->add('success', '競拍售出時間更新完成!');
+        } catch (\Exception $e) {
+            $session->getFlashBag()->add('error', $e->getMessage());
+        }
+
+        return $this->redirect($this->generateUrl('goods_edit_v2', array('id' => $auction->getProduct()->getId())));
+    }
+
     /**
      * Export profit excel report
      *

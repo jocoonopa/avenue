@@ -47,7 +47,7 @@
                         <p>{{ printProductName(auction.product.name) }}</p>
                     </td>
                     <td>{{auction.product.org_sn}}</td>
-                    <td>{{ auction.brand.name }}</td>
+                    <td>{{ auction.product.brand.name }}</td>
                     <td><p class="text-primary">{{ auction.create_store.name }}</p></td>
                     <td>
                         <p class="text-muted">{{ auction.seller.name }}({{ auction.seller.mobil }})</p>
@@ -61,7 +61,11 @@
                     <td>{{ auction.sold_at.substr(0, 10) }}</td>
                     <td>{{ auction.create_at.substr(0, 10) }}</td>
                     <td>
-                        <button class="btn btn-xs btn-info" ng-show="0 < auction.memo.length" ng-click="auction.isAu = !auction.isAu">點我查看歷史紀錄</button>
+                        <button class="btn btn-xs btn-info" ng-show="0 < auction.memo.length" ng-click="auction.isAu = !auction.isAu">
+                            <span class="text-danger" ng-show="1 < auction.sold_update_count">{{auction.sold_update_count}}</span>
+                            查看歷程
+                            <span class="text-warning" ng-show="1 < auction.sold_at_update_count">{{auction.sold_at_update_count}}</span>
+                        </button>
                         <div class="well" ng-show="auction.isAu" style="text-align: left;" ng-bind-html="auction.memo"></div>
                     </td>
                 </tr>

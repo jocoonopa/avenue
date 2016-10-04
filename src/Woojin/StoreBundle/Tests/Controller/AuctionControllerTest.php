@@ -16,10 +16,23 @@ class AuctionControllerTest extends AuthControllerTest
         $this->withHash();
     }
 
+    public function testUpdateSoldAtAction()
+    {
+        $crawler = $this->client->request('POST', '/admin/auction/sold_at/26', array('_method' => 'PUT', 'sold_at' => '2016-10-10 00:00:00'));
+
+        $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+
+        $crawler = $this->client->request('POST', '/admin/auction/sold_at/999999', array('_method' => 'PUT', 'sold_at' => '2016-10-10 00:00:00'));
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+
+        $crawler = $this->client->request('POST', '/admin/auction/sold_at/25', array('_method' => 'PUT', 'sold_at' => '2016-10-10 00:00:00'));
+        $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+    }
+
     protected function withoutHash()
     {
         $crawler = $this->client->request('GET', '/admin/auction');
-        
+
         $this->assertContains('Redirecting', $this->client->getResponse()->getContent());
         $this->assertEquals(Response::HTTP_MOVED_PERMANENTLY, $this->client->getResponse()->getStatusCode());
         $this->assertTrue($this->client->getResponse()->isRedirect());

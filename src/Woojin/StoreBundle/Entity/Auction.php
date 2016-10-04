@@ -147,6 +147,20 @@ class Auction
     protected $memo;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="sau_count", type="integer", nullable=true)
+     */
+    protected $soldAtUpdateCount;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="su_count", type="integer", nullable=true)
+     */
+    protected $soldUpdateCount;
+
+    /**
      * @ORM\PrePersist
      */
     public function autoSetCreateAt()
@@ -197,6 +211,7 @@ class Auction
             ->setBsser($options['bsser'])
             ->setBuyer($options['buyer'])
             ->setSoldAt($options['soldAt'])
+            ->patchSoldUpdateCount()
         ;
     }
 
@@ -211,6 +226,29 @@ class Auction
             ->setCanceller($options['canceller'])
             ->setMemo($memo)
         ;
+    }
+
+    /**
+     * Update soldAt
+     *
+     * @return $this
+     */
+    public function updateSoldAt(\DateTime $newDate, User $user)
+    {
+        $memo = "{$this->getMemo()}{$this->attachSoldAtUpdateMemo($newDate, $user)}";
+
+        return $this
+            ->setMemo($memo)
+            ->setSoldAt($newDate)
+            ->patchSoldAtUpdateCount()
+        ;
+    }
+
+    protected function attachSoldAtUpdateMemo(\DateTime $newDate, User $user)
+    {
+        $date = new \DateTime();
+
+        return "原售出時間:{$this->getSoldAtString()}，由{$user->getUsername()}於{$date->format('Y-m-d H:i:s')}更新為{$newDate->format('Y-m-d H:i:s')}<br/>";
     }
 
     protected function attachCancelMemo(array $options)
@@ -716,5 +754,67 @@ class Auction
     public function getMemo($isBr2n = false)
     {
         return true === $isBr2n ? str_replace(['<br>', '<br/>', '<br />'], "\r\n", $this->memo) : $this->memo;
+    }
+
+    /**
+     * Set soldAtUpdateCount
+     *
+     * @param integer $soldAtUpdateCount
+     *
+     * @return Auction
+     */
+    public function setSoldAtUpdateCount($soldAtUpdateCount)
+    {
+        $this->soldAtUpdateCount = $soldAtUpdateCount;
+
+        return $this;
+    }
+
+    /**
+     * Get soldAtUpdateCount
+     *
+     * @return integer
+     */
+    public function getSoldAtUpdateCount()
+    {
+        return $this->soldAtUpdateCount;
+    }
+
+    public function patchSoldAtUpdateCount()
+    {
+        $this->soldAtUpdateCount = (NULL === $this->soldAtUpdateCount ? 0 : $this->soldAtUpdateCount) + 1;
+
+        return $this;
+    }
+
+    /**
+     * Set soldUpdateCount
+     *
+     * @param integer $soldUpdateCount
+     *
+     * @return Auction
+     */
+    public function setSoldUpdateCount($soldUpdateCount)
+    {
+        $this->soldUpdateCount = $soldUpdateCount;
+
+        return $this;
+    }
+
+    /**
+     * Get soldUpdateCount
+     *
+     * @return integer
+     */
+    public function getSoldUpdateCount()
+    {
+        return $this->soldUpdateCount;
+    }
+
+    public function patchSoldUpdateCount()
+    {
+        $this->soldUpdateCount = (NULL === $this->soldUpdateCount ? 0 : $this->soldUpdateCount) + 1;
+
+        return $this;
     }
 }

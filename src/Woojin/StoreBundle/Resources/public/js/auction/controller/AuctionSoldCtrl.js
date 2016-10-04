@@ -201,6 +201,6 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
     };
 
     $scope.isCustomFormValid = function (custom) {
-      return custom.mobil && custom.name && 5 < custom.mobil.length && 1 < custom.name.length;
+      return custom.mobil && custom.name && 4 < custom.mobil.length && 1 < custom.name.length;
     };
 }]);
