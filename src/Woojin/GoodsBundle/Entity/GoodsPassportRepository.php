@@ -123,7 +123,14 @@ class GoodsPassportRepository extends EntityRepository
                         $qb->expr()->substring('g.sn', 1, 1),
                         $qb->expr()->literal($user->getStore()->getSn())
                     ),
-                    $qb->expr()->in('g.status', array(Avenue::GS_SOLDOUT, Avenue::GS_BSO_SOLD)),
+                    $qb->expr()->orX(
+                        $qb->expr()->eq('g.status', Avenue::GS_SOLDOUT),
+                        $qb->expr()->andX(
+                            // BSO競拍售出且當初沒有勾選允許競拍，表示需要回給客戶寄賣回扣 
+                            $qb->expr()->eq('g.status', Avenue::GS_BSO_SOLD),
+                            $qb->expr()->neq('g.isAllowAuction', true)
+                        )
+                    ),
                     $qb->expr()->isNotNull('g.custom'),
                     $qb->expr()->eq('o.status', Avenue::OS_HANDLING),
                     $qb->expr()->eq('o.kind', Avenue::OK_FEEDBACK)

@@ -603,9 +603,13 @@ class GoodsPassport
     /**
      * 取得該商品最後身分
      */
-    public function getCurrent()
+    public function getCurrent($index = NULL)
     {
-        return ($this->inherits[(count($this->inherits) - 1)]);
+        $index = (NULL === $index) ? count($this->inherits) - 1 : $index;
+
+        $cursor = $this->inherits[$index];
+
+        return Avenue::GS_OTHERSTORE === $cursor->getStatus()->getId() ? $this->getCurrent($index - 1) : $cursor;
     }
 
     /**
