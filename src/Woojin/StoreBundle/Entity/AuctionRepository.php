@@ -60,7 +60,15 @@ class AuctionRepository extends \Doctrine\ORM\EntityRepository
 
         $res = $qb->select('auction')
             ->from('WoojinStoreBundle:Auction', 'auction')
-            ->where($qb->expr()->eq('auction.product', $product->getId()))
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->in('auction.status', array(
+                        Auction::STATUS_ONBOARD,
+                        Auction::STATUS_SOLD
+                    )),
+                    $qb->expr()->eq('auction.product', $product->getId())
+                )
+            )
             ->orderBy('auction.id', 'DESC')
             ->getQuery()
             ->getResult()
