@@ -6,6 +6,7 @@ var myApp = angular.module('myApp', [
   'ngRoute',
   'ngAnimate',
   'ngSanitize', // for ngBindhtml
+  'ui.bootstrap',
   'activityServices',
   'activityCtrl',
   'auctionCtrl',
@@ -42,8 +43,13 @@ myApp.config(['$routeProvider', '$httpProvider',
   $httpProvider.responseInterceptors.push('myHttpInterceptor');
 
   var blockUIFunction = function blockUIFunction(data, headersGetter) {
+    if (true === window.noblockUI) {
+      return data;
+    }
+
     $.blockUI({ message: null });
     $('.modal-footer button').prop('disabled', true);
+
     return data;
   };
 

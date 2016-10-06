@@ -18,10 +18,10 @@ class CustomRepository extends EntityRepository
 
     /**
      * 電子信箱 + 密碼驗證客戶，如符合則回傳該客戶實體，不符合回傳 null
-     * 
-     * @param  string $email   
+     *
+     * @param  string $email
      * @param  string $password
-     * @return \Woojin\OrderBundle\Entity\Custom | false       
+     * @return \Woojin\OrderBundle\Entity\Custom | false
      */
     public function findByEmailAndPasswordCheck($email, $password)
     {
@@ -32,9 +32,9 @@ class CustomRepository extends EntityRepository
 
     /**
      * 透過電子信箱查找有無符合的官網客戶，若有則回傳該客戶實體，不符合則回傳 null
-     * 
-     * @param  string $email   
-     * @return \Woojin\OrderBundle\Entity\Custom | false       
+     *
+     * @param  string $email
+     * @return \Woojin\OrderBundle\Entity\Custom | false
      */
     public function findByEmailFromWebsite($email)
     {
@@ -52,7 +52,7 @@ class CustomRepository extends EntityRepository
      * 透過FBUserNode 找尋客戶
      *
      * @param  object $userNode
-     * @return \Woojin\OrderBundle\Entity\Custom | false   
+     * @return \Woojin\OrderBundle\Entity\Custom | false
      */
     public function findByFaceBookUserNode($userNode)
     {
@@ -84,7 +84,7 @@ class CustomRepository extends EntityRepository
      * 透過GoogleId 找尋客戶
      *
      * @param  array $node
-     * @return \Woojin\OrderBundle\Entity\Custom | false   
+     * @return \Woojin\OrderBundle\Entity\Custom | false
      */
     public function findByGoogleNode(array $node)
     {
@@ -114,8 +114,10 @@ class CustomRepository extends EntityRepository
 
     /**
      * 找尋本店使用該手機號碼的客戶
-     * 
-     * @return \Woojin\OrderBundle\Entity\Custom | null   
+     *
+     * @param  Woojin\UserBundle\Entity\User   $user
+     * @param  string $mobil
+     * @return \Woojin\OrderBundle\Entity\Custom | null
      */
     public function findOwnUseTheMobil(User $user, $mobil)
     {
@@ -137,8 +139,32 @@ class CustomRepository extends EntityRepository
 
         return (NULL === $res) ? NULL : (array_key_exists(0, $res)) ? $res[0] : NULL;
     }
+
+    /**
+     * For the purpose of typeahead
+     *
+     * @param  Woojin\UserBundle\Entity\User   $user
+     * @param  string $mobil
+     * @return array
+     */
+    public function getTypeahead(User $user, $mobil)
+    {
+        $em = $this->getEntityManager();
+
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from('WoojinOrderBundle:Custom', 'c')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->like('c.mobil', '?1'),
+                    $qb->expr()->eq('c.store', $user->getStore()->getId())
+                )
+            )
+        ;
+
+        $qb->setParameter('1', "{$mobil}%");
+
+        return $qb->getQuery()->getResult();
+    }
 }
-
-
-
-

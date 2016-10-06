@@ -1,5 +1,6 @@
 {% verbatim %}
-<h2>BSO銷貨介面 <button class="btn btn-default" ng-click="isAu = !isAu">新增客戶</button>
+<h2>BSO銷貨介面
+    <!-- <button class="btn btn-default" ng-click="isAu = !isAu">新增客戶</button> -->
   <small><a class="pull-right" href="#/auction_profit">前往毛利檢視頁面<i class="glyphicon glyphicon-arrow-right"></i></a></small>
 </h2>
 
@@ -83,7 +84,10 @@
     <div class="input-group">
       <input type="text" class="form-control" placeholder="客戶手機"
         ng-model="customMobil"
+        ng-keyup="isGhostMobil = false"
         ng-enter="sold(productSn, price, customMobil)"
+        typeahead-no-results="00000"
+        typeahead="mobil for mobil in loadCustomsMobils($viewValue)"
       />
       <span class="input-group-btn">
         <button class="btn btn-info" type="button" ng-click="fetchCustom(customMobil)" ng-disabled="isMobilEmpty(customMobil)">
@@ -95,8 +99,11 @@
   </div>
 
   <div class="form-group">
+    <div class="alert alert-danger pull-left" style="width: 100%" ng-show="isGhostMobil">
+        手機號碼 <b>{{customMobil}}</b>無對應客戶，請新增客戶!
+    </div>
     <button type="button" class="btn btn-sm btn-primary pull-left" ng-click="sold(productSn, price, customMobil)"
-      ng-disabled="!isInputValid(price)"
+      ng-disabled="!isInputValid(price, customMobil)"
     >
       <i class="glyphicon glyphicon-send"></i>
         售出

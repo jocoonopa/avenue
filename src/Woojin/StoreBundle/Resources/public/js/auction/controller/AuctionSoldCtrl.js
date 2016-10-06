@@ -23,6 +23,7 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
       "sex": '',
       "birthday": ''
     };
+    $scope.isGhostMobil = false;
     $scope.customHandleResponse = {};
 
     $scope.$watch('showResponse', function(newValue, oldValue) {
@@ -44,14 +45,22 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
       });
     };
 
-    $scope.sold = function (sn, price, mobil) {
-      var data = $.param({
-        sn: sn,
-        mobil: mobil,
-        price: price,
-        _method: 'PUT'
-      });
+    // WTF!??? success and then would make different??????
+    // So suck and stupid....
+    // http://blog.jyootai.com/blog/2015/10/13/angular-success-and-then-method.html
+    $scope.loadCustomsMobils = function (mobil) {
+        window.noblockUI = true;
 
+        return $http.get(Routing.generate('api_auction_custom_typeahead'), {params: { mobil: mobil}}).then(function (response) {
+            window.noblockUI = false;
+            var customs = response.data;
+            return customs.map(function (custom) {
+                return custom.mobil;
+            });
+        });
+    };
+
+    var _sold = function (data) {
       $http.post(Routing.generate('api_sold_auction'), data, $scope.config).success(function (res) {
         $scope.soldResponse = res;
 
@@ -61,6 +70,24 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
           $scope.price = '';
           $scope.productSn = '';
           $scope.customMobil = '';
+        }
+      });
+    };
+
+    $scope.sold = function (sn, price, mobil) {
+      var data = $.param({
+        sn: sn,
+        mobil: mobil,
+        price: price,
+        _method: 'PUT'
+      });
+
+      $http.get(Routing.generate('api_auction_custom_typeahead'), {params: { mobil: mobil}})
+      .success(function (customs) {
+        $scope.isGhostMobil = 0 === customs.length;
+
+        if (false === $scope.isGhostMobil) {
+          return _sold(data);
         }
       });
     };
@@ -79,6 +106,7 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
         $scope.custom = {};
         $scope.customHandleResponse = res;
         $scope.customHandleResponse.optype = 0;
+        $scope.isGhostMobil = false;
       });
     };
 
@@ -188,8 +216,8 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
       return Routing.generate('goods_edit_v2_from_sn', {sn: sn});
     };
 
-    $scope.isInputValid = function (price) {
-      return 0 < parseInt(price);
+    $scope.isInputValid = function (price, mobil) {
+      return 0 < parseInt(price) && 4 < mobil.length;
     };
 
     $scope.isMobilEmpty = function (mobil) {

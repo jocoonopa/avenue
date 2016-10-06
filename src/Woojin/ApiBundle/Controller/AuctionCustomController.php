@@ -322,6 +322,42 @@ class AuctionCustomController extends Controller
     }
 
     /**
+     * @Route(
+     *      "/auction_custom/typeahead/{_format}",
+     *      defaults={"_format"="json"},
+     *      name="api_auction_custom_typeahead",
+     *      options={"expose"=true}
+     *  )
+     * @ApiDoc(
+     *  description="Fetch the customers fit the typeahead",
+     *  filters={
+     *      {"name"="mobil", "dataType"="string"}
+     *  }
+     * )
+     * @Method("GET")
+     */
+    public function typeaheadAction(Request $request, $_format)
+    {
+        /**
+         * DoctrineManager
+         *
+         * @var \Doctrine\ORM\EntityManager;
+         */
+        $em = $this->getDoctrine()->getManager();
+
+        /**
+         * The Current User
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $customs = $em->getRepository('WoojinOrderBundle:Custom')->getTypeahead($user, $request->query->get('mobil'));
+
+        return $this->_getResponse($customs, $_format);
+    }
+
+    /**
      * Provide the validators to listAction
      *
      * @param  array $compose
