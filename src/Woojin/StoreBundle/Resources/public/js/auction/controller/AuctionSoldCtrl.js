@@ -200,6 +200,10 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
       return AuctionHelper.getProfit(cost, perc, price);
     };
 
+    $scope.getSn = function (product) {
+        return AuctionHelper.getExtensibleSn(product);
+    };
+
     $scope.isCustomFormValid = function (custom) {
       return custom.mobil && custom.name && 4 < custom.mobil.length && 1 < custom.name.length;
     };

@@ -69,6 +69,10 @@ auctionCtrl.controller('AuctionProfitCtrl', ['AuctionHelper', '$scope', '$routeP
         return AuctionHelper.getProfit(cost, perc, price);
     };
 
+    $scope.getSn = function (product) {
+        return AuctionHelper.getExtensibleSn(product);
+    };
+
     $scope.sortBy = function(propertyName) {
         $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
         $scope.propertyName = propertyName;

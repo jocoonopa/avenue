@@ -24,8 +24,14 @@
   </div>
   <table class="table table-striped" ng-show="isActSuccess(returnObj.status)">
     <tr>
+      <td>圖片</td>
+      <td>
+        <img class="img-circle" ng-src="{{returnObj.auction.product.img.path}}">
+      </td>
+    </tr>
+    <tr>
       <td>產編</td>
-      <td>{{ returnObj.auction.product.sn }}</td>
+      <td>{{ getSn(returnObj.auction.product) }}</td>
     </tr>
     <tr>
       <td>品名</td>

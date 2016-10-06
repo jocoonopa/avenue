@@ -21,12 +21,17 @@
   <div class="panel-heading">
     <h3 class="panel-title">
       <a class="text-info" href="{{ genProductUrl(soldResponse.auction.product.sn) }}" target="_blank">
-        {{ soldResponse.auction.product.sn }}
+        {{ getSn(soldResponse.auction.product) }}
       </a>
       競拍售出完成
     </h3>
   </div>
   <div class="panel-body">
+    <div class="row">
+      <div class="col-md-12">
+        <img class="img-circle" ng-src="{{soldResponse.auction.product.img.path}}">
+      </div>
+    </div>
     <ul class="text-left">
       <li>售價:{{soldResponse.auction.price}}</li>
       <li ng-show="0 === soldResponse.auction.buyer.name">購買人: {{soldResponse.auction.buyer.name}}, {{soldResponse.auction.buyer.mobil}}</li>
@@ -36,7 +41,7 @@
       <li ng-show="0 < soldResponse.auction.store_percentage">門市分配:{{getProfit(soldResponse.auction.product.cost, soldResponse.auction.store_percentage, soldResponse.auction.price)}}</li>
       <li>BSO分配:{{getProfit(soldResponse.auction.product.cost, soldResponse.auction.bso_percentage, soldResponse.auction.price)}}</li>
       <li>售出時間:{{soldResponse.auction.sold_at}}</li>
-      <li ng-bind-html="soldResponse.auction.memo"></li>
+      <li ng-show="0 < soldResponse.auction.memo.length" ng-bind-html="soldResponse.auction.memo"></li>
     </ul>
   </div>
 
@@ -102,9 +107,15 @@
 <br>
 <table class="table table-striped" ng-show="isSuccess(showResponse)">
   <tr>
+    <td>圖片</td>
+    <td>
+      <img class="img-circle" ng-src="{{showResponse.auction.product.img.path}}">
+    </td>
+  </tr>
+  <tr>
     <td>產編</td>
     <td>
-      <a href="{{ genProductUrl(showResponse.auction.product.sn) }}" target="_blank">{{ showResponse.auction.product.sn }}</a>
+      <a href="{{ genProductUrl(showResponse.auction.product.sn) }}" target="_blank">{{ getSn(showResponse.auction.product) }}</a>
     </td>
   </tr>
   <tr>

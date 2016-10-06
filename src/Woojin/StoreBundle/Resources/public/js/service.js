@@ -31,4 +31,12 @@ AuctionHelper.service('AuctionHelper', function () {
     self.getProfit = function (cost, perc, price) {
       return isNaN(price) ? '' : Math.floor(perc * (price - cost));
     };
+
+    self.getExtensibleSn = function (product) {
+      if ('undefined' === typeof product) {
+        return '';
+      }
+
+      return true === product.is_allow_auction && 0 === product.cost ? product.sn + '%' : product.sn;
+    };
 });

@@ -414,4 +414,8 @@ $(function () {
         dateFormat: 'yy-mm-dd',
         timeFormat: 'hh:mm:ss'
     });
+
+    $('#isAllowAuction').change(function() {
+        $('#bso_custom_percentage').prop('readonly', !$(this).prop('checked'));
+    }).change();
 });

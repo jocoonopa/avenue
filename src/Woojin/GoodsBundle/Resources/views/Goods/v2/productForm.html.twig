@@ -95,7 +95,7 @@
         <label class="col-md-2 text-warning">是否為委拍</label>
 
         <div class="col-md-10">
-            <input type="checkbox" name="isAllowAuction" data-id="{{ goods.id }}" value="1"
+            <input type="checkbox" id="isAllowAuction" name="isAllowAuction" data-id="{{ goods.id }}" value="1"
             {% if goods.status.id in [
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
@@ -110,7 +110,7 @@
         <label class="col-md-2">委拍客戶抽成(%)</label>
 
         <div class="col-md-10">
-            <input type="text" name="bso_custom_percentage" class="form-control" value="{{ goods.getBsoCustomPercentage() }}" />
+            <input type="text" id="bso_custom_percentage" name="bso_custom_percentage" class="form-control" value="{{ goods.getBsoCustomPercentage() }}" {% if false == goods.isAllowAuction %}readonly{% endif %} />
         </div>
     </div>
 

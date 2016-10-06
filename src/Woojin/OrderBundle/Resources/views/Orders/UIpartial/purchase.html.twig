@@ -18,12 +18,12 @@ window.phone_length = 10;
 
 	<div>
 		<label class="vader">是否為委拍:</label>
-		<input type="checkbox" name="isAllowAuction" value="1">
+		<input type="checkbox" id="isAllowAuction" name="isAllowAuction" value="1">
 	</div>
 
 	<div>
 		<label class="vader">客戶抽成(%):</label>
-		<input type="number" name="bsoCustomPercentage" value="{{ constant('\\Woojin\\StoreBundle\\Entity\\Auction::DEFAULT_CUSTOM_PERCENTAGE')}}">
+		<input type="number" id="bsoCustomPercentage" name="bsoCustomPercentage" value="{{ constant('\\Woojin\\StoreBundle\\Entity\\Auction::DEFAULT_CUSTOM_PERCENTAGE')}}" readonly>
 	</div>
 
 	<div>
@@ -39,7 +39,7 @@ window.phone_length = 10;
 	<div>
 		<label class="vader" for="sn">*商品序號:</label>
 		<input type="text" id="sn" name="sn" value="{{ app.user.store.sn }}" class="numeric "readonly /><br />
-		<input type="text" id="cost" name="cost" class="numeric" placeholder="成本" /><button id="make-cost-0" type="button" class="btn btn-danger">設置成本為0</button><br />
+		<input type="text" id="cost" name="cost" class="numeric" placeholder="成本" /><button id="make-cost-0" type="button" class="btn btn-danger" disabled>設置成本為0</button><br />
 		<input type="text" id="price" name="price" class="numeric" placeholder="售價" />
 
 	</div>
@@ -779,6 +779,13 @@ $(function () {
 
 $('#make-cost-0').click(function () {
 	$('#cost').val(0);
+});
+
+$('#isAllowAuction').change(function () {
+	var isChecked = true === $(this).prop('checked');
+
+	$('#bsoCustomPercentage').prop('readonly', !isChecked);
+	$('#make-cost-0').prop('disabled', !isChecked);
 });
 </script>
 {% endblock %}

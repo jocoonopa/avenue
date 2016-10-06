@@ -43,7 +43,7 @@
             <tbody>
                 <tr ng-repeat="auction in auctions | orderBy:propertyName:reverse">
                     <td>
-                        <a href="{{genProductUrl(auction.product.sn)}}" target="_blank">{{ auction.product.sn }}</a>
+                        <a href="{{genProductUrl(auction.product.sn)}}" target="_blank">{{ getSn(auction.product) }}</a>
                         <p>{{ printProductName(auction.product.name) }}</p>
                     </td>
                     <td>{{auction.product.org_sn}}</td>

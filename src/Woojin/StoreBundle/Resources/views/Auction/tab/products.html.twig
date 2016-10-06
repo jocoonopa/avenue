@@ -10,7 +10,7 @@
         <tbody>
             <tr ng-repeat="product in products">
                 <td>
-                    <a href="{{genProductUrl(product.sn)}}" class="btn btn-info" target="_blank">{{ product.sn }}</a>
+                    <a href="{{genProductUrl(product.sn)}}" class="btn btn-info" target="_blank">{{ getSn(product) }}</a>
                 </td>
                 <td>{{ product.name }}</td>
             </tr>

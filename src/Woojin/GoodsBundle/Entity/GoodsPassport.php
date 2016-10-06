@@ -721,12 +721,13 @@ class GoodsPassport
     /**
      * Get sn
      *
+     * 成本為0且有勾選委拍
+     *
      * @return string
      */
     public function getSn($isAdvanceCall = false)
     {
-        return true === $isAdvanceCall && in_array($this->status->getId(), array(Avenue::GS_BSO_SOLD, Avenue::GS_BSO_ONBOARD)) ?
-            "{$this->sn}%" : $this->sn;
+        return 0 === $this->cost && true === $this->isAllowAuction ? "{$this->sn}%" : $this->sn;
     }
 
     /**
