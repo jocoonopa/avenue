@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-auctionCtrl.controller('AuctionProfitCtrl', ['AuctionHelper', '$scope', '$routeParams', '$http',
-  function (AuctionHelper, $scope, $routeParams, $http) {
+auctionCtrl.controller('AuctionProfitCtrl', ['UserAuthHelper', 'AuctionHelper', '$scope', '$routeParams', '$http',
+  function (UserAuthHelper, AuctionHelper, $scope, $routeParams, $http) {
     document.title = '競拍毛利檢視';
 
     $scope.config = {
@@ -12,6 +12,7 @@ auctionCtrl.controller('AuctionProfitCtrl', ['AuctionHelper', '$scope', '$routeP
       }
     };
 
+    $scope.roles = {};
     $scope.isAu = true;
     $scope.reverse = true;
     $scope.propertyName = 'create_at';
@@ -46,6 +47,10 @@ auctionCtrl.controller('AuctionProfitCtrl', ['AuctionHelper', '$scope', '$routeP
             }
             $scope.stores = stores;
         });
+
+        UserAuthHelper.getRolelist().then(function (res) {
+            $scope.roles = res;
+        });
     };
 
     /**
@@ -67,6 +72,10 @@ auctionCtrl.controller('AuctionProfitCtrl', ['AuctionHelper', '$scope', '$routeP
 
     $scope.getProfit = function (cost, perc, price) {
         return AuctionHelper.getProfit(cost, perc, price);
+    };
+
+    $scope.hasAuth = function (roleName) {
+        return UserAuthHelper.hasAuth($scope.roles, roleName);
     };
 
     $scope.getSn = function (product) {

@@ -10,6 +10,6 @@ class RoleTest extends \PHPUnit_Framework_TestCase
         $rolelist = Role::getRolelist();
 
         $this->assertTrue(is_array($rolelist));
-        $this->assertSame(59, count($rolelist));
+        $this->assertSame(61, count($rolelist));
     }
 }

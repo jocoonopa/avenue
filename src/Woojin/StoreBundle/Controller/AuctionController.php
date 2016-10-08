@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Woojin\StoreBundle\Entity\Auction;
+use Woojin\UserBundle\Entity\User;
 
 /**
  * Auction controller.
@@ -38,14 +39,12 @@ class AuctionController extends Controller
          * @var \Doctrine\ORM\EntityManager;
          */
         $em = $this->getDoctrine()->getManager();
-
         /**
          * 目前登入的使用者實體
          *
          * @var \Woojin\UserBundle\Entity\User
          */
         $user = $this->get('security.token_storage')->getToken()->getUser();
-
         /**
          * Session
          *
@@ -75,19 +74,35 @@ class AuctionController extends Controller
      */
     public function exportProfitAction(Request $request)
     {
+        /**
+         * 目前登入的使用者實體
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        if (!$user->getRole()->hasAuth('BSO_VIEW_BELONG_PROFIT')) {
+            return $this->createAccessDeniedException('You cannot access this page!');
+        }
+        /**
+         * DoctrineManager
+         *
+         * @var \Doctrine\ORM\EntityManager;
+         */
         $em = $this->getDoctrine()->getManager();
 
-        $auctions = $em->getRepository('WoojinStoreBundle:Auction')->findByCriteria($this->convertCriteria($request->request->all()));
+        $auctions = $em->getRepository('WoojinStoreBundle:Auction')->findByCriteria($this->convertCriteria($request->request->all(), $user));
 
         return $this->get('exporter.bsoprofit')->create($auctions)->getResponse();
     }
 
-    protected function convertCriteria(array $criteria)
+    protected function convertCriteria(array $criteria, User $user)
     {
         $storesStr = array_key_exists('stores_str', $criteria) && !empty($criteria['stores_str']) ? $criteria['stores_str'] : NULL;
         $acStr = array_key_exists('auction_statuses_str', $criteria) && !empty($criteria['auction_statuses_str']) ? $criteria['auction_statuses_str'] : NULL;
 
         $criteria['stores'] = NULL === $storesStr ? array() : explode(',', $storesStr);
+        $criteria['stores'] = $user->getRole()->hasAuth('BSO_VIEW_ALL_PROFIT') ? $criteria['stores'] : $user->getStore()->getId();
         $criteria['auction_statuses'] = NULL === $acStr ? array() : explode(',', $acStr);
 
         return $criteria;

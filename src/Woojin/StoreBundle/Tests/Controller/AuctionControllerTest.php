@@ -29,6 +29,14 @@ class AuctionControllerTest extends AuthControllerTest
         $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
     }
 
+    public function testExportProfitAction()
+    {
+        $crawler = $this->client->request('POST', '/admin/auction/export_profit', array());
+
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
+        $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'text/vnd.ms-excel; charset=utf-8'), $this->client->getResponse()->headers->get('Content-Type'));
+    }
+
     protected function withoutHash()
     {
         $crawler = $this->client->request('GET', '/admin/auction');

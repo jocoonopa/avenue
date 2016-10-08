@@ -10,7 +10,8 @@ var myApp = angular.module('myApp', [
   'activityServices',
   'activityCtrl',
   'auctionCtrl',
-  'AuctionHelper'
+  'AuctionHelper',
+  'UserAuthHelper'
 ]);
 
 myApp.config(['$routeProvider', '$httpProvider',

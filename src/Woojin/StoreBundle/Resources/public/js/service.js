@@ -40,3 +40,18 @@ AuctionHelper.service('AuctionHelper', function () {
       return true === product.is_allow_auction && 0 === product.cost ? product.sn + '%' : product.sn;
     };
 });
+
+var UserAuthHelper = angular.module('UserAuthHelper', ['ngResource']);
+UserAuthHelper.service('UserAuthHelper', ['$http', function ($http) {
+    this.getRolelist = function () {
+        var promise;
+        
+        return !promise ? $http.get(Routing.generate('api_user_rolelist')).then(function (response) {
+            return response.data;
+        }) : promise;
+    };
+
+    this.hasAuth = function (rolelist, authName) {
+        return 1 === parseInt(rolelist[authName]);
+    };
+}]);

@@ -13,7 +13,11 @@
     </button>
 </h2>
 
-<form role="form" class="text-left" method="post">
+<div class="alert alert-warning" ng-show="!hasAuth('BSO_VIEW_BELONG_PROFIT')">
+    您沒有瀏覽此頁面的權限，請經理或老闆協助開啟{檢視本店bso}權限
+</div>
+
+<form role="form" class="text-left" method="post" ng-show="hasAuth('BSO_VIEW_BELONG_PROFIT')">
     <div class="form-group">
         <label for="buyer_mobil">買家客戶手機:</label>
         <input id="buyer_mobil" type="text" class="form-control" name="buyer_mobil" placeholder="0988162330,0915776321,0922111000" ng-model="criteria.buyer_mobil">
@@ -46,7 +50,7 @@
             <i class="glyphicon glyphicon-unchecked"></i>
         </button>
     </div>
-    <div class="form-group">
+    <div class="form-group" ng-show="hasAuth('BSO_VIEW_ALL_PROFIT')">
         <label for="stores">來源門市:</label>
         <div class="checkbox" ng-repeat="store in stores">
             <label for="stores_{{store.id}}">

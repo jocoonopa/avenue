@@ -73,8 +73,10 @@ class Role implements RoleInterface
     const EDIT_OTHER_HOLIDAY            = 56;
     const CANCEL_IN_TYPE_ORDER          = 57;
     const EDIT_ACTIVITY_DISPLAY         = 58;
+    const BSO_VIEW_BELONG_PROFIT        = 59;
+    const BSO_VIEW_ALL_PROFIT           = 60;
 
-    protected $map = array(
+    protected static $map = array(
         'BRAND'                         => '編輯品牌',
         'PATTERN'                       => '編輯款式',
         'MT'                            => '編輯材質',
@@ -153,7 +155,9 @@ class Role implements RoleInterface
 
         'BENEFIT_MANAGE'                => '購物金管理',
 
-        'EDIT_SEO_SLOGAN'               => '關鍵字管理'
+        'EDIT_SEO_SLOGAN'               => '關鍵字管理',
+        'BSO_VIEW_BELONG_PROFIT'        => '檢視本店bso',
+        'BSO_VIEW_ALL_PROFIT'           => '檢視所有bso'
     );
 
     public static function getRolelist()
@@ -161,6 +165,11 @@ class Role implements RoleInterface
         $oClass = new \ReflectionClass(__CLASS__);
 
         return $oClass->getConstants();
+    }
+
+    public static function getMap()
+    {
+        return self::$map;
     }
 
     /**
@@ -195,11 +204,6 @@ class Role implements RoleInterface
     public function __construct()
     {
         $this->users = new ArrayCollection();
-    }
-
-    public static function getMap()
-    {
-        return $this->map;
     }
 
     /**

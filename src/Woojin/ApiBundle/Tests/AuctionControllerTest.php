@@ -17,7 +17,7 @@ class AuctionControllerTest extends AuthControllerTest
         $responseArr = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'), $this->client->getResponse()->headers->get('Content-Type'));
-        $this->assertTrue(isset($responseArr[0]['id']), $this->client->getResponse()->headers->get('Content-Type'));
+        $this->assertTrue(isset($responseArr[0]['id']), $this->client->getResponse()->headers->get('Content-Type'), $this->client->getResponse()->getContent());
     }
 
     public function testShowAction()

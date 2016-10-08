@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 use Woojin\StoreBundle\Entity\Store;
+use Woojin\UserBundle\Entity\User;
 use Woojin\Utility\Avenue\Avenue;
 use Woojin\Utility\Handler\ResponseHandler;
 
@@ -32,6 +33,10 @@ class AuctionController extends Controller
          */
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
+        if (!$user->getRole()->hasAuth('BSO_VIEW_BELONG_PROFIT')) {
+            return $this->_getResponse(array(), $_format);
+        }
+
         /**
          * DoctrineManager
          *
@@ -44,7 +49,7 @@ class AuctionController extends Controller
          *
          * @var array
          */
-        $criteria = $request->request->all();
+        $criteria = $this->genCriteria($request, $user);
 
         /**
          * Fetch auctions we would return into response
@@ -391,6 +396,14 @@ class AuctionController extends Controller
                     'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
             ))
         );
+    }
+
+    protected function genCriteria(Request $request, User $user)
+    {
+        $criteria = $request->request->all();
+        $criteria['stores'] = $user->getRole()->hasAuth('BSO_VIEW_ALL_PROFIT') ? $criteria['stores'] : $user->getStore()->getId();
+
+        return $criteria;
     }
 
         /**
