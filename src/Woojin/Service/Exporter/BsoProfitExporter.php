@@ -6,16 +6,19 @@ use Liuggio\ExcelBundle\Factory;
 use PHPExcel_Style_Fill;
 use Woojin\Utility\Avenue\Avenue;
 use Woojin\StoreBundle\Entity\Auction;
+use Woojin\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class BsoProfitExporter implements IExporter
 {
     protected $service;
     protected $excel;
+    protected $user;
 
-    public function __construct(Factory $service)
+    public function __construct(Factory $service, TokenStorage $security)
     {
-        $this->setService($service);
+        $this->setService($service)->setUser($security->getToken()->getUser());
     }
 
     /**
@@ -137,8 +140,8 @@ class BsoProfitExporter implements IExporter
             'N' => $auction->getBsoPercentage(),
             'O' => $auction->getCustomProfit(),
             'P' => $auction->getCustomProfit(true),
-            'Q' => $auction->getStoreProfit(),
-            'R' => $auction->getBsoProfit(),
+            'Q' => $this->hasCostReadAuth() ? $auction->getStoreProfit() : '權限不足',
+            'R' => $this->hasCostReadAuth() ? $auction->getBsoProfit() : '權限不足',
             'S' => $auction->getCreateAt()->format('Y-m-d H:i:s'),
             'T' => $auction->getCreaterName(),
             'U' => $auction->getSoldAtString(),
@@ -147,6 +150,11 @@ class BsoProfitExporter implements IExporter
             'X' => $auction->getSoldUpdateCount(),
             'Y' => $auction->getMemo(true),
         );
+    }
+
+    protected function hasCostReadAuth()
+    {
+        return $this->getUser()->getRole()->hasAuth('READ_COST_OWN');
     }
 
     /**
@@ -173,4 +181,15 @@ class BsoProfitExporter implements IExporter
         return $this;
     }
 
+    protected function setUser(User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
 }

@@ -25,10 +25,10 @@
                     <th>
                         <a href ng-click="sortBy('customProfit')">客戶(不含稅)</a>
                     </th>
-                    <th>
+                    <th ng-show="hasAuth('READ_COST_OWN')">
                         <a href ng-click="sortBy('storeProfit')">門市</a>
                     </th>
-                    <th>
+                    <th ng-show="hasAuth('READ_COST_OWN')">
                         <a href ng-click="sortBy('bsoProfit')">BSO</a>
                     </th>
                     <th>
@@ -56,8 +56,8 @@
                     <td><p class="text-warning">{{ auction.price }}</p></td>
                     <td><p class="text-info">{{ auction.customProfit }}</p></td>
                     <td><p class="text-info">{{ auction.customNonTaxProfit }}</p></td>
-                    <td><p class="text-info">{{ auction.storeProfit }}</p></td>
-                    <td><p class="text-info">{{ auction.bsoProfit }}</p></td>
+                    <td ng-show="hasAuth('READ_COST_OWN')"><p class="text-info">{{ auction.storeProfit }}</p></td>
+                    <td ng-show="hasAuth('READ_COST_OWN')"><p class="text-info">{{ auction.bsoProfit }}</p></td>
                     <td>{{ auction.sold_at.substr(0, 10) }}</td>
                     <td>{{ auction.create_at.substr(0, 10) }}</td>
                     <td>

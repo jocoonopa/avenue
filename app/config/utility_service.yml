@@ -158,7 +158,7 @@ services:
 
     exporter.bsoprofit:
         class: Woojin\Service\Exporter\BsoProfitExporter
-        arguments: ["@phpexcel"]
+        arguments: ["@phpexcel", "@security.token_storage"]
 
     exporter.uitox:
         class: Woojin\Service\Exporter\UitoxExporter
