@@ -212,9 +212,20 @@ class User implements AdvancedUserInterface, \Serializable
         $this->salt = md5(uniqid(null, true));
     }
 
+    public function getRoleH()
+    {
+        $arr = array();
+
+        foreach (Role::getRolelist() as $key => $val) {
+            $arr[$key] = substr($this->getRole()->getChmod(), constant("\Woojin\UserBundle\Entity\Role::{$key}"), 1);
+        }
+
+        return $arr;
+    }
+
     /**
      * 開發者自行新增之方法
-     * 
+     *
      * Get roles
      *
      * @return \Woojin\UserBundle\Entity\Role
@@ -286,7 +297,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -302,7 +313,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function setUsername($username)
     {
     $this->username = $username;
-    
+
     return $this;
     }
 
@@ -315,7 +326,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function setSalt($salt)
     {
     $this->salt = $salt;
-    
+
     return $this;
     }
 
@@ -328,7 +339,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function setPassword($password)
     {
     $this->password = $password;
-    
+
     return $this;
     }
 
@@ -341,14 +352,14 @@ class User implements AdvancedUserInterface, \Serializable
     public function setEmail($email)
     {
     $this->email = $email;
-    
+
     return $this;
     }
 
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -364,14 +375,14 @@ class User implements AdvancedUserInterface, \Serializable
     public function setMobil($mobil)
     {
     $this->mobil = $mobil;
-    
+
     return $this;
     }
 
     /**
      * Get mobil
      *
-     * @return string 
+     * @return string
      */
     public function getMobil()
     {
@@ -387,14 +398,14 @@ class User implements AdvancedUserInterface, \Serializable
     public function setCreatetime($createtime)
     {
     $this->createtime = new \DateTime($createtime);
-    
+
     return $this;
     }
 
     /**
      * Get createtime
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatetime()
     {
@@ -410,14 +421,14 @@ class User implements AdvancedUserInterface, \Serializable
     public function setStoptime($stoptime)
     {
     $this->stoptime = new \DateTime($stoptime);
-    
+
     return $this;
     }
 
     /**
      * Get stoptime
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getStoptime()
     {
@@ -433,14 +444,14 @@ class User implements AdvancedUserInterface, \Serializable
     public function setStoreId($storeId)
     {
     $this->store_id = $storeId;
-    
+
     return $this;
     }
 
     /**
      * Get store_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getStoreId()
     {
@@ -456,14 +467,14 @@ class User implements AdvancedUserInterface, \Serializable
     public function setChmod($chmod)
     {
     $this->chmod = $chmod;
-    
+
     return $this;
     }
 
     /**
      * Get chmod
      *
-     * @return integer 
+     * @return integer
      */
     public function getChmod()
     {
@@ -479,14 +490,14 @@ class User implements AdvancedUserInterface, \Serializable
     public function setIsActive($isActive)
     {
     $this->isActive = $isActive;
-    
+
     return $this;
     }
 
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
@@ -502,7 +513,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function setRoles(\Woojin\UserBundle\Entity\Role $roles = null)
     {
         $this->roles = $roles;
-        
+
         return $this;
     }
 
@@ -515,7 +526,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function setRole(\Woojin\UserBundle\Entity\Role $roles = null)
     {
         $this->roles = $roles;
-        
+
         return $this;
     }
 
@@ -528,7 +539,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addMetaRecord(\Woojin\StoreBundle\Entity\MetaRecord $metaRecord)
     {
     $this->meta_record[] = $metaRecord;
-    
+
     return $this;
     }
 
@@ -545,7 +556,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get meta_record
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getMetaRecord()
     {
@@ -561,7 +572,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addOpe(\Woojin\OrderBundle\Entity\Ope $ope)
     {
     $this->ope[] = $ope;
-    
+
     return $this;
     }
 
@@ -578,7 +589,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get ope
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOpe()
     {
@@ -594,7 +605,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addUsersLog(\Woojin\UserBundle\Entity\UsersLog $usersLog)
     {
     $this->users_log[] = $usersLog;
-    
+
     return $this;
     }
 
@@ -611,7 +622,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get users_log
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsersLog()
     {
@@ -627,7 +638,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addUsersHabit(\Woojin\UserBundle\Entity\UsersHabit $usersHabit)
     {
     $this->users_habit[] = $usersHabit;
-    
+
     return $this;
     }
 
@@ -644,7 +655,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get users_habit
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsersHabit()
     {
@@ -660,14 +671,14 @@ class User implements AdvancedUserInterface, \Serializable
     public function setStore(\Woojin\StoreBundle\Entity\Store $store = null)
     {
     $this->store = $store;
-    
+
     return $this;
     }
 
     /**
      * Get store
      *
-     * @return \Woojin\StoreBundle\Entity\Store 
+     * @return \Woojin\StoreBundle\Entity\Store
      */
     public function getStore()
     {
@@ -713,14 +724,14 @@ class User implements AdvancedUserInterface, \Serializable
     public function setRolesId($rolesId)
     {
         $this->roles_id = $rolesId;
-    
+
         return $this;
     }
 
     /**
      * Get roles_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getRolesId()
     {
@@ -736,7 +747,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addOperationRecord(\Woojin\AgencyBundle\Entity\OperationRecord $operationRecord)
     {
         $this->operation_records[] = $operationRecord;
-    
+
         return $this;
     }
 
@@ -753,7 +764,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get operation_record
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOperationRecords()
     {
@@ -769,7 +780,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addStockTakeRecord(\Woojin\StoreBundle\Entity\StockTakeRecord $stockTakeRecord)
     {
         $this->stock_take_record[] = $stockTakeRecord;
-    
+
         return $this;
     }
 
@@ -786,7 +797,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get stock_take_record
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getStockTakeRecord()
     {
@@ -802,7 +813,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addCatchMove(\Woojin\GoodsBundle\Entity\Move $catchMoves)
     {
         $this->catchMoves[] = $catchMoves;
-    
+
         return $this;
     }
 
@@ -819,7 +830,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get catchMoves
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCatchMoves()
     {
@@ -835,7 +846,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addThrowMove(\Woojin\GoodsBundle\Entity\Move $throwMoves)
     {
         $this->throwMoves[] = $throwMoves;
-    
+
         return $this;
     }
 
@@ -852,7 +863,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get throwMoves
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getThrowMoves()
     {
@@ -868,7 +879,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addCreateMove(\Woojin\GoodsBundle\Entity\Move $createMoves)
     {
         $this->createMoves[] = $createMoves;
-    
+
         return $this;
     }
 
@@ -885,7 +896,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get createMoves
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCreateMoves()
     {
@@ -901,7 +912,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addCloseMove(\Woojin\GoodsBundle\Entity\Move $closeMoves)
     {
         $this->closeMoves[] = $closeMoves;
-    
+
         return $this;
     }
 
@@ -918,7 +929,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get closeMoves
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCloseMoves()
     {
@@ -933,7 +944,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get meta_records
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getMetaRecords()
     {
@@ -943,7 +954,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get opes
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOpes()
     {
@@ -953,7 +964,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get users_logs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsersLogs()
     {
@@ -963,7 +974,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get users_habits
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsersHabits()
     {
@@ -979,7 +990,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addPromotion(\Woojin\GoodsBundle\Entity\Promotion $promotions)
     {
         $this->promotions[] = $promotions;
-    
+
         return $this;
     }
 
@@ -996,7 +1007,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get promotions
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getPromotions()
     {
@@ -1012,7 +1023,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function addBehalf(\Woojin\GoodsBundle\Entity\Behalf $behalfs)
     {
         $this->behalfs[] = $behalfs;
-    
+
         return $this;
     }
 
@@ -1029,7 +1040,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get behalfs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getBehalfs()
     {
@@ -1039,7 +1050,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get behalfs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getClues()
     {
@@ -1049,7 +1060,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get holidays
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getHolidays()
     {

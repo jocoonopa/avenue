@@ -22,7 +22,7 @@ class AvenueClueControllerTest extends WebTestCase
     }
 
     */
-   
+
     public function testEqual()
     {
         $this->assertEquals(1, 1);
