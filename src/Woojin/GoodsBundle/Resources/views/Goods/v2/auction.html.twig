@@ -16,7 +16,6 @@
         </li>
     {% endfor %}
 
-
     <div class="tab-content">
     {% for auction in product.auctions %}
         <div role="tabpanel" class="tab-pane {% if loop.first %}active{% endif %}" id="auction_{{ auction.id }}">
