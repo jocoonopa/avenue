@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Woojin\OrderBundle\Entity;
 
@@ -12,6 +12,13 @@ use JMS\Serializer\Annotation\Exclude;
  */
 class PayType
 {
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\AuctionPayment", mappedBy="payType")
+     * @var AuctionPayments[]
+     */
+    protected $auctionPayments;
+
     /**
      * @Exclude
      * @ORM\OneToMany(targetEntity="Ope", mappedBy="payType")
@@ -49,11 +56,11 @@ class PayType
     {
         $this->orders = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -69,14 +76,14 @@ class PayType
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -92,14 +99,14 @@ class PayType
     public function setDiscount($discount)
     {
         $this->discount = $discount;
-    
+
         return $this;
     }
 
     /**
      * Get discount
      *
-     * @return string 
+     * @return string
      */
     public function getDiscount()
     {
@@ -115,7 +122,7 @@ class PayType
     public function addOrder(\Woojin\OrderBundle\Entity\Orders $orders)
     {
         $this->orders[] = $orders;
-    
+
         return $this;
     }
 
@@ -132,7 +139,7 @@ class PayType
     /**
      * Get orders
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOrders()
     {
@@ -148,7 +155,7 @@ class PayType
     public function addOpe(\Woojin\OrderBundle\Entity\Ope $opes)
     {
         $this->opes[] = $opes;
-    
+
         return $this;
     }
 
@@ -165,7 +172,7 @@ class PayType
     /**
      * Get opes
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOpes()
     {

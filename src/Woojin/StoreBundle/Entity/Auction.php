@@ -3,6 +3,7 @@
 namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Exclude;
 use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\Utility\Avenue\Avenue;
 use Woojin\UserBundle\Entity\User;
@@ -20,12 +21,24 @@ class Auction
 
     const DEFAULT_CUSTOM_PERCENTAGE     = 80;
     const DEFAULT_STORE_PERCENTAGE      = 50;
+
     const STATUS_ONBOARD                = 0;
     const STATUS_SOLD                   = 1;
     const STATUS_BACK_TO_STORE          = 10;
     const STATUS_ORDER_CANCEL           = 0;
 
+    const PROFIT_STATUS_NOT_PAID_YET    = 0;
+    const PROFIT_STATUS_PAY_COMPLETE    = 1;
+    const PROFIT_STATUS_ASSIGN_COMPLETE = 2;
+
     protected $options;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="AuctionPayment", mappedBy="auction")
+     * @var Payments[]
+     */
+    protected $payments;
 
     /**
      * @var integer
@@ -89,6 +102,13 @@ class Auction
      * @ORM\Column(name="status", type="integer")
      */
     private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="profit_status", type="integer")
+     */
+    private $profitStatus;
 
     /**
      * @var integer
@@ -816,5 +836,63 @@ class Auction
         $this->soldUpdateCount = (NULL === $this->soldUpdateCount ? 0 : $this->soldUpdateCount) + 1;
 
         return $this;
+    }
+
+    /**
+     * Set profitStatus
+     *
+     * @param integer $profitStatus
+     *
+     * @return Auction
+     */
+    public function setProfitStatus($profitStatus)
+    {
+        $this->profitStatus = $profitStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get profitStatus
+     *
+     * @return integer
+     */
+    public function getProfitStatus()
+    {
+        return $this->profitStatus;
+    }
+
+    /**
+     * Add payment
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionPayment $payment
+     *
+     * @return Auction
+     */
+    public function addPayment(\Woojin\StoreBundle\Entity\AuctionPayment $payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionPayment $payment
+     */
+    public function removePayment(\Woojin\StoreBundle\Entity\AuctionPayment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
     }
 }

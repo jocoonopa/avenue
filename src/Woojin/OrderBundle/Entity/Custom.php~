@@ -1164,70 +1164,70 @@ class Custom
     }
 
     /**
-     * Add buyAction
+     * Add buyAuction
      *
-     * @param \Woojin\StoreBundle\Entity\Auction $buyAction
+     * @param \Woojin\StoreBundle\Entity\Auction $buyAuction
      *
      * @return Custom
      */
-    public function addBuyAction(\Woojin\StoreBundle\Entity\Auction $buyAction)
+    public function addBuyAuction(\Woojin\StoreBundle\Entity\Auction $buyAuction)
     {
-        $this->buyActions[] = $buyAction;
+        $this->buyAuctions[] = $buyAuction;
 
         return $this;
     }
 
     /**
-     * Remove buyAction
+     * Remove buyAuction
      *
-     * @param \Woojin\StoreBundle\Entity\Auction $buyAction
+     * @param \Woojin\StoreBundle\Entity\Auction $buyAuction
      */
-    public function removeBuyAction(\Woojin\StoreBundle\Entity\Auction $buyAction)
+    public function removeBuyAuction(\Woojin\StoreBundle\Entity\Auction $buyAuction)
     {
-        $this->buyActions->removeElement($buyAction);
+        $this->buyAuctions->removeElement($buyAuction);
     }
 
     /**
-     * Get buyActions
+     * Get buyAuctions
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getBuyActions()
+    public function getBuyAuctions()
     {
-        return $this->buyActions;
+        return $this->buyAuctions;
     }
 
     /**
-     * Add sellAction
+     * Add sellAuction
      *
-     * @param \Woojin\StoreBundle\Entity\Auction $sellAction
+     * @param \Woojin\StoreBundle\Entity\Auction $sellAuction
      *
      * @return Custom
      */
-    public function addSellAction(\Woojin\StoreBundle\Entity\Auction $sellAction)
+    public function addSellAuction(\Woojin\StoreBundle\Entity\Auction $sellAuction)
     {
-        $this->sellActions[] = $sellAction;
+        $this->sellAuctions[] = $sellAuction;
 
         return $this;
     }
 
     /**
-     * Remove sellAction
+     * Remove sellAuction
      *
-     * @param \Woojin\StoreBundle\Entity\Auction $sellAction
+     * @param \Woojin\StoreBundle\Entity\Auction $sellAuction
      */
-    public function removeSellAction(\Woojin\StoreBundle\Entity\Auction $sellAction)
+    public function removeSellAuction(\Woojin\StoreBundle\Entity\Auction $sellAuction)
     {
-        $this->sellActions->removeElement($sellAction);
+        $this->sellAuctions->removeElement($sellAuction);
     }
 
     /**
-     * Get sellActions
+     * Get sellAuctions
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getSellActions()
+    public function getSellAuctions()
     {
-        return $this->sellActions;
+        return $this->sellAuctions;
     }
 }

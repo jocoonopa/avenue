@@ -17,6 +17,20 @@ class User implements AdvancedUserInterface, \Serializable
 {
     /**
      * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\AuctionPayment", mappedBy="creater")
+     * @var createAuctionPayments[]
+     */
+    protected $createAuctionPayments;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\AuctionPayment", mappedBy="canceller")
+     * @var cancelAuctionPayments[]
+     */
+    protected $cancelAuctionPayments;
+
+    /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\Auction", mappedBy="bsser")
      * @var bssAuctions[]
      */
@@ -1249,5 +1263,73 @@ class User implements AdvancedUserInterface, \Serializable
     public function getBssAuctions()
     {
         return $this->bssAuctions;
+    }
+
+    /**
+     * Add createAuctionPayment
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionPayment $createAuctionPayment
+     *
+     * @return User
+     */
+    public function addCreateAuctionPayment(\Woojin\StoreBundle\Entity\AuctionPayment $createAuctionPayment)
+    {
+        $this->createAuctionPayments[] = $createAuctionPayment;
+
+        return $this;
+    }
+
+    /**
+     * Remove createAuctionPayment
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionPayment $createAuctionPayment
+     */
+    public function removeCreateAuctionPayment(\Woojin\StoreBundle\Entity\AuctionPayment $createAuctionPayment)
+    {
+        $this->createAuctionPayments->removeElement($createAuctionPayment);
+    }
+
+    /**
+     * Get createAuctionPayments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCreateAuctionPayments()
+    {
+        return $this->createAuctionPayments;
+    }
+
+    /**
+     * Add cancelAuctionPayment
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionPayment $cancelAuctionPayment
+     *
+     * @return User
+     */
+    public function addCancelAuctionPayment(\Woojin\StoreBundle\Entity\AuctionPayment $cancelAuctionPayment)
+    {
+        $this->cancelAuctionPayments[] = $cancelAuctionPayment;
+
+        return $this;
+    }
+
+    /**
+     * Remove cancelAuctionPayment
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionPayment $cancelAuctionPayment
+     */
+    public function removeCancelAuctionPayment(\Woojin\StoreBundle\Entity\AuctionPayment $cancelAuctionPayment)
+    {
+        $this->cancelAuctionPayments->removeElement($cancelAuctionPayment);
+    }
+
+    /**
+     * Get cancelAuctionPayments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCancelAuctionPayments()
+    {
+        return $this->cancelAuctionPayments;
     }
 }

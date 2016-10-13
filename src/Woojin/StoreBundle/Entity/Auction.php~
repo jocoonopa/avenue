@@ -3,6 +3,7 @@
 namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Exclude;
 use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\Utility\Avenue\Avenue;
 use Woojin\UserBundle\Entity\User;
@@ -20,12 +21,24 @@ class Auction
 
     const DEFAULT_CUSTOM_PERCENTAGE     = 80;
     const DEFAULT_STORE_PERCENTAGE      = 50;
+
     const STATUS_ONBOARD                = 0;
     const STATUS_SOLD                   = 1;
     const STATUS_BACK_TO_STORE          = 10;
     const STATUS_ORDER_CANCEL           = 0;
 
+    const PROFIT_STATUS_NOT_PAID_YET    = 0;
+    const PROFIT_STATUS_PAY_COMPLETE    = 1;
+    const PROFIT_STATUS_ASSIGN_COMPLETE = 2;
+
     protected $options;
+
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="AuctionPayment", mappedBy="auction")
+     * @var Payments[]
+     */
+    protected $payments;
 
     /**
      * @var integer
@@ -89,6 +102,13 @@ class Auction
      * @ORM\Column(name="status", type="integer")
      */
     private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="profit_status", type="integer")
+     */
+    private $profitStatus;
 
     /**
      * @var integer
@@ -211,6 +231,7 @@ class Auction
             ->setBsser($options['bsser'])
             ->setBuyer($options['buyer'])
             ->setSoldAt($options['soldAt'])
+            ->patchSoldUpdateCount()
         ;
     }
 
@@ -232,14 +253,22 @@ class Auction
      *
      * @return $this
      */
-    public function updateSoldAt()
+    public function updateSoldAt(\DateTime $newDate, User $user)
     {
+        $memo = "{$this->getMemo()}{$this->attachSoldAtUpdateMemo($newDate, $user)}";
 
+        return $this
+            ->setMemo($memo)
+            ->setSoldAt($newDate)
+            ->patchSoldAtUpdateCount()
+        ;
     }
 
-    protected function attachSoldAtUpdateMemo()
+    protected function attachSoldAtUpdateMemo(\DateTime $newDate, User $user)
     {
+        $date = new \DateTime();
 
+        return "原售出時間:{$this->getSoldAtString()}，由{$user->getUsername()}於{$date->format('Y-m-d H:i:s')}更新為{$newDate->format('Y-m-d H:i:s')}<br/>";
     }
 
     protected function attachCancelMemo(array $options)
@@ -745,5 +774,67 @@ class Auction
     public function getMemo($isBr2n = false)
     {
         return true === $isBr2n ? str_replace(['<br>', '<br/>', '<br />'], "\r\n", $this->memo) : $this->memo;
+    }
+
+    /**
+     * Set soldAtUpdateCount
+     *
+     * @param integer $soldAtUpdateCount
+     *
+     * @return Auction
+     */
+    public function setSoldAtUpdateCount($soldAtUpdateCount)
+    {
+        $this->soldAtUpdateCount = $soldAtUpdateCount;
+
+        return $this;
+    }
+
+    /**
+     * Get soldAtUpdateCount
+     *
+     * @return integer
+     */
+    public function getSoldAtUpdateCount()
+    {
+        return $this->soldAtUpdateCount;
+    }
+
+    public function patchSoldAtUpdateCount()
+    {
+        $this->soldAtUpdateCount = (NULL === $this->soldAtUpdateCount ? 0 : $this->soldAtUpdateCount) + 1;
+
+        return $this;
+    }
+
+    /**
+     * Set soldUpdateCount
+     *
+     * @param integer $soldUpdateCount
+     *
+     * @return Auction
+     */
+    public function setSoldUpdateCount($soldUpdateCount)
+    {
+        $this->soldUpdateCount = $soldUpdateCount;
+
+        return $this;
+    }
+
+    /**
+     * Get soldUpdateCount
+     *
+     * @return integer
+     */
+    public function getSoldUpdateCount()
+    {
+        return $this->soldUpdateCount;
+    }
+
+    public function patchSoldUpdateCount()
+    {
+        $this->soldUpdateCount = (NULL === $this->soldUpdateCount ? 0 : $this->soldUpdateCount) + 1;
+
+        return $this;
     }
 }
