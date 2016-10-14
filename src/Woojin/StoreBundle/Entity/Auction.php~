@@ -210,6 +210,7 @@ class Auction
         $this->bsoStore             = $options['bsoStore'];
         $this->product              = $options['product'];
         $this->status               = $options['status'];
+        $this->profitStatus         = 0;
         $this->customPercentage     = $options['customPercentage'];
         $this->storePercentage      = $options['storePercentage'];
         $this->bsoPercentage        = $options['bsoPercentage'];
@@ -836,5 +837,63 @@ class Auction
         $this->soldUpdateCount = (NULL === $this->soldUpdateCount ? 0 : $this->soldUpdateCount) + 1;
 
         return $this;
+    }
+
+    /**
+     * Set profitStatus
+     *
+     * @param integer $profitStatus
+     *
+     * @return Auction
+     */
+    public function setProfitStatus($profitStatus)
+    {
+        $this->profitStatus = $profitStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get profitStatus
+     *
+     * @return integer
+     */
+    public function getProfitStatus()
+    {
+        return $this->profitStatus;
+    }
+
+    /**
+     * Add payment
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionPayment $payment
+     *
+     * @return Auction
+     */
+    public function addPayment(\Woojin\StoreBundle\Entity\AuctionPayment $payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionPayment $payment
+     */
+    public function removePayment(\Woojin\StoreBundle\Entity\AuctionPayment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
     }
 }

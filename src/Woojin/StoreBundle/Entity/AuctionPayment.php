@@ -71,6 +71,20 @@ class AuctionPayment
     private $cancelAt;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="memo", type="text", nullable=true)
+     */
+    private $memo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="paid_at", type="datetime")
+     */
+    private $paidAt;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="create_at", type="datetime")
@@ -350,5 +364,53 @@ class AuctionPayment
     public function getCanceller()
     {
         return $this->canceller;
+    }
+
+    /**
+     * Set memo
+     *
+     * @param string $memo
+     *
+     * @return AuctionPayment
+     */
+    public function setMemo($memo)
+    {
+        $this->memo = $memo;
+
+        return $this;
+    }
+
+    /**
+     * Get memo
+     *
+     * @return string
+     */
+    public function getMemo()
+    {
+        return $this->memo;
+    }
+
+    /**
+     * Set paidAt
+     *
+     * @param \DateTime $paidAt
+     *
+     * @return AuctionPayment
+     */
+    public function setPaidAt($paidAt)
+    {
+        $this->paidAt = $paidAt;
+
+        return $this;
+    }
+
+    /**
+     * Get paidAt
+     *
+     * @return \DateTime
+     */
+    public function getPaidAt()
+    {
+        return $this->paidAt;
     }
 }

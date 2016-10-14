@@ -17,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class AuctionCustomController extends Controller
 {
-    use HelperTrait;
+    use AuctionTrait;
 
     /**
      * @Route(

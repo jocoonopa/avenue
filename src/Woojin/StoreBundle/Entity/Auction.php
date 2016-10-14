@@ -210,6 +210,7 @@ class Auction
         $this->bsoStore             = $options['bsoStore'];
         $this->product              = $options['product'];
         $this->status               = $options['status'];
+        $this->profitStatus         = 0;
         $this->customPercentage     = $options['customPercentage'];
         $this->storePercentage      = $options['storePercentage'];
         $this->bsoPercentage        = $options['bsoPercentage'];

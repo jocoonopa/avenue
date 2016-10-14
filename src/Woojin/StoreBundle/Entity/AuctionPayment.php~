@@ -71,6 +71,20 @@ class AuctionPayment
     private $cancelAt;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="memo", type="text", nullable=true)
+     */
+    private $memo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="paid_at", type="datetime")
+     */
+    private $paidAt;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="create_at", type="datetime")
@@ -254,5 +268,125 @@ class AuctionPayment
     public function getUpdateAt()
     {
         return $this->updateAt;
+    }
+
+    /**
+     * Set auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     *
+     * @return AuctionPayment
+     */
+    public function setAuction(\Woojin\StoreBundle\Entity\Auction $auction = null)
+    {
+        $this->auction = $auction;
+
+        return $this;
+    }
+
+    /**
+     * Get auction
+     *
+     * @return \Woojin\StoreBundle\Entity\Auction
+     */
+    public function getAuction()
+    {
+        return $this->auction;
+    }
+
+    /**
+     * Set payType
+     *
+     * @param \Woojin\OrderBundle\Entity\PayType $payType
+     *
+     * @return AuctionPayment
+     */
+    public function setPayType(\Woojin\OrderBundle\Entity\PayType $payType = null)
+    {
+        $this->payType = $payType;
+
+        return $this;
+    }
+
+    /**
+     * Get payType
+     *
+     * @return \Woojin\OrderBundle\Entity\PayType
+     */
+    public function getPayType()
+    {
+        return $this->payType;
+    }
+
+    /**
+     * Set creater
+     *
+     * @param \Woojin\UserBundle\Entity\User $creater
+     *
+     * @return AuctionPayment
+     */
+    public function setCreater(\Woojin\UserBundle\Entity\User $creater = null)
+    {
+        $this->creater = $creater;
+
+        return $this;
+    }
+
+    /**
+     * Get creater
+     *
+     * @return \Woojin\UserBundle\Entity\User
+     */
+    public function getCreater()
+    {
+        return $this->creater;
+    }
+
+    /**
+     * Set canceller
+     *
+     * @param \Woojin\UserBundle\Entity\User $canceller
+     *
+     * @return AuctionPayment
+     */
+    public function setCanceller(\Woojin\UserBundle\Entity\User $canceller = null)
+    {
+        $this->canceller = $canceller;
+
+        return $this;
+    }
+
+    /**
+     * Get canceller
+     *
+     * @return \Woojin\UserBundle\Entity\User
+     */
+    public function getCanceller()
+    {
+        return $this->canceller;
+    }
+
+    /**
+     * Set memo
+     *
+     * @param string $memo
+     *
+     * @return AuctionPayment
+     */
+    public function setMemo($memo)
+    {
+        $this->memo = $memo;
+
+        return $this;
+    }
+
+    /**
+     * Get memo
+     *
+     * @return string
+     */
+    public function getMemo()
+    {
+        return $this->memo;
     }
 }

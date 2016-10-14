@@ -5,7 +5,6 @@ namespace Woojin\ApiBundle\Controller;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -13,12 +12,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 use Woojin\StoreBundle\Entity\Store;
 use Woojin\UserBundle\Entity\User;
-use Woojin\Utility\Avenue\Avenue;
-use Woojin\Utility\Handler\ResponseHandler;
 
 class AuctionController extends Controller
 {
-    use HelperTrait;
+    use AuctionTrait;
+    use AuctionValidaterTrait;
 
     /**
      * @Route("/auction_filter/{_format}", defaults={"_format"="json"}, name="api_list_filter_auction", options={"expose"=true})
@@ -356,48 +354,6 @@ class AuctionController extends Controller
         return array($user, $em, $product);
     }
 
-    /**
-     * Provide the validators to newAction
-     *
-     * @param  array $compose
-     * @return array
-     */
-    protected function getNewActionValidaters(array $compose)
-    {
-        list($user, $product) = $compose;
-
-        return array(
-            'hasFoundProduct' => array(
-                'params' => array($product),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductSnIsNotExist'),
-                    'http_status_code' => Response::HTTP_NOT_FOUND
-            )),
-            'isProductOnSale' => array(
-                'params' => array($product),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductStatusIsNotOnBoard'),
-                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
-            )),
-            'isNotYahooProduct' => array(
-                'params' => array($product),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductIsOnYahooStore'),
-                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
-            )),
-            'isProductBelongStoreUser' => array(
-                'params' => array($user, $product),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductNotBelongToYou'),
-                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
-            ))
-        );
-    }
-
     protected function genCriteria(Request $request, User $user)
     {
         $criteria = $request->request->all();
@@ -406,136 +362,4 @@ class AuctionController extends Controller
         return $criteria;
     }
 
-        /**
-     * Provide the validators to backAction
-     *
-     * @param  array $compose
-     * @return array
-     */
-    protected function getBackActionValidaters(array $compose)
-    {
-        list($product, $auction, $user) = $compose;
-
-        return array(
-            'hasFoundProduct' => array(
-                'params' => array($product),
-                    'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductSnIsNotExist'),
-                    'http_status_code' => Response::HTTP_NOT_FOUND
-                )),
-            'hasFoundAuction' => array(
-                'params' => array($auction),
-                    'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('AuctionNotFound'),
-                    'http_status_code' => Response::HTTP_NOT_FOUND
-                )),
-            'isProductBelongStoreUser' => array(
-                'params' => array($user, $product),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductNotBelongToYou'),
-                    'http_status_code' => Response::HTTP_FORBIDDEN
-                )),
-            'isProductBsoOnBoard' => array(
-                'params' => array($product),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductStatusIsNotBSO'),
-                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
-                ))
-        );
-    }
-
-    /**
-     * Provide the validators to soldAction
-     *
-     * @param  array $compose
-     * @return array
-     */
-    protected function getSoldActionValidaters(array $compose)
-    {
-        list($product, $auction, $user, $custom, $price) = $compose;
-
-        return array(
-            'isPriceValidNumber' => array(
-                'params' => array($price),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('PriceIsNotValid'),
-                    'http_status_code' => Response::HTTP_NOT_ACCEPTABLE
-                )),
-            'hasFoundProduct' => array(
-                'params' => array($product),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductSnIsNotExist'),
-                    'http_status_code' => Response::HTTP_NOT_FOUND
-                )),
-            'hasFoundAuction' => array(
-                'params' => array($auction),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('AuctionNotFound'),
-                    'http_status_code' => Response::HTTP_NOT_FOUND
-                )),
-            'isAuctionBelongGivenUsersStore' => array(
-                'params' => array($user, $auction),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('AuctionNotBelongToYou'),
-                    'http_status_code' => Response::HTTP_FORBIDDEN
-                )),
-            'isProductBsoOnBoard' => array(
-                'params' => array($product),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductStatusIsNotBSO'),
-                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
-                ))
-        );
-    }
-
-    /**
-     * Provide the validators to cancelAction
-     *
-     * @param  array $compose
-     * @return array
-     */
-    protected function getCancelActionValidaters(array $compose)
-    {
-        list($product, $auction, $user) = $compose;
-
-        return array(
-            'hasFoundProduct' => array(
-                'params' => array($product),
-                    'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductSnIsNotExist'),
-                    'http_status_code' => Response::HTTP_NOT_FOUND
-                )),
-            'hasFoundAuction' => array(
-                'params' => array($auction),
-                    'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('AuctionNotFound'),
-                    'http_status_code' => Response::HTTP_NOT_FOUND
-                )),
-            'isAuctionBelongGivenUsersStore' => array(
-                'params' => array($user, $auction),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('AuctionNotBelongToYou'),
-                    'http_status_code' => Response::HTTP_FORBIDDEN
-                )),
-            'isProductBsoSold' => array(
-                'params' => array($product),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductStatusIsNotBsoSold'),
-                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
-                ))
-        );
-    }
 }
