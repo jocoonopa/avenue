@@ -23,7 +23,7 @@ class AuctionPaymentServiceSpec extends ObjectBehavior
     {
         $this->auction = m::mock('\Woojin\StoreBundle\Entity\Auction', [
             'getId' => 1,
-            'getPrice' => static::AUCTION_PRICE,
+            'getOwe' => static::AUCTION_PRICE,
             'getProfitStatus' => Auction::PROFIT_STATUS_NOT_PAID_YET
         ]);
         $this->payType = m::mock('\Woojin\OrderBundle\Entity\PayType', ['getId' => 1, 'getDiscount' => static::DISCOUNT_RATE]);
@@ -40,6 +40,9 @@ class AuctionPaymentServiceSpec extends ObjectBehavior
 
     public function it_can_create_payment_by_given_options()
     {
+        $this->creater->shouldReceive('getStore->getId')->andReturn(static::BSO_STORE_ID);
+        $this->auction->shouldReceive('getBsoStore->getId')->andReturn(static::BSO_STORE_ID);
+
         $options = [
             'auction' => $this->auction,
             'payType' => $this->payType,
@@ -62,8 +65,11 @@ class AuctionPaymentServiceSpec extends ObjectBehavior
         $payment->getMemo()->shouldEqual(NULL);
     }
 
-    public function it_should_check_create_options_in_create()
+    public function it_should_check_amount_is_valid_in_create()
     {
+        $this->creater->shouldReceive('getStore->getId')->andReturn(static::BSO_STORE_ID);
+        $this->auction->shouldReceive('getBsoStore->getId')->andReturn(static::BSO_STORE_ID);
+
         $options_1 = [
             'auction' => $this->auction,
             'payType' => $this->payType,
@@ -113,6 +119,21 @@ class AuctionPaymentServiceSpec extends ObjectBehavior
         $this->shouldThrow('Symfony\Component\OptionsResolver\Exception\InvalidOptionsException')->during('create', array($options_6));
     }
 
+    public function it_should_check_creater_is_allowed_to_create_payment_for_this_auction()
+    {
+        $this->creater->shouldReceive('getStore->getId')->andReturn(999);
+        $this->auction->shouldReceive('getBsoStore->getId')->andReturn(static::BSO_STORE_ID);
+
+        $options = [
+            'auction' => $this->auction,
+            'payType' => $this->payType,
+            'creater' => $this->creater,
+            'amount' => 1000
+        ];
+
+        $this->shouldThrow('Symfony\Component\OptionsResolver\Exception\InvalidOptionsException')->during('create', array($options));
+    }
+
     /**
      * The update log would record at attribute memo
      *
@@ -137,8 +158,8 @@ class AuctionPaymentServiceSpec extends ObjectBehavior
         $payment->getPaidAt()->shouldHaveType('DateTime');
         $payment->getPaidAt()->format('Y-m-d H:i:s')->shouldEqual('2020-12-12 00:00:00');
         $payment->getMemo()->shouldBeString();
-        $payment->getMemo()->shouldStartWith('原付款時間2002-02-02 00:00:00');
-        $payment->getMemo()->shouldEndWith('更新為2020-12-12 00:00:00');
+        $payment->getMemo()->shouldStartWith('原付款時間2002-02-02');
+        $payment->getMemo()->shouldEndWith('更新為2020-12-12<br>');
     }
 
     public function it_validate_updater_when_update_with_options()
@@ -162,6 +183,7 @@ class AuctionPaymentServiceSpec extends ObjectBehavior
         $this->creater->shouldReceive('getStore->getId')->andReturn(static::BSO_STORE_ID);
         $this->payment->shouldReceive('getId')->andReturn(static::PAYMENT_ID);
         $this->payment->shouldReceive('getAuction->getBsoStore->getId')->andReturn(static::BSO_STORE_ID);
+        $this->payment->shouldReceive('getAuction->getProfitStatus')->andReturn(Auction::PROFIT_STATUS_NOT_PAID_YET);
 
         $options = array(
             'canceller' => $this->creater
@@ -180,6 +202,7 @@ class AuctionPaymentServiceSpec extends ObjectBehavior
     {
         $this->creater->shouldReceive('getStore->getId')->andReturn(999);
         $this->payment->shouldReceive('getAuction->getBsoStore->getId')->andReturn(static::BSO_STORE_ID);
+        $this->payment->shouldReceive('getAuction->getProfitStatus')->andReturn(Auction::PROFIT_STATUS_NOT_PAID_YET);
 
         $options = array(
             'canceller' => $this->creater
@@ -190,6 +213,19 @@ class AuctionPaymentServiceSpec extends ObjectBehavior
         $optionsEmpty = array();
 
         $this->shouldThrow('Symfony\Component\OptionsResolver\Exception\MissingOptionsException')->during('drop', array($this->payment, $optionsEmpty));
+    }
+
+    public function it_should_not_allow_drop_if_auction_profit_has_assigned()
+    {
+        $this->creater->shouldReceive('getStore->getId')->andReturn(static::BSO_STORE_ID);
+        $this->payment->shouldReceive('getAuction->getBsoStore->getId')->andReturn(static::BSO_STORE_ID);
+        $this->payment->shouldReceive('getAuction->getProfitStatus')->andReturn(Auction::PROFIT_STATUS_ASSIGN_COMPLETE);
+
+        $options = array(
+            'canceller' => $this->creater
+        );
+
+        $this->shouldThrow('Symfony\Component\OptionsResolver\Exception\InvalidOptionsException')->during('drop', array($this->payment, $options));
     }
 
     public function letGo()

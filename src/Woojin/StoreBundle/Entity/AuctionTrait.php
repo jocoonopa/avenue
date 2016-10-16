@@ -2,8 +2,17 @@
 
 namespace Woojin\StoreBundle\Entity;
 
+use Woojin\Utility\Avenue\ShippingCalculator;
+use Woojin\StoreBundle\Entity\AuctionPayment;
+
+
 trait AuctionTrait
 {
+    public function getShippingCost()
+    {
+        return ShippingCalculator::getCost($this->getPrice());
+    }
+
     public function getProductSn()
     {
         return NULL === $this->product ? '' : $this->product->getSn();
@@ -127,5 +136,22 @@ trait AuctionTrait
         }
 
         return $name;
+    }
+
+    public function getOwe()
+    {
+        $payments = array_filter($this->getPayments()->toArray(), array($this, 'isNotCalcelled'));
+        $price = $this->getPrice();
+
+        foreach ($payments as $payment) {
+            $price -= $payment->getAmount();
+        }
+
+        return $price;
+    }
+
+    protected function isNotCalcelled(AuctionPayment $payment)
+    {
+        return !$payment->getIsCancel();
     }
 }

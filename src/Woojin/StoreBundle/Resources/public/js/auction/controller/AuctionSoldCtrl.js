@@ -49,15 +49,19 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
     // So suck and stupid....
     // http://blog.jyootai.com/blog/2015/10/13/angular-success-and-then-method.html
     $scope.loadCustomsMobils = function (mobil) {
-        window.noblockUI = true;
-
-        return $http.get(Routing.generate('api_auction_custom_typeahead'), {params: { mobil: mobil}}).then(function (response) {
-            window.noblockUI = false;
-            var customs = response.data;
-            return customs.map(function (custom) {
-                return custom.mobil;
-            });
-        });
+        // if (5 > mobil.length || true === window.noblockUI) {
+        //     return;
+        // }
+        //
+        // window.noblockUI = true;
+        //
+        // return $http.get(Routing.generate('api_auction_custom_typeahead'), {params: { mobil: mobil}}).then(function (response) {
+        //     window.noblockUI = false;
+        //     var customs = response.data;
+        //     return customs.map(function (custom) {
+        //         return custom.mobil;
+        //     });
+        // });
     };
 
     var _sold = function (data) {

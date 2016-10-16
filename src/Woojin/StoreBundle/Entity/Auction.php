@@ -147,6 +147,20 @@ class Auction
     private $soldAt;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="paid_complete_at", type="datetime", nullable=true)
+     */
+    private $paidCompleteAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="assign_complete_at", type="datetime", nullable=true)
+     */
+    private $assignCompleteAt;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Woojin\UserBundle\Entity\User", inversedBy="backAuctions")
      */
     private $backer;
@@ -895,5 +909,53 @@ class Auction
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    /**
+     * Set paidCompleteAt
+     *
+     * @param \DateTime $paidCompleteAt
+     *
+     * @return Auction
+     */
+    public function setPaidCompleteAt($paidCompleteAt)
+    {
+        $this->paidCompleteAt = $paidCompleteAt;
+
+        return $this;
+    }
+
+    /**
+     * Get paidCompleteAt
+     *
+     * @return \DateTime
+     */
+    public function getPaidCompleteAt()
+    {
+        return $this->paidCompleteAt;
+    }
+
+    /**
+     * Set assignCompleteAt
+     *
+     * @param \DateTime $assignCompleteAt
+     *
+     * @return Auction
+     */
+    public function setAssignCompleteAt($assignCompleteAt)
+    {
+        $this->assignCompleteAt = $assignCompleteAt;
+
+        return $this;
+    }
+
+    /**
+     * Get assignCompleteAt
+     *
+     * @return \DateTime
+     */
+    public function getAssignCompleteAt()
+    {
+        return $this->assignCompleteAt;
     }
 }

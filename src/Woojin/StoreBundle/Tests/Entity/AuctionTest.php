@@ -5,6 +5,7 @@ namespace Woojin\StoreBundle\Tests\Entity;
 use Mockery as m;
 
 use Woojin\StoreBundle\Entity\Auction;
+use Woojin\Utility\Avenue\ShippingCalculator;
 
 /**
  * It's highly recommended that a functional test only tests the response
@@ -37,6 +38,11 @@ class AuctionTest extends \PHPUnit_Framework_TestCase
         $this->product->shouldReceive('getBsoCustomPercentage')->andReturn(Auction::DEFAULT_CUSTOM_PERCENTAGE);
 
         $this->assertSame(array(0.8, 0.1, 0.1), Auction::calculatePercentage($this->product));
+    }
+
+    public function testGetShippingCost()
+    {
+        $this->assertSame(30, ShippingCalculator::getCost(1000));
     }
 
     public function tearDown()

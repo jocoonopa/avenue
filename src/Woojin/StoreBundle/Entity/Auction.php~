@@ -147,6 +147,20 @@ class Auction
     private $soldAt;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="paid_complete_at", type="datetime", nullable=true)
+     */
+    private $paidCompleteAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="assign_complete_at", type="datetime", nullable=true)
+     */
+    private $assignCompleteAt;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Woojin\UserBundle\Entity\User", inversedBy="backAuctions")
      */
     private $backer;

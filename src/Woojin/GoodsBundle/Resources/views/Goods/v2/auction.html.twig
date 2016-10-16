@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs" role="tablist">
     {% for auction in product.auctions %}
-        <li role="presentation" class="{% if loop.first %}active{% endif %}">
+        <li role="presentation" class="{% if loop.last %}active{% endif %}">
             <a href="#auction_{{ auction.id }}" role="tab" data-toggle="tab">
                 <span class="label
                 {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_ONBOARD') %}
@@ -12,13 +12,20 @@
                 {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_BACK_TO_STORE') %}
                     label-default
                 {% endif %}">{{ auction.getStatusName() }}</span>
+
+                {% if
+                constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET') == auction.profitStatus
+                and auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD')
+                %}
+                <span class="text-muted">尚未付款</span>
+                {% endif %}
             </a>
         </li>
     {% endfor %}
 
     <div class="tab-content">
     {% for auction in product.auctions %}
-        <div role="tabpanel" class="tab-pane {% if loop.first %}active{% endif %}" id="auction_{{ auction.id }}">
+        <div role="tabpanel" class="tab-pane {% if loop.last %}active{% endif %}" id="auction_{{ auction.id }}">
             <div class="row margin-only-left-10">
                 <div class="col-md-12">
                     <div class="panel panel-default">
@@ -37,7 +44,7 @@
                     </div>
 
                     {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD') %}
-                    <div class="panel panel-success">
+                    <div class="panel panel-default">
                         <div class="panel-heading">
                             {{ auction.getBsserName() }}@{{ auction.getSoldAtString() }}售出{{ auction.price }}元
                         </div>
@@ -49,7 +56,6 @@
                                 <li><b>BSO分潤:</b> <span class="text-danger">{{ auction.getBsoProfit() }}</span></li>
                             </ul>
                         </div>
-
 
                         <div class="panel-footer">
                             {% if app.user.store.id == auction.bsoStore.id %}
@@ -79,7 +85,95 @@
                     </div>
                     {% endif %}
 
-                    <div class="panel panel-primary">
+                    {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD') %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            付款相關{% if constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET') == auction.profitStatus %}(尚欠{{auction.getOwe()}}元){% endif %}:
+                        </div>
+
+                        <div class="panel-body">
+                            {% if constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET') == auction.profitStatus %}
+                            <form id="auction_paid_at" action="{{ path('auction_payment_create', {id: auction.id}) }}" method="post">
+                                <div class="form-group">
+                                    <label for="bso_amount">付款金額</label>
+                                    <input type="text" id="bso_amount" name="amount" class="numeric form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="bso_paytype">付款方式</label>
+
+                                    <select id="bso_paytype" name="pay_type" class="form-control">
+                                        {% for payType in payTypes %}
+                                        <option value="{{payType.id}}">{{payType.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="bso_paidat">付款時間</label>
+                                    <input type="datetime" name="paid_at" class="form-control" readonly value="{{ "now"|date('Y-m-d') }}">
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="glyphicon glyphicon-ok"></i>
+                                        確認
+                                    </button>
+                                </div>
+                            </form>
+                            {% endif %}
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>金額</th>
+                                        <th>付款方式</th>
+                                        <th>操作人員</th>
+                                        <th>時間</th>
+                                        <th>記錄</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for payment in auction.payments %}
+                                    <tr {% if true == payment.isCancel %}class="danger"{% endif %}>
+                                        <td>
+                                            {{payment.amount}}
+                                            {% if true == payment.isCancel %}
+                                            <p class="text-warning">
+                                                {{payment.canceller.username}}於{{payment.cancelAt.format('Y-m-d')}}作廢
+                                            </p>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{payment.payType.name}}</td>
+                                        <td>{{payment.creater.username}}</td>
+                                        <td>
+                                            <form class="each_payment" action="{{ path('auction_payment_update', {id: payment.id})}}" method="post">
+                                                <input type="hidden" name="_method" value="put">
+                                                <input type="datetime" name="paid_at" class="form-control" readonly value="{{payment.paidAt.format('Y-m-d')}}">
+                                            </form>
+                                        </td>
+                                        <td>{% autoescape %}{{ payment.memo|raw }}{% endautoescape %}</td>
+                                        <td>
+                                            {% if false == payment.isCancel %}
+                                            <form action="{{ path('auction_payment_drop', {id: payment.id})}}" method="post">
+                                                <input type="hidden" name="_method" value="delete">
+                                                <button type="submit" class="btn btn-danger" onclick="return confirm('確定作廢此付款嗎?');">
+                                                    <i class="glyphicon glyphicon-remove"></i>
+                                                    取消
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="panel panel-default">
                         <div class="panel-heading">歷程:</div>
                         <div class="panel-body">
                             {% autoescape %}{{ auction.memo|raw }}{% endautoescape %}

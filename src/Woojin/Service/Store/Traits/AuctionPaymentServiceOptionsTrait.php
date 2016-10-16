@@ -2,6 +2,7 @@
 
 namespace Woojin\Service\Store\Traits;
 
+use Woojin\StoreBundle\Entity\Auction;
 use Woojin\StoreBundle\Entity\AuctionPayment;
 use Woojin\UserBundle\Entity\User;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,7 +30,7 @@ trait AuctionPaymentServiceOptionsTrait
                 return 0 <= $amount;
             })
             ->setNormalizer('amount', function (Options $options, $value) {
-                if ($options['auction']->getPrice() < $value) {
+                if ($options['auction']->getOwe() < $value) {
                     throw new \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException('Amount cannot larger than auction price!');
                 }
 
@@ -37,6 +38,13 @@ trait AuctionPaymentServiceOptionsTrait
             })
             ->setDefault('orgAmount', function (Options $options) {
                 return (int) ($options['amount'] * $options['payType']->getDiscount());
+            })
+            ->setNormalizer('creater', function (Options $options, $creater) {
+                if ($creater->getStore()->getId() !== $options['auction']->getBsoStore()->getId()) {
+                    throw new \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException('This creater is not allowed to create payment for this auction!');
+                }
+
+                return $creater;
             })
         ;
     }
@@ -63,6 +71,10 @@ trait AuctionPaymentServiceOptionsTrait
             ->setRequired('canceller')
             ->setAllowedTypes('canceller', 'Woojin\UserBundle\Entity\User')
             ->setAllowedValues('canceller', function (User $canceller) use ($payment) {
+                if (Auction::PROFIT_STATUS_ASSIGN_COMPLETE === $payment->getAuction()->getProfitStatus()) {
+                    throw new \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException('This auction deny all payment operations because profit has been assigned!');
+                }
+
                 return $canceller->getStore()->getId() === $payment->getAuction()->getBsoStore()->getId();
             })
         ;

@@ -415,6 +415,18 @@ $(function () {
         timeFormat: 'hh:mm:ss'
     });
 
+    $('#auction_paid_at').find('input[name="paid_at"]').datetimepicker({
+        dateFormat: 'yy-mm-dd',
+        timeFormat: 'hh:mm:ss'
+    });
+
+    $('form.each_payment').find('input[name="paid_at"]').datetimepicker({
+        dateFormat: 'yy-mm-dd',
+        timeFormat: 'hh:mm:ss'
+    }).change(function () {
+        $(this).parent().submit();
+    });
+
     $('#isAllowAuction').change(function() {
         $('#bso_custom_percentage').prop('readonly', !$(this).prop('checked'));
     }).change();
