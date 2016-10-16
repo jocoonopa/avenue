@@ -4,16 +4,17 @@ namespace Woojin\Service\Store;
 
 use Woojin\StoreBundle\Entity\AuctionPayment;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\Options;
 
 class AuctionPaymentService
 {
+    use Traits\AuctionPaymentServiceOptionsTrait;
+
     protected $resolver;
 
     public function create(array $options)
     {
         $this->configureCreateOptions();
-        $this->getResolver()->resolve($options);
+        $options = $this->getResolver()->resolve($options);
 
         $payment = new AuctionPayment;
         $payment
@@ -21,52 +22,40 @@ class AuctionPaymentService
             ->setPayType($options['payType'])
             ->setCreater($options['creater'])
             ->setAmount($options['amount'])
-            ->setOrgAmount((int) ($payment->getAmount() * $payment->getPayType()->getDiscount()))
+            ->setPaidAt($options['paidAt'])
+            ->setOrgAmount($options['orgAmount'])
         ;
-
-        if (array_key_exists('paidAt', $options)) {
-            $payment->setPaidAt($options['paidAt']);
-        }
-
-        if (array_key_exists('memo', $options)) {
-            $payment->setMemo($options['memo']);
-        }
 
         return $payment;
     }
 
-    public function update(array $options)
+    public function update(AuctionPayment $payment, array $options)
     {
-        return new AuctionPayment;
+        $this->configureUpdateOptions($payment);
+
+        $options = $this->getResolver()->resolve($options);
+
+        $payment
+            ->attachUpdatePaidAtMemo($options['updater'], $options['paidAt'])
+            ->setPaidAt($options['paidAt'])
+        ;
+
+        return $payment;
     }
 
-    protected function configureCreateOptions()
+    public function drop(AuctionPayment $payment, array $options)
     {
-        $this->setResolver(new OptionsResolver);
+        $this->configureDropOptions($payment);
 
-        $this->getResolver()
-            ->setDefault('paidAt', new \DateTime)
-            ->setDefault('memo', NULL)
-            ->setRequired('auction')
-            ->setRequired('payType')
-            ->setRequired('creater')
-            ->setRequired('amount')
-            ->setAllowedTypes('auction', 'Woojin\StoreBundle\Entity\Auction')
-            ->setAllowedTypes('payType', 'Woojin\OrderBundle\Entity\payType')
-            ->setAllowedTypes('creater', 'Woojin\UserBundle\Entity\User')
-            ->setAllowedTypes('amount', 'integer')
-            ->setAllowedTypes('paidAt', 'DateTime')
-            ->setAllowedValues('amount', function ($amount) {
-                return 0 <= $amount;
-            })
-            ->setNormalizer('amount', function (Options $options, $value) {
-                if ($options['auction']->getPrice() < $value) {
-                    throw new \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException('Amount cannot larger than auction price!');
-                }
+        $options = $this->getResolver()->resolve($options);
 
-                return $value;
-            })
+        $payment
+            ->setIsCancel(true)
+            ->setCancelAt(new \DateTime)
+            ->setCanceller($options['canceller'])
         ;
+
+        return $payment;
     }
 
     protected function setResolver(OptionsResolver $resolver)

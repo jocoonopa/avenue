@@ -3,6 +3,7 @@
 namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Woojin\UserBundle\Entity\User;
 
 /**
  * AuctionPayment
@@ -115,6 +116,14 @@ class AuctionPayment
         $this->setUpdateAt(new \Datetime());
     }
 
+    public function attachUpdatePaidAtMemo(User $updater, \DateTime $paidAt)
+    {
+        $now = new \DateTime;
+        $attach = "原付款時間{$this->getPaidAt()->format('Y-m-d H:i:s')},{$updater->getUsername()}於{$now->format('Y-m-d H:i:s')}更新為{$paidAt->format('Y-m-d H:i:s')}";
+        $this->memo = "{$this->memo}{$attach}";
+
+        return $this;
+    }
 
     /**
      * Get id
