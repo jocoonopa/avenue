@@ -14,6 +14,8 @@ class AuctionTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
+        $this->user = m::mock('Woojin\UserBundle\Entity\User')->makePartial();
+        $this->auction = m::mock('Woojin\StoreBundle\Entity\Auction')->makePartial();
         $this->product = m::mock('Woojin\GoodsBundle\Entity\GoodsPassport')->makePartial();
     }
 
@@ -43,6 +45,17 @@ class AuctionTest extends \PHPUnit_Framework_TestCase
     public function testGetShippingCost()
     {
         $this->assertSame(30, ShippingCalculator::getCost(1000));
+    }
+
+    public function testIsAllowedEditPayment()
+    {
+        $this->user->shouldReceive('hasAuth')->with('SELL')->once()->andReturn(true);
+        $this->user->shouldReceive('getStore->getId')->once()->andReturn(1);
+        $this->auction->shouldReceive('getStatus')->once()->andReturn(Auction::STATUS_SOLD);
+        $this->auction->shouldReceive('getProfitStatus')->once()->andReturn(Auction::PROFIT_STATUS_NOT_PAID_YET);
+        $this->auction->shouldReceive('getBsoStore->getId')->once()->andReturn(1);
+
+        $this->assertTrue($this->auction->isAllowedEditPayment($this->user));
     }
 
     public function tearDown()

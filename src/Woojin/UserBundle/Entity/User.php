@@ -226,6 +226,17 @@ class User implements AdvancedUserInterface, \Serializable
         $this->salt = md5(uniqid(null, true));
     }
 
+    /**
+     * 判斷是否擁有權限
+     *
+     * @param  string
+     * @return boolean
+     */
+    public function hasAuth($str)
+    {
+        return $this->getRole()->hasAuth($str);
+    }
+
     public function getRoleH()
     {
         $arr = array();

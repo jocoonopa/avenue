@@ -89,4 +89,31 @@ class AuctionRepository extends \Doctrine\ORM\EntityRepository
             ->getResult()
         ;
     }
+
+    public function fetchLatestPaymentByAuction(Auction $auction)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb->select('payment')
+            ->from('WoojinStoreBundle:AuctionPayment', 'payment')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('payment.isCancel', ':isCancel'),
+                    $qb->expr()->eq('payment.auction', ':auctionId')
+                )
+            )
+            ->orderBy('payment.paidAt', 'DESC')
+        ;
+
+        $qb
+            ->setParameter('isCancel', false)
+            ->setParameter('auctionId', $auction->getId())
+        ;
+
+        return $qb->setFirstResult(0)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

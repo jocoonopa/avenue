@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Woojin\StoreBundle\Entity\Auction;
 use Woojin\StoreBundle\Entity\AuctionPayment;
 use Woojin\UserBundle\Entity\User;
+use Woojin\ApiBundle\Controller\HelperTrait;
 
 /**
  * Auction controller.
@@ -20,6 +21,8 @@ use Woojin\UserBundle\Entity\User;
  */
 class AuctionPaymentController extends Controller
 {
+    use HelperTrait;
+
     /**
      * @Route("/auction/{id}", name="auction_payment_create", options={"expose"=true})
      * @ParamConverter("auction", class="WoojinStoreBundle:Auction")
@@ -64,6 +67,10 @@ class AuctionPaymentController extends Controller
          */
         $service = $this->get('auction.payment.service');
 
+        if (!$auction->isAllowedEditPayment($user)) {
+            throw $this->createAccessDeniedException('Not allowed to edit this auction!');
+        }
+
         try {
             $payment = $service->create(array(
                 'auction' => $auction,
@@ -78,55 +85,12 @@ class AuctionPaymentController extends Controller
 
             $session->getFlashBag()->add('success', '競拍付款新增成功!');
         } catch (\Exception $e) {
+            throw $e;
+
             $session->getFlashBag()->add('error', $e->getMessage());
         }
 
         return $this->redirect($this->generateUrl('goods_edit_v2', array('id' => $auction->getProduct()->getId())) . '/#_soldop');
-    }
-
-    /**
-     * @Route("/{id}", name="auction_payment_drop", options={"expose"=true})
-     * @ParamConverter("payment", class="WoojinStoreBundle:AuctionPayment")
-     * @Method("DELETE")
-     */
-    public function dropAction(AuctionPayment $payment)
-    {
-        /**
-         * DoctrineManager
-         *
-         * @var \Doctrine\ORM\EntityManager;
-         */
-        $em = $this->getDoctrine()->getManager();
-        /**
-         * 目前登入的使用者實體
-         *
-         * @var \Woojin\UserBundle\Entity\User
-         */
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        /**
-         * Session
-         *
-         * @var \Symfony\Component\HttpFoundation\Session\Session
-         */
-        $session = $this->get('session');
-        /**
-         * @var \Woojin\Service\Store\AuctionPaymentService
-         */
-        $service = $this->get('auction.payment.service');
-        try {
-            $payment = $service->drop($payment, array(
-                'canceller' => $user
-            ));
-
-            $em->persist($payment);
-            $em->flush();
-
-            $session->getFlashBag()->add('success', '競拍付款取消完成!');
-        } catch (\Exception $e) {
-            $session->getFlashBag()->add('error', $e->getMessage());
-        }
-
-        return $this->redirect($this->generateUrl('goods_edit_v2', array('id' => $payment->getAuction()->getProduct()->getId())) . '/#_soldop');
     }
 
     /**
@@ -163,6 +127,10 @@ class AuctionPaymentController extends Controller
          */
         $paidAt = new \DateTime($request->request->get('paid_at'));
 
+        if (!$payment->getAuction()->isAllowedEditPayment($user) || true === $payment->getIsCancel()) {
+            throw $this->createAccessDeniedException('Not allowed to edit this auction!');
+        }
+
         try {
             $payment = $service->update($payment, array(
                 'updater' => $user,
@@ -173,6 +141,56 @@ class AuctionPaymentController extends Controller
             $em->flush();
 
             $session->getFlashBag()->add('success', '競拍付款時間更新完成!');
+        } catch (\Exception $e) {
+            $session->getFlashBag()->add('error', $e->getMessage());
+        }
+
+        return $this->redirect($this->generateUrl('goods_edit_v2', array('id' => $payment->getAuction()->getProduct()->getId())) . '/#_soldop');
+    }
+
+    /**
+     * @Route("/{id}", name="auction_payment_drop", options={"expose"=true})
+     * @ParamConverter("payment", class="WoojinStoreBundle:AuctionPayment")
+     * @Method("DELETE")
+     */
+    public function dropAction(AuctionPayment $payment)
+    {
+        /**
+         * DoctrineManager
+         *
+         * @var \Doctrine\ORM\EntityManager;
+         */
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * 目前登入的使用者實體
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        /**
+         * Session
+         *
+         * @var \Symfony\Component\HttpFoundation\Session\Session
+         */
+        $session = $this->get('session');
+        /**
+         * @var \Woojin\Service\Store\AuctionPaymentService
+         */
+        $service = $this->get('auction.payment.service');
+
+        if (!$payment->getAuction()->isAllowedEditPayment($user) || true === $payment->getIsCancel()) {
+            throw $this->createAccessDeniedException('Not allowed to edit this auction!');
+        }
+
+        try {
+            $payment = $service->drop($payment, array(
+                'canceller' => $user
+            ));
+
+            $em->persist($payment);
+            $em->flush();
+
+            $session->getFlashBag()->add('success', '競拍付款取消完成!');
         } catch (\Exception $e) {
             $session->getFlashBag()->add('error', $e->getMessage());
         }

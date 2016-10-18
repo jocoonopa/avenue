@@ -34,14 +34,15 @@
                         {% include 'WoojinGoodsBundle:Goods/v2/auction:_soldinfo.html.twig' %}
                     {% endif %}
 
-                    {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD') 
+                    {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD')
                         and auction.profitStatus in [
                             constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET'),
                             constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_PAY_COMPLETE')
                         ]
+                        and app.user|has_auth('SELL')
                     %}
                         {% include 'WoojinGoodsBundle:Goods/v2/auction:_soldop.html.twig' %}
-                        
+
                         {% include 'WoojinGoodsBundle:Goods/v2/auction:_history.html.twig' %}
                     {% endif %}
                 </div>

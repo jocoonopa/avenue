@@ -4,10 +4,36 @@ namespace Woojin\StoreBundle\Entity;
 
 use Woojin\Utility\Avenue\ShippingCalculator;
 use Woojin\StoreBundle\Entity\AuctionPayment;
-
+use Woojin\UserBundle\Entity\User;
 
 trait AuctionTrait
 {
+    /**
+     * 1. 擁有銷貨權限
+     * 2. 競拍狀態為售出
+     * 3. 競拍毛利狀態不為分配完畢
+     * 4. 使用者所屬店和競拍所屬店相同
+     *
+     * @param  User    $user
+     * @return boolean
+     */
+    public function isAllowedEditPayment(User $user)
+    {
+        return $user->hasAuth('SELL')
+            && Auction::STATUS_SOLD === $this->getStatus()
+            && Auction::PROFIT_STATUS_ASSIGN_COMPLETE !== $this->getProfitStatus()
+            && $user->getStore()->getId() === $this->getBsoStore()->getId()
+        ;
+    }
+
+    public function isAllowedEditSoldAt(User $user)
+    {
+        return $user->hasAuth('SELL')
+            && Auction::STATUS_SOLD === $this->getStatus()
+            && $user->getStore()->getId() === $this->getBsoStore()->getId()
+        ;
+    }
+
     public function getProductSn()
     {
         return NULL === $this->product ? '' : $this->product->getSn();

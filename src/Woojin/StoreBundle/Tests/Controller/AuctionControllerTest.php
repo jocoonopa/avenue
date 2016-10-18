@@ -42,7 +42,7 @@ class AuctionControllerTest extends AuthControllerTest
     {
         $crawler = $this->client->request('POST', '/admin/auction/sold_at/26', array('_method' => 'PUT', 'sold_at' => '2016-10-10 00:00:00'));
 
-        $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
 
         $crawler = $this->client->request('POST', '/admin/auction/sold_at/999999', array('_method' => 'PUT', 'sold_at' => '2016-10-10 00:00:00'));
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());

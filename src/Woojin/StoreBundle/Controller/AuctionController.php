@@ -33,26 +33,23 @@ class AuctionController extends Controller
     public function updateShipping(Auction $auction, Request $request)
     {
         /**
-         * DoctrineManager
-         *
-         * @var \Doctrine\ORM\EntityManager;
-         */
-        $em = $this->getDoctrine()->getManager();
-        /**
          * 目前登入的使用者實體
          *
          * @var \Woojin\UserBundle\Entity\User
          */
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        if (!($user->getRole()->hasAuth('SELL')
-            && $auction->getBsoStore()->getId() === $user->getStore()->getId()
-            && Auction::STATUS_SOLD === $auction->getStatus()
-            && Auction::PROFIT_STATUS_ASSIGN_COMPLETE !== $auction->getProfitStatus()
-        )) {
+        if (!$auction->isAllowedEditPayment($user)) {
             throw $this->createAccessDeniedException('You cannot access this page!');
         }
 
+        /**
+         * DoctrineManager
+         *
+         * @var \Doctrine\ORM\EntityManager;
+         */
+        $em = $this->getDoctrine()->getManager();
+        
         try {
             $shipping = $auction->getShipping();
 
@@ -91,7 +88,14 @@ class AuctionController extends Controller
      */
     public function updateSoldAtAction(Auction $auction, Request $request)
     {
-        if (Auction::STATUS_SOLD !== $auction->getStatus()) {
+        /**
+         * 目前登入的使用者實體
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        if (!$auction->isAllowedEditSoldAt($user)) {
             $response = new Response('This auction is not allowed to edit soldAt');
 
             return $response->setStatusCode(Response::HTTP_FORBIDDEN);
@@ -102,12 +106,7 @@ class AuctionController extends Controller
          * @var \Doctrine\ORM\EntityManager;
          */
         $em = $this->getDoctrine()->getManager();
-        /**
-         * 目前登入的使用者實體
-         *
-         * @var \Woojin\UserBundle\Entity\User
-         */
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         /**
          * Session
          *

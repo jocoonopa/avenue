@@ -1,15 +1,18 @@
 <div id="_soldop" class="panel panel-default">
-    {% include 'WoojinGoodsBundle:Goods/v2:flashbag.html.twig' %}
-    
     <div class="panel-heading">
-        付款相關{% if constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET') == auction.profitStatus %}(尚欠{{auction.getOwe()}}元){% endif %}:
+        付款相關:
+    {% if constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET') == auction.profitStatus %}
+        (尚欠{{auction.getOwe()}}元)
+    {% endif %}
+    {% if constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_PAY_COMPLETE') == auction.profitStatus %}
+        (於{{auction.getPaidCompleteAt().format('Y-m-d')}}付清)
+    {% endif %}
     </div>
 
     <div class="panel-body">
+        {% include 'WoojinGoodsBundle:Goods/v2:flashbag.html.twig' %}
         {% if constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET') == auction.profitStatus %}
         <form id="auction_paid_at" action="{{ path('auction_payment_create', {id: auction.id}) }}" method="post">
-            
-
             <div class="form-group">
                 <label for="bso_amount">付款金額</label>
                 <input type="text" id="bso_amount" name="amount" class="numeric form-control" />
@@ -64,15 +67,22 @@
                     <td>{{payment.payType.name}}</td>
                     <td>{{payment.creater.username}}</td>
                     <td>
+                        {% if app.user|has_auth('SELL')
+                         and app.user|has_auth('EDIT_OPE_DATETIME')
+                         and false == payment.isCancel
+                         %}
                         <form class="each_payment" action="{{ path('auction_payment_update', {id: payment.id})}}" method="post">
                             <input type="hidden" name="_method" value="put">
                             <input type="datetime" name="paid_at" class="form-control" readonly value="{{payment.paidAt.format('Y-m-d')}}">
                         </form>
+                        {% else %}
+                        <span class="text-muted">{{payment.paidAt.format('Y-m-d')}}</span>
+                        {% endif %}
                     </td>
                     <td>{% autoescape %}{{ payment.memo|raw }}{% endautoescape %}</td>
                     <td>
                         {% if false == payment.isCancel %}
-                        <form action="{{ path('auction_payment_drop', {id: payment.id})}}" method="post">
+                        <form class="auction_payment_drop" action="{{ path('auction_payment_drop', {id: payment.id})}}" method="post">
                             <input type="hidden" name="_method" value="delete">
                             <button type="submit" class="btn btn-danger" onclick="return confirm('確定作廢此付款嗎?');">
                                 <i class="glyphicon glyphicon-remove"></i>
