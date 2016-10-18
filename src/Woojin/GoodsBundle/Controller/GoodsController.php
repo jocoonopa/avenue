@@ -1859,7 +1859,8 @@ class GoodsController extends Controller
             'storeCategorys' => $storeCategorys,
             'storePayments' => $storePayments,
             'storeShippings' => $storeShippings,
-            'seoSlogans' => $em->getRepository('WoojinGoodsBundle:SeoSlogan')->findAll()
+            'seoSlogans' => $em->getRepository('WoojinGoodsBundle:SeoSlogan')->findAll(),
+            'shippingOptions' => $em->getRepository('WoojinStoreBundle:ShippingOption')->findAll()
         );
     }
 
@@ -1934,7 +1935,8 @@ class GoodsController extends Controller
             'storeCategorys' => $storeCategorys,
             'storePayments' => $storePayments,
             'storeShippings' => $storeShippings,
-            'seoSlogans' => $em->getRepository('WoojinGoodsBundle:SeoSlogan')->findAll()
+            'seoSlogans' => $em->getRepository('WoojinGoodsBundle:SeoSlogan')->findAll(),
+            'shippingOptions' => $em->getRepository('WoojinStoreBundle:ShippingOption')->findAll()
         );
     }
 

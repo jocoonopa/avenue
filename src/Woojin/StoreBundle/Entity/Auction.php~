@@ -35,6 +35,13 @@ class Auction
 
     /**
      * @Exclude
+     * @ORM\OneToOne(targetEntity="AuctionShipping", mappedBy="auction")
+     * @var Shippings[]
+     */
+    protected $shipping;
+
+    /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="AuctionPayment", mappedBy="auction")
      * @var Payments[]
      */
@@ -909,5 +916,53 @@ class Auction
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    /**
+     * Set paidCompleteAt
+     *
+     * @param \DateTime $paidCompleteAt
+     *
+     * @return Auction
+     */
+    public function setPaidCompleteAt($paidCompleteAt)
+    {
+        $this->paidCompleteAt = $paidCompleteAt;
+
+        return $this;
+    }
+
+    /**
+     * Get paidCompleteAt
+     *
+     * @return \DateTime
+     */
+    public function getPaidCompleteAt()
+    {
+        return $this->paidCompleteAt;
+    }
+
+    /**
+     * Set assignCompleteAt
+     *
+     * @param \DateTime $assignCompleteAt
+     *
+     * @return Auction
+     */
+    public function setAssignCompleteAt($assignCompleteAt)
+    {
+        $this->assignCompleteAt = $assignCompleteAt;
+
+        return $this;
+    }
+
+    /**
+     * Get assignCompleteAt
+     *
+     * @return \DateTime
+     */
+    public function getAssignCompleteAt()
+    {
+        return $this->assignCompleteAt;
     }
 }

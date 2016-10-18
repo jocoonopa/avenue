@@ -1,0 +1,44 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+         運費相關:
+    </div>
+
+    <div class="panel-body">
+        <form id="shippingForm" action="{{path('auction_update_shipping', {'id': auction.id})}}" method="post">
+            <div class="form-group">
+                <label for="select-shipping"></label>
+                <select name="shipping" id="select-shipping" class="form-control">
+                    <option value="0" {% if NULL == auction.shipping %}selected{% endif %}>無運費</option>
+
+                    {% for shippingOption in shippingOptions %}
+                        <option value="{{shippingOption.id}}" {% if NULL != auction.shipping and shippingOption.id == auction.shipping.id %}selected{% endif %}>{{shippingOption.description}}{{ '(' ~ shippingOption.cost ~ '元)'}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <div class="response alert alert-success hidden" role="alert">
+                    <button type="button" class="close close-success" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <a href="#" class="alert-link"></a>
+                </div>
+                <div class="response-fail alert alert-danger hidden" role="alert">
+                    <button type="button" class="close close-fail" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <a href="#" class="alert-link"></a>
+                </div>
+            </div>
+
+            {% if auction.shipping %}
+            <div class="form-group">
+                {% autoescape false %}
+                    {{ auction.shipping.memo }}
+                {% endautoescape %}
+            </div>
+            {% endif %}
+            <input type="hidden" name="_method" value="put">
+        </form>
+    </div>
+</div>

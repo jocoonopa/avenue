@@ -1,0 +1,222 @@
+<?php
+
+namespace Woojin\StoreBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Exclude;
+use Woojin\UserBundle\Entity\User;
+use Woojin\StoreBundle\Entity\ShippingOption;
+
+/**
+ * AuctionShipping
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
+ */
+class AuctionShipping
+{
+    /**
+     * @ORM\ManyToOne(targetEntity="ShippingOption", inversedBy="shippings")
+     */
+    protected $option;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Auction", inversedBy="shipping")
+     */
+    private $auction;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var String
+     *
+     * @ORM\Column(name="memo", type="text", nullable=true)
+     */
+    private $memo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="create_at", type="datetime")
+     */
+    private $createAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="update_at", type="datetime")
+     */
+    private $updateAt;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function autoSetCreateAt()
+    {
+        $this->setCreateAt(new \Datetime());
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function autoSetUpdateAt()
+    {
+        $this->setUpdateAt(new \Datetime());
+    }
+
+    public function addMemo(User $user, ShippingOption $shippingOption)
+    {
+        $now = new \DateTime();
+
+        $memo = "{$user->getUsername()}於{$now->format('Y-m-d')}修改運費為{$shippingOption->getDescription()}";
+        $this->memo = "{$this->memo}{$memo}<br>";
+
+        return $this;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set createAt
+     *
+     * @param \DateTime $createAt
+     *
+     * @return AuctionShipping
+     */
+    public function setCreateAt($createAt)
+    {
+        $this->createAt = $createAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createAt
+     *
+     * @return \DateTime
+     */
+    public function getCreateAt()
+    {
+        return $this->createAt;
+    }
+
+    /**
+     * Set updateAt
+     *
+     * @param \DateTime $updateAt
+     *
+     * @return AuctionShipping
+     */
+    public function setUpdateAt($updateAt)
+    {
+        $this->updateAt = $updateAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updateAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdateAt()
+    {
+        return $this->updateAt;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->options = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Set auction
+     *
+     * @param \Woojin\StoreBundle\Entity\Auction $auction
+     *
+     * @return AuctionShipping
+     */
+    public function setAuction(\Woojin\StoreBundle\Entity\Auction $auction = null)
+    {
+        $this->auction = $auction;
+
+        return $this;
+    }
+
+    /**
+     * Get auction
+     *
+     * @return \Woojin\StoreBundle\Entity\Auction
+     */
+    public function getAuction()
+    {
+        return $this->auction;
+    }
+
+    /**
+     * Set option
+     *
+     * @param \Woojin\StoreBundle\Entity\ShippingOption $option
+     *
+     * @return AuctionShipping
+     */
+    public function setOption(\Woojin\StoreBundle\Entity\ShippingOption $option = null)
+    {
+        $this->option = $option;
+
+        return $this;
+    }
+
+    /**
+     * Get option
+     *
+     * @return \Woojin\StoreBundle\Entity\ShippingOption
+     */
+    public function getOption()
+    {
+        return $this->option;
+    }
+
+    /**
+     * Set memo
+     *
+     * @param string $memo
+     *
+     * @return AuctionShipping
+     */
+    public function setMemo($memo)
+    {
+        $this->memo = $memo;
+
+        return $this;
+    }
+
+    /**
+     * Get memo
+     *
+     * @return string
+     */
+    public function getMemo()
+    {
+        return $this->memo;
+    }
+}

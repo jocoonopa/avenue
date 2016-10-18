@@ -1,0 +1,230 @@
+<?php
+
+namespace Woojin\StoreBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Exclude;
+
+/**
+ * ShippingOption
+ *
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="Woojin\StoreBundle\Entity\ShippingOptionRepository")
+ */
+class ShippingOption
+{
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="AuctionShipping", mappedBy="option")
+     */
+    private $shippings;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=100)
+     */
+    private $description;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="upper_thread", type="integer")
+     */
+    private $upperThread;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="lower_thread", type="integer")
+     */
+    private $lowerThread;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="cost", type="integer")
+     */
+    private $cost;
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return ShippingOption
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set upperThread
+     *
+     * @param integer $upperThread
+     *
+     * @return ShippingOption
+     */
+    public function setUpperThread($upperThread)
+    {
+        $this->upperThread = $upperThread;
+
+        return $this;
+    }
+
+    /**
+     * Get upperThread
+     *
+     * @return integer
+     */
+    public function getUpperThread()
+    {
+        return $this->upperThread;
+    }
+
+    /**
+     * Set lowerThread
+     *
+     * @param integer $lowerThread
+     *
+     * @return ShippingOption
+     */
+    public function setLowerThread($lowerThread)
+    {
+        $this->lowerThread = $lowerThread;
+
+        return $this;
+    }
+
+    /**
+     * Get lowerThread
+     *
+     * @return integer
+     */
+    public function getLowerThread()
+    {
+        return $this->lowerThread;
+    }
+
+    /**
+     * Set cost
+     *
+     * @param integer $cost
+     *
+     * @return ShippingOption
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    /**
+     * Get cost
+     *
+     * @return integer
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * Set shipping
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionShipping $shipping
+     *
+     * @return ShippingOption
+     */
+    public function setShipping(\Woojin\StoreBundle\Entity\AuctionShipping $shipping = null)
+    {
+        $this->shipping = $shipping;
+
+        return $this;
+    }
+
+    /**
+     * Get shipping
+     *
+     * @return \Woojin\StoreBundle\Entity\AuctionShipping
+     */
+    public function getShipping()
+    {
+        return $this->shipping;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->shippings = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add shipping
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionShipping $shipping
+     *
+     * @return ShippingOption
+     */
+    public function addShipping(\Woojin\StoreBundle\Entity\AuctionShipping $shipping)
+    {
+        $this->shippings[] = $shipping;
+
+        return $this;
+    }
+
+    /**
+     * Remove shipping
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionShipping $shipping
+     */
+    public function removeShipping(\Woojin\StoreBundle\Entity\AuctionShipping $shipping)
+    {
+        $this->shippings->removeElement($shipping);
+    }
+
+    /**
+     * Get shippings
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getShippings()
+    {
+        return $this->shippings;
+    }
+}

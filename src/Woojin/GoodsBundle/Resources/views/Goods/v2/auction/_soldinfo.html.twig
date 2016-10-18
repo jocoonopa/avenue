@@ -1,0 +1,38 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        {{ auction.getBsserName() }}@{{ auction.getSoldAtString() }}售出{{ auction.price }}元
+    </div>
+    <div class="panel-body">
+        <ul class="list-unstyled">
+            <li><b>買家:</b> {{ auction.getBuyerName()}} <span class="badge">{{ auction.getBuyerMobil}}</span> </li>
+            <li><b>客戶{{ auction.getSellerName() }}{{ auction.getSellerMobil() }}分潤:</b> <span class="text-danger">{{ auction.getCustomProfit() }}</span></li>
+            <li><b>{{auction.getCreateStoreName()}}分潤:</b> <span class="text-danger">{{ auction.getStoreProfit() }}</span></li>
+            <li><b>BSO分潤:</b> <span class="text-danger">{{ auction.getBsoProfit() }}</span></li>
+        </ul>
+    </div>
+
+    <div class="panel-footer">
+        {% if app.user.store.id == auction.bsoStore.id %}
+            <form id="auction_sold_at" action="{{ path('auction_update_soldat', {id: auction.id }) }}" method="POST">
+                <input type="hidden" name="_method" value="PUT" />
+
+                <div class="form-group">
+                    {% if app.user|has_auth('CANCEL_ORDER') and app.user.store.id == auction.bsoStore.id %}
+                    <button id="auction_cancel" data-sn="{{product.sn}}" class="btn btn-danger">
+                        <i class="glyphicon glyphicon-remove-sign"></i>
+                        取消售出
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="datetime" name="sold_at" class="form-control" readonly value="{{ auction.getSoldAtString() }}">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">更改售出時間</button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>

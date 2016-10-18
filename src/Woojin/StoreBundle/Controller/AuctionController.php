@@ -10,7 +10,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Woojin\StoreBundle\Entity\Auction;
+use Woojin\StoreBundle\Entity\AuctionShipping;
 use Woojin\UserBundle\Entity\User;
+use Woojin\ApiBundle\Controller\HelperTrait;
 
 /**
  * Auction controller.
@@ -19,6 +21,67 @@ use Woojin\UserBundle\Entity\User;
  */
 class AuctionController extends Controller
 {
+    use HelperTrait;
+
+    /**
+     * Bind(Update) auction's shipping
+     *
+     * @Route("/{id}/shipping", name="auction_update_shipping", options={"expose"=true})
+     * @ParamConverter("auction", class="WoojinStoreBundle:Auction")
+     * @Method("PUT")
+     */
+    public function updateShipping(Auction $auction, Request $request)
+    {
+        /**
+         * DoctrineManager
+         *
+         * @var \Doctrine\ORM\EntityManager;
+         */
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * 目前登入的使用者實體
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        if (!($user->getRole()->hasAuth('SELL')
+            && $auction->getBsoStore()->getId() === $user->getStore()->getId()
+            && Auction::STATUS_SOLD === $auction->getStatus()
+            && Auction::PROFIT_STATUS_ASSIGN_COMPLETE !== $auction->getProfitStatus()
+        )) {
+            throw $this->createAccessDeniedException('You cannot access this page!');
+        }
+
+        try {
+            $shipping = $auction->getShipping();
+
+            if (NULL === $shipping || !($shipping instanceof AuctionShipping)) {
+                $shipping = new AuctionShipping();
+                $auction->setShipping($shipping);
+            }
+
+            $shippingOption = $em->getRepository('WoojinStoreBundle:ShippingOption')->find($request->request->get('shipping'));
+            if (NULL === $shippingOption) {
+                throw $this->createNotFoundException('No shippingOptions has found!');
+            }
+
+            $shipping
+                ->setOption($shippingOption)
+                ->addMemo($user, $shippingOption)
+            ;
+            $shipping->setAuction($auction);
+
+            $em->persist($shipping);
+            $em->persist($auction);
+            $em->flush();
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+        return $this->_getResponse($shipping, 'json');
+    }
+
     /**
      * Update Auction sold_at column
      *

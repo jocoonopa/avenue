@@ -67,7 +67,7 @@ class AuctionPayment
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="cancel_at", type="datetime")
+     * @ORM\Column(name="cancel_at", type="datetime", nullable=true)
      */
     private $cancelAt;
 
@@ -119,10 +119,15 @@ class AuctionPayment
     public function attachUpdatePaidAtMemo(User $updater, \DateTime $paidAt)
     {
         $now = new \DateTime;
-        $attach = "原付款時間{$this->getPaidAt()->format('Y-m-d H:i:s')},{$updater->getUsername()}於{$now->format('Y-m-d H:i:s')}更新為{$paidAt->format('Y-m-d H:i:s')}";
-        $this->memo = "{$this->memo}{$attach}";
+        $attach = "原付款時間{$this->getPaidAt()->format('Y-m-d')},{$updater->getUsername()}於{$now->format('Y-m-d')}更新為{$paidAt->format('Y-m-d')}";
+        $this->memo = "{$this->memo}{$attach}<br>";
 
         return $this;
+    }
+
+    public function __construct()
+    {
+        $this->isCancel = false;
     }
 
     /**

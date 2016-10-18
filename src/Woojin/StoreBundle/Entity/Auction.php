@@ -35,6 +35,13 @@ class Auction
 
     /**
      * @Exclude
+     * @ORM\OneToOne(targetEntity="AuctionShipping", mappedBy="auction")
+     * @var Shippings[]
+     */
+    protected $shipping;
+
+    /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="AuctionPayment", mappedBy="auction")
      * @var Payments[]
      */
@@ -957,5 +964,29 @@ class Auction
     public function getAssignCompleteAt()
     {
         return $this->assignCompleteAt;
+    }
+
+    /**
+     * Set shipping
+     *
+     * @param \Woojin\StoreBundle\Entity\AuctionShipping $shipping
+     *
+     * @return Auction
+     */
+    public function setShipping(\Woojin\StoreBundle\Entity\AuctionShipping $shipping = null)
+    {
+        $this->shipping = $shipping;
+
+        return $this;
+    }
+
+    /**
+     * Get shipping
+     *
+     * @return \Woojin\StoreBundle\Entity\AuctionShipping
+     */
+    public function getShipping()
+    {
+        return $this->shipping;
     }
 }

@@ -1,0 +1,14 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        {{ auction.getCreaterName() }}@{{ auction.createAt|date('Y-m-d H:i:s') }}建立
+    </div>
+    <div class="panel-body">
+        <ul class="list-unstyled">
+            <li><b>客戶{{ auction.getSellerName() }}{{ auction.getSellerMobil() }}佔比:</b>
+                <span class="text-info">{{ auction.customPercentage }}</span>
+            </li>
+            <li><b>{{auction.getCreateStoreName()}}佔比:</b> <span class="text-info">{{ auction.storePercentage() }}</span></li>
+            <li><b>BSO佔比:</b> <span class="text-info">{{ auction.bsoPercentage() }}</span></li>
+        </ul>
+    </div>
+</div>

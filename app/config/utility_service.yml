@@ -190,5 +190,16 @@ services:
         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
         tags:
             - { name: kernel.event_subscriber}
+    
     auction.payment.service:
         class: 'Woojin\Service\Store\AuctionPaymentService'
+
+    auction.payment.doctrine.subscriber:
+        class: 'Woojin\StoreBundle\Subscriber\Doctrine\AuctionPaymentSubscriber'
+        tags:
+            - { name: doctrine.event_subscriber}
+            
+    auction.doctrine.subscriber:
+        class: 'Woojin\StoreBundle\Subscriber\Doctrine\AuctionSubscriber'
+        tags:
+            - { name: doctrine.event_subscriber}

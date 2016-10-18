@@ -407,6 +407,7 @@ ordersUpdateForm.prototype.setPaid = function () {
     return this;
 };
 
+// Auction
 $(function () {
     var iGoodsApp = new goodsApp();
 
@@ -430,4 +431,35 @@ $(function () {
     $('#isAllowAuction').change(function() {
         $('#bso_custom_percentage').prop('readonly', !$(this).prop('checked'));
     }).change();
+});
+
+// Shipping
+$(function () {
+    $('#shippingForm').ajaxForm({
+        "success": function (response) {
+            $('#shippingForm').find('.response').removeClass('hidden');
+            $('#shippingForm').find('.response').find('a').text('更換運費為' + response.option.description);
+            $.unblockUI();
+        },
+        "error": function (response, status) {
+            $('#shippingForm').find('.response-fail').removeClass('hidden');
+            $('#shippingForm').find('.response-fail').find('a').text('發生錯誤' + status);
+            $.unblockUI();
+        }
+    });
+
+    $('#shippingForm').find('#select-shipping').change(function () {
+        loaded();
+        $('#shippingForm').find('.response').addClass('hidden');
+        $('#shippingForm').find('.response-fail').addClass('hidden');
+        $('#shippingForm').submit();
+    });
+
+    $('#shippingForm').find('.close-success').click(function () {
+        $('#shippingForm').find('.response').addClass('hidden');
+    });
+
+    $('#shippingForm').find('.close-fail').click(function () {
+        $('#shippingForm').find('.response-fail').addClass('hidden');
+    });
 });

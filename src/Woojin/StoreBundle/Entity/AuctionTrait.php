@@ -8,11 +8,6 @@ use Woojin\StoreBundle\Entity\AuctionPayment;
 
 trait AuctionTrait
 {
-    public function getShippingCost()
-    {
-        return ShippingCalculator::getCost($this->getPrice());
-    }
-
     public function getProductSn()
     {
         return NULL === $this->product ? '' : $this->product->getSn();
@@ -71,13 +66,9 @@ trait AuctionTrait
         return NULL === $this->buyer ? '' : $this->buyer->getMobil();
     }
 
-    public function getCustomProfit($isNonTax = true)
+    public function getCustomProfit()
     {
-        if (NULL === $this->price) {
-          return '';
-        }
-
-        return true === $isNonTax ? floor($this->price * $this->customPercentage * 0.95) : floor($this->price * $this->customPercentage);
+        return NULL === $this->price ? '' : floor($this->price * $this->customPercentage);
     }
 
     public function getStoreProfit()
@@ -86,7 +77,9 @@ trait AuctionTrait
             return '';
         }
 
-        return ($this->price - $this->product->getCost()) * $this->storePercentage;
+        $profit = ($this->price - $this->getCustomProfit() - $this->getShippingCost()) * $this->storePercentage;
+
+        return floor($profit);
     }
 
     public function getBsoProfit()
@@ -95,7 +88,14 @@ trait AuctionTrait
             return '';
         }
 
-        return ($this->price - $this->product->getCost()) * $this->bsoPercentage;
+        $profit = ($this->price - $this->getCustomProfit() - $this->getShippingCost()) * $this->bsoPercentage;
+
+        return floor($profit);
+    }
+
+    public function getShippingCost()
+    {
+        return NULL === $this->shipping ? 0 : $this->shipping->getOption()->getCost();
     }
 
     public function getCreaterName()

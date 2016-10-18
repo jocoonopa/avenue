@@ -81,7 +81,7 @@ class AuctionPaymentController extends Controller
             $session->getFlashBag()->add('error', $e->getMessage());
         }
 
-        return $this->redirect($this->generateUrl('goods_edit_v2', array('id' => $auction->getProduct()->getId())));
+        return $this->redirect($this->generateUrl('goods_edit_v2', array('id' => $auction->getProduct()->getId())) . '/#_soldop');
     }
 
     /**
@@ -126,7 +126,7 @@ class AuctionPaymentController extends Controller
             $session->getFlashBag()->add('error', $e->getMessage());
         }
 
-        return $this->redirect($this->generateUrl('goods_edit_v2', array('id' => $payment->getAuction()->getProduct()->getId())));
+        return $this->redirect($this->generateUrl('goods_edit_v2', array('id' => $payment->getAuction()->getProduct()->getId())) . '/#_soldop');
     }
 
     /**
@@ -177,6 +177,6 @@ class AuctionPaymentController extends Controller
             $session->getFlashBag()->add('error', $e->getMessage());
         }
 
-        return $this->redirect($this->generateUrl('goods_edit_v2', array('id' => $payment->getAuction()->getProduct()->getId())));
+        return $this->redirect($this->generateUrl('goods_edit_v2', array('id' => $payment->getAuction()->getProduct()->getId())) . '/#_soldop');
     }
 }

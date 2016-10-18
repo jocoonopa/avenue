@@ -16,6 +16,28 @@ class AuctionControllerTest extends AuthControllerTest
         $this->withHash();
     }
 
+    public function testUpdateShippingAction()
+    {
+        $crawler = $this->client->request('POST', '/admin/auction/26/shipping', array(
+            '_method' => 'PUT',
+            'shipping' => 1
+        ));
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        $this->assertArrayHasKey('option', json_decode($this->client->getResponse()->getContent(), true));
+
+        $crawler = $this->client->request('POST', '/admin/auction/25/shipping', array(
+            '_method' => 'PUT',
+            'shipping' => 1
+        ));
+        $this->assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+
+        $crawler = $this->client->request('POST', '/admin/auction/26/shipping', array(
+            '_method' => 'PUT',
+            'shipping' => 0
+        ));
+        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testUpdateSoldAtAction()
     {
         $crawler = $this->client->request('POST', '/admin/auction/sold_at/26', array('_method' => 'PUT', 'sold_at' => '2016-10-10 00:00:00'));
