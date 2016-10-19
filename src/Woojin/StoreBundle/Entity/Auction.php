@@ -33,6 +33,29 @@ class Auction
 
     protected $options;
 
+    public $hasInitializedVirtualProperty = false;
+
+    /**
+     * 客戶實拿毛利(需透過 initVirtualProperty() 初始化)
+     * 
+     * @var integer
+     */
+    public $customProfit;
+
+    /**
+     * 門市實拿毛利(需透過 initVirtualProperty() 初始化)
+     * 
+     * @var integer
+     */
+    public $storeProfit;
+
+    /**
+     * BSO實拿毛利(需透過 initVirtualProperty() 初始化)
+     * 
+     * @var intger
+     */
+    public $bsoProfit;
+
     /**
      * @Exclude
      * @ORM\OneToOne(targetEntity="AuctionShipping", mappedBy="auction")

@@ -53,13 +53,13 @@ class AuctionController extends Controller
         try {
             $shipping = $auction->getShipping();
 
-            if (NULL === $shipping || !($shipping instanceof AuctionShipping)) {
+            if (is_null($shipping) || !($shipping instanceof AuctionShipping)) {
                 $shipping = new AuctionShipping();
                 $auction->setShipping($shipping);
             }
 
             $shippingOption = $em->getRepository('WoojinStoreBundle:ShippingOption')->find($request->request->get('shipping'));
-            if (NULL === $shippingOption) {
+            if (is_null($shippingOption)) {
                 throw $this->createNotFoundException('No shippingOptions has found!');
             }
 
@@ -153,7 +153,13 @@ class AuctionController extends Controller
          */
         $em = $this->getDoctrine()->getManager();
 
-        $auctions = $em->getRepository('WoojinStoreBundle:Auction')->findByCriteria($this->convertCriteria($request->request->all(), $user));
+        /**
+         * Fetch auctions we would return into response
+         */
+        $auctions = array_map(
+            '\Woojin\StoreBundle\Entity\Auction::initVirtualProperty', 
+            $em->getRepository('WoojinStoreBundle:Auction')->findByCriteria($this->convertCriteria($request->request->all(), $user))
+        );
 
         return $this->get('exporter.bsoprofit')->create($auctions)->getResponse();
     }
@@ -162,10 +168,12 @@ class AuctionController extends Controller
     {
         $storesStr = array_key_exists('stores_str', $criteria) && !empty($criteria['stores_str']) ? $criteria['stores_str'] : NULL;
         $acStr = array_key_exists('auction_statuses_str', $criteria) && !empty($criteria['auction_statuses_str']) ? $criteria['auction_statuses_str'] : NULL;
+        $apcStr = array_key_exists('auction_profit_statuses_str', $criteria) && !empty($criteria['auction_profit_statuses_str']) ? $criteria['auction_profit_statuses_str'] : NULL;
 
-        $criteria['stores'] = NULL === $storesStr ? array() : explode(',', $storesStr);
+        $criteria['stores'] = is_null($storesStr) ? array() : explode(',', $storesStr);
         $criteria['stores'] = $user->getRole()->hasAuth('BSO_VIEW_ALL_PROFIT') ? $criteria['stores'] : $user->getStore()->getId();
-        $criteria['auction_statuses'] = NULL === $acStr ? array() : explode(',', $acStr);
+        $criteria['auction_statuses'] = is_null($acStr) ? array() : explode(',', $acStr);
+        $criteria['auction_profit_statuses'] = is_null($apcStr) ? array() : explode(',', $apcStr);
 
         return $criteria;
     }

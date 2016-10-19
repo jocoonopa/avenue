@@ -20,10 +20,7 @@
                         <a href ng-click="sortBy('price')">得標價</a>
                     </th>
                     <th>
-                        <a href ng-click="sortBy('customProfit')">客戶(含稅)</a>
-                    </th>
-                    <th>
-                        <a href ng-click="sortBy('customProfit')">客戶(不含稅)</a>
+                        <a href ng-click="sortBy('customProfit')">客戶</a>
                     </th>
                     <th ng-show="hasAuth('READ_COST_OWN')">
                         <a href ng-click="sortBy('storeProfit')">門市</a>
@@ -34,6 +31,7 @@
                     <th>
                         <a href ng-click="sortBy('sold_at')">售出時間</a>
                     </th>
+                    <th><a href ng-click="sortBy('paid_complete_at')">結清時間</a></th>
                     <th>
                         <a href ng-click="sortBy('create_at')">入倉時間</a>
                     </th>
@@ -50,15 +48,15 @@
                     <td>{{ auction.product.brand.name }}</td>
                     <td><p class="text-primary">{{ auction.create_store.name }}</p></td>
                     <td>
-                        <p class="text-muted">{{ auction.seller.name }}({{ auction.seller.mobil }})</p>
+                        <p class="text-muted" ng-show="auction.seller.name.length > 0">{{ auction.seller.name }}({{ auction.seller.mobil }})</p>
                     </td>
-                    <td><p class="text-success">{{ auction.buyer.name }}({{ auction.buyer.mobil }})</p></td>
+                    <td><p class="text-success" ng-show="auction.seller.name.length > 0">{{ auction.buyer.name }}({{ auction.buyer.mobil }})</p></td>
                     <td><p class="text-warning">{{ auction.price }}</p></td>
-                    <td><p class="text-info">{{ auction.customProfit }}</p></td>
-                    <td><p class="text-info">{{ auction.customNonTaxProfit }}</p></td>
-                    <td ng-show="hasAuth('READ_COST_OWN')"><p class="text-info">{{ auction.storeProfit }}</p></td>
-                    <td ng-show="hasAuth('READ_COST_OWN')"><p class="text-info">{{ auction.bsoProfit }}</p></td>
+                    <td><p class="text-info" ng-show="auction.profit_status == 1">{{ auction.custom_profit }}</p></td>
+                    <td ng-show="hasAuth('READ_COST_OWN')"><p class="text-info" ng-show="auction.profit_status == 1">{{ auction.store_profit }}</p></td>
+                    <td ng-show="hasAuth('READ_COST_OWN')"><p class="text-info" ng-show="auction.profit_status == 1">{{ auction.bso_profit }}</p></td>
                     <td>{{ auction.sold_at.substr(0, 10) }}</td>
+                    <td>{{ auction.paid_complete_at.substr(0, 10)}}</td>
                     <td>{{ auction.create_at.substr(0, 10) }}</td>
                     <td>
                         <button class="btn btn-xs btn-info" ng-show="0 < auction.memo.length" ng-click="auction.isAu = !auction.isAu">

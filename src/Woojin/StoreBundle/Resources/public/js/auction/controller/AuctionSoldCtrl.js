@@ -217,7 +217,7 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
     };
 
     $scope.genProductUrl = function (sn) {
-      return Routing.generate('goods_edit_v2_from_sn', {sn: sn});
+      return Routing.generate('goods_edit_v2_from_sn', {sn: sn}) + '/#_soldop';
     };
 
     $scope.isInputValid = function (price, mobil) {

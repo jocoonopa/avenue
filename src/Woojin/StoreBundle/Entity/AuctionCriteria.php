@@ -21,12 +21,14 @@ class AuctionCriteria
         $this
             ->handleCreateStore()
             ->handleAuctionStatus()
+            ->handleAuctionProfitStatus()
             ->handleBuyerMobil()
             ->handleSellerMobil()
             ->handleCreaterUsername()
             ->handleBsserUsername()
             ->handleCreateAt()
             ->handleSoldAt()
+            ->handlePaidCompleteAt()
         ;
     }
 
@@ -37,6 +39,17 @@ class AuctionCriteria
         }
 
         $this->qb->andWhere($this->qb->expr()->in('a.status', $this->criteria['auction_statuses']));
+
+        return $this;
+    }
+
+    protected function handleAuctionProfitStatus()
+    {
+        if (!array_key_exists('auction_profit_statuses', $this->criteria) || empty($this->criteria['auction_profit_statuses'])) {
+            return $this;
+        }
+
+        $this->qb->andWhere($this->qb->expr()->in('a.profitStatus', $this->criteria['auction_profit_statuses']));
 
         return $this;
     }
@@ -162,6 +175,39 @@ class AuctionCriteria
 
         $this->qb->andWhere($this->qb->expr()->lte('a.soldAt', '?7'));
         $this->qb->setParameter(7, "{$this->criteria['sold_at']['end']} 24:00:00");
+
+        return $this;
+    }
+
+    protected function handlePaidCompleteAt()
+    {
+        if (!array_key_exists('paid_complete_at', $this->criteria) || empty($this->criteria['paid_complete_at'])) {
+            return $this;
+        }
+
+        return $this->handlePaidCompleteAtStart()->handlePaidCompleteAtEnd();
+    }
+
+    protected function handlePaidCompleteAtStart()
+    {
+        if (!array_key_exists('start', $this->criteria['paid_complete_at']) || empty($this->criteria['paid_complete_at']['start'])) {
+            return $this;
+        }
+
+        $this->qb->andWhere($this->qb->expr()->gte('a.paidCompleteAt', '?9'));
+        $this->qb->setParameter(9, "{$this->criteria['paid_complete_at']['start']} 00:00:00");
+
+        return $this;
+    }
+
+    protected function handlePaidCompleteAtEnd()
+    {
+        if (!array_key_exists('end', $this->criteria['paid_complete_at']) || empty($this->criteria['paid_complete_at']['end'])) {
+            return $this;
+        }
+
+        $this->qb->andWhere($this->qb->expr()->lte('a.paidCompleteAt', '?10'));
+        $this->qb->setParameter(10, "{$this->criteria['paid_complete_at']['end']} 24:00:00");
 
         return $this;
     }

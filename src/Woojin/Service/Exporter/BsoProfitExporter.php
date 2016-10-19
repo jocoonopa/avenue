@@ -107,17 +107,16 @@ class BsoProfitExporter implements IExporter
             'L1' => '客戶毛利比',
             'M1' => '門市毛利比',
             'N1' => 'BSO毛利比',
-            'O1' => '客戶分潤(含稅)',
-            'P1' => '客戶分潤(不含稅)',
-            'Q1' => '門市分潤',
-            'R1' => 'BSO分潤',
-            'S1' => '建立時間',
-            'T1' => '建立人員',
-            'U1' => '售出時間',
-            'V1' => '販售操作人員',
-            'W1' => '銷售時間更新次數',
-            'X1' => '銷售記錄更新次數',
-            'Y1' => '歷史記錄'
+            'O1' => '客戶分潤',
+            'P1' => '門市分潤',
+            'Q1' => 'BSO分潤',
+            'R1' => '建立時間',
+            'S1' => '建立人員',
+            'T1' => '售出時間',
+            'U1' => '販售操作人員',
+            'V1' => '銷售時間更新次數',
+            'W1' => '銷售記錄更新次數',
+            'X1' => '歷史記錄'
         );
     }
 
@@ -139,16 +138,15 @@ class BsoProfitExporter implements IExporter
             'M' => $auction->getStorePercentage(),
             'N' => $auction->getBsoPercentage(),
             'O' => $auction->getCustomProfit(),
-            'P' => $auction->getCustomProfit(true),
-            'Q' => $this->hasCostReadAuth() ? $auction->getStoreProfit() : '權限不足',
-            'R' => $this->hasCostReadAuth() ? $auction->getBsoProfit() : '權限不足',
-            'S' => $auction->getCreateAt()->format('Y-m-d H:i:s'),
-            'T' => $auction->getCreaterName(),
-            'U' => $auction->getSoldAtString(),
-            'V' => $auction->getBsserName(),
-            'W' => $auction->getSoldAtUpdateCount(),
-            'X' => $auction->getSoldUpdateCount(),
-            'Y' => $auction->getMemo(true),
+            'P' => $this->hasCostReadAuth() ? $auction->getStoreProfit() : '權限不足',
+            'Q' => $this->hasCostReadAuth() ? $auction->getBsoProfit() : '權限不足',
+            'R' => $auction->getCreateAt()->format('Y-m-d H:i:s'),
+            'S' => $auction->getCreaterName(),
+            'T' => $auction->getSoldAtString(),
+            'U' => $auction->getBsserName(),
+            'V' => $auction->getSoldAtUpdateCount(),
+            'W' => $auction->getSoldUpdateCount(),
+            'X' => $auction->getMemo(true),
         );
     }
 

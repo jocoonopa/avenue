@@ -58,6 +58,23 @@ class AuctionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->auction->isAllowedEditPayment($this->user));
     }
 
+    public function testInitVirtualProperty()
+    {
+        $this->auction->shouldReceive('getPrice')->andReturn(10000);
+        $this->auction->shouldReceive('getPaymentNoTax')->once()->andReturn(9500);
+        $this->auction->shouldReceive('getCustomPercentage')->once()->andReturn(0.8);
+        $this->auction->shouldReceive('getStorePercentage')->twice()->andReturn(0.1);
+        $this->auction->shouldReceive('getBsoPercentage')->once()->andReturn(0.1);
+        $this->auction->shouldReceive('getShippingCost')->once()->andReturn(90);
+
+        $auction = Auction::initVirtualProperty($this->auction);
+
+        $this->assertSame(8000, $this->auction->customProfit);
+        $this->assertSame(705, $this->auction->storeProfit);
+        $this->assertSame(705, $this->auction->bsoProfit);
+        $this->assertTrue($this->auction->hasInitializedVirtualProperty);
+    }
+
     public function tearDown()
     {
         m::close();

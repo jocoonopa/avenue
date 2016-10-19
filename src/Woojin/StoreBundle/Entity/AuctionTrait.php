@@ -9,6 +9,74 @@ use Woojin\UserBundle\Entity\User;
 trait AuctionTrait
 {
     /**
+     * 方便前端呼叫api使用，不需要同樣邏輯前後端都搞一次
+     * 
+     * @param  mixed $auction 
+     * @return Auction $auction
+     */
+    public static function initVirtualProperty($auction)
+    {
+        if (!($auction instanceof Auction) || true === $auction->hasInitializedVirtualProperty) {
+            return $auction;
+        }
+
+        /**
+         * 扣除稅實拿金額
+         * 
+         * @var integer
+         */
+        $paymentAmount = $auction->getPaymentNoTax();
+
+        /**
+         * 門市相對毛利比(門市+BSO)
+         * 
+         * @var float
+         */
+        $storeRelatePercentage = $auction->getStorePercentage()/($auction->getStorePercentage() + $auction->getBsoPercentage());
+
+        /**
+         * BSO相對毛利比(門市+BSO)
+         * 
+         * @var float
+         */
+        $bsoRelatePercentage = 1 - $storeRelatePercentage;
+
+        $auction->customProfit = (int) ($auction->getPrice() * $auction->getCustomPercentage());
+
+        /**
+         * Avenue 共享毛利
+         *
+         * @var integer
+         */
+        $remainProfit = $paymentAmount - $auction->customProfit - $auction->getShippingCost();
+
+        $auction->storeProfit = (int) ($remainProfit * $storeRelatePercentage);
+        $auction->bsoProfit = (int) ($remainProfit * $bsoRelatePercentage);
+
+        $auction->hasInitializedVirtualProperty = true;
+
+        return $auction;
+    }
+
+    public function getPaymentNoTax()
+    {
+        $sum = 0;
+
+        foreach ($this->getPayments()->filter($this->isPaymentValid()) as $payment) {
+            $sum += (int) ($payment->getAmount() * $payment->getPayType()->getDiscount());
+        }
+
+        return $sum;
+    }
+
+    protected function isPaymentValid()
+    {
+        return function ($payment) {
+            return false === $payment->getIsCancel();
+        };
+    }
+
+    /**
      * 1. 擁有銷貨權限
      * 2. 競拍狀態為售出
      * 3. 競拍毛利狀態不為分配完畢
@@ -36,107 +104,119 @@ trait AuctionTrait
 
     public function getProductSn()
     {
-        return NULL === $this->product ? '' : $this->product->getSn();
+        return is_null($this->product) ? '' : $this->product->getSn();
     }
 
     public function getProductName()
     {
-        return NULL === $this->product ? '' : $this->product->getName();
+        return is_null($this->product) ? '' : $this->product->getName();
     }
 
     public function getProductOrgSn()
     {
-        return NULL === $this->product ? '' : $this->product->getOrgSn();
+        return is_null($this->product) ? '' : $this->product->getOrgSn();
     }
 
     public function getProductBrandName()
     {
-        if (NULL === $this->product) {
+        if (is_null($this->product)) {
             return '';
         }
 
-        return NULL === $this->product->getBrand() ? '' : $this->product->getBrand()->getName();
+        return is_null($this->product->getBrand()) ? '' : $this->product->getBrand()->getName();
     }
 
     public function getProductColorName()
     {
-        if (NULL === $this->product) {
+        if (is_null($this->product)) {
             return '';
         }
 
-        return NULL === $this->product->getColor() ? '' : $this->product->getColor()->getName();
+        return is_null($this->product->getColor()) ? '' : $this->product->getColor()->getName();
     }
 
     public function getCreateStoreName()
     {
-        return NULL === $this->createStore ? '' : $this->createStore->getName();
+        return is_null($this->createStore) ? '' : $this->createStore->getName();
     }
 
     public function getSellerName()
     {
-        return NULL === $this->seller ? '' : $this->seller->getName();
+        return is_null($this->seller) ? '' : $this->seller->getName();
     }
 
     public function getSellerMobil()
     {
-        return NULL === $this->seller ? '' : $this->seller->getMobil();
+        return is_null($this->seller) ? '' : $this->seller->getMobil();
     }
 
     public function getBuyerName()
     {
-        return NULL === $this->buyer ? '' : $this->buyer->getName();
+        return is_null($this->buyer) ? '' : $this->buyer->getName();
     }
 
     public function getBuyerMobil()
     {
-        return NULL === $this->buyer ? '' : $this->buyer->getMobil();
+        return is_null($this->buyer) ? '' : $this->buyer->getMobil();
     }
 
     public function getCustomProfit()
     {
-        return NULL === $this->price ? '' : floor($this->price * $this->customPercentage);
+        if (is_null($this->price)) {
+            return '';
+        }
+
+        if (false === $this->hasInitializedVirtualProperty) {
+            static::initVirtualProperty($this);
+        }
+
+        return $this->customProfit;
     }
 
     public function getStoreProfit()
     {
-        if (NULL === $this->price) {
+        if (is_null($this->price)) {
             return '';
         }
 
-        $profit = ($this->price - $this->getCustomProfit() - $this->getShippingCost()) * $this->storePercentage;
+        if (false === $this->hasInitializedVirtualProperty) {
+            static::initVirtualProperty($this);
+        }
 
-        return floor($profit);
+        return $this->storeProfit;
     }
 
     public function getBsoProfit()
     {
-        if (NULL === $this->price) {
+        if (is_null($this->price)) {
             return '';
         }
 
-        $profit = ($this->price - $this->getCustomProfit() - $this->getShippingCost()) * $this->bsoPercentage;
+        if (false === $this->hasInitializedVirtualProperty) {
+            static::initVirtualProperty($this);
+        }
 
-        return floor($profit);
+        return $this->bsoProfit;
     }
 
     public function getShippingCost()
     {
-        return NULL === $this->shipping ? 0 : $this->shipping->getOption()->getCost();
+        return is_null($this->shipping) ? 0 : $this->shipping->getOption()->getCost();
     }
 
     public function getCreaterName()
     {
-        return NULL === $this->creater ? '' : $this->creater->getUsername();
+        return is_null($this->creater) ? '' : $this->creater->getUsername();
     }
 
     public function getSoldAtString($format = 'Y-m-d H:i:s')
     {
-        return NULL === $this->soldAt ? '' : $this->soldAt->format($format);
+        return is_null($this->soldAt) ? '' : $this->soldAt->format($format);
     }
 
     public function getBsserName()
     {
-        return NULL === $this->bsser ? '' : $this->bsser->getUsername();
+        return is_null($this->bsser) ? '' : $this->bsser->getUsername();
     }
 
     public function getStatusName()

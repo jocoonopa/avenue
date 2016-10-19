@@ -35,8 +35,8 @@
         <input id="bsser_username" type="text" class="form-control" name="bsser_username" placeholder="amanda,vivian" ng-model="criteria.bsser_username">
     </div>
     <div class="form-group">
-        <label for="">狀態:</label>
-        <div class="checkbox-inline" ng-repeat="auction_status in auction_statuses">
+        <label for="auction_status">狀態:</label>
+        <div id="auction_status" class="checkbox-inline" ng-repeat="auction_status in auction_statuses">
             <label for="auction_statuses_{{auction_status.id}}">
                 <input id="auction_statuses_{{auction_status.id}}" name="auction_statuses[]" type="checkbox" name="auction_statuses[]" data-checklist-model="criteria.auction_statuses" data-checklist-value="auction_status">
                 {{auction_status.name}}
@@ -50,6 +50,24 @@
             <i class="glyphicon glyphicon-unchecked"></i>
         </button>
     </div>
+
+    <div class="form-group">
+        <label for="auction_profit_status">毛利分配狀態:</label>
+        <div id="auction_profit_status" class="checkbox-inline" ng-repeat="auction_profit_status in auction_profit_statuses">
+            <label for="auction_profit_statuses_{{auction_profit_status.id}}">
+                <input id="auction_profit_statuses_{{auction_profit_status.id}}" name="auction_profit_statuses[]" type="checkbox" name="auction_profit_statuses[]" data-checklist-model="criteria.auction_profit_statuses" data-checklist-value="auction_profit_status">
+                {{auction_profit_status.name}}
+            </label>
+        </div>
+
+        <button class="btn btn-sm btn-default" ng-click="checkAllStatus()">
+            <i class="glyphicon glyphicon-check"></i>
+        </button>
+        <button class="btn btn-sm btn-default" ng-click="uncheckAllStatus()">
+            <i class="glyphicon glyphicon-unchecked"></i>
+        </button>
+    </div>
+
     <div class="form-group" ng-show="hasAuth('BSO_VIEW_ALL_PROFIT')">
         <label for="stores">來源門市:</label>
         <div class="checkbox" ng-repeat="store in stores">
@@ -73,6 +91,7 @@
             <input type="text" name="create_at['end']" class="form-control" ng-datepicker ng-model="criteria.create_at.end">
         </div>
     </div>
+
     <div class="form-group">
         <label for="sold_at">售出時間:</label>
         <div class="input-group input-daterange">
@@ -83,8 +102,18 @@
     </div>
 
     <div class="form-group">
+        <label for="paid_complete_at">款項付清時間:</label>
+        <div class="input-group input-daterange">
+            <input id="paid_complete_at" type="text" name="paid_complete_at['start']" class="form-control" ng-datepicker ng-model="criteria.paid_complete_at.start">
+            <span class="input-group-addon">to</span>
+            <input type="text" name="paid_complete_at['end']" class="form-control" ng-datepicker ng-model="criteria.paid_complete_at.end">
+        </div>
+    </div>
+
+    <div class="form-group">
         <input type="hidden" name="stores_str" />
         <input type="hidden" name="auction_statuses_str" />
+        <input type="hidden" name="auction_profit_statuses_str" />
         <button class="btn btn-primary pull-left" ng-click="submit()" style="position: fixed; bottom: 90px; right: 50px;">
             <i class="glyphicon glyphicon-search"></i>
             查詢

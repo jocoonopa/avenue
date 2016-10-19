@@ -52,7 +52,7 @@ class AuctionController extends Controller
         /**
          * Fetch auctions we would return into response
          */
-        $auctions = $em->getRepository('WoojinStoreBundle:Auction')->findByCriteria($criteria);
+        $auctions = array_map('\Woojin\StoreBundle\Entity\Auction::initVirtualProperty', $em->getRepository('WoojinStoreBundle:Auction')->findByCriteria($criteria));
 
         return $this->_getResponse($auctions, $_format);
     }
@@ -280,7 +280,7 @@ class AuctionController extends Controller
             'soldAt' => new \DateTime
         ]);
 
-        return $this->_genResponseWithServiceReturnAuction($result, $_format);
+        return $this->_genResponseWithServiceReturnAuction(\Woojin\StoreBundle\Entity\Auction::initVirtualProperty($result), $_format);
     }
 
     /**
@@ -357,9 +357,15 @@ class AuctionController extends Controller
     protected function genCriteria(Request $request, User $user)
     {
         $criteria = $request->request->all();
-        $criteria['stores'] = $user->getRole()->hasAuth('BSO_VIEW_ALL_PROFIT') ? $criteria['stores'] : $user->getStore()->getId();
+
+        if ($user->getRole()->hasAuth('BSO_VIEW_ALL_PROFIT') && array_key_exists('stores', $criteria)) {
+            $criteria['stores'] = $criteria['stores'];
+        }
+
+        if (!$user->getRole()->hasAuth('BSO_VIEW_ALL_PROFIT')) {
+            $criteria['stores'] = $user->getStore()->getId();
+        }
 
         return $criteria;
     }
-
 }
