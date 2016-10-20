@@ -13,9 +13,8 @@
                     label-default
                 {% endif %}">{{ auction.getStatusName() }}</span>
 
-                {% if
-                constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET') == auction.profitStatus
-                and auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD')
+                {% if constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET') == auction.profitStatus
+                    and auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD')
                 %}
                 <span class="text-muted">尚未付款</span>
                 {% endif %}
@@ -35,10 +34,6 @@
                     {% endif %}
 
                     {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD')
-                        and auction.profitStatus in [
-                            constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET'),
-                            constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_PAY_COMPLETE')
-                        ]
                         and app.user|has_auth('SELL')
                     %}
                         {% include 'WoojinGoodsBundle:Goods/v2/auction:_soldop.html.twig' %}

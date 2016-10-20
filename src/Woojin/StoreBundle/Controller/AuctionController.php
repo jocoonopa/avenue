@@ -129,6 +129,56 @@ class AuctionController extends Controller
     }
 
     /**
+     * Update Auction sold_at column
+     *
+     * @Route("/profit/assign/{id}", name="auction_profit_assign", options={"expose"=true})
+     * @ParamConverter("auction", class="WoojinStoreBundle:Auction")
+     * @Method("PUT")
+     */
+    public function updateProfitAssignAction(Auction $auction)
+    {
+        /**
+         * 目前登入的使用者實體
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        if (!$auction->isAllowedAssignProfit($user)) {
+            throw $this->createAccessDeniedException("You cannot assign profit of auction, might be you are not belong the auction's createStore?");
+        }
+
+        /**
+         * DoctrineManager
+         *
+         * @var \Doctrine\ORM\EntityManager;
+         */
+        $em = $this->getDoctrine()->getManager();
+
+        /**
+         * Session
+         *
+         * @var \Symfony\Component\HttpFoundation\Session\Session
+         */
+        $session = $this->get('session');
+
+        try {
+            $auction->assignProfit($user);
+
+            $em->persist($auction);
+            $em->flush();
+
+            $msg = "{$auction->getProduct()->getSn()}由{$user->getUsername()}於{$auction->getAssignCompleteAt()->format('Y-m-d H:i:s')}完成分配競拍毛利!";
+
+            $session->getFlashBag()->add('success', $msg);
+        } catch (\Exception $e) {
+            $session->getFlashBag()->add('error', $e->getMessage());
+        }
+
+        return $this->redirect($this->generateUrl('order_consign_done_list'));
+    }
+
+    /**
      * Export profit excel report
      *
      * @Route("/export_profit", name="auction_export_profit", options={"expose"=true})

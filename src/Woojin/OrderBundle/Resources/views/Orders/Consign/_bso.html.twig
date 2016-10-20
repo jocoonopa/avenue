@@ -1,0 +1,29 @@
+<div class="panel panel-default">
+	<div class="panel-heading text-center">
+		BSO競拍待分配毛利 <span class="badge">{{ auctions|length }}</span>
+	</div>
+	<div class="panel-body">
+		<table class="table">
+			<tbody>
+				{% for auction in auctions %}
+				<tr>
+					<td>{{auction.product.sn}}</td>
+					<td>{{auction.product.name}}
+						<span class="label label-primary">{{ auction.product.current.status.name }}</span>
+					</td>
+					<td>{{ auction.customProfit }}</td>
+					<td>{% if auction.seller %}{{auction.seller.name}}({{auction.seller.mobil}}){% endif %}</td>
+					<td>
+						<form action="{{path('auction_profit_assign', {id: auction.id})}}" method="post">
+							<div class="form-group">
+								<input type="hidden" name="_method" value="put" />
+								<button type="submit" class="bso btn btn-primary"><i class="glyphicon glyphicon-ok"></i>分配完成</button>
+							</div>
+						</form>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>

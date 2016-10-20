@@ -8,6 +8,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
+use Woojin\StoreBundle\Entity\Auction;
 use Woojin\StoreBundle\Entity\Store;
 use Woojin\UserBundle\Entity\User;
 use Woojin\GoodsBundle\Entity\GoodsPassport;
@@ -117,6 +118,7 @@ class GoodsPassportRepository extends EntityRepository
             ->select(array('g','o'))
             ->from('WoojinGoodsBundle:GoodsPassport', 'g')
             ->join('g.orders', 'o')
+            ->leftJoin('g.auctions', 'auctions')
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq(
@@ -128,6 +130,7 @@ class GoodsPassportRepository extends EntityRepository
                         $qb->expr()->andX(
                             // BSO競拍售出且當初沒有勾選允許競拍，表示需要回給客戶寄賣回扣 
                             $qb->expr()->eq('g.status', Avenue::GS_BSO_SOLD),
+                            $qb->expr()->eq('auctions.profitStatus', Auction::PROFIT_STATUS_ASSIGN_COMPLETE),
                             $qb->expr()->neq('g.isAllowAuction', true)
                         )
                     ),
@@ -153,7 +156,7 @@ class GoodsPassportRepository extends EntityRepository
             ->leftJoin('p.orders', 'po')
             ->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('g.status', Avenue::GS_OTHERSTORE),
+                    $qb->expr()->eq('p.status', Avenue::GS_OTHERSTORE),
                     $qb->expr()->eq('po.kind', Avenue::OK_FEEDBACK),
                     $qb->expr()->eq('po.status', Avenue::OS_HANDLING),
                     $qb->expr()->eq('SUBSTRING(p.sn, 1, 1)', $qb->expr()->literal($user->getStore()->getSn()))

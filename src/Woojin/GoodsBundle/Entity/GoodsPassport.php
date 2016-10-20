@@ -592,7 +592,7 @@ class GoodsPassport
     public function getFeedBackOrder()
     {
         foreach ($this->orders as $order) {
-            if ($order->getKind()->getId() === Avenue::OK_FEEDBACK) {
+            if (Avenue::OK_FEEDBACK === $order->getKind()->getId()) {
                 return $order;
             }
         }

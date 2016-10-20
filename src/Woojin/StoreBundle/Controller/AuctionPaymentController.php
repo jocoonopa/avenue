@@ -85,8 +85,6 @@ class AuctionPaymentController extends Controller
 
             $session->getFlashBag()->add('success', '競拍付款新增成功!');
         } catch (\Exception $e) {
-            throw $e;
-
             $session->getFlashBag()->add('error', $e->getMessage());
         }
 

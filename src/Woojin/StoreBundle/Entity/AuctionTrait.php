@@ -102,6 +102,14 @@ trait AuctionTrait
         ;
     }
 
+    public function isAllowedAssignProfit(User $user)
+    {
+        return Auction::STATUS_SOLD === $this->getStatus() 
+            && Auction::PROFIT_STATUS_PAY_COMPLETE === $this->getProfitStatus()
+            && $user->getStore()->getId() === $this->getCreateStore()->getId()
+        ;
+    }
+
     public function getProductSn()
     {
         return is_null($this->product) ? '' : $this->product->getSn();

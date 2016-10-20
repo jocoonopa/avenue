@@ -51,6 +51,18 @@ class AuctionControllerTest extends AuthControllerTest
         $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
     }
 
+    public function testUpdateProfitAssignAction()
+    {
+        $this->client->request('POST', '/admin/auction/profit/assign/27', array('_method' => 'PUT'));
+
+        $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+
+        $this->client->followRedirect();
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertContains('Y905045200147由jocoonopa', $this->client->getResponse()->getContent());
+        $this->assertContains('完成分配競拍毛利', $this->client->getResponse()->getContent());
+    }
+
     public function testExportProfitAction()
     {
         $crawler = $this->client->request('POST', '/admin/auction/export_profit', array());

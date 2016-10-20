@@ -1,0 +1,44 @@
+<div class="panel panel-default">
+    <div class="panel-heading text-center">
+        <h4>店內寄賣售出商品 <span class="badge">{{ homeGoodses|length }}</span></h4>
+    </div>
+
+    <div class="panel-body">
+        <table class="table">
+            <tbody>
+            {% for goods in homeGoodses %}
+                {% if goods.feedBackOrder %}
+                <tr>
+                    <td>
+                        <a class="btn btn-default btn-sm" href="{{ path('goods_edit_v2', {id: goods.id}) }}" target="_blank"><i class="glyphicon glyphicon-search"></i>{{ goods.sn }}</a>
+                    </td>
+                    <td>{{ goods.name }}
+                        <span class="label
+                            {% if goods.current.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE') %}
+                            label-default
+                            {% elseif goods.current.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_SOLDOUT') %}
+                            label-success
+                            {% elseif goods.current.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_OFFSALE') %}
+                            label-danger
+                            {% elseif goods.current.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::GS_OTHERSTORE') %}
+                            label-warning
+                            {% else %}
+                            label-primary
+                            {% endif %}"
+                        >{{ goods.current.status.name }}</span>
+                    </td>
+                    <td>{{ '回扣金額' ~ goods.feedBackOrder.required|number_format }}</td>
+                    <td>
+                        寄賣客戶
+                        {{ goods.custom.mobil }}&nbsp;{{ goods.custom.name ~ goods.custom.sex }}
+                    </td>
+                    <td>
+                        <a class="btn btn-primary complete" href="{{ path('order_feedback_ok', {id: goods.feedBackOrder.id}) }}"><i class="glyphicon glyphicon-ok"></i>完成</a>
+                    </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -3,6 +3,7 @@
 namespace Woojin\StoreBundle\Entity;
 
 use Woojin\GoodsBundle\Entity\GoodsPassport;
+use Woojin\UserBundle\Entity\User;
 
 /**
  * AuctionRepository
@@ -115,5 +116,26 @@ class AuctionRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getOneOrNullResult()
         ;
+    }
+
+    public function fetchPaidCompleted(User $user)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb->select('auction')
+            ->from('WoojinStoreBundle:Auction', 'auction')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('auction.creater', ':creater'),
+                    $qb->expr()->eq('auction.profitStatus', ':profitStatus')
+                )
+            );
+
+        $qb
+            ->setParameter('creater', $user->getId())
+            ->setParameter('profitStatus', Auction::PROFIT_STATUS_PAY_COMPLETE)
+        ;
+
+        return $qb->getQuery()->getResult();
     }
 }

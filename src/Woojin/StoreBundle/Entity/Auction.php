@@ -248,16 +248,16 @@ class Auction
 
     protected function init(array $options)
     {
-        $this->creater              = $options['creater'];
-        $this->seller               = $options['seller'];
-        $this->createStore          = $options['createStore'];
-        $this->bsoStore             = $options['bsoStore'];
-        $this->product              = $options['product'];
-        $this->status               = $options['status'];
-        $this->profitStatus         = 0;
-        $this->customPercentage     = $options['customPercentage'];
-        $this->storePercentage      = $options['storePercentage'];
-        $this->bsoPercentage        = $options['bsoPercentage'];
+        $this->creater = $options['creater'];
+        $this->createStore = $options['createStore'];
+        $this->bsoStore = $options['bsoStore'];
+        $this->product = $options['product'];
+        $this->status = $options['status'];
+        $this->profitStatus = 0;
+        $this->customPercentage = $options['customPercentage'];
+        $this->storePercentage = $options['storePercentage'];
+        $this->bsoPercentage = $options['bsoPercentage'];
+        $this->seller = !is_null($this->product->getCustom()) && $this->product->getIsAllowAuction() ? $this->product->getCustom() : null;
     }
 
     public function back(array $options)
@@ -307,6 +307,24 @@ class Auction
             ->setSoldAt($newDate)
             ->patchSoldAtUpdateCount()
         ;
+    }
+
+    public function assignProfit(User $user)
+    {
+        $memo = "{$this->getMemo()}{$this->attachAssignProfitMemo($user)}";
+        
+        return $this
+                ->setProfitStatus(static::PROFIT_STATUS_ASSIGN_COMPLETE)
+                ->setAssignCompleteAt(new \DateTime)
+                ->setMemo($memo)
+            ;
+    }
+
+    protected function attachAssignProfitMemo(User $user)
+    {
+        $date = new \Datetime;
+
+        return "{$user->getUsername()}於{$date->format('Y-m-d H:i:s')}毛利分配完成<br/>";
     }
 
     protected function attachSoldAtUpdateMemo(\DateTime $newDate, User $user)

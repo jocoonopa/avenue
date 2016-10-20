@@ -91,9 +91,17 @@ class OrderController extends Controller
 		 */
 		$fromOwnGoodses = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->getConsignFromOurStore($user);
 
+		/**
+		 * 付清但尚未分派毛利的Auction
+		 * 
+		 * @var array(\Woojin\StoreBundle\Entity\Auction)
+		 */
+		$auctions = $em->getRepository('WoojinStoreBundle:Auction')->fetchPaidCompleted($user);
+
 		return array(
 			'homeGoodses' => $homeGoodses,
-			'fromOwnGoodses' => $fromOwnGoodses
+			'fromOwnGoodses' => $fromOwnGoodses,
+			'auctions' => $auctions
 		);
 	}
 

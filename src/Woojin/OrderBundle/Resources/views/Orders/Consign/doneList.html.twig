@@ -15,157 +15,16 @@
 	{% endfor %}
 
 	{% if homeGoodses %}
-	<div class="panel panel-default">
-		<div class="panel-heading text-center">
-			<h4>店內寄賣售出商品 <span class="badge">{{ homeGoodses|length }}</span></h4>
-		</div>
-
-		<div class="panel-body">
-			<table class="table">
-				<tbody>
-					{% for goods in homeGoodses %}
-						{% if goods.feedBackOrder %}
-						<tr>
-							<td>
-								<a class="btn btn-default btn-sm" href="{{ path('goods_edit_v2', {id: goods.id}) }}" target="_blank"><i class="glyphicon glyphicon-search"></i>{{ goods.sn }}</a>
-							</td>
-							<td>{{ goods.name }}
-								<span class="label
-									{% if goods.current.status.id == 1 %}
-									label-default
-									{% elseif goods.current.status.id == 2 %}
-									label-success
-									{% elseif goods.current.status.id == 4 %}
-									label-danger
-									{% elseif goods.current.status.id == 5 %}
-									label-warning
-									{% else %}
-									label-primary
-									{% endif %}"
-								>{{ goods.current.status.name }}</span>
-							</td>
-							<td>{{ '回扣金額' ~ goods.feedBackOrder.required|number_format }}</td>
-							<td>
-								寄賣客戶
-								{{ goods.custom.mobil }}&nbsp;{{ goods.custom.name ~ goods.custom.sex }}
-							</td>
-							<td>
-								<a class="btn btn-primary complete" href="{{ path('order_feedback_ok', {id: goods.feedBackOrder.id}) }}"><i class="glyphicon glyphicon-ok"></i>完成</a>
-							</td>
-						</tr>
-						{% endif %}
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
+		{% include 'WoojinOrderBundle:Orders/Consign:_homeGoodses.html.twig' %}
 	{% endif %}
 
 	{% if fromOwnGoodses %}
-	<div class="panel panel-default">
-		<div class="panel-heading text-center">
-			<h4>為於它店之寄賣商品 <span class="badge">{{ fromOwnGoodses|length }}</span></h4>
-		</div>
-		<div class="panel-body">
-			<table class="table">
-				<tbody>
-					{% for goods in fromOwnGoodses %}
-						{% if goods.feedBackOrder %}
-						<tr>
-							<td>
-								<p><a class="btn btn-default btn-sm" href="{{ path('goods_edit_v2', {id: goods.id}) }}" target="_blank"><i class="glyphicon glyphicon-search"></i>{{ goods.sn }}</a></p>
-								<p>
-									<a class="btn btn-success btn-sm" href="{{ path('goods_edit_v2', {id: goods.current.id}) }}" target="_blank"><i class="glyphicon glyphicon-search"></i>{{ goods.current.sn }}
-									</a>
-								</p>
-							</td>
-							<td>{{ goods.name }}
-
-								<span class="label
-									{% if goods.current.status.id == 1 %}
-									label-default
-									{% elseif goods.current.status.id == 2 %}
-									label-success
-									{% elseif goods.current.status.id == 4 %}
-									label-danger
-									{% elseif goods.current.status.id == 5 %}
-									label-warning
-									{% else %}
-									label-primary
-									{% endif %}"
-								>{{ goods.current.status.name }}</span>
-							</td>
-							<td>{{ '回扣金額' ~ goods.feedBackOrder.required|number_format }}</td>
-							<td>
-								寄賣客戶
-								{% if goods.custom %}
-								{{ goods.custom.mobil }}&nbsp;{{ goods.custom.name ~ goods.custom.sex }}
-								{% endif %}
-							</td>
-							<td>
-								{% if goods.current.status.id in [
-										constant('Woojin\\Utility\\Avenue\\Avenue::GS_SOLDOUT'),
-										constant('Woojin\\Utility\\Avenue\\Avenue::GS_BSO_SOLD')
-									]
-								%}
-									{% if goods.current.orders.last.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::OS_COMPLETE') and goods.current.orders.last.kind.id in [
-										constant('Woojin\\Utility\\Avenue\\Avenue::OK_OUT'),
-										constant('Woojin\\Utility\\Avenue\\Avenue::OK_EXCHANGE_OUT'),
-										constant('Woojin\\Utility\\Avenue\\Avenue::OK_TURN_OUT'),
-										constant('Woojin\\Utility\\Avenue\\Avenue::OK_WEB_OUT'),
-										constant('Woojin\\Utility\\Avenue\\Avenue::OK_SPECIAL_SELL'),
-										constant('Woojin\\Utility\\Avenue\\Avenue::OK_SAME_BS'),
-										constant('Woojin\\Utility\\Avenue\\Avenue::OK_OFFICIAL')
-									] %}
-										<a class="btn btn-primary complete" href="{{ path('order_feedback_ok', {id: goods.feedBackOrder.id}) }}"><i class="glyphicon glyphicon-ok"></i>完成</a>
-									{% else %}
-										<span class="label label-warning">({{ goods.current.orders.last.kind.name }})尚未付清</span>
-									{% endif %}
-								{% endif %}
-							</td>
-						</tr>
-						{% endif %}
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
+		{% include 'WoojinOrderBundle:Orders/Consign:_fromOwnGoodses.html.twig' %}
 	{% endif %}
 
-	<form action="" method="POST" class="hidden">
-		<input type="hidden" name="_method" value="PUT" />
-		<input type="hidden" name="require" value="0" />
-	</form>
-	<script src="/js/bootbox_v4.js"></script>
-	<script>
-	$(function () {
-		$('a.btn.complete').click(function () {
-			var $this = $(this);
+	{% include 'WoojinOrderBundle:Orders/Consign:_bso.html.twig' %}
 
-			bootbox.prompt({
-				title: '請輸入最後議價',
-			  	value: 0,
-			  	callback: function(res) {
-					if (isNaN(res)) {
-						return false;
-					}
-
-					if (res) {
-						$('form').attr('action', $this.attr('href'));
-						$('input[name="require"]').val(res);
-						$('form').submit();
-					}
-				}
-			});
-
-			return false;
-		});
-
-		$('button').click(function () {
-			return false;
-		});
-	});
-	</script>
+	{% include 'WoojinOrderBundle:Orders/Consign:_formscript.html.twig' %}
 
 {% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}
 {% endblock %}

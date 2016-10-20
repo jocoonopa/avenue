@@ -6,7 +6,11 @@
     <div class="panel-body">
         <form id="shippingForm" action="{{path('auction_update_shipping', {'id': auction.id})}}" method="post">
             <div class="form-group">
-                <label for="select-shipping"></label>
+                <label for="select-shipping">運費:</label>
+                {% if auction.profitStatus in [
+                    constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET'),
+                    constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_PAY_COMPLETE')
+                ] %}
                 <select name="shipping" id="select-shipping" class="form-control">
                     <option value="0" {% if NULL == auction.shipping %}selected{% endif %}>無運費</option>
 
@@ -14,6 +18,11 @@
                         <option value="{{shippingOption.id}}" {% if NULL != auction.shipping and shippingOption.id == auction.shipping.id %}selected{% endif %}>{{shippingOption.description}}{{ '(' ~ shippingOption.cost ~ '元)'}}</option>
                     {% endfor %}
                 </select>
+                {% else %}
+                    <span class="text-muted">
+                        {{auction.shipping.option.description}}{{ '(' ~ auction.shipping.option.cost ~ '元)'}}
+                    </span>
+                {% endif %}
             </div>
 
             <div class="form-group">
