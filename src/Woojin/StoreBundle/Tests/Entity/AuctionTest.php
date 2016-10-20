@@ -60,6 +60,7 @@ class AuctionTest extends \PHPUnit_Framework_TestCase
 
     public function testInitVirtualProperty()
     {
+        $this->auction->shouldReceive('getProduct->getCost')->once()->andReturn(0);
         $this->auction->shouldReceive('getPrice')->andReturn(10000);
         $this->auction->shouldReceive('getPaymentNoTax')->once()->andReturn(9500);
         $this->auction->shouldReceive('getCustomPercentage')->once()->andReturn(0.8);

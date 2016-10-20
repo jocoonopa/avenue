@@ -44,11 +44,11 @@ trait AuctionTrait
         $auction->customProfit = (int) ($auction->getPrice() * $auction->getCustomPercentage());
 
         /**
-         * Avenue 共享毛利
+         * Avenue 共享毛利 = 競拍售價 - 客戶分潤 - 運費 - 商品成本
          *
          * @var integer
          */
-        $remainProfit = $this->getRemainProfit();
+        $remainProfit = $paymentAmount - $auction->customProfit - $auction->getShippingCost() - $auction->getProduct()->getCost();
 
         $auction->storeProfit = (int) ($remainProfit * $storeRelatePercentage);
         $auction->bsoProfit = (int) ($remainProfit * $bsoRelatePercentage);
@@ -56,16 +56,6 @@ trait AuctionTrait
         $auction->hasInitializedVirtualProperty = true;
 
         return $auction;
-    }
-
-    /**
-     * 競拍售價 - 客戶分潤 - 運費 - 商品成本
-     * 
-     * @return integer
-     */
-    protected function getRemainProfit()
-    {
-        return $paymentAmount - $auction->customProfit - $auction->getShippingCost() - $auction->getProduct()->getCost();
     }
 
     public function getPaymentNoTax()
