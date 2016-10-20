@@ -34,6 +34,8 @@ class AuctionCriteria
 
     protected function handleAuctionStatus()
     {
+        $this->qb->andWhere($this->qb->expr()->neq('a.status', Auction::STATUS_BACK_TO_STORE));
+        
         if (!array_key_exists('auction_statuses', $this->criteria) || empty($this->criteria['auction_statuses'])) {
             return $this;
         }
