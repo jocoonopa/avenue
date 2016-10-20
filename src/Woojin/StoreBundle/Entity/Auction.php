@@ -31,27 +31,40 @@ class Auction
     const PROFIT_STATUS_PAY_COMPLETE    = 1;
     const PROFIT_STATUS_ASSIGN_COMPLETE = 2;
 
+    public static $statusMap = [
+        self::STATUS_ONBOARD => '待競拍',
+        self::STATUS_SOLD => '拍賣完畢',
+        self::STATUS_BACK_TO_STORE => '歸還門市',
+        self::STATUS_ORDER_CANCEL => '售出取消'
+    ];
+
+    public static $profitStatusMap = [
+        self::PROFIT_STATUS_NOT_PAID_YET => '尚未付清',
+        self::PROFIT_STATUS_PAY_COMPLETE => '已付清',
+        self::PROFIT_STATUS_ASSIGN_COMPLETE => '毛利已分配'
+    ];
+
     protected $options;
 
     public $hasInitializedVirtualProperty = false;
 
     /**
      * 客戶實拿毛利(需透過 initVirtualProperty() 初始化)
-     * 
+     *
      * @var integer
      */
     public $customProfit;
 
     /**
      * 門市實拿毛利(需透過 initVirtualProperty() 初始化)
-     * 
+     *
      * @var integer
      */
     public $storeProfit;
 
     /**
      * BSO實拿毛利(需透過 initVirtualProperty() 初始化)
-     * 
+     *
      * @var intger
      */
     public $bsoProfit;
@@ -312,7 +325,7 @@ class Auction
     public function assignProfit(User $user)
     {
         $memo = "{$this->getMemo()}{$this->attachAssignProfitMemo($user)}";
-        
+
         return $this
                 ->setProfitStatus(static::PROFIT_STATUS_ASSIGN_COMPLETE)
                 ->setAssignCompleteAt(new \DateTime)

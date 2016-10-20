@@ -13,11 +13,7 @@
                     label-default
                 {% endif %}">{{ auction.getStatusName() }}</span>
 
-                {% if constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET') == auction.profitStatus
-                    and auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD')
-                %}
-                <span class="text-muted">尚未付款</span>
-                {% endif %}
+                <span class="text-muted">{{ auction.getProfitStatusName }}</span>
             </a>
         </li>
     {% endfor %}

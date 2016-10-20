@@ -70,6 +70,7 @@
                         {% if app.user|has_auth('SELL')
                          and app.user|has_auth('EDIT_OPE_DATETIME')
                          and false == payment.isCancel
+                         and constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_ASSIGN_COMPLETE') != auction.profitStatus
                          %}
                         <form class="each_payment" action="{{ path('auction_payment_update', {id: payment.id})}}" method="post">
                             <input type="hidden" name="_method" value="put">

@@ -9,6 +9,10 @@
             <li><b>{{auction.getCreateStoreName()}}分潤:</b> <span class="text-danger">{{ auction.getStoreProfit() }}</span></li>
             <li><b>BSO分潤:</b> <span class="text-danger">{{ auction.getBsoProfit() }}</span></li>
         </ul>
+
+        {% if auction.assignCompleteAt %}
+            <span class="text-muted">已經於{{ auction.assignCompleteAt.format('Y-m-d H:i:s')}}分配毛利完畢</span>
+        {% endif %}
     </div>
 
     <div class="panel-footer">

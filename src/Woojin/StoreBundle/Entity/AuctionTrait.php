@@ -10,8 +10,8 @@ trait AuctionTrait
 {
     /**
      * 方便前端呼叫api使用，不需要同樣邏輯前後端都搞一次
-     * 
-     * @param  mixed $auction 
+     *
+     * @param  mixed $auction
      * @return Auction $auction
      */
     public static function initVirtualProperty($auction)
@@ -22,21 +22,21 @@ trait AuctionTrait
 
         /**
          * 扣除稅實拿金額
-         * 
+         *
          * @var integer
          */
         $paymentAmount = $auction->getPaymentNoTax();
 
         /**
          * 門市相對毛利比(門市+BSO)
-         * 
+         *
          * @var float
          */
         $storeRelatePercentage = $auction->getStorePercentage()/($auction->getStorePercentage() + $auction->getBsoPercentage());
 
         /**
          * BSO相對毛利比(門市+BSO)
-         * 
+         *
          * @var float
          */
         $bsoRelatePercentage = 1 - $storeRelatePercentage;
@@ -104,7 +104,7 @@ trait AuctionTrait
 
     public function isAllowedAssignProfit(User $user)
     {
-        return Auction::STATUS_SOLD === $this->getStatus() 
+        return Auction::STATUS_SOLD === $this->getStatus()
             && Auction::PROFIT_STATUS_PAY_COMPLETE === $this->getProfitStatus()
             && $user->getStore()->getId() === $this->getCreateStore()->getId()
         ;
@@ -229,27 +229,12 @@ trait AuctionTrait
 
     public function getStatusName()
     {
-        $name = '';
+        return array_key_exists($this->status, static::$statusMap) ? static::$statusMap[$this->status] : '';
+    }
 
-        switch ($this->status)
-        {
-            case Auction::STATUS_ONBOARD:
-                $name = '待競拍';
-                break;
-
-            case Auction::STATUS_SOLD:
-                $name = '拍賣完畢';
-                break;
-
-            case Auction::STATUS_BACK_TO_STORE:
-                $name = '歸還門市';
-                break;
-
-            default:
-                break;
-        }
-
-        return $name;
+    public function getProfitStatusName()
+    {
+        return array_key_exists($this->profitStatus, static::$profitStatusMap) ? static::$profitStatusMap[$this->profitStatus] : '';
     }
 
     public function getOwe()
