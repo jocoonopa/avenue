@@ -73,6 +73,8 @@ class AuctionController extends Controller
      */
     public function findBySnAction($sn, $_format)
     {
+        $sn = str_replace(array('%'), '', $sn);
+
         /**
          * DoctrineManager
          *
@@ -342,7 +344,7 @@ class AuctionController extends Controller
          *
          * @var string
          */
-        $sn = $request->request->get('sn', NULL);
+        $sn = str_replace('%', '', $request->request->get('sn', NULL));
 
         /**
          * Find product with sn
