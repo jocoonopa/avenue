@@ -1,0 +1,54 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>金額</th>
+            <th>付款方式</th>
+            <th>操作人員</th>
+            <th>時間</th>
+            <th>記錄</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for payment in auction.payments %}
+        <tr {% if true == payment.isCancel %}class="danger"{% endif %}>
+            <td>
+                {{payment.amount}}
+                {% if true == payment.isCancel %}
+                <p class="text-warning">
+                    {{payment.canceller.username}}於{{payment.cancelAt.format('Y-m-d')}}作廢
+                </p>
+                {% endif %}
+            </td>
+            <td>{{payment.payType.name}}</td>
+            <td>{{payment.creater.username}}</td>
+            <td>
+                {% if app.user|has_auth('SELL')
+                 and app.user|has_auth('EDIT_OPE_DATETIME')
+                 and false == payment.isCancel
+                 and constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_ASSIGN_COMPLETE') != auction.profitStatus
+                 %}
+                <form class="each_payment" action="{{ path('auction_payment_update', {id: payment.id})}}" method="post">
+                    <input type="hidden" name="_method" value="put">
+                    <input type="datetime" name="paid_at" class="form-control" readonly value="{{payment.paidAt.format('Y-m-d')}}">
+                </form>
+                {% else %}
+                <span class="text-muted">{{payment.paidAt.format('Y-m-d')}}</span>
+                {% endif %}
+            </td>
+            <td>{% autoescape %}{{ payment.memo|raw }}{% endautoescape %}</td>
+            <td>
+                {% if false == payment.isCancel %}
+                <form class="auction_payment_drop" action="{{ path('auction_payment_drop', {id: payment.id})}}" method="post">
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('確定作廢此付款嗎?');">
+                        <i class="glyphicon glyphicon-remove"></i>
+                        取消
+                    </button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
