@@ -8,9 +8,11 @@
         <label for="bso_paytype">付款方式</label>
 
         <select id="bso_paytype" name="pay_type" class="form-control">
-            {% for payType in payTypes %}
-            <option value="{{payType.id}}">{{payType.name}}</option>
-            {% endfor %}
+        {% for payType in payTypes %}
+            {% if payType.id in [1, 2, 67, 81] %}
+                <option value="{{payType.id}}" {% if 67 == payType.id %}selected{% endif %}>{{payType.name}}</option>
+            {% endif %}
+        {% endfor %}
         </select>
     </div>
 

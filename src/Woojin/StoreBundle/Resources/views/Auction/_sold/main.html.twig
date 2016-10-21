@@ -40,8 +40,8 @@
       <li ng-show="0 < soldResponse.auction.buyer.name.length">購買人: {{soldResponse.auction.buyer.name}}, {{soldResponse.auction.buyer.mobil}}</li>
       <li>售出操作人員: {{soldResponse.auction.bsser.username}}</li>
       <li ng-show="0 < soldResponse.auction.seller.name.length">競拍賣家: {{soldResponse.auction.seller.name}}, {{soldResponse.auction.seller.mobil}}</li>
-      <li ng-show="0 < soldResponse.auction.custom_percentage">客戶分配:{{soldResponse.auction.custom_profit}}</li>
-      <li ng-show="0 < soldResponse.auction.store_percentage">門市分配:{{soldResponse.auction.store_profit}}</li>
+      <!-- <li ng-show="0 < soldResponse.auction.custom_percentage">客戶分配:{{soldResponse.auction.custom_profit}}</li>
+      <li ng-show="0 < soldResponse.auction.store_percentage">門市分配:{{soldResponse.auction.store_profit}}</li> -->
       <li>BSO分配:{{soldResponse.auction.bso_profit}}</li>
       <li>售出時間:{{soldResponse.auction.sold_at}}</li>
       <li ng-show="0 < soldResponse.auction.memo.length" ng-bind-html="soldResponse.auction.memo"></li>

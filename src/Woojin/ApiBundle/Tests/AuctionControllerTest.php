@@ -39,6 +39,7 @@ class AuctionControllerTest extends AuthControllerTest
 
     public function testFindBySnAction()
     {
+        // Normal
         $crawler = $this->client->request('GET', '/api/v1/auction/show/Y102031380052');
 
         $responseArr = json_decode($this->client->getResponse()->getContent(), true);
@@ -47,6 +48,16 @@ class AuctionControllerTest extends AuthControllerTest
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(Avenue::IS_SUCCESS, $responseArr['status'], $this->client->getResponse()->getContent());
 
+        // With %
+        $crawler = $this->client->request('GET', '/api/v1/auction/show/Y102031380052%');
+
+        $responseArr = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'), $this->client->getResponse()->headers->get('Content-Type'));
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(Avenue::IS_SUCCESS, $responseArr['status'], $this->client->getResponse()->getContent());
+
+        // With illegal symbol
         $crawler = $this->client->request('GET', '/api/v1/auction/show/Y102031380052__');
 
         $responseArr = json_decode($this->client->getResponse()->getContent(), true);

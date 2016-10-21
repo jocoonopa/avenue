@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <title>銷貨單列印</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+
+    <style>
+    div.my{
+        position: absolute;
+    }
+
+    form {
+        border: 1px solid #000;
+        width: 400px;
+        margin-left: 50px;
+        background-color: #dedede;
+    }
+
+    body {
+        font-size: 8pt !important; 
+    }
+
+    .container {
+        position: absolute;
+
+        width: 100%;
+
+        top: -0.5cm;
+
+        left: -0.5cm;
+    }
+    
+    @media print 
+    {
+        .relative {
+            display: none;
+        }
+
+        body {
+            margin: 1cm !important;
+            border: 0 !important;
+            padding: 0 !important;
+        }
+
+        form {
+            display: none;
+        }
+
+        button {
+            display: none !important;
+        }
+    }
+    </style>
+</head>
+<body>
+    <button onclick="window.print();">列印</button>
+    <div class="container">
+    {% set yShift = 0 %}
+    {% set key = 0 %}
+
+        <!--/ 存根聯 -->
+
+        <!-- 銷售號碼 -->
+        <div class="my" style="top: {{ yShift + 2.8 }}cm; left: 11.8cm;">{{ auction.bsoStore.sn ~ auction.id}}</div>
+        
+        <!-- 時間 -->
+        <div class="my" style="top: {{ yShift + 2.7 }}cm; left: 16.0cm;"><!-- 15:20 -->
+            {{ auction.soldAt.format('H:i') }}
+        </div>
+
+        <!-- 銷貨日期 -->
+        <div class="my" style="top: {{ yShift + 3.6 }}cm; left: 11.8cm;">
+            {{ auction.soldAt.format('m/d/Y') }}
+        </div>   
+
+        <!-- 店鋪 -->
+        <div class="my" style="top: {{ yShift + 3.2 }}cm; left: 16.0cm;">
+            <!-- 中和 -->
+            {{ auction.bsoStore.sn }}
+        </div>
+        <!-- 頁次 -->
+        <div class="my" style="top: {{ yShift + 3.7 }}cm; left: 16.0cm;">
+            {{ 1 }}
+        </div>
+
+        <!-- 貨號 -->
+        <div class="my" style="top: {{ 5.1 + yShift + (key % 10) * 0.7 }}cm; left: 0.7cm;">{{ auction.product.sn }}
+        </div>
+
+        <!-- 品名/序號 -->
+        <div class="my" style="top: {{ 5.1 + yShift + (key % 10) * 0.7 }}cm; left: 4.7cm;">{{ auction.product.name }}
+        </div>
+
+        <!-- 數量 -->
+        <div class="my" style="top: {{ 5.1 + yShift + (key % 10) * 0.7 }}cm; left: 12.1cm;">1</div>
+
+        <!-- 金額 -->
+        <div class="my" style="top: {{ 5.1 + yShift + (key % 10) * 0.7 }}cm; left: 13.3cm;">
+            NT{{ auction.getInvoicePrice()|number_format(0, '.', ',') }}
+        </div>
+
+        <!-- 備註/附件 -->
+        <div class="my" style="top: {{ 5.1 + yShift + (key % 10) * 0.7 }}cm; left: 15.8cm;">
+        </div>
+
+        <!-- 經手人 -->
+        <div class="my" style="top: {{ yShift + 12.5 }}cm; left: 2.6cm;">
+            <!-- ViVian -->
+           {{ auction.bsser.username }}
+        </div>
+
+        <!-- 總金額 -->
+        <div class="my" style="top: {{ yShift + 12.5 }}cm; left: 13cm; font-size: 6pt;">
+            NT{{ auction.getInvoicePrice()|number_format(0, '.', ',') }}元
+        </div>
+        <!-- 存根聯 /-->
+        <!--/ 收執聯 -->
+        
+
+        <!-- 銷售號碼 -->
+        <div class="my" style="top: {{ yShift + 17.8 }}cm; left: 11.8cm;">{{ auction.bsoStore.sn ~ auction.id}}</div>
+        
+        <!-- 時間 -->
+       <div class="my" style="top: {{ yShift + 17.6 }}cm; left: 16.0cm;">{{ auction.soldAt.format('H:i') }}
+        </div>
+
+        <!-- 銷貨日期-->
+        <div class="my" style="top: {{ yShift + 18.5 }}cm; left: 11.8cm;">{{ auction.soldAt.format('m/d/Y') }}
+        </div>
+
+        <!-- 店鋪 -->
+        <div class="my" style="top: {{ yShift + 18.1 }}cm; left: 16.0cm;">{{ auction.bsoStore.sn }}
+        </div>
+
+        <!-- 頁次 -->
+        <div class="my" style="top: {{ yShift + 18.6 }}cm; left: 16.0cm;">
+            {{ 1 }}
+        </div>
+
+        <!-- 貨號 -->
+        <div class="my" style="top: {{ 20.0 + yShift + (key % 10) * 0.7 }}cm; left: 0.7cm;">{{ auction.product.sn }}</div>
+
+    <!-- 品名/序號 -->
+    <div class="my" style="top: {{ 20.0 + yShift + (key % 10) * 0.7 }}cm; left: 4.7cm;">{{ auction.product.name }}
+    </div>
+
+    <!-- 數量 -->
+    <div class="my" style="top: {{ 20.0 + yShift + (key % 10) * 0.7 }}cm; left: 12.1cm;">1</div>
+
+    <!-- 金額 -->
+    <div class="my" style="top: {{ 20.0 + yShift + (key % 10) * 0.7 }}cm; left: 13.3cm;">
+        NT{{ auction.getInvoicePrice()|number_format(0, '.', ',') }}
+    </div>
+
+    <!-- 備註/附件 -->
+    <div class="my" style="top: {{ 20.0 + yShift + (key % 10) * 0.7 }}cm; left: 15.8cm;"></div>
+
+        <!-- 經手人 -->
+        <div class="my" style="top: {{ yShift + 27.3 }}cm; left: 2.6cm;"> {{ app.user.username }}
+        </div>
+
+        <!-- 總金額 -->
+        <div class="my" style="top: {{ yShift + 27.3 }}cm; left: 13cm; font-size: 6pt; ">
+            NT{{ auction.getInvoicePrice()|number_format(0, '.', ',') }}元
+        </div>
+    <!-- 收執聯 /-->
+</div>
+</body>
+</html>

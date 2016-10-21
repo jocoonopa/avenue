@@ -12,6 +12,8 @@ use JMS\Serializer\Annotation\Exclude;
  */
 class PayType
 {
+    const ID_CREDIR_CARD = 2;
+
     /**
      * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\AuctionPayment", mappedBy="payType")
@@ -55,6 +57,26 @@ class PayType
     public function __construct()
     {
         $this->orders = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function isCreditCard()
+    {
+        return static::ID_CREDIR_CARD === $this->getId();
+    }
+
+    public function getReverseDiscount()
+    {
+        return 2 - $this->discount;
+    }
+
+    public function getAmountWithTax($amount)
+    {
+        return (int) ($amount * $this->getReverseDiscount());
+    }
+
+    public function getAmountWithoutTax($amount)
+    {
+        return (int) ($amount / $this->getReverseDiscount());
     }
 
     /**

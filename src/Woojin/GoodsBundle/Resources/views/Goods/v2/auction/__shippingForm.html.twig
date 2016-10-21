@@ -13,6 +13,7 @@
 
                     {% for shippingOption in shippingOptions %}
                         <option value="{{shippingOption.id}}" {% if NULL != auction.shipping and shippingOption.id == auction.shipping.option.id %}selected{% endif %}>{{shippingOption.description}}{{ '(' ~ shippingOption.cost ~ '元)'}}</option>
+                        }
                     {% endfor %}
                 </select>
                 {% else %}

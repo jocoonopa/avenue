@@ -13,7 +13,9 @@
         {% include 'WoojinGoodsBundle:Goods/v2:flashbag.html.twig' %}
 
         {% if auction.isAllowedEditPayment(app.user) %}
-            {% include 'WoojinGoodsBundle:Goods/v2/auction:__editPayment.html.twig' %}
+            {% if constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET') == auction.profitStatus %}
+                {% include 'WoojinGoodsBundle:Goods/v2/auction:__editPayment.html.twig' %}
+            {% endif %}
         {% endif %}
         
         {% if 0 < auction.payments|length  %}

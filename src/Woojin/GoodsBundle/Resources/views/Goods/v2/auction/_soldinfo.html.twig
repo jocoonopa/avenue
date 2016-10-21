@@ -8,12 +8,50 @@
         constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_ASSIGN_COMPLETE')
     ]%}
     <div class="panel-body">
+        {% if auction.profitStatus in [
+                constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_PAY_COMPLETE'),
+                constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_ASSIGN_COMPLETE')
+            ]%}
+
+        <div class="alert alert-info">
+            {{'發票金額: ' ~ auction.getInvoicePrice() ~ '元'}}
+        </div>
+        {% endif %}
         <ul class="list-unstyled">
             <li><b>買家:</b> {{ auction.getBuyerName()}} <span class="badge">{{ auction.getBuyerMobil}}</span> </li>
-            <li><b>客戶{{ auction.getSellerName() }}{{ auction.getSellerMobil() }}分潤:</b> <span class="text-danger">{{ auction.getCustomProfit() }}</span></li>
-            <li><b>{{auction.getCreateStoreName()}}分潤:</b> <span class="text-danger">{{ auction.getStoreProfit() }}</span></li>
+            <li><b>客戶:{{ auction.getSellerName() }}{{ auction.getSellerMobil() }}分潤:</b> <span class="text-danger">{{ auction.getCustomProfit() }}</span></li>
+            {% if auction.profitStatus in [
+                constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_PAY_COMPLETE'),
+                constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_ASSIGN_COMPLETE')
+            ]%}
+            <li>
+                <b>{{auction.getCreateStoreName()}}分潤:</b> 
+                <span class="text-danger">{{ auction.getStoreProfit() }}</span>
+            </li>
             <li><b>BSO分潤:</b> <span class="text-danger">{{ auction.getBsoProfit() }}</span></li>
+            {% endif %}
         </ul>
+
+        {% if auction.profitStatus == constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_PAY_COMPLETE')
+        %}
+            <form action="{{ path('auction_profit_assign', {id: auction.id}) ~ '?_redirect=v2' }}" method="post">
+                <input type="hidden" name="_method" value="put" />
+                <button class="pull-left btn btn-sm btn-primary" type="submit" onclick="confirm('確定完成毛利分配嗎?')">
+                    <i class="glyphicon glyphicon-ok"></i>
+                    分配完成
+                </button>
+            </form>
+        {% endif %}
+        
+        {% if auction.profitStatus in [
+            constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_PAY_COMPLETE'),
+            constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_ASSIGN_COMPLETE')
+        ]%}
+        <a href="{{ path('print_invoice_auction', {id: auction.id}) }}" class="pull-right btn btn-sm btn-info" target="_blank">
+            <i class="glyphicon glyphicon-print"></i>
+            列印憑證
+        </a>
+        {% endif %}
 
         {% if auction.assignCompleteAt %}
             <span class="text-muted">已經於{{ auction.assignCompleteAt.format('Y-m-d H:i:s')}}分配毛利完畢</span>
@@ -34,7 +72,13 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    {% if app.user|has_auth('CANCEL_ORDER') and app.user.store.id == auction.bsoStore.id %}
+                    {% if app.user|has_auth('CANCEL_ORDER') 
+                        and app.user.store.id == auction.bsoStore.id 
+                        and auction.profitStatus in [
+                            constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_PAY_COMPLETE'),
+                            constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_NOT_PAID_YET')
+                        ]
+                    %}
                     <button id="auction_cancel" data-sn="{{product.sn}}" class="btn btn-xs btn-danger">
                         <i class="glyphicon glyphicon-remove-sign"></i>
                         取消

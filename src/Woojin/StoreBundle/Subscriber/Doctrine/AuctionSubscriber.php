@@ -49,7 +49,13 @@ class AuctionSubscriber implements EventSubscriber
     		return;
     	}
 
-    	$order->setStatus($this->em->getRepository('WoojinOrderBundle:OrdersStatus')->find(Avenue::OS_CANCEL));
+    	$order
+            ->setRequired(0)
+            ->setOrgRequired(0)
+            ->setPaid(0)
+            ->setOrgPaid(0)
+            ->setStatus($this->em->getRepository('WoojinOrderBundle:OrdersStatus')->find(Avenue::OS_COMPLETE))
+        ;
 
     	$this->em->persist($order);
     	$this->em->flush();

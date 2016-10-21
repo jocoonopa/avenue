@@ -1941,6 +1941,16 @@ class GoodsController extends Controller
     }
 
     /**
+     * Event:
+     *  -> emit updateProductEvent
+     *  -> paramHandler
+     *  -> updateHandler
+     *  -> logHandler
+     *  -> imgHandler
+     *  -> desimgHandler
+     *  
+     * GenParamPool, UpdateService, MetaService,ImgService, DesImgService
+     * 
      * @Route("/edit/{id}/v2/update", requirements={"id" = "\d+"}, name="goods_update_v2", options={"expose"=true})
      * @ParamConverter("goods", class="WoojinGoodsBundle:GoodsPassport")
      * @Template()

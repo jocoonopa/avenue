@@ -135,7 +135,7 @@ class AuctionController extends Controller
      * @ParamConverter("auction", class="WoojinStoreBundle:Auction")
      * @Method("PUT")
      */
-    public function updateProfitAssignAction(Auction $auction)
+    public function updateProfitAssignAction(Auction $auction, Request $request)
     {
         /**
          * 目前登入的使用者實體
@@ -175,7 +175,9 @@ class AuctionController extends Controller
             $session->getFlashBag()->add('error', $e->getMessage());
         }
 
-        return $this->redirect($this->generateUrl('order_consign_done_list'));
+        $url = 'v2' === $request->query->get('_redirect') ? $this->generateUrl('goods_edit_v2', array('id' => $auction->getProduct()->getId())) : $this->generateUrl('order_consign_done_list');
+
+        return $this->redirect($url);
     }
 
     /**

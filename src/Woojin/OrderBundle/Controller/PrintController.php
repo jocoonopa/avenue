@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 use Woojin\OrderBundle\Entity\Orders;
 use Woojin\OrderBundle\Entity\Invoice;
+use Woojin\StoreBundle\Entity\Auction;
 
 /**
  * @Route("/print")
@@ -39,6 +40,17 @@ class PrintController extends Controller
     public function keyInvoiceByHandAction()
     {
         return array();
+    }
+
+    /**
+     * @Route("/invoice/auction/{id}", name="print_invoice_auction")
+     * @ParamConverter("auction", class="WoojinStoreBundle:Auction")
+     * @Method("GET")
+     * @Template("WoojinOrderBundle:Print:auction.certificate.html")
+     */
+    public function printAuctionInvoiceAction(Auction $auction)
+    {
+        return array('auction' => $auction);
     }
 
     /**
