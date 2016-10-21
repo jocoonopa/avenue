@@ -311,7 +311,6 @@ class QueController extends Controller
 
         $startAt = microtime(true);
         for ($i = 0; $i <= $count; $i = $i + self::NUM_PERPAGE) {
-            $finder = new Finder();
             $desimgs = $this->fetchDesimgCollection($i);
 
             echo $i . ":currentIndex<br/>";
@@ -320,10 +319,14 @@ class QueController extends Controller
                 if (!file_exists($_SERVER['DOCUMENT_ROOT'] . $desimg->getPath())) {
                     continue;
                 }
-                          
+                $finder = new Finder();
                 $path = pathinfo($_SERVER['DOCUMENT_ROOT'] . $desimg->getPath());     
                 $finder->files()->in($path['dirname'])->name('des*')->notName(basename($desimg->getPath()));
-                foreach ($finder as $file) {                
+
+                echo '<br>m: ' . basename($desimg->getPath()) . '<hr>';
+
+                foreach ($finder as $file) {      
+                    echo $file->getRealPath() . ":{$total}<br/>";          
                     if (!file_exists($file->getRealPath())) {
                         continue;
                     }
@@ -333,8 +336,9 @@ class QueController extends Controller
 
                     $total ++;  
                 }
+                unset($finder);
             }
-            unset($finder);
+            
             unset($desimgs);
         }
 
@@ -358,12 +362,12 @@ class QueController extends Controller
             ->leftJoin('gd.status', 'gs')
         ;
 
-        $qb->andWhere($qb->expr()->andX(
-            $qb->expr()->in('gs.id', array(2)),
-            $qb->expr()->eq('ok.type', 2),
-            $qb->expr()->eq('os.id', 2),
-            $qb->expr()->lt('gd.updateAt', $qb->expr()->literal($date->modify('-6 months')->format('Y-m-d H:i:s'))) 
-        ));
+        // $qb->andWhere($qb->expr()->andX(
+        //     // $qb->expr()->in('gs.id', array(2)),
+        //     // $qb->expr()->eq('ok.type', 2),
+        //     // $qb->expr()->eq('os.id', 2),
+        //     $qb->expr()->lt('gd.updateAt', $qb->expr()->literal($date->modify('-1 months')->format('Y-m-d H:i:s'))) 
+        // ));
 
         return $qb->orderBy('img.id', 'ASC')
                 ->setFirstResult($page)
