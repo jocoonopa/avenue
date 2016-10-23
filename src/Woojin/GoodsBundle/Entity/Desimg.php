@@ -95,7 +95,7 @@ class Desimg
      */
     public function getPath()
     {
-        return 'http://avenue2003.29230696.com' . $this->path;
+        return $this->path;
     }
 
     public function _getPath()

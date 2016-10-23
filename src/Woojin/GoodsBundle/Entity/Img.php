@@ -106,7 +106,6 @@ class Img
     public function getPath($isAbs = false)
     {
         return ($isAbs) ? $_SERVER['DOCUMENT_ROOT'] . $this->path : $this->path;
-        //return 'http://avenue2003.29230696.com' . $this->path;
     }
 
     /**
