@@ -24,7 +24,7 @@ use Symfony\Component\Finder\Finder;
 
 class QueController extends Controller
 {
-    const NUM_PERPAGE = 20;
+    const NUM_PERPAGE = 200;
     /**
      * 付款完成通知
      * %數請參考 https://www.allpay.com.tw/Business/payment_fees
@@ -285,10 +285,30 @@ class QueController extends Controller
     public function inode(Request $request)
     {
         set_time_limit(0);
+
+        $finder = new Finder();
+        $finder->files()->in(__DIR__ . '/../../../');
+
+        $allInode = count($finder);
+
         $finder = new Finder();
         $finder->files()->in(__DIR__ . '/../../../../web/img/product');
 
-        return new Response(count($finder));
+        $total = 0;
+
+        foreach ($finder as $file) {      
+            echo $file->getRealPath() . ":{$total}<br/>";          
+            if (!file_exists($file->getRealPath())) {
+                continue;
+            }
+            
+            unset($file);
+
+            $total ++;  
+        }
+
+        // all: 63477, vendor:11126, src: 810, web: 44922, bundles: 6660, productImg: 32115
+        return new Response("all: {$allInode}, total: {$total}");
     }
 
     /**
@@ -310,15 +330,22 @@ class QueController extends Controller
         $total = 0;
 
         $startAt = microtime(true);
-        for ($i = 0; $i <= $count; $i = $i + self::NUM_PERPAGE) {
+
+        for ($i = 0; $i <= $count + self::NUM_PERPAGE; $i = $i + self::NUM_PERPAGE) {
             $desimgs = $this->fetchDesimgCollection($i);
 
-            echo $i . ":currentIndex<br/>";
+            //echo "flag: {$i}<br/>";
 
             foreach ($desimgs as $desimg) {
                 if (!file_exists($_SERVER['DOCUMENT_ROOT'] . $desimg->getPath())) {
+                    if ('_____' !== $desimg->getPath()) {
+                        // echo 'leave: ' . $desimg->getPath() . "<br/>";
+                        // $total ++;
+                    }
+                    
                     continue;
                 }
+
                 $finder = new Finder();
                 $path = pathinfo($_SERVER['DOCUMENT_ROOT'] . $desimg->getPath());     
                 $finder->files()->in($path['dirname'])->name('des*')->notName(basename($desimg->getPath()));
@@ -326,6 +353,7 @@ class QueController extends Controller
                 echo '<br>m: ' . basename($desimg->getPath()) . '<hr>';
 
                 foreach ($finder as $file) {      
+                    $total ++;
                     echo $file->getRealPath() . ":{$total}<br/>";          
                     if (!file_exists($file->getRealPath())) {
                         continue;
@@ -333,10 +361,9 @@ class QueController extends Controller
                     
                     unlink($file->getRealPath());               
                     unset($file);
-
-                    $total ++;  
                 }
                 unset($finder);
+                
             }
             
             unset($desimgs);
@@ -344,6 +371,11 @@ class QueController extends Controller
 
         return new Response($count . '_desimg_delete_complete_' . $total . ',cost time:' . (microtime(true) - $startAt));
     }
+
+    protected function fetchDesimgCollection($page)
+    {
+        return new Paginator($this->genFetchDesimgQ($page), $fetchJoinCollection = false);
+    }   
 
     protected function genFetchDesimgQ($page)
     {
@@ -355,11 +387,6 @@ class QueController extends Controller
         $qb
             ->select('img')
             ->from('WoojinGoodsBundle:Desimg', 'img')
-            ->leftJoin('img.goodsPassports', 'gd')
-            ->leftJoin('gd.orders', 'od')
-            ->leftJoin('od.status', 'os')
-            ->leftJoin('od.kind', 'ok')
-            ->leftJoin('gd.status', 'gs')
         ;
 
         // $qb->andWhere($qb->expr()->andX(
@@ -379,9 +406,4 @@ class QueController extends Controller
     {
         return count($this->fetchDesimgCollection(0));
     }
-
-    protected function fetchDesimgCollection($page)
-    {
-        return new Paginator($this->genFetchDesimgQ($page), $fetchJoinCollection = false);
-    }   
 }
