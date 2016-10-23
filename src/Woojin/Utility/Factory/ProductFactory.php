@@ -152,9 +152,9 @@ class ProductFactory
             ->setSeoSlogan2($product->getSeoSlogan2())
             ->setIsAllowCreditCard($product->getIsAllowCreditCard())
             ->setYahooId($product->getYahooId())
-            ->setIsAlanIn($options['isAlanIn'])
-            ->setIsAllowAuction($options['isAllowAuction'])
-            ->setBsoCustomPercentage($options['bsoCustomPercentage'])
+            ->setIsAlanIn(false)
+            ->setIsAllowAuction(false)
+            ->setBsoCustomPercentage(NULL)
         ;
 
         foreach ($product->getCategorys() as $category) {
