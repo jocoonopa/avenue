@@ -29,7 +29,7 @@ class ReportController extends Controller
 
         return array(
             '_token' => $this->get('security.csrf.token_manager')->getToken('unknown'),
-            'activitys' => $em->getRepository('WoojinStoreBundle:Activity')->findAll(),
+            'activitys' => $em->getRepository('WoojinStoreBundle:Activity')->findVisible(),
             'brands' => $em->getRepository('WoojinGoodsBundle:Brand')->findAll(),
             'stores' => $em->getRepository('WoojinStoreBundle:Store')->findAll()
         );

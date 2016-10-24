@@ -103,7 +103,7 @@ class BaseController extends Controller
 	 */
 	public function getActivitySelectAction()
 	{
-		$rActivity = $this->getDoctrine()->getRepository('WoojinStoreBundle:Activity')->findAll();
+		$rActivity = $this->getDoctrine()->getRepository('WoojinStoreBundle:Activity')->findVisible();
 
 		return array('activitys' => $rActivity);
 	}
