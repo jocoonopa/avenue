@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-activityCtrl.controller( 'PunchInCtrl', ['$scope', '$routeParams', '$http',
+activityCtrl.controller('ActivityPunchInCtrl', ['$scope', '$routeParams', '$http',
   function ($scope, $routeParams, $http) { 
 
   $scope.punchInBarcode           = '';

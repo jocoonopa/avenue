@@ -152,7 +152,7 @@ myApp.directive('checklistModel', ['$parse', '$compile', function($parse, $compi
 
 myApp.directive('ngEnter', function () {
   return function (scope, element, attrs) {
-    element.bind('keydown keypress', function (event) {
+    element.bind('keyup keydown keypress', function (event) {
       if(event.which === 13) {
         scope.$apply(function (){
           scope.$eval(attrs.ngEnter);

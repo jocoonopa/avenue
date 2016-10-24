@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-activityCtrl.controller( 'PunchOutCtrl', ['$scope', '$routeParams', '$http',
+activityCtrl.controller('ActivityPunchOutCtrl', ['$scope', '$routeParams', '$http',
   function ($scope, $routeParams, $http) { 
 
   $scope.punchOutBarcode          = '';
