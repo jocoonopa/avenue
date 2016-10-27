@@ -307,15 +307,11 @@ class OutController extends Controller
 
         $opeLogger = $this->get('logger.ope');
 
-        $opeLogger = $this->get('logger.ope');
-
         $dc = $this->getDoctrine();
         $em = $dc->getManager();
         $em->getConnection()->beginTransaction();
 
         try{
-            
-
             // 訂單id陣列
             $rRollback = array();
 
