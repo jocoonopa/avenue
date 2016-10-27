@@ -102,10 +102,13 @@
 	{% endif %}
 
 	<div id="orders-bso">
+		{% if constant('Woojin\\Utility\\Avenue\\Avenue::STORE_BSO') == app.user.store.id  %}
 		<a class="btn btn-success" href="{{ path('auction') }}#/auction_sold" target="_blank">
 			<i data-icon="w"></i>
 			前往BSO銷貨
 		</a>
+		{% endif %}
+
 		<a class="btn btn-success" href="{{ path('auction') }}#/auction" target="_blank"><i data-icon="w"></i>前往BSO管理</a>
 	</div>
 

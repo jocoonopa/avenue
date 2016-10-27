@@ -96,8 +96,17 @@ class GoodsPassportController extends Controller
      * @ParamConverter("goods", class="WoojinGoodsBundle:GoodsPassport", options={"sn": "sn"})
      * @Method("GET")
      */
-    public function showBySnAction(Request $request, $goods, $_format)
+    public function showBySnAction(Request $request, GoodsPassport $goods = NULL, $sn, $_format)
     {
+        if (is_null($goods)) {
+            $em = $this->getDoctrine()->getManager();
+            $goods = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->findOneBy(array('sn' => str_replace('%', '', $sn)));
+
+            if (is_null($goods)) {
+                throw $this->createNotFoundException();
+            }
+        }
+
         $goods->setCost(0);
         $goods->setSn($goods->getSn(true));
 
@@ -137,7 +146,7 @@ class GoodsPassportController extends Controller
             ->select('g')
             ->from('WoojinGoodsBundle:GoodsPassport', 'g')
             ->where(
-                $qb->expr()->in('g.sn', explode('@', $longSn))
+                $qb->expr()->in('g.sn', explode('@', str_replace('%', '', $longSn)))
             )
             ->orderBy('g.id', 'DESC')
         ;

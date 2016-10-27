@@ -63,6 +63,7 @@ abstract class Avenue
 
     const STORE_STOCK_SN            = '$';
     const STORE_WEBSITE             = 8;
+    const STORE_BSO                 = 9;
     
     const SN_RATE                   = 100;
 
