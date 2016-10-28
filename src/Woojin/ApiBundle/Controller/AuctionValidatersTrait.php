@@ -165,13 +165,6 @@ trait AuctionValidaterTrait
                     'msg' => $this->get('translator')->trans('ProductStatusIsNotOnBoard'),
                     'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
             )),
-            'isNotYahooProduct' => array(
-                'params' => array($product),
-                'response' => array(
-                    'status' => Avenue::IS_ERROR,
-                    'msg' => $this->get('translator')->trans('ProductIsOnYahooStore'),
-                    'http_status_code' => Response::HTTP_METHOD_NOT_ALLOWED
-            )),
             'isProductBelongStoreUser' => array(
                 'params' => array($user, $product),
                 'response' => array(

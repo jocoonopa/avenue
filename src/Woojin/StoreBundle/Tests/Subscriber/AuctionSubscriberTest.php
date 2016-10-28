@@ -26,6 +26,7 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->user = m::mock('Woojin\UserBundle\Entity\User');
         $this->custom = m::mock('Woojin\OrderBundle\Entity\Custom');
         $this->auction = m::mock('Woojin\StoreBundle\Entity\Auction')->makePartial();
+        $this->client = m::mock('Woojin\Utility\YahooApi\Client');
     }
 
     public function testOnCreateAuction()
@@ -40,7 +41,7 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->entityManager->shouldReceive('getRepository->find')->atMost(1)->andReturn(new GoodsStatus);
         $this->entityManager->shouldReceive('persist', 'flush')->once();
 
-        $subscriber = new AuctionSubscriber($this->entityManager);
+        $subscriber = new AuctionSubscriber($this->entityManager, $this->client);
         $subscriber->onCreateAuction($this->event);
 
         $this->assertTrue($this->event->getAuction() instanceof \Woojin\StoreBundle\Entity\Auction);
@@ -69,7 +70,7 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->event->setAuction($this->auction)->setOptions(array('backer' => $this->user));
 
-        $subscriber = new AuctionSubscriber($this->entityManager);
+        $subscriber = new AuctionSubscriber($this->entityManager, $this->client);
         $subscriber->onBack($this->event);
 
         $this->assertTrue($this->event->getAuction()->getBacker() instanceof \Woojin\UserBundle\Entity\User);
@@ -92,7 +93,7 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->auction->shouldReceive('sold')->once()->with($options)->passthru();
         $this->event->setAuction($this->auction)->setOptions($options);
 
-        $subscriber = new AuctionSubscriber($this->entityManager);
+        $subscriber = new AuctionSubscriber($this->entityManager, $this->client);
         $subscriber->onSold($this->event);
 
         $this->assertEquals($mockPrice, $this->event->getAuction()->getPrice());
@@ -111,7 +112,7 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->user->shouldReceive('getUsername')->once();
         $this->event->setAuction($this->auction);
         $this->entityManager->shouldReceive('persist', 'flush')->once();
-        $subscriber = new AuctionSubscriber($this->entityManager);
+        $subscriber = new AuctionSubscriber($this->entityManager, $this->client);
 
         $this->event->setOptions(array('canceller' => $this->user));
         $subscriber->onCancel($this->event);
@@ -125,7 +126,7 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function testOnCancelMissingOptionsException()
     {
-        $subscriber = new AuctionSubscriber($this->entityManager);
+        $subscriber = new AuctionSubscriber($this->entityManager, $this->client);
         $this->event->setOptions(array());
         $subscriber->onCancel($this->event);
     }
@@ -135,7 +136,7 @@ class AuctionSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function testOnCancelUndefinedOptionsException()
     {
-        $subscriber = new AuctionSubscriber($this->entityManager);
+        $subscriber = new AuctionSubscriber($this->entityManager, $this->client);
         $this->event->setOptions(array('__canceller__' => 'x'));
         $subscriber->onCancel($this->event);
     }

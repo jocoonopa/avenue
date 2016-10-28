@@ -187,7 +187,7 @@ services:
 
     auction.subscriber:
         class: 'Woojin\StoreBundle\Subscriber\AuctionSubscriber'
-        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+        arguments: ["@doctrine.orm.entity_manager", "@yahoo.api.client"]
         tags:
             - { name: kernel.event_subscriber}
     

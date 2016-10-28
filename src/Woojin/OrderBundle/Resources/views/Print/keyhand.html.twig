@@ -20,6 +20,7 @@
             <h4>購買憑證資訊</h4><hr/>
 
             <form role="form" action="{{ path('orders_printkeybyhand') }}" method="POST" target="_blank">
+                {% set page = 1 %}
                 {% if app.user|has_auth('SELL') and invoice is defined and invoice %}
                     {% set startPos = (page - 1) * 10 %}
 

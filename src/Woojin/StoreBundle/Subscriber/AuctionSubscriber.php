@@ -12,15 +12,21 @@ use Woojin\StoreBundle\Event\AuctionEvent;
 use Woojin\StoreBundle\AuctionEvents AS Events;
 use Woojin\StoreBundle\Entity\Auction;
 use Woojin\Utility\Avenue\Avenue;
+use Woojin\Utility\YahooApi\Client;
 
 class AuctionSubscriber implements EventSubscriberInterface
 {
     protected $em;
+    protected $client;
     protected $resolver;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, Client $client)
     {
-        $this->setEm($em)->setResolver(new OptionsResolver());
+        $this
+            ->setEm($em)
+            ->setClient($client)
+            ->setResolver(new OptionsResolver())
+        ;
     }
 
     public static function getSubscribedEvents()
@@ -28,7 +34,8 @@ class AuctionSubscriber implements EventSubscriberInterface
         return array(
             Events::CREATE => array(
                 array('onCreateAuction', 10),
-                array('onUpdateProductStatus')
+                array('onUpdateProductStatus'),
+                array('offlineProductFromYahoo')
             ),
             Events::SOLD => array(
                 array('onSold', 10),
@@ -42,7 +49,8 @@ class AuctionSubscriber implements EventSubscriberInterface
             ),
             Events::BACK => array(
                 array('onBack', 10),
-                array('onUpdateProductStatus')
+                array('onUpdateProductStatus'),
+                array('onlineProductFromYahoo')
             ),
             Events::CANCEL => array(
                 array('onCancel', 10),
@@ -123,6 +131,24 @@ class AuctionSubscriber implements EventSubscriberInterface
         $this->savePersistance($product);
     }
 
+    public function offlineProductFromYahoo(Event $event)
+    {
+        $product = $event->getAuction()->getProduct();
+
+        if (!is_null($product->getYahooId())) {
+            $this->getClient()->offline($product);
+        }
+    }
+
+    public function onlineProductFromYahoo(Event $event)
+    {
+        $product = $event->getAuction()->getProduct();
+
+        if (!is_null($product->getYahooId())) {
+            $this->getClient()->online($product);
+        }
+    }
+
     protected function savePersistance($object)
     {
         $this->getEm()->persist($object);
@@ -199,5 +225,17 @@ class AuctionSubscriber implements EventSubscriberInterface
         $this->getResolver()
             ->setRequired('canceller')
         ;
+    }
+
+    protected function setClient(Client $client)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    public function getClient()
+    {
+        return $this->client;
     }
 }
