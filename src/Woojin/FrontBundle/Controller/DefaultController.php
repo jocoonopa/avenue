@@ -22,6 +22,7 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        return $this->redirect('http://www.520used.com');
         $mobileDetector = $this->get('resolver.device');
         $mobileDetector->setForce($request);
 
