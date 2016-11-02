@@ -585,32 +585,36 @@ $('#refresh_invoice_key').click(function () {
 	})
 	.find('[name="nPayTypeId"]')
 	.on('change', function(){
-		var nOrdersRequired = parseInt( $ajaxGoodsSn.val().substr( -4, 4) )*window.fix_rate,
-			fPayTypeDis 	= $(this).find('option:selected').data('discount');
+		var nOrdersRequired = parseInt( $ajaxGoodsSn.val().substr( -4, 4) )*window.fix_rate;
+		var nDis = $(this).find('option:selected').data('discount');
 
-		$nOrdersPaidReal.val( Math.ceil( parseInt( $ordersPaid.val() ) /fPayTypeDis ) ).change();
+		$nOrdersPaidReal.val(Math.ceil(parseInt($ordersPaid.val())*(2 - nDis))).change();
 	});
 
 	$ordersPaid.on('change', function(){
-		var $this = $(this),
-			nDis  = $nPayTypeId.find('option:selected').data('discount');
-		$nOrdersPaidReal.val( Math.ceil(parseInt($ordersPaid.val())/nDis ));
+		var $this = $(this);
+		var nDis = $nPayTypeId.find('option:selected').data('discount');
 
-		if ($this.val() == 'NaN')
+		$nOrdersPaidReal.val(Math.ceil(parseInt($ordersPaid.val())*(2 - nDis)));
+
+		if ($this.val() == 'NaN') {
 			$this.val(0);
+		}
 	});
 
 	$nOrdersPaidReal.on('change', function(){
-		var $this = $(this),
-			nDis  = $nPayTypeId.find('option:selected').data('discount');
+		var $this = $(this);
+		var nDis = $nPayTypeId.find('option:selected').data('discount');
 
-		if (parseInt($this.val())> parseInt($ordersRequired.val()) )
+		if (parseInt($this.val())> parseInt($ordersRequired.val())) {
 			$this.val($ordersRequired.val()).change();
+		}
 
-		$ordersPaid.val( Math.ceil( parseInt($this.val()*nDis) ) );
+		$ordersPaid.val(Math.ceil(parseInt($this.val()/(2 - nDis))));
 		
-		if ($this.val() == 'NaN')
+		if ($this.val() == 'NaN') {
 			$this.val(0);
+		}
 	});
 
 	$ordersRequired.on('change', function(){
