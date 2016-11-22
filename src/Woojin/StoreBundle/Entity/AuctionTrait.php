@@ -350,10 +350,7 @@ trait AuctionTrait
 
     protected function getPaymentAmountWithoutTax(AuctionPayment $payment)
     {
-        return (int) ($payment->getPayType()->isCreditCard() 
-            ? $payment->getAmount() 
-            : $payment->getPayType()->getAmountWithoutTax($payment->getAmount()))
-        ;
+        return (int) $payment->getAmount();
     }
 
     protected function isPaymentValid()
