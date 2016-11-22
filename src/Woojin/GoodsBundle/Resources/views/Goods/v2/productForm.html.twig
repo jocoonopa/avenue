@@ -99,9 +99,8 @@
             {% if goods.status.id in [
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
-            ] and goods.isOrigin() %}{% else %} disabled {% endif %}
+            ] and (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %} disabled {% endif %}
                 {% if goods.isAllowAuction %}checked{% endif %}
-                {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
                >
         </div>
     </div>
@@ -122,9 +121,8 @@
             {% if goods.status.id in [
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
-            ] and goods.isOrigin() %}{% else %} disabled {% endif %}
+            ] and (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %} disabled {% endif %}
                 {% if goods.isAlanIn %}checked{% endif %}
-                {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
                >
         </div>
     </div>

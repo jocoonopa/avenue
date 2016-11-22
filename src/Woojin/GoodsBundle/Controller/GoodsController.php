@@ -2294,7 +2294,7 @@ class GoodsController extends Controller
             if (in_array($goods->getStatus()->getId(), array(
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY')
-            )) && $goods->isOrigin()) {
+            ))) {
                 $goods
                     ->setIsAllowAuction($isAllowAuction)
                     ->setIsAlanIn($isAlanIn)

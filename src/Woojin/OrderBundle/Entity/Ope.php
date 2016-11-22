@@ -7,7 +7,7 @@ use JMS\Serializer\Annotation\Exclude;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="ope")
+ * @ORM\Table(name="ope",indexes={@ORM\Index(name="datetime_idx", columns={"datetime"})})
  * @ORM\HasLifecycleCallbacks()
  */
 class Ope

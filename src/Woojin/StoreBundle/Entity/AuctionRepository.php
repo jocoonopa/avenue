@@ -126,13 +126,13 @@ class AuctionRepository extends \Doctrine\ORM\EntityRepository
             ->from('WoojinStoreBundle:Auction', 'auction')
             ->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('auction.creater', ':creater'),
+                    $qb->expr()->eq('auction.createStore', ':createStoreId'),
                     $qb->expr()->eq('auction.profitStatus', ':profitStatus')
                 )
             );
 
         $qb
-            ->setParameter('creater', $user->getId())
+            ->setParameter('createStoreId', $user->getStore()->getId())
             ->setParameter('profitStatus', Auction::PROFIT_STATUS_PAY_COMPLETE)
         ;
 

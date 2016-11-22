@@ -609,6 +609,10 @@ class GoodsPassport
 
         $cursor = $this->inherits[$index];
 
+        if (is_null($cursor)) {
+            return $this;
+        }
+
         return Avenue::GS_OTHERSTORE === $cursor->getStatus()->getId() ? $this->getCurrent($index - 1) : $cursor;
     }
 
