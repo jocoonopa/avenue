@@ -134,13 +134,15 @@ StockChecker.prototype.bindInput = function () {
     var self = this;
 
     this.$input.keypress(function () {
+        var val = $(this).val().replace('%', '');
+
         if (13 === event.keyCode) {
-            return ('-' === self.setTarget($(this).val().toUpperCase()).resolve()) ? 
+            return ('-' === self.setTarget(val.toUpperCase()).resolve()) ? 
                 self.reduce().clearInput() : 
                 self.addNotHere().clearInput();
         }
 
-        if (20 <= $(this).val().length) {
+        if (20 <= val.length) {
             if (!self.isSilent) {
                 document.getElementById('alert-long').play();
             }

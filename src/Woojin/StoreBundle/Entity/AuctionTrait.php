@@ -135,7 +135,7 @@ trait AuctionTrait
      */
     public function isConsign()
     {
-        return 0 === $this->getCustomPercentage() && !is_null($this->getProduct()->getCustom());
+        return 0 === $this->getCustomPercentage();
     }
 
     /**
