@@ -17,8 +17,6 @@ class UitoxExcelGenerator extends ExcelGenerator
 
     protected $container;
 
-    protected $excelService;
-
     protected $context;
 
     public function __construct(ContainerInterface $container, TokenStorage $context)
@@ -26,8 +24,6 @@ class UitoxExcelGenerator extends ExcelGenerator
         $this->context = $context;
 
         $this->container = $container;
-
-        $this->excelService = $this->container->get('xls.load_xls5');
 
         $this->authorityJudger = $this->container->get('authority.judger');
     }

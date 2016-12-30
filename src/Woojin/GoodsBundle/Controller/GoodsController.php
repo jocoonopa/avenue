@@ -2501,16 +2501,14 @@ class GoodsController extends Controller
             // 將實體管理員存放至屬性方便其他方法直接調用 ( 其實好像不是好作法 )
             $this->em = $em = $this->getDoctrine()->getManager();
 
-            // 取得PHPExcel物件
-            $excelService = $this->get('xls.load_xls2007');
-
             // 取得excel資料並且轉換成陣列 ,
             // 以此陣列最迭代進行上傳程序
-            $phpExcel = $excelService->load($dirRoot . $fileName);
+            $phpExcel = $this->get('phpexcel')->createPHPExcelObject("{$dirRoot}{$fileName}");
             $workSheet = $phpExcel->getActiveSheet();
 
             foreach ($workSheet->getRowIterator() as $rowIndex => $row) {
-                $snArr[] = $sn = $workSheet->getCellByColumnAndRow(1, $rowIndex)->getValue();
+                $sn = $workSheet->getCellByColumnAndRow(1, $rowIndex)->getValue();
+                $snArr[] = $sn;
                 $snMappingCustomSnArr[$sn] = $workSheet->getCellByColumnAndRow(0, $rowIndex)->getValue();
             }
 
