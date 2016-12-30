@@ -402,7 +402,7 @@ ordersUpdateForm.prototype.setPaid = function () {
     var discount = this.getDiscount();
     var paidOrg = parseInt(this.$paidOrg.val());
 
-    this.$paid.val(Math.round(discount * paidOrg));
+    this.$paid.val(Math.round(paidOrg / (2 - discount)));
 
     return this;
 };

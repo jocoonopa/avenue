@@ -183,12 +183,15 @@ class ModifyController extends Controller
 
             $em->flush();
             
-            $msg = '完成寄賣回扣訂單:'. $goods->getSn() . '原訂' .  $order->getRequired() . '元，議價為:' . $price . '元';
+            $msg = '完成寄賣回扣訂單:'. $goods->getSn();
+            $msg.= '原訂' .  $order->getRequired();
+            $msg.= '元，議價為:' . $price . '元';
+
             $opeLogger->recordOpe($order, $msg);
 
-            $em->getConnection()->commit();
-
             $this->get('passport.syncer')->sync($goods);
+
+            $em->getConnection()->commit();
 
             $session = $this->get('avenue.session')->get();
             $session->getFlashBag()->add('success', $msg);

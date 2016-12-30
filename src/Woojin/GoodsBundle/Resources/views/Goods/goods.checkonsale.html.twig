@@ -64,10 +64,10 @@
 				</thead>
 				<tbody>
 					{% for key,goods in rGoods %}
-					<tr class="{{ goods.sn }}">
+					<tr class="{{ goods.sn|replace({'%': ''}) }}">
 						<td>{{ key + 1 }}</td>
 						<td>
-							<a href="{{ path('goods_edit_v2', {id: goods.id}) }}" target="_blank">{{ goods.sn }}</a>
+							<a href="{{ path('goods_edit_v2', {id: goods.id}) }}" target="_blank">{{ goods.sn|replace({'%': ''}) }}</a>
 						</td>
 						<td>{% if goods.brand %}{{ goods.brand.name }}{% endif %} <span class="badge">{{ goods.customSn }}</span></td>
 						<td>{{ goods.name }}</td>

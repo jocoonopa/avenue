@@ -40,6 +40,10 @@ class PassportSyncer
         }
 
         foreach ($inherits as $inherit) {
+            if ($product->getId() === $inherit->getId()) {
+                continue;
+            }
+
             $inherit
                 ->setCustom($custom)
                 ->setCost($cost)
