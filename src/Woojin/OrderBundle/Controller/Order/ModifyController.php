@@ -163,6 +163,7 @@ class ModifyController extends Controller
 
                 // '商品'狀態為售出:
                 case Avenue::GS_SOLDOUT:
+                case Avenue::GS_BSO_SOLD:
                     // 修改'訂單' 狀態，已付，應付
                     $order
                         ->setStatus($status)
