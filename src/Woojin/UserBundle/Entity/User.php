@@ -17,6 +17,12 @@ class User implements AdvancedUserInterface, \Serializable
 {
     /**
      * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\BsoMoveLog", mappedBy="creater")
+     */
+    protected $bsoMoveLogs;
+
+    /**
+     * @Exclude
      * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\AuctionPayment", mappedBy="creater")
      * @var createAuctionPayments[]
      */
@@ -1342,5 +1348,39 @@ class User implements AdvancedUserInterface, \Serializable
     public function getCancelAuctionPayments()
     {
         return $this->cancelAuctionPayments;
+    }
+
+    /**
+     * Add bsoMoveLog
+     *
+     * @param \Woojin\GoodsBundle\Entity\BsoMoveLog $bsoMoveLog
+     *
+     * @return User
+     */
+    public function addBsoMoveLog(\Woojin\GoodsBundle\Entity\BsoMoveLog $bsoMoveLog)
+    {
+        $this->bsoMoveLogs[] = $bsoMoveLog;
+
+        return $this;
+    }
+
+    /**
+     * Remove bsoMoveLog
+     *
+     * @param \Woojin\GoodsBundle\Entity\BsoMoveLog $bsoMoveLog
+     */
+    public function removeBsoMoveLog(\Woojin\GoodsBundle\Entity\BsoMoveLog $bsoMoveLog)
+    {
+        $this->bsoMoveLogs->removeElement($bsoMoveLog);
+    }
+
+    /**
+     * Get bsoMoveLogs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBsoMoveLogs()
+    {
+        return $this->bsoMoveLogs;
     }
 }

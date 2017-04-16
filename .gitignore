@@ -20,6 +20,7 @@
 /web/img/product
 nohup.out
 composer.lock
+npm-debug.log
 /web/js/63f2135.js
 /web/js/63f2135_part_1.js
 /web/cache/*

@@ -3,13 +3,13 @@
 namespace Woojin\ApiBundle\Controller;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Woojin\GoodsBundle\Entity\BsoMoveLog;
 use Woojin\StoreBundle\Entity\Store;
 use Woojin\UserBundle\Entity\User;
 
@@ -165,6 +165,15 @@ class AuctionController extends Controller
             'bsoStore' => $bsoStore
         ]);
 
+        $log = new BsoMoveLog;
+        $log
+            ->setCreater($user)
+            ->setProduct($product)
+            ->setAction('刷入BSO競拍')
+        ;
+        $em->persist($log);
+        $em->flush();
+
         return $this->_genResponseWithServiceReturnAuction($result, $_format);
     }
 
@@ -200,6 +209,15 @@ class AuctionController extends Controller
          * @var mixed[\Woojin\StoreBundle\Entity\Auction|Exception]
          */
         $result = $this->get('auction.service')->setAuction($auction)->back(['backer' => $user]);
+
+        $log = new BsoMoveLog;
+        $log
+            ->setCreater($user)
+            ->setProduct($product)
+            ->setAction('刷出BSO競拍回店內')
+        ;
+        $em->persist($log);
+        $em->flush();
 
         return $this->_genResponseWithServiceReturnAuction($result, $_format);
     }

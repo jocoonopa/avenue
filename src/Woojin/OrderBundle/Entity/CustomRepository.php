@@ -130,7 +130,7 @@ class CustomRepository extends EntityRepository
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq('c.mobil', $qb->expr()->literal($mobil)),
-                    $qb->expr()->neq('c.mobil', ''),
+                    $qb->expr()->neq('c.mobil', $qb->expr()->literal('')),
                     $qb->expr()->eq('c.store', $user->getStore()->getId())
                 )
             )
@@ -138,7 +138,7 @@ class CustomRepository extends EntityRepository
 
         $res = $qb->getQuery()->getOneOrNullResult();
 
-        return res;
+        return $res;
     }
 
     /**

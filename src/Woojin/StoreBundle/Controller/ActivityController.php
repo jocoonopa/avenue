@@ -2,12 +2,13 @@
 
 namespace Woojin\StoreBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Woojin\GoodsBundle\Entity\BsoMoveLog;
 use Woojin\StoreBundle\Entity\Activity;
 use Woojin\StoreBundle\Form\ActivityType;
 use Woojin\Utility\Avenue\Avenue;
@@ -317,202 +318,232 @@ class ActivityController extends Controller
 	}
   }
 
-  /**
-   * Bind Goods Entity with the Activity entity.
-   *
-   * @Route("/api/punch/in/{id}", name="api_punch_in_update_activity", options={"expose"=true}, requirements={"id": "\d+"})
-   * @Method("PUT")
-   */
-  public function apiUpdatePunchInAction(Request $request, $id)
-  {
-	$returnArray              = array();
-	$returnArray['success']   = array();
-	$returnArray['fail']      = array();
-	$rSn                      = array();
-	$content                  = $this->get('request')->getContent();
-	$data                     = ( !empty( $content ) ) ? json_decode( $content, true) : array();
+    /**
+    * Bind Goods Entity with the Activity entity.
+    *
+    * @Route("/api/punch/in/{id}", name="api_punch_in_update_activity", options={"expose"=true}, requirements={"id": "\d+"})
+    * @Method("PUT")
+    */
+    public function apiUpdatePunchInAction(Request $request, $id)
+    {
+        /**
+         * The Current User
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
-	// 組成 rSn, 要拿來當後面 where 其中一個條件 
-	foreach ($data as $eachData) {
-	  if (!isset($eachData['sn'])) {
-		continue;
-	  }
-	  array_push($rSn, strtoupper($eachData['sn']));
-	}
+        $returnArray = array();
+        $returnArray['success'] = array();
+        $returnArray['fail'] = array();
+        $rSn = array();
+        $content = $this->get('request')->getContent();
+        $data = ( !empty( $content ) ) ? json_decode( $content, true) : array();
 
-	if (empty($rSn)) {
-	  return new Response('');
-	}
-	
-	// 修正重複刷件
-	$rSn = array_unique($rSn);
+        // 組成 rSn, 要拿來當後面 where 其中一個條件 
+        foreach ($data as $eachData) {
+            if (!isset($eachData['sn'])) {
+                continue;
+            }
+            array_push($rSn, strtoupper($eachData['sn']));
+        }
 
-	$em = $this->getDoctrine()->getManager();
-	$em->getConnection()->beginTransaction();
+        if (empty($rSn)) {
+            return new Response('');
+        }
 
-	try {
-	  // 傳入資料過濾 1.上架 2. 字首為本店代碼 3.傳入之rSn
-	  $qb = $em->createQueryBuilder();
-	  $oRes = $qb
-		->select('gd')
-		->from('WoojinGoodsBundle:GoodsPassport', 'gd')
-		->where( 
-		  $qb->expr()->andX(
-			$qb->expr()->eq('gd.status', Avenue::GS_ONSALE),
-			// $qb->expr()->eq( 
-			//   $qb->expr()->substring('gd.sn', 1, 1), 
-   //            $qb->expr()->literal($this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn())
-			// ),
-			$qb->expr()->in('gd.sn', $rSn)
-		  )
-		)
-		->groupBy('gd.id')
-		->getQuery()
-	  ;
+        // 修正重複刷件
+        $rSn = array_unique($rSn);
 
-	  // 過濾後資料為 rGoods
-	  $rGoods = $oRes->getResult(); 
+        $em = $this->getDoctrine()->getManager();
+        $em->getConnection()->beginTransaction();
 
-	  $oGoodsStatus = $em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_ACTIVITY);
+        try {
+            // 傳入資料過濾 1.上架 2. 字首為本店代碼 3.傳入之rSn
+            $qb = $em->createQueryBuilder();
+            
+            $oRes = $qb
+            ->select('gd')
+            ->from('WoojinGoodsBundle:GoodsPassport', 'gd')
+            ->where( 
+                $qb->expr()->andX(
+                    $qb->expr()->eq('gd.status', Avenue::GS_ONSALE),
+                    // $qb->expr()->eq( 
+                    //   $qb->expr()->substring('gd.sn', 1, 1), 
+                    //            $qb->expr()->literal($this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn())
+                    // ),
+                    $qb->expr()->in('gd.sn', $rSn)
+                )
+            )
+            ->groupBy('gd.id')
+    	    ->getQuery();
 
-	  // 取得活動實體 by activity_id , 取得商品狀態實體
-	  $oActivity = $em->find('WoojinStoreBundle:Activity', $id);
+            // 過濾後資料為 rGoods
+            $rGoods = $oRes->getResult(); 
 
-	  // 更新所有 rGoods 活動id 為傳入之 
-	  foreach ($rGoods as $oGoods) {
-		$oGoods
-		  ->setActivity($oActivity)
-		  ->setStatus($oGoodsStatus)
-		;
+            $oGoodsStatus = $em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_ACTIVITY);
 
-		// 成功刷入則將其從 rSn 移除，rSn 最後存在的元素表示為刷件失敗之元素，回傳當做錯誤訊息
-		unset($rSn[array_search($oGoods->getSn(), $rSn)]);
+            // 取得活動實體 by activity_id , 取得商品狀態實體
+            $oActivity = $em->find('WoojinStoreBundle:Activity', $id);
 
-		// 將成功刷入之產編存入刷件成功陣列
-		array_push($returnArray['success'], array('sn' => $oGoods->getSn()));
-	  }
+            // 更新所有 rGoods 活動id 為傳入之 
+            foreach ($rGoods as $oGoods) {
+                $oGoods
+                    ->setActivity($oActivity)
+                    ->setStatus($oGoodsStatus)
+                ;
 
-	  // 剩餘的 rSn 表示刷件失敗的產編們，存入刷件失敗陣列
-	  // 同時 reindex 陣列否則 js 會把陣列誤轉為物件
-	  $returnArray['fail'] = array_values($rSn);
+                // 成功刷入則將其從 rSn 移除，rSn 最後存在的元素表示為刷件失敗之元素，回傳當做錯誤訊息
+                unset($rSn[array_search($oGoods->getSn(), $rSn)]);
 
-	  $em->flush();
-	  $em->getConnection()->commit();
+                // 將成功刷入之產編存入刷件成功陣列
+                array_push($returnArray['success'], array('sn' => $oGoods->getSn()));
+            }
 
-	  //操作記錄
-	  $jReturn = json_encode( $returnArray, true );
-	  $sMsg = '刷入' . $oActivity->getName() . ':' . $jReturn;
-	  $this->get('my_meta_record_method')->recordMeta($sMsg);
+            // 剩餘的 rSn 表示刷件失敗的產編們，存入刷件失敗陣列
+            // 同時 reindex 陣列否則 js 會把陣列誤轉為物件
+            $returnArray['fail'] = array_values($rSn);
 
-	  // 回傳 rGoods 之 sn 之 json 字串
-	  return new Response($jReturn);
-	} catch (Exception $e) {
-	  $em->getConnection()->rollback();
+            $em->flush();
+            $em->getConnection()->commit();
 
-	  throw $e;
-	}
-  }
+            foreach ($rGoods as $oGoods) {
+                $log = new BsoMoveLog;
+                $log
+                    ->setCreater($user)
+                    ->setProduct($oGoods)
+                    ->setAction('刷入活動' . $oActivity->getName())
+                ;
+                $em->persist($log);
+                $em->flush();
+            }
 
-  /**
-   * Unbind Goods Entity with the Activity entity
-   *
-   * @Route("/api/punch/out/{id}", name="api_punch_out_update_activity", options={"expose"=true})
-   * @Method("PUT")
-   */
-  public function apiUpdatePunchOutAction(Request $request, $id)
-  {
-	$returnArray              = array();
-	$returnArray['success']   = array();
-	$returnArray['fail']      = array();
-	$rSn                      = array();
-	$content                  = $this->get('request')->getContent();
-	$data                     = (!empty($content)) ? json_decode($content, true) : array();
+            //操作記錄
+            $jReturn = json_encode( $returnArray, true );
+            $sMsg = '刷入' . $oActivity->getName() . ':' . $jReturn;
+            $this->get('my_meta_record_method')->recordMeta($sMsg);
 
-	// 組成 rSn, 要拿來當後面 where 其中一個條件 
-	foreach ($data as $eachData) {
-	  if (!isset($eachData['sn'])) {
-		continue;
-	  }
+            // 回傳 rGoods 之 sn 之 json 字串
+            return new Response($jReturn);
+        } catch (Exception $e) {
+            $em->getConnection()->rollback();
 
-	  array_push($rSn, strtoupper($eachData['sn']));
-	}
+            throw $e;
+        }
+    }
 
-	// 修正重複刷件
-	$rSn = array_unique($rSn);
-	
-	$em = $this->getDoctrine()->getManager();
+    /**
+     * Unbind Goods Entity with the Activity entity
+     *
+     * @Route("/api/punch/out/{id}", name="api_punch_out_update_activity", options={"expose"=true})
+     * @Method("PUT")
+     */
+    public function apiUpdatePunchOutAction(Request $request, $id)
+    {
+    	$returnArray              = array();
+    	$returnArray['success']   = array();
+    	$returnArray['fail']      = array();
+    	$rSn                      = array();
+    	$content                  = $this->get('request')->getContent();
+    	$data                     = (!empty($content)) ? json_decode($content, true) : array();
+        /**
+         * The Current User
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
-	$em->getConnection()->beginTransaction();
+        // 組成 rSn, 要拿來當後面 where 其中一個條件 
+        foreach ($data as $eachData) {
+            if (!isset($eachData['sn'])) {
+                continue;
+            }
 
-	try {
+            array_push($rSn, strtoupper($eachData['sn']));
+        }
 
-	  // 傳入資料過濾 1.狀態:活動 2. 字首為本店代碼 3.傳入之rSn
-	  $qb = $em->createQueryBuilder();
-	  $oRes = $qb
-		->select('gd')
-		->from('WoojinGoodsBundle:GoodsPassport', 'gd')
-		->where( 
-		  $qb->expr()->andX(
-			$qb->expr()->eq('gd.status', Avenue::GS_ACTIVITY),
-			$qb->expr()->eq( 
-			  $qb->expr()->substring('gd.sn', 1, 1), 
-              $qb->expr()->literal($this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn())
-			),
-			$qb->expr()->in('gd.sn', $rSn),
-			$qb->expr()->eq('gd.activity', $id)
-		  )
-		)
-		->groupBy('gd.id')
-		->getQuery()
-	  ;
+        // 修正重複刷件
+        $rSn = array_unique($rSn);
 
-      //echo $this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn();
+        $em = $this->getDoctrine()->getManager();
 
-      //exit();
+        $em->getConnection()->beginTransaction();
 
-	  //取得活動實體
-	  $oActivity = $em->find('WoojinStoreBundle:Activity', $id);
+        try {
+            // 傳入資料過濾 1.狀態:活動 2. 字首為本店代碼 3.傳入之rSn
+            $qb = $em->createQueryBuilder();
+            
+            $oRes = $qb
+                ->select('gd')
+                ->from('WoojinGoodsBundle:GoodsPassport', 'gd')
+                ->where( 
+                    $qb->expr()->andX(
+                            $qb->expr()->eq('gd.status', Avenue::GS_ACTIVITY),
+                            $qb->expr()->eq( 
+                                $qb->expr()->substring('gd.sn', 1, 1), 
+                                $qb->expr()->literal($this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn()
+                            )
+                        ),
+                        $qb->expr()->in('gd.sn', $rSn),
+                        $qb->expr()->eq('gd.activity', $id)
+                    )
+                )
+                ->groupBy('gd.id')
+                ->getQuery()
+            ;
 
-	  // 過濾後資料為 rGoods
-	  $rGoods = $oRes->getResult();
+            //取得活動實體
+            $oActivity = $em->find('WoojinStoreBundle:Activity', $id);
 
-	  $oGoodsStatus = $em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_ONSALE);
+            // 過濾後資料為 rGoods
+            $rGoods = $oRes->getResult();
 
-	  // 更新所有 rGoods 活動id 為傳入之 
-	  foreach ($rGoods as $oGoods) {
-		$oGoods
-		  ->setActivity(null)
-		  ->setStatus($oGoodsStatus)
-		;
+            $oGoodsStatus = $em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_ONSALE);
 
-		// 成功刷入則將其從 rSn 移除，rSn 最後存在的元素表示為刷件失敗之元素，回傳當做錯誤訊息
-		unset($rSn[array_search($oGoods->getSn(), $rSn)]);
+            // 更新所有 rGoods 活動id 為傳入之 
+            foreach ($rGoods as $oGoods) {
+                $oGoods
+                    ->setActivity(null)
+                    ->setStatus($oGoodsStatus)
+                ;
 
-		// 將成功刷入之產編存入刷件成功陣列
-		array_push($returnArray['success'], array('sn' => $oGoods->getSn()));
-	  }
+                // 成功刷入則將其從 rSn 移除，rSn 最後存在的元素表示為刷件失敗之元素，回傳當做錯誤訊息
+                unset($rSn[array_search($oGoods->getSn(), $rSn)]);
 
-	  // 剩餘的 rSn 表示刷件失敗的產編們，存入刷件失敗陣列
-	  // 同時 reindex 陣列否則 js 會把陣列誤轉為物件
-	  $returnArray['fail'] = array_values($rSn); 
+                // 將成功刷入之產編存入刷件成功陣列
+                array_push($returnArray['success'], array('sn' => $oGoods->getSn()));
+            }
 
-	  $em->flush();
-	  $em->getConnection()->commit();
+            // 剩餘的 rSn 表示刷件失敗的產編們，存入刷件失敗陣列
+            // 同時 reindex 陣列否則 js 會把陣列誤轉為物件
+            $returnArray['fail'] = array_values($rSn); 
 
-	  //操作記錄
-	  $jReturn = json_encode($returnArray, true);
-	  $sMsg = '從活動' . $oActivity->getName() . '刷出:' . $jReturn;
-	  $this->get('my_meta_record_method')->recordMeta($sMsg);
+            $em->flush();
+            $em->getConnection()->commit();
 
-	  // 回傳 rGoods 之 sn 之 json 字串
-	  return new Response($jReturn);
-	} catch (Exception $e) {
+            foreach ($rGoods as $oGoods) {
+                $log = new BsoMoveLog;
+                $log
+                    ->setCreater($user)
+                    ->setProduct($oGoods)
+                    ->setAction('刷出活動' . $oActivity->getName())
+                ;
+                $em->persist($log);
+            }
 
-	  $em->getConnection()->rollback();
+            //操作記錄
+            $jReturn = json_encode($returnArray, true);
+            $sMsg = '從活動' . $oActivity->getName() . '刷出:' . $jReturn;
+            $this->get('my_meta_record_method')->recordMeta($sMsg);
 
-	  throw $e;
-	}
-  }
+            // 回傳 rGoods 之 sn 之 json 字串
+            return new Response($jReturn);
+        } catch (Exception $e) {
+            $em->getConnection()->rollback();
+
+            throw $e;
+        }
+    }
 
     /**
     * Get All Activity Goods 
@@ -549,7 +580,7 @@ class ActivityController extends Controller
           $rTmp             = array();
           $rTmp['id']       = $oGoods->getId();
           $rTmp['sn']       = $oGoods->getSn();
-          $rTmp['name']     = $oGoods->getName();
+          $rTmp['name']     = '';//$oGoods->getName();
           $rTmp['price']    = $oGoods->getPrice();
           $rTmp['status']   = $oGoods->getStatus()->getName();
           $rTmp['brand']    = $oGoods->getBrand()->getName();

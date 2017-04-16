@@ -22,6 +22,12 @@ use Woojin\Utility\Avenue\Avenue;
 class GoodsPassport
 {
     /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\GoodsBundle\Entity\BsoMoveLog", mappedBy="product")
+     */
+    protected $bsoMoveLogs;
+
+    /**
      * @ORM\ManyToOne(targetEntity="SeoSlogan", inversedBy="products")
      * @var SeoSlogan
      */
@@ -309,6 +315,8 @@ class GoodsPassport
    * @ORM\Column(type="integer", nullable=true)
    */
   protected $bsoCustomPercentage;
+
+  
 
     /**
      * Constructor
@@ -1970,5 +1978,135 @@ class GoodsPassport
     public function getBsoCustomPercentage()
     {
         return NULL === $this->bsoCustomPercentage ? Auction::DEFAULT_CUSTOM_PERCENTAGE : $this->bsoCustomPercentage;
+    }
+
+    /**
+     * Set actionInBsoAt
+     *
+     * @param \DateTime $actionInBsoAt
+     *
+     * @return GoodsPassport
+     */
+    public function setActionInBsoAt($actionInBsoAt)
+    {
+        $this->actionInBsoAt = $actionInBsoAt;
+
+        return $this;
+    }
+
+    /**
+     * Get actionInBsoAt
+     *
+     * @return \DateTime
+     */
+    public function getActionInBsoAt()
+    {
+        return $this->actionInBsoAt;
+    }
+
+    /**
+     * Set actionOutBsoAt
+     *
+     * @param \DateTime $actionOutBsoAt
+     *
+     * @return GoodsPassport
+     */
+    public function setActionOutBsoAt($actionOutBsoAt)
+    {
+        $this->actionOutBsoAt = $actionOutBsoAt;
+
+        return $this;
+    }
+
+    /**
+     * Get actionOutBsoAt
+     *
+     * @return \DateTime
+     */
+    public function getActionOutBsoAt()
+    {
+        return $this->actionOutBsoAt;
+    }
+
+    /**
+     * Set auctionInBsoAt
+     *
+     * @param \DateTime $auctionInBsoAt
+     *
+     * @return GoodsPassport
+     */
+    public function setAuctionInBsoAt($auctionInBsoAt)
+    {
+        $this->auctionInBsoAt = $auctionInBsoAt;
+
+        return $this;
+    }
+
+    /**
+     * Get auctionInBsoAt
+     *
+     * @return \DateTime
+     */
+    public function getAuctionInBsoAt()
+    {
+        return $this->auctionInBsoAt;
+    }
+
+    /**
+     * Set auctionOutBsoAt
+     *
+     * @param \DateTime $auctionOutBsoAt
+     *
+     * @return GoodsPassport
+     */
+    public function setAuctionOutBsoAt($auctionOutBsoAt)
+    {
+        $this->auctionOutBsoAt = $auctionOutBsoAt;
+
+        return $this;
+    }
+
+    /**
+     * Get auctionOutBsoAt
+     *
+     * @return \DateTime
+     */
+    public function getAuctionOutBsoAt()
+    {
+        return $this->auctionOutBsoAt;
+    }
+
+    /**
+     * Add bsoMoveLog
+     *
+     * @param \Woojin\GoodsBundle\Entity\BsoMoveLog $bsoMoveLog
+     *
+     * @return GoodsPassport
+     */
+    public function addBsoMoveLog(\Woojin\GoodsBundle\Entity\BsoMoveLog $bsoMoveLog)
+    {
+        $this->bsoMoveLogs[] = $bsoMoveLog;
+
+        return $this;
+    }
+
+    /**
+     * Remove bsoMoveLog
+     *
+     * @param \Woojin\GoodsBundle\Entity\BsoMoveLog $bsoMoveLog
+     */
+    public function removeBsoMoveLog(\Woojin\GoodsBundle\Entity\BsoMoveLog $bsoMoveLog)
+    {
+        $this->bsoMoveLogs->removeElement($bsoMoveLog);
+    }
+
+    /**
+     * Get bsoMoveLogs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBsoMoveLogs()
+    {
+        return $this->bsoMoveLogs;
     }
 }
