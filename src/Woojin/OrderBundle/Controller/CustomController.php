@@ -43,20 +43,73 @@ class CustomController extends Controller
     public function updateAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+
+        /**
+         * The Current User
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $qb = $em->createQueryBuilder();
             
-        $custom = $em->find('WoojinOrderBundle:Custom', $request->request->get('nCustomId'));
-        $custom
-            ->setName($request->request->get('sCustomName'))
-            ->setSex($request->request->get('sCustomSex'))
-            ->setMobil($request->request->get('sCustomMobil'))
-            ->setEmail($request->request->get('sCustomEmail'))
-            ->setAddress($request->request->get('sCustomAddress'))
-            ->setBirthday(new \DateTime($request->request->get('sCustomBirthday')))
-            ->setMemo($request->request->get('sCustomMemo'))
+        $stores = $qb->select('s')
+            ->from('WoojinStoreBundle:Store', 's')
+            ->getQuery()
+            ->getResult()
         ;
 
-        $em->persist($custom);
-        $em->flush();
+        $custom = $em->find('WoojinOrderBundle:Custom', $request->request->get('nCustomId'));
+        $mobil = $custom->getModil();
+
+        if (empty($mobil)) {
+            $custom
+                ->setName($request->request->get('sCustomName'))
+                ->setSex($request->request->get('sCustomSex'))
+                ->setMobil($request->request->get('sCustomMobil'))
+                ->setEmail($request->request->get('sCustomEmail'))
+                ->setAddress($request->request->get('sCustomAddress'))
+                ->setBirthday(new \DateTime($request->request->get('sCustomBirthday')))
+                ->setLineAccount($request->request->get('line'))
+                ->setFacebookAccount($request->request->get('facebook'))
+            ;
+
+            if ($custom->getStore()->getId() === $user->getStore()->getId()) {
+                $custom->setMemo($request->request->get('sCustomMemo'));
+            }
+
+            $em->persist($custom);
+            $em->flush();
+
+            return array('custom' => $custom);
+        }
+
+        foreach ($stores as $store) {
+            $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $mobil);
+
+            if (is_null($custom)) {
+                $custom = new Custom;
+                $custom->setStore($store);
+            }
+
+            $custom
+                ->setName($request->request->get('sCustomName'))
+                ->setSex($request->request->get('sCustomSex'))
+                ->setMobil($request->request->get('sCustomMobil'))
+                ->setEmail($request->request->get('sCustomEmail'))
+                ->setAddress($request->request->get('sCustomAddress'))
+                ->setBirthday(new \DateTime($request->request->get('sCustomBirthday')))
+                ->setLineAccount($request->request->get('line'))
+                ->setFacebookAccount($request->request->get('facebook'))
+            ;
+
+            if ($custom->getStore()->getId() === $user->getStore()->getId()) {
+                $custom->setMemo($request->request->get('sCustomMemo'));
+            }
+
+            $em->persist($custom);
+            $em->flush();
+        }
 
         return array('custom' => $custom);
     }
@@ -75,36 +128,46 @@ class CustomController extends Controller
         }
             
         $em = $this->getDoctrine()->getManager();
-        $em->getConnection()->beginTransaction();
 
         $qb = $em->createQueryBuilder();
-        $custom = $qb
-            ->select('c')
-            ->from('WoojinOrderBundle:Custom', 'c')
-            ->where(
-                $qb->expr()->andX(
-                    $qb->expr()->eq('c.mobil', $request->request->get('custom_mobil')),
-                    $qb->expr()->eq('c.store', $user->getStore()->getId())
-                )
-            )
+
+        $stores = $qb->select('s')
+            ->from('WoojinStoreBundle:Store', 's')
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
 
-        if ($custom) {
-            throw new \Exception('客戶已經存在!');
-        }
+        foreach ($stores as $store) {
+            $qb = $em->createQueryBuilder();
+            $custom = $qb
+                ->select('c')
+                ->from('WoojinOrderBundle:Custom', 'c')
+                ->where(
+                    $qb->expr()->andX(
+                        $qb->expr()->eq('c.mobil', $request->request->get('custom_mobil')),
+                        $qb->expr()->neq('c.mobil', ''),
+                        $qb->expr()->eq('c.store', $store->getId())
+                    )
+                )
+                ->getQuery()
+                ->getOneOrNullResult()
+            ;
+
+            if (!is_null($custom)) {
+                continue;
+            }
             
-        try{
             $custom = new Custom();
             $custom
-                ->setStore($user->getStore())
+                ->setStore($store)
                 ->setName($request->request->get('custom_name'))
                 ->setSex($request->request->get('custom_sex', '保密'))
                 ->setMobil($request->request->get('custom_mobil'))
                 ->setEmail($request->request->get('custom_email', 'avenueDefault@gmail.com'))
                 ->setAddress($request->request->get('custom_address', 'avenue2003預設地址'))
                 ->setMemo($request->request->get('custom_memo'))
+                ->setLineAccount($request->request->get('line'))
+                ->setFacebookAccount($request->request->get('facebook'))
                 ->setCreatetime(new \DateTime())
             ;
 
@@ -114,14 +177,22 @@ class CustomController extends Controller
 
             $em->persist($custom);
             $em->flush();
-            $em->getConnection()->commit();
-        } catch (Exception $e){
-            $em->getConnection()->rollback();
+        }
 
-            throw $e;
-        }    
+        $qb = $em->createQueryBuilder();
+        $customs = $qb
+            ->select('c')
+            ->from('WoojinOrderBundle:Custom', 'c')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('c.mobil', $request->request->get('custom_mobil'))
+                )
+            )
+            ->getQuery()
+            ->getResult()
+        ;
 
-        return array('rCustom' => array($custom), 'nCount' => 1, 'nNowPage' => 1);
+        return array('rCustom' => $customs, 'nCount' => count($customs), 'nNowPage' => 1);
     }
 
     /**
@@ -316,9 +387,10 @@ class CustomController extends Controller
         $qb
             ->select('c')
             ->from('WoojinOrderBundle:Custom', 'c')
-            ->where(
-                $qb->expr()->eq('c.store', $user->getStore()->getId())
-            )
+            ->where($qb->expr()->gt('c.id', 0))
+            // ->where(
+            //     $qb->expr()->eq('c.store', $user->getStore()->getId())
+            // )
         ;
 
         foreach ($request->request->all() as $key => $eachCon) {
@@ -367,6 +439,16 @@ class CustomController extends Controller
                     $qb->andWhere($qb->expr()->in('c.mobil', $eachCon));
                     
                     break;
+
+                case 'socialSearch':
+                    $orX = $qb->expr()->orX(
+                        $qb->expr()->in('c.lineAccount', $eachCon),
+                        $qb->expr()->in('c.facebookAccount', $eachCon)
+                    );
+
+                    $qb->andWhere($orX);
+
+                    break;
             }
         }
 
@@ -375,6 +457,10 @@ class CustomController extends Controller
         
         $qbCount = $qb; 
         $nCount = count($qbCount->getQuery()->getResult());
+
+        if ($nCount > 2000) {
+            die('結果超過2000筆, 請重新輸入查詢條件縮小範圍');
+        }
 
         $qb
             ->orderBy('c.id')

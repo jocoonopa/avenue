@@ -3,7 +3,7 @@
 namespace Woojin\OrderBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-
+use Woojin\StoreBundle\Entity\Store;
 use Woojin\UserBundle\Entity\User;
 
 /**
@@ -115,7 +115,7 @@ class CustomRepository extends EntityRepository
     /**
      * 找尋本店使用該手機號碼的客戶
      *
-     * @param  Woojin\UserBundle\Entity\User   $user
+     * @param  Woojin\UserBundle\Entity\User   $user  Custom own store's user
      * @param  string $mobil
      * @return \Woojin\OrderBundle\Entity\Custom | null
      */
@@ -130,14 +130,15 @@ class CustomRepository extends EntityRepository
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq('c.mobil', $qb->expr()->literal($mobil)),
+                    $qb->expr()->neq('c.mobil', ''),
                     $qb->expr()->eq('c.store', $user->getStore()->getId())
                 )
             )
         ;
 
-        $res = $qb->getQuery()->getResult();
+        $res = $qb->getQuery()->getOneOrNullResult();
 
-        return (NULL === $res) ? NULL : (array_key_exists(0, $res)) ? $res[0] : NULL;
+        return res;
     }
 
     /**
@@ -166,5 +167,34 @@ class CustomRepository extends EntityRepository
         $qb->setParameter('1', "{$mobil}%");
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * 找尋本店使用該手機號碼的客戶
+     *
+     * @param  Woojin\StoreBundle\Entity\Store   $store  Custom own store
+     * @param  string $mobil
+     * @return \Woojin\OrderBundle\Entity\Custom | null
+     */
+    public function findByMobilAndStore(Store $store, $mobil)
+    {
+        $em = $this->getEntityManager();
+
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from('WoojinOrderBundle:Custom', 'c')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('c.mobil', $qb->expr()->literal($mobil)),
+                    $qb->expr()->neq('c.mobil', $qb->expr()->literal('')),
+                    $qb->expr()->eq('c.store', $store->getId())
+                )
+            )
+        ;
+
+        $res = $qb->getQuery()->getOneOrNullResult();
+
+        return $res;
     }
 }

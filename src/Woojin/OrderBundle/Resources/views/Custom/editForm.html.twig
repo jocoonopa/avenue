@@ -18,6 +18,10 @@
 		<input type="text" name="sCustomBirthday" class="datepicker" value="{% if custom.birthday != '' %}{{ custom.birthday|date('Y-m-d') }}{% endif %}" readonly />
 		<label>住址:</label>
 		<input type="text" name="sCustomAddress" value="{{ custom.address }}" />
+		<label>Line:</label>
+		<input type="text" name="line" value="{{ custom.lineAccount }}" />
+		<label>Facebook:</label>
+		<input type="text" name="facebook" value="{{ custom.facebookAccount }}" />
 		<label>備註:</label>
 		<textarea name="sCustomMemo">{{ custom.memo }}</textarea>
 	{% else %}{% include 'WoojinStoreBundle:Common:warning.html.twig' %}{% endif %}

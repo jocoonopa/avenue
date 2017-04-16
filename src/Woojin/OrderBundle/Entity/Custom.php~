@@ -138,7 +138,7 @@ class Custom
     protected $createtime;
 
      /**
-     * @ORM\Column(type="datetime", length=50, nullable=true, length=30)
+     * @ORM\Column(type="datetime", length=50, nullable=true)
      */
     protected $birthday;
 
@@ -243,6 +243,16 @@ class Custom
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $googleToken;
+
+    /**
+     * @ORM\Column(type="string", length=155, nullable=true)
+     */
+    protected $facebookAccount;
+
+    /**
+     * @ORM\Column(type="string", length=155, nullable=true)
+     */
+    protected $lineAccount;
 
     /**
      * Constructor

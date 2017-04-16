@@ -174,7 +174,21 @@ class AuctionCustomController extends Controller
             return $this->_getResponse($unValid, $_format);
         }
 
-        try {
+        $qb = $em->createQueryBuilder();
+
+        $stores = $qb->select('s')
+            ->from('WoojinStoreBundle:Store', 's')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        foreach ($stores as $store) {
+            $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $request->get('mobil'));
+            
+            if (!is_null($custom)) {
+                continue;
+            }
+
             $custom = new Custom;
             $birthday = NULL === $request->get('birthday') ? NULL : new \DateTime($request->get('birthday'));
             $custom
@@ -184,16 +198,19 @@ class AuctionCustomController extends Controller
                 ->setAddress($request->get('address'))
                 ->setBirthday($birthday)
                 ->setEmail($request->get('email'))
-                ->setStore($user->getStore())
+                ->setLineAccount($request->get('line'))
+                ->setFacebookAccount($request->get('facebook'))
+                ->setStore($store)
             ;
 
             $em->persist($custom);
             $em->flush();
-
-            return $this->_genResponseWithCustom($custom, $_format);
-        } catch (\Exception $e) {
-            return $this->_genResponseWithCustom($e, $_format);
         }
+
+        $custom = $em->getRepository('WoojinOrderBundle:Custom')
+            ->findByMobilAndStore($user->getStore(), $request->get('mobil'));
+
+        return $this->_genResponseWithCustom($custom, $_format);
     }
 
     /**
@@ -227,6 +244,8 @@ class AuctionCustomController extends Controller
          */
         $em = $this->getDoctrine()->getManager();
 
+        $qb = $em->createQueryBuilder();
+
         /**
          * The Current User
          *
@@ -245,8 +264,19 @@ class AuctionCustomController extends Controller
             return $this->_getResponse($unValid, $_format);
         }
 
-        try {
-            $custom = new Custom;
+        $stores = $qb->select('s')
+            ->from('WoojinStoreBundle:Store', 's')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        foreach ($stores as $store) {
+            $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $request->get('mobil'));
+
+            if (is_null($custom)) {
+                $custom = new Custom;
+                $custom->setStore($store);
+            }
 
             $birthday = NULL === $request->get('birthday') ? NULL : new \DateTime($request->get('birthday'));
             $custom
@@ -256,16 +286,17 @@ class AuctionCustomController extends Controller
                 ->setAddress($request->get('address'))
                 ->setBirthday($birthday)
                 ->setEmail($request->get('email'))
-                ->setStore($user->getStore())
+                ->setLineAccount($request->get('line'))
+                ->setFacebookAccount($request->get('facebook'))
             ;
 
             $em->persist($custom);
             $em->flush();
-
-            return $this->_genResponseWithCustom($custom, $_format);
-        } catch (\Exception $e) {
-            return $this->_genResponseWithCustom($e, $_format);
         }
+
+        $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($user->getStore(), $request->get('mobil'));
+
+        return $this->_genResponseWithCustom($custom, $_format);
     }
 
     /**

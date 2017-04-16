@@ -138,7 +138,7 @@ class Custom
     protected $createtime;
 
      /**
-     * @ORM\Column(type="datetime", length=50, nullable=true, length=30)
+     * @ORM\Column(type="datetime", length=50, nullable=true)
      */
     protected $birthday;
 
@@ -243,6 +243,16 @@ class Custom
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $googleToken;
+
+    /**
+     * @ORM\Column(type="string", length=155, nullable=true)
+     */
+    protected $facebookAccount;
+
+    /**
+     * @ORM\Column(type="string", length=155, nullable=true)
+     */
+    protected $lineAccount;
 
     /**
      * Constructor
@@ -1229,5 +1239,53 @@ class Custom
     public function getSellAuctions()
     {
         return $this->sellAuctions;
+    }
+
+    /**
+     * Set facebookAccount
+     *
+     * @param string $facebookAccount
+     *
+     * @return Custom
+     */
+    public function setFacebookAccount($facebookAccount)
+    {
+        $this->facebookAccount = $facebookAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get facebookAccount
+     *
+     * @return string
+     */
+    public function getFacebookAccount()
+    {
+        return $this->facebookAccount;
+    }
+
+    /**
+     * Set lineAccount
+     *
+     * @param string $lineAccount
+     *
+     * @return Custom
+     */
+    public function setLineAccount($lineAccount)
+    {
+        $this->lineAccount = $lineAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get lineAccount
+     *
+     * @return string
+     */
+    public function getLineAccount()
+    {
+        return $this->lineAccount;
     }
 }

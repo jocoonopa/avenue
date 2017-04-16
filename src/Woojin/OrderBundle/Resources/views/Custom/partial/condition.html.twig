@@ -19,6 +19,7 @@
 		<p data-condition="2" style="cursor:pointer;">月份壽星搜尋</p>
 		<p data-condition="3" style="cursor:pointer;">生日搜尋</p>
 		<p data-condition="4" style="cursor:pointer;">電話查詢</p>
+		<p data-condition="5" style="cursor:pointer;">社群查詢</p>
 	</div>
 
 	<div class="searchSubmit" style="display:inline-block;">
@@ -55,6 +56,7 @@ $eDiv2 = '<div class="monthSearch customSearch"><label class="vader">生日按�
 <option value="{{ i }}">{{ i }}月</option>{% endfor %}</select><button type="button" class="hideCondition btn btn-default">x</button></div>';
 $eDiv3 = '<div class="birthdaySearch customSearch"><label class="vader">生日搜尋</label><input type="text" name="birthdaySearchMin[]" class="datepicker addUI" />~<input type="text" name="birthdaySearchMax[]" class="datepicker addUI" /><button type="button" class="hideCondition btn btn-default">x</button></div>';
 $eDiv4 = '<div class="mobileSearch customSearch"><label class="vader">電話搜尋</label><input type="text" name="mobileSearch[]" /><button type="button" class="hideCondition btn btn-default">x</button></div>';
+$eDiv5 = '<div class="socialSearch customSearch"><label class="vader">社群搜尋[Line 或 Facebook]</label><input type="text" name="socialSearch[]" /><button type="button" class="hideCondition btn btn-default">x</button></div>';
 
 $(function(){
 	var 
@@ -128,6 +130,10 @@ $(function(){
 					break;
 				case 4:
 					$searchForm.append($eDiv4);
+					break;
+				case 5:
+					$searchForm.append($eDiv5);
+					break;
 				default:
 					break;
 			}

@@ -21,7 +21,9 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
       "email": '',
       "address": '',
       "sex": '',
-      "birthday": ''
+      "birthday": '',
+      "line_account": '',
+      "facebook_account": '',
     };
     $scope.isGhostMobil = false;
     $scope.customHandleResponse = {};
@@ -103,7 +105,9 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
         "email": $scope.custom.email,
         "address": $scope.custom.address,
         "sex": $scope.custom.sex,
-        "birthday": $scope.custom.birthday
+        "birthday": $scope.custom.birthday,
+        "line": $scope.custom.line_account,
+        "facebook": $scope.custom.facebook_account,
       });
 
       $http.post(Routing.generate('api_auction_customer_create'), data, $scope.config).success(function (res) {
@@ -121,7 +125,9 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
         "email": $scope.custom.email,
         "address": $scope.custom.address,
         "sex": $scope.custom.sex,
-        "birthday": $scope.custom.birthday
+        "birthday": $scope.custom.birthday,
+        "line": $scope.custom.line_account,
+        "facebook": $scope.custom.facebook_account,
       });
 
       $http.put(Routing.generate('api_auction_customer_update', {id: $scope.custom.id}), data, $scope.config).success(function (res) {
