@@ -59,116 +59,118 @@
 </head>
 <body>
 {% verbatim %}
-    <div id="app">
-        <div class="container">
+<div id="app">
+    <div class="container">
 
-            <div class="columns">
+        <div class="columns">
 
-                <div class="column is-3">
-                    <search-panel :search="conditions">
-                        <template slot="buttons">
-                            <button :class="searchButtonClass" @click="search(true)">
-                                <i class="fa fa-search"></i>
-                            </button>
+            <div class="column is-3">
+                <search-panel :search="conditions">
+                    <template slot="buttons">
+                        <button :class="searchButtonClass" @click="search(true)">
+                            <i class="fa fa-search"></i>
+                        </button>
 
-                            <button class="button is-primary" @click="toggleNewModal(true)">
-                                <i class="fa fa-plus"></i>
-                            </button>
+                        <button class="button is-primary" @click="toggleNewModal(true)">
+                            <i class="fa fa-plus"></i>
+                        </button>
 
-                            <button class="button is-light is-pulled-right" @click="resetConditions">
-                                <i class="fa fa-refresh"></i>
-                            </button>
-                        </template>
-                    </search-panel>
-                </div>
+                        <button class="button is-light is-pulled-right" @click="resetConditions">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </template>
+                </search-panel>
+            </div>
 
-                <div class="column is-9">
-                    <br>
-                    <pagination @set-page="pageHandle"
-                        :current-page="currentPage"
-                        :pages="pages"
-                        :totals="totals"
-                    ></pagination>
+            <div class="column is-9">
+                <br>
+                <pagination @set-page="pageHandle"
+                    :current-page="currentPage"
+                    :pages="pages"
+                    :totals="totals"
+                ></pagination>
 
-                    <div class="columns">
-                        <div class="column is-6">  
-                            <div v-show="isLoadingCustoms" class="notification">                                
-                                搜尋客戶中，請稍候...
-                            </div>
-
-                            <div v-show="!isLoadingCustoms" class="card" v-for="(custom, index) in customs" :key="custom.id">
-                                <header class="card-header" @click="setCurrentIndex(index)">
-                                    <p class="card-header-title">
-                                        {{ custom.name }}
-                                    </p>
-
-                                    <a class="card-header-icon">
-                                        <span class="icon">
-                                            <i class="fa fa-angle-down"></i>
-                                        </span>
-                                    </a>
-                                </header>
-                                
-                                <div class="card-content" v-if="isIndexMatched(index)">
-                                    <div class="content">
-                                        <info :custom="custom"></info>
-                                    </div>
-                                </div>
-                                
-                                <footer class="card-footer" v-if="isIndexMatched(index)">
-                                    <a class="card-footer-item" @click="toggleEditModal(true)">編輯</a>
-                                </footer>
-                            </div>
+                <div class="columns">
+                    <div class="column is-6">  
+                        <div v-show="isLoadingCustoms" class="notification">                                
+                            搜尋客戶中，請稍候...
                         </div>
 
-                        <div class="column is-6">                           
-                            <timeline v-show="!isLoadingOrders" :custom="selectedCustom"></timeline>
+                        <div v-show="!isLoadingCustoms" class="card" v-for="(custom, index) in customs" :key="custom.id">
+                            <header class="card-header" @click="setCurrentIndex(index)">
+                                <p class="card-header-title">
+                                    {{ custom.name }}
+                                </p>
 
-                            <div v-show="isLoadingOrders" class="notification">                                
-                                讀取記錄中，請稍候...
+                                <a class="card-header-icon">
+                                    <span class="icon">
+                                        <i class="fa fa-angle-down"></i>
+                                    </span>
+                                </a>
+                            </header>
+                            
+                            <div class="card-content" v-if="isIndexMatched(index)">
+                                <div class="content">
+                                    <info :custom="custom"></info>
+                                </div>
                             </div>
+                            
+                            <footer class="card-footer" v-if="isIndexMatched(index)">
+                                <a class="card-footer-item" @click="toggleEditModal(true)">
+                                    <i class="fa fa-edit"></i>                                
+                                </a>
+                            </footer>
                         </div>
                     </div>
 
+                    <div class="column is-6">                           
+                        <timeline v-show="!isLoadingOrders" :custom="selectedCustom"></timeline>
+
+                        <div v-show="isLoadingOrders" class="notification">                                
+                            讀取記錄中，請稍候...
+                        </div>
+                    </div>
                 </div>
 
             </div>
+
         </div>
-
-        <modal :modal-class="newModalClass">
-            <template slot="header">
-                <p class="modal-card-title">新增客戶資訊</p>
-
-                <button class="delete" @click="toggleNewModal(false)"></button>
-            </template>
-
-            <template slot="body">
-                <new-form :custom="newCustom"></new-form>
-            </template>
-
-            <template slot="footer">
-                <a class="button is-success">Save changes</a>
-                <a class="button">Cancel</a>
-            </template>
-        </modal>
-
-        <modal :modal-class="editModalClass">
-            <template slot="header">
-                <p class="modal-card-title">修改客戶資訊</p>
-
-                <button class="delete" @click="toggleEditModal(false)"></button>
-            </template>
-
-            <template slot="body">
-                <new-form :custom="selectedCustom"></new-form>
-            </template>
-
-            <template slot="footer">
-                <a class="button is-success">Save changes</a>
-                <a class="button" @click="toggleEditModal(false)">Cancel</a>
-            </template>
-        </modal>
     </div>
+
+    <modal :modal-class="newModalClass">
+        <template slot="header">
+            <p class="modal-card-title">新增客戶資訊</p>
+
+            <button class="delete" @click="toggleNewModal(false)"></button>
+        </template>
+
+        <template slot="body">
+            <new-form :custom="newCustom"></new-form>
+        </template>
+
+        <template slot="footer">
+            <a class="button is-success">Save changes</a>
+            <a class="button">Cancel</a>
+        </template>
+    </modal>
+
+    <modal :modal-class="editModalClass">
+        <template slot="header">
+            <p class="modal-card-title">修改客戶資訊</p>
+
+            <button class="delete" @click="toggleEditModal(false)"></button>
+        </template>
+
+        <template slot="body">
+            <new-form :custom="selectedCustom"></new-form>
+        </template>
+
+        <template slot="footer">
+            <a class="button is-success">Save changes</a>
+            <a class="button" @click="toggleEditModal(false)">Cancel</a>
+        </template>
+    </modal>
+</div>
 
 {% endverbatim %}
 
@@ -306,7 +308,6 @@ Vue.component('timeline', {
 
         <div class="timeline" v-if="custom">
             
-
             <div class="timeline-item" v-for="order in custom.orders">
                 <div class="timeline-item-content">
                     <div>
@@ -314,7 +315,11 @@ Vue.component('timeline', {
                             {{ order.kind.name }}
                         </span> 
 
-                        <strong>{{ order.goods_passport.sn }}</strong>
+                        <strong>
+                            <a :href="genProductUrl(order.goods_passport.sn)" target="_blank">
+                                {{ order.goods_passport.sn }}
+                            </a>                            
+                        </strong>
                     </div>
 
                     <ul>
@@ -350,7 +355,7 @@ Vue.component('timeline', {
                     </div>
                     
                     <strong>
-                        <a href="#">
+                        <a :href="genProductUrl(auction.product.sn)" target="_blank">
                             {{ auction.product.sn }}
                         </a>
                     </strong>
@@ -359,6 +364,12 @@ Vue.component('timeline', {
         </div>
     </div>
     `,
+
+    methods: {
+        genProductUrl(sn) {
+            return Routing.generate('goods_edit_v2_from_sn' , { sn })
+        },
+    },
 })
 
 Vue.component('new-form', {
