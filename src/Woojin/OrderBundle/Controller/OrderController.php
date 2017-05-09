@@ -11,6 +11,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
+use Woojin\Utility\Handler\ResponseHandler;
+
 /**
  * @Route("/order")
  */
@@ -20,10 +22,10 @@ class OrderController extends Controller
 	 * @Route("/", name="order")
 	 * @Template("WoojinOrderBundle:Orders:index.html.twig")
 	 */
-	public function indexAction() 
+	public function indexAction()
 	{
 		$em = $this->getDoctrine()->getManager();
-		
+
 		return array(
 			'brands' => $em->getRepository('WoojinGoodsBundle:Brand')->findBy(array(), array('name' => 'ASC')),
 			'patterns' => $em->getRepository('WoojinGoodsBundle:Pattern')->findBy(array(), array('name' => 'ASC')),
@@ -31,7 +33,7 @@ class OrderController extends Controller
 			'mts' => $em->getRepository('WoojinGoodsBundle:GoodsMT')->findAll(),
 			'sources' => $em->getRepository('WoojinGoodsBundle:GoodsSource')->findAll(),
 			'levels' =>  $em->getRepository('WoojinGoodsBundle:GoodsLevel')->findBy(array(), array('id' => 'DESC')),
-			'categorys' => $em->getRepository('WoojinGoodsBundle:Category')->findAll(), 
+			'categorys' => $em->getRepository('WoojinGoodsBundle:Category')->findAll(),
 			'seoSlogans' => $em->getRepository('WoojinGoodsBundle:SeoSlogan')->findAll(),
 			'paytypes' => $em->getRepository('WoojinOrderBundle:PayType')->findAll(),
 			'_token' => $this->get('security.csrf.token_manager')->getToken('unknown')
@@ -42,7 +44,7 @@ class OrderController extends Controller
 	 * @Route("/multisale_protected", name="order_multisale")
 	 * @Template("WoojinOrderBundle:Orders:multisale.html.twig")
 	 */
-	public function orderMultiSaleAction () 
+	public function orderMultiSaleAction ()
 	{
 		ini_set('memory_limit', '512M');
 
@@ -59,7 +61,7 @@ class OrderController extends Controller
 	 * @Route("/special/sell", name="order_special_sale")
 	 * @Template("WoojinOrderBundle:Orders:specialSell.html.twig")
 	 */
-	public function orderSpecialSellAction () 
+	public function orderSpecialSellAction ()
 	{
 		return array('_token' => $this->get('security.csrf.token_manager')->getToken('unknown'));
 	}
@@ -79,21 +81,21 @@ class OrderController extends Controller
 
 		/**
 		 * 目前店內寄賣已經售出，但尚未給寄賣客戶回扣的商品
-		 * 
+		 *
 		 * @var array(\Woojin\GoodsBundle\Entity\GoodsPassport)
 		 */
 		$homeGoodses = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->getConsignCompleteAtHome($user);
 
 		/**
 		 * 他店來自我們店的寄賣商品
-		 * 
+		 *
 		 * @var array(\Woojin\GoodsBundle\Entity\GoodsPassport)
 		 */
 		$fromOwnGoodses = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->getConsignFromOurStore($user);
 
 		/**
 		 * 付清但尚未分派毛利的Auction
-		 * 
+		 *
 		 * @var array(\Woojin\StoreBundle\Entity\Auction)
 		 */
 		$auctions = $em->getRepository('WoojinStoreBundle:Auction')->fetchPaidCompleted($user);
@@ -118,4 +120,71 @@ class OrderController extends Controller
 
 		return array('oOrders' => $em->find('WoojinOrderBundle:Orders', $nOrdersId));
 	}
+
+	/**
+     * @Route("/custom_orders_jsonfetch", name="admin_customs_orders_jsonfetch", options={"expose"=true})
+     */
+    public function ordersJsonfetchAction(Request $request)
+    {
+    	$mobil = $request->query->get('mobil', '123456789');
+
+    	$em = $this->getDoctrine()->getManager();
+
+        /**
+         * 一般訂單
+         * @var [type]
+         */
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select(['o', 'c', 'ope', 'u', 'g', 'k'])
+            ->from('WoojinOrderBundle:Orders', 'o')
+            ->leftJoin('o.custom', 'c')
+            ->leftJoin('o.kind', 'k')
+            ->leftJoin('o.opes', 'ope')
+            ->leftJoin('ope.user', 'u')
+            ->leftJoin('o.goods_passport', 'g')
+            ->where(
+            	$qb->expr()->eq('c.mobil', $qb->expr()->literal($mobil)),
+            	$qb->expr()->gt('g.id', 0)
+            )
+            ->orderBy('o.id', 'desc')
+            ->groupBy('o.id')
+        ;
+
+        $orders = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+        /**
+         * BSO競拍
+         */
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select(['au', 'p', 'b'])
+            ->from('WoojinStoreBundle:Auction', 'au')
+            ->leftJoin('au.product', 'p')
+            ->leftJoin('au.buyer', 'b')
+            ->where(
+            	$qb->expr()->eq('b.mobil', $qb->expr()->literal($mobil))
+            )
+            ->orderBy('au.id', 'desc')
+        ;
+
+        $auctions = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+        $data = [
+        	'orders' => $orders,
+        	'auctions' => $auctions,
+        ];
+
+        $returnMsg = [
+        	'message' => 'Fetched completedly',
+
+        	'data' => $data,
+        ];
+
+        $data = json_encode($returnMsg);
+
+        $responseHandler = new ResponseHandler;
+
+        return $responseHandler->getETag($request, $data, 'json');
+    }
 }

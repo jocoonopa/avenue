@@ -2,17 +2,18 @@
 
 namespace Woojin\StoreBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Woojin\ApiBundle\Controller\HelperTrait;
 use Woojin\StoreBundle\Entity\Auction;
 use Woojin\StoreBundle\Entity\AuctionShipping;
+use Woojin\StoreBundle\Entity\Store;
 use Woojin\UserBundle\Entity\User;
-use Woojin\ApiBundle\Controller\HelperTrait;
 
 /**
  * Auction controller.
@@ -240,6 +241,72 @@ class AuctionController extends Controller
     public function indexAction()
     {
         return array();
+    }
+
+    /**
+     * [moveLogAction description]
+     *
+     * @Route("/movelog", name="movelog", options={"expose"=true})
+     * @Template()
+     */
+    public function moveLogAction(Request $request)
+    {
+        /**
+         * 目前登入的使用者實體
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        /**
+         * DoctrineManager
+         *
+         * @var \Doctrine\ORM\EntityManager;
+         */
+        $em = $this->getDoctrine()->getManager();
+
+        $storeId = $request->query->get('goods_search_store', [$user->getStore()->getId()]);
+
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select(['b', 'c', 'p', 'pl', 'pb', 'pc'])
+            ->from('WoojinGoodsBundle:BsoMoveLog', 'b')
+            ->leftJoin('b.creater', 'c')
+            ->leftJoin('c.store', 's')
+            ->leftJoin('b.product', 'p')
+            ->leftJoin('p.level', 'pl')
+            ->leftJoin('p.brand', 'pb')
+            ->leftJoin('p.color', 'pc')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->like('b.action', $qb->expr()->literal('%BSO%')),
+                    $qb->expr()->in('s.id', $storeId)
+                )
+            );
+        ;
+
+        $sStartTime = $request->query->get('sStartTime', date('Y-m-d')) . ' 00:00:00';
+
+        $qb->andWhere(
+            $qb->expr()->andX(
+                $qb->expr()->gte('b.createAt', $qb->expr()->literal($sStartTime))
+            )
+        );
+
+        $sEndTime = $request->query->get('sEndTime', date('Y-m-d')) . ' 23:59:59';
+
+        $qb->andWhere(
+            $qb->expr()->andX(
+                $qb->expr()->lte('b.createAt', $qb->expr()->literal($sEndTime))
+            )
+        );
+
+        return array(
+            'logs' => $qb->getQuery()->getResult(),
+            'sStartTime' => $sStartTime,
+            'sEndTime'  => $sEndTime,
+            'store' => $em->getRepository('WoojinStoreBundle:Store')->find($storeId[0])
+        );
     }
 
     /**

@@ -67,6 +67,11 @@ class BsoMoveLog
         $this->createAt = $date;
     }
 
+    public function getCreateAt()
+    {
+        return $this->createAt;
+    }
+
     /**
      * Set action
      *

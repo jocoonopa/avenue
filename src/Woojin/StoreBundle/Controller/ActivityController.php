@@ -201,6 +201,7 @@ class ActivityController extends Controller
 		->setStartAt( new \DateTime( $data['startAt'] ) )
 		->setEndAt( new \DateTime( $data['endAt'] ) )
 		->setDescription( $data['description'] )
+        ->setIsHidden(false)
 	  ;
 	  
 	  $em->persist( $oActivity );

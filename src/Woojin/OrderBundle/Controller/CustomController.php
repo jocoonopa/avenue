@@ -15,6 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Woojin\OrderBundle\Entity\Custom;
 use Woojin\Utility\Avenue\Avenue;
 
+use Woojin\Utility\Handler\ResponseHandler;
+
 /**
  * Custom controller.
  * 0. 先檢查該action 有無存在必要 v
@@ -26,6 +28,15 @@ use Woojin\Utility\Avenue\Avenue;
  */
 class CustomController extends Controller
 {
+    /**
+     * @Route("/list", name="order_custom_list")
+     * @Template("WoojinOrderBundle:Custom:index.html.twig")
+     */
+    public function indexAction()
+    {
+        return array('_token' => $this->get('security.csrf.token_manager')->getToken('unknown'));
+    }
+
     /**
      * @Route("/temp", name="order_custom_temp")
      * @Template("WoojinOrderBundle:Custom:temp.html.twig")
@@ -52,7 +63,7 @@ class CustomController extends Controller
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $qb = $em->createQueryBuilder();
-            
+
         $stores = $qb->select('s')
             ->from('WoojinStoreBundle:Store', 's')
             ->getQuery()
@@ -60,7 +71,7 @@ class CustomController extends Controller
         ;
 
         $custom = $em->find('WoojinOrderBundle:Custom', $request->request->get('nCustomId'));
-        $mobil = $custom->getModil();
+        $mobil = $custom->getMobil();
 
         if (empty($mobil)) {
             $custom
@@ -120,13 +131,13 @@ class CustomController extends Controller
      * @Method("POST")
      */
     public function createAction(Request $request)
-    {  
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if (null === $user) {
             return $this->redirect($this->generateUrl('login'), 302);
         }
-            
+
         $em = $this->getDoctrine()->getManager();
 
         $qb = $em->createQueryBuilder();
@@ -145,7 +156,7 @@ class CustomController extends Controller
                 ->where(
                     $qb->expr()->andX(
                         $qb->expr()->eq('c.mobil', $request->request->get('custom_mobil')),
-                        $qb->expr()->neq('c.mobil', ''),
+                        $qb->expr()->neq('c.mobil', $qb->expr()->literal('')),
                         $qb->expr()->eq('c.store', $store->getId())
                     )
                 )
@@ -156,7 +167,7 @@ class CustomController extends Controller
             if (!is_null($custom)) {
                 continue;
             }
-            
+
             $custom = new Custom();
             $custom
                 ->setStore($store)
@@ -173,7 +184,7 @@ class CustomController extends Controller
 
             if ($birthday = $request->request->get('custom_birthday')) {
                 $custom->setBirthday(new \DateTime($birthday));
-            }          
+            }
 
             $em->persist($custom);
             $em->flush();
@@ -200,7 +211,7 @@ class CustomController extends Controller
      * @ParamConverter("custom", class="WoojinOrderBundle:Custom")
      * @Method("DELETE")
      */
-    public function destroyAction(Custom $custom) 
+    public function destroyAction(Custom $custom)
     {
         $em = $this->getDoctrine()->getManager();
         $em->remove($custom);
@@ -217,8 +228,8 @@ class CustomController extends Controller
     public function editFormAction(Request $request)
     {
         return array(
-            'custom' => $this->getDoctrine()->getRepository('WoojinOrderBundle:Custom')->find($request->request->get('nCustomId', Avenue::CUS_NONE)), 
-            '_token' => $this->get('security.csrf.token_manager')->getToken('unknown') 
+            'custom' => $this->getDoctrine()->getRepository('WoojinOrderBundle:Custom')->find($request->request->get('nCustomId', Avenue::CUS_NONE)),
+            '_token' => $this->get('security.csrf.token_manager')->getToken('unknown')
         );
     }
 
@@ -228,7 +239,7 @@ class CustomController extends Controller
      * @Method("POST")
      */
     public function checkExistAction(Request $request)
-    { 
+    {
         foreach ($request->request->keys() as $key) {
             $val = $request->request->get($key);
             $key = $key;
@@ -238,14 +249,14 @@ class CustomController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
-        
+
         $customs = $qb
             ->select('c')
             ->from('WoojinOrderBundle:Custom', 'c')
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq(
-                        'c.' . str_replace('custom_', '', $key), 
+                        'c.' . str_replace('custom_', '', $key),
                         $qb->expr()->literal($val)
                     ),
                     $qb->expr()->eq('c.store', $user->getStore()->getId())
@@ -263,25 +274,25 @@ class CustomController extends Controller
      * @Method("GET")
      */
     public function searchByNameAction(Request $request)
-    {   
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $names = array();
 
         $em = $this->getDoctrine()->getManager();
-        
+
         $qb = $em->createQueryBuilder();
-        
+
         $customs = $qb->select('c')
             ->from('WoojinOrderBundle:Custom', 'c')
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->like(
-                        'c.name', 
+                        'c.name',
                         $qb->expr()->literal('%' . $request->query->get('term') . '%')
                     ),
                     $qb->expr()->eq('c.store', $user->getStore()->getId())
-                )   
+                )
             )
             ->setFirstResult(Avenue::START_FROM)
             ->setMaxResults(Avenue::MAX_RES)
@@ -291,7 +302,7 @@ class CustomController extends Controller
 
         foreach($customs as $custom) {
             $names[] = $custom->getName();
-        }   
+        }
 
         return new JsonResponse($names);
     }
@@ -309,17 +320,17 @@ class CustomController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $qb = $em->createQueryBuilder();
-        
+
         $customs = $qb->select('c')
             ->from('WoojinOrderBundle:Custom', 'c')
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->like(
-                        'c.mobil', 
+                        'c.mobil',
                         $qb->expr()->literal('%' . $request->query->get('term') . '%')
                     ),
                     $qb->expr()->eq('c.store', $user->getStore()->getId())
-                )   
+                )
             )
             ->getQuery()
             ->getResult()
@@ -341,16 +352,16 @@ class CustomController extends Controller
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
-        
+
         $emails = array();
 
         $qb = $em->createQueryBuilder();
-        
+
         $customs = $qb->select('c')
             ->from('WoojinOrderBundle:Custom', 'c')
             ->where(
                 $qb->expr()->like(
-                    'c.email', 
+                    'c.email',
                     $qb->expr()->literal('%' . $request->query->get('term') . '%')
                 )
             )
@@ -368,21 +379,21 @@ class CustomController extends Controller
 
     /**
      * 這段好悲劇....寫成這鬼樣超難改，已哭T_T
-     * 
+     *
      * @Route("/fetch", name="admin_custom_fetch", options={"expose"=true})
      * @Template("WoojinOrderBundle:Custom:res.html.twig")
      * @Method("POST")
      */
     public function fetchAction(Request $request)
-    {    
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if (!is_object($user)) {
             throw new \Exception('Session timeout');
         }
-         
+
         $em = $this->getDoctrine()->getManager();
-        
+
         $qb = $em->createQueryBuilder();
         $qb
             ->select('c')
@@ -397,7 +408,7 @@ class CustomController extends Controller
             switch ($key) {
                 case 'customNameSearch':
                     $qb->andWhere($qb->expr()->in('c.name', $eachCon));
-                    
+
                     break;
 
                 case 'monthSearch':
@@ -413,7 +424,7 @@ class CustomController extends Controller
 
                     $dql = substr($dql, 0, -3);
                     $qb->andWhere($dql);
-                    
+
                     break;
 
                 case 'birthdaySearchMin':
@@ -427,17 +438,20 @@ class CustomController extends Controller
 
                     $dql = substr($dql, 0, -3);
                     $qb->andWhere($dql);
-                    
+
                     break;
 
                 case 'custom_mobil':
                     $qb->andWhere($qb->expr()->in('c.mobil', $eachCon));
-                    
+                    $qb->andwhere(
+                        $qb->expr()->eq('c.store', $user->getStore()->getId())
+                    );
+
                     break;
 
                 case 'mobileSearch':
                     $qb->andWhere($qb->expr()->in('c.mobil', $eachCon));
-                    
+
                     break;
 
                 case 'socialSearch':
@@ -454,8 +468,8 @@ class CustomController extends Controller
 
         $nNowPage = $request->request->get('page', 1);
         $nNowPage = ($nNowPage < 1) ? 1: $nNowPage;
-        
-        $qbCount = $qb; 
+
+        $qbCount = $qb;
         $nCount = count($qbCount->getQuery()->getResult());
 
         if ($nCount > 2000) {
@@ -464,6 +478,7 @@ class CustomController extends Controller
 
         $qb
             ->orderBy('c.id')
+            ->groupBy('c.mobil')
             ->setMaxResults(Avenue::PER_PAGE)
             ->setFirstResult((($nNowPage - 1) * Avenue::PER_PAGE))
         ;
@@ -475,5 +490,142 @@ class CustomController extends Controller
             'nCount'    => $nCount,
             'nNowPage'  => $nNowPage
         );
+    }
+
+    /**
+     * @Route("/jsonfetch", name="admin_custom_jsonfetch", options={"expose"=true})
+     */
+    public function jsonfetchAction(Request $request)
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        if (!is_object($user)) {
+            throw new \Exception('Session timeout');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from('WoojinOrderBundle:Custom', 'c')
+            ->where($qb->expr()->gt('c.id', 0))
+        ;
+
+        $content = $this->get("request")->getContent();
+        $params = json_decode($content, true); // 2nd param to get as array
+
+        foreach ($params as $key => $eachCon) {
+            switch ($key) {
+                case 'name':
+                    if (!empty($eachCon)) {
+                        $qb->andWhere(
+                            $qb->expr()->like(
+                                'c.name',
+                                $qb->expr()->literal('%' . $eachCon . '%')
+                            )
+                        );
+                    }
+
+                    break;
+
+                case 'month':
+                    if (!empty($eachCon)) {
+                        $dql = '(SUBSTRING(c.birthday, 6, 2) =\'' . str_pad($eachCon, 2, '0', STR_PAD_LEFT) . '\')';
+
+                        $qb->andWhere($dql);
+                    }
+
+                    break;
+
+                case 'birthday_start':
+                    if (!empty($eachCon)) {
+                        $qb->andWhere(
+                            $qb->expr()->gte(
+                                'c.birthday',
+                                $qb->expr()->literal($eachCon . ' 00:00:00')
+                            )
+                        );
+                    }
+
+                    break;
+
+                case 'birthday_end':
+                    if (!empty($eachCon)) {
+                        $qb->andWhere(
+                            $qb->expr()->lte(
+                                'c.birthday',
+                                $qb->expr()->literal($eachCon . ' 23:59:59')
+                            )
+                        );
+                    }
+
+                    break;
+
+                case 'mobil':
+                    if (!empty($eachCon)) {
+                        $qb->andWhere($qb->expr()->eq('c.mobil', $qb->expr()->literal($eachCon)));
+                    }
+
+                    break;
+
+                case 'social':
+                    if (!empty($eachCon)) {
+                        $orX = $qb->expr()->orX(
+                            $qb->expr()->eq('c.lineAccount', $qb->expr()->literal($eachCon)),
+                            $qb->expr()->eq('c.facebookAccount', $qb->expr()->literal($eachCon))
+                        );
+
+                        $qb->andWhere($orX);
+                    }
+
+                    break;
+            }
+        }
+
+        $qb->groupBy('c.mobil');
+
+        $nNowPage = $request->query->get('page', 1);
+        $nNowPage = ($nNowPage < 1) ? 1: $nNowPage;
+
+        $qbCount = $qb;
+        $nCount = count($qbCount->getQuery()->getResult());
+
+        $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+
+        if ($nCount > 2000) {
+            $data = [
+                'message' => '結果超過2000筆, 請重新輸入查詢條件縮小範圍',
+                'data' => [],
+                'is_error' => true,
+            ];
+            $jsonData = $serializer->serialize($data, 'json');
+
+            $responseHandler = new ResponseHandler;
+
+            return $responseHandler->getETag($request, $jsonData, 'json');
+        }
+
+        $qb
+            ->orderBy('c.id')
+            ->setMaxResults(Avenue::PER_PAGE)
+            ->setFirstResult((($nNowPage - 1) * Avenue::PER_PAGE))
+        ;
+
+        $rCustom = $qb->getQuery()->getResult();
+
+        $data = [
+            'total' => $nCount,
+            'pages' => ceil($nCount/Avenue::PER_PAGE),
+            'currentPage' => $nNowPage,
+            'perPage' => Avenue::PER_PAGE,
+            'data' => $rCustom
+        ];
+
+        $jsonData = $serializer->serialize($data, 'json');
+
+        $responseHandler = new ResponseHandler;
+
+        return $responseHandler->getETag($request, $jsonData, 'json');
     }
 }

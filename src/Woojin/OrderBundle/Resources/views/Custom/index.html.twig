@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <title>客戶搜尋頁面</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bulma/css/bulma.css">
+
+    <style>
+    .page-container {
+        margin: 10px 0 10px 0;
+    }
+
+    .super {
+        background-color: blue;
+        z-index: 999;
+    }
+
+    .timeline {
+        border-left: 2px solid #c3c3c3;
+        position: relative;
+    }
+
+    .timeline .timeline-item {
+        border-color: #dee5e7;
+        padding-bottom: 1px;
+        position: relative;
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+
+    .timeline .timeline-item:after {
+        background-color: #ffffff;
+        border-color: #c3c3c3;
+        border-radius: 10px;
+        border-style: solid;
+        border-width: 2px;
+        bottom: 0;
+        content: '';
+        height: 14px;
+        left: 0;
+        margin-left: -8px;
+        position: absolute;
+        top: 5px;
+        width: 14px;
+    }
+
+    .timeline .timeline-item:before {
+        content: " ";
+        display: table;
+    }
+
+    .timeline .timeline-item .timeline-item-content {
+        margin-bottom: 15px;
+        margin-left: 15px;
+    }
+
+    </style>
+</head>
+<body>
+{% verbatim %}
+    <div id="app">
+        <div class="container">
+
+            <div class="columns">
+
+                <div class="column is-3">
+                    <search-panel :search="conditions">
+                        <template slot="buttons">
+                            <button :class="searchButtonClass" @click="search(true)">
+                                <i class="fa fa-search"></i>
+                            </button>
+
+                            <button class="button is-primary" @click="toggleNewModal(true)">
+                                <i class="fa fa-plus"></i>
+                            </button>
+
+                            <button class="button is-light is-pulled-right" @click="resetConditions">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                        </template>
+                    </search-panel>
+                </div>
+
+                <div class="column is-9">
+                    <br>
+                    <pagination @set-page="pageHandle"
+                        :current-page="currentPage"
+                        :pages="pages"
+                        :totals="totals"
+                    ></pagination>
+
+                    <div class="columns">
+                        <div class="column is-6">  
+                            <div v-show="isLoadingCustoms" class="notification">                                
+                                搜尋客戶中，請稍候...
+                            </div>
+
+                            <div v-show="!isLoadingCustoms" class="card" v-for="(custom, index) in customs" :key="custom.id">
+                                <header class="card-header" @click="setCurrentIndex(index)">
+                                    <p class="card-header-title">
+                                        {{ custom.name }}
+                                    </p>
+
+                                    <a class="card-header-icon">
+                                        <span class="icon">
+                                            <i class="fa fa-angle-down"></i>
+                                        </span>
+                                    </a>
+                                </header>
+                                
+                                <div class="card-content" v-if="isIndexMatched(index)">
+                                    <div class="content">
+                                        <info :custom="custom"></info>
+                                    </div>
+                                </div>
+                                
+                                <footer class="card-footer" v-if="isIndexMatched(index)">
+                                    <a class="card-footer-item" @click="toggleEditModal(true)">編輯</a>
+                                </footer>
+                            </div>
+                        </div>
+
+                        <div class="column is-6">                           
+                            <timeline v-show="!isLoadingOrders" :custom="selectedCustom"></timeline>
+
+                            <div v-show="isLoadingOrders" class="notification">                                
+                                讀取記錄中，請稍候...
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <modal :modal-class="newModalClass">
+            <template slot="header">
+                <p class="modal-card-title">新增客戶資訊</p>
+
+                <button class="delete" @click="toggleNewModal(false)"></button>
+            </template>
+
+            <template slot="body">
+                <new-form :custom="newCustom"></new-form>
+            </template>
+
+            <template slot="footer">
+                <a class="button is-success">Save changes</a>
+                <a class="button">Cancel</a>
+            </template>
+        </modal>
+
+        <modal :modal-class="editModalClass">
+            <template slot="header">
+                <p class="modal-card-title">修改客戶資訊</p>
+
+                <button class="delete" @click="toggleEditModal(false)"></button>
+            </template>
+
+            <template slot="body">
+                <new-form :custom="selectedCustom"></new-form>
+            </template>
+
+            <template slot="footer">
+                <a class="button is-success">Save changes</a>
+                <a class="button" @click="toggleEditModal(false)">Cancel</a>
+            </template>
+        </modal>
+    </div>
+
+{% endverbatim %}
+
+<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.3/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.1/axios.min.js"></script>
+<script>
+
+{% verbatim %}
+
+Vue.component('info', {
+    props: ['custom'],
+
+    template: `
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>
+                    <strong>姓名</strong>
+                </td>
+                <td>{{ custom.name }}</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>手機</strong>
+                </td>
+                <td>{{ custom.mobil }}</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Email</strong>
+                </td>
+                <td>{{ custom.email }}</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>地址</strong>
+                </td>
+                <td>{{ custom.address }}</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Facebook</strong>
+                </td>
+                <td>{{ custom.facebookAccount}}</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Line</strong>
+                </td>
+                <td>{{ custom.lineAccount}}</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>備註</strong>
+                </td>
+                <td>{{ custom.memo }}</td>
+            </tr>
+        </tbody>
+    </table>
+    `,
+})
+
+Vue.component('search-panel', {
+    props: ['search'],
+
+    template: `
+    <div>
+        <div class="field">
+            <label class="label">姓名</label>
+
+            <p class="control">
+                <input v-model="search.name" class="input" type="text" placeholder="輸入姓名條件">
+            </p>
+        </div>
+
+        <div class="field">
+            <label class="label">生日</label>
+
+            <p class="control">
+                <input v-model="search.birthday_start" class="input" type="date">
+
+                <input v-model="search.birthday_end" class="input" type="date" style="margin-top: 5px;">
+            </p>
+        </div>
+
+        <div class="field">
+            <label class="label">電話</label>
+
+            <p class="control">
+                <input v-model="search.mobil" class="input" type="text" placeholder="電話">
+            </p>
+        </div>
+
+        <div class="field">
+            <label class="label">壽星</label>
+
+            <p class="control">
+                <span class="select">
+                    <select v-model="search.month">
+                        <option :value="0">請選擇</option>
+                        <option :value="month" v-for="month in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]">
+                            {{ month }}月
+                        </option>
+                    </select>
+                </span>
+            </p>
+        </div>
+
+        <div class="field">
+            <label class="label">社群</label>
+            <p class="control">
+                <input v-model="search.social" class="input" type="text" placeholder="Line 或 Facebook 帳號">
+            </p>
+        </div>
+
+        <div class="field">
+            <slot name="buttons">
+            </slot>
+        </div>
+    </div>
+    `,
+})
+
+Vue.component('timeline', {
+    props: ['custom'],
+
+    template: `
+    <div>
+        <h2 class="is-centered">
+            {{ custom.name }}{{ custom.sex }}
+        </h2><hr />
+
+        <div class="timeline" v-if="custom">
+            
+
+            <div class="timeline-item" v-for="order in custom.orders">
+                <div class="timeline-item-content">
+                    <div>
+                        <span class="tag">
+                            {{ order.kind.name }}
+                        </span> 
+
+                        <strong>{{ order.goods_passport.sn }}</strong>
+                    </div>
+
+                    <ul>
+                        <li class="content is-small" v-for="ope in order.opes">
+                            <span>
+                                {{ ope.act }}
+                            </span>
+
+                            <br>
+
+                            <strong>
+                                <a href="#">Vivian</a>
+                            </strong>
+
+                            <small style="padding-left: 5px;">
+                                ~ {{ ope.datetime.date.substr(0, 16) }}
+                            </small>
+                        </li>
+                    </ul>                    
+                </div>
+            </div>
+
+            <div class="timeline-item"
+                v-for="auction in custom.auctions"
+            >
+                <div class="timeline-item-content">
+                    <div>
+                        競拍得標 
+
+                        <small style="padding-left: 5px;"> 
+                            ~ {{ auction.soldAt.date.substr(0, 16) }}
+                        </small>
+                    </div>
+                    
+                    <strong>
+                        <a href="#">
+                            {{ auction.product.sn }}
+                        </a>
+                    </strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    `,
+})
+
+Vue.component('new-form', {
+    props: ['custom'],
+
+    template: `
+        <form action="">
+            <div class="field">
+                <label class="label">姓名</label>
+
+                <p class="control">
+                    <input class="input" type="text" placeholder="請輸入姓名">
+                </p>
+            </div>
+
+            <div class="field">
+                <label class="label">性別</label>
+
+                <p class="control">
+                    <span class="select">
+                        <select>
+                            <option>未知</option>
+                            <option>男</option>
+                            <option>女</option>
+                        </select>
+                    </span>
+                </p>
+            </div>
+
+            <div class="field">
+                <label class="label">手機</label>
+
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="text" placeholder="請輸入手機">
+
+                    <span class="icon is-small is-left">
+                        <i class="fa fa-mobile"></i>
+                    </span>
+                </p>
+            </div>
+
+            <div class="field">
+                <label class="label">Email</label>
+
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="text" placeholder="請輸入 Email">
+
+                    <span class="icon is-small is-left">
+                        <i class="fa fa-envelope"></i>
+                    </span>
+                </p>
+            </div>
+
+            <div class="field">
+                <label class="label">生日</label>
+
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="date" placeholder="請輸入生日，格式 1980-07-02">
+
+                    <span class="icon is-small is-left">
+                        <i class="fa fa-mobile"></i>
+                    </span>
+                </p>
+            </div>
+
+            <div class="field">
+                <label class="label">地址</label>
+
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="text" placeholder="請輸入地址">
+
+                    <span class="icon is-small is-left">
+                        <i class="fa fa-address-card"></i>
+                    </span>
+                </p>
+            </div>
+
+            <div class="field">
+                <label class="label">Facebook</label>
+
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="text" placeholder="請輸入臉書帳號">
+
+                    <span class="icon is-small is-left">
+                        <i class="fa fa-facebook"></i>
+                    </span>
+                </p>
+            </div>
+
+            <div class="field">
+                <label class="label">Line</label>
+
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="text" placeholder="請輸入Line ID">
+
+                    <span class="icon is-small is-left">
+                        <i class="fa fa-info"></i>
+                    </span>
+                </p>
+            </div>
+
+            <div class="field">
+                <label class="label">備註</label>
+                <p class="control">
+                    <textarea class="textarea" placeholder="備註"></textarea>
+                </p>
+            </div>
+        </form>
+    `,
+})
+
+Vue.component('modal', {
+    props: ['modalClass'],
+
+    template: `
+        <div :class="modalClass">
+
+            <div class="modal-background"></div>
+
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <slot name="header"></slot>
+                </header>
+
+                <section class="modal-card-body">
+                    <slot name="body"></slot>
+                </section>
+
+                <footer class="modal-card-foot">
+                    <slot name="footer"></slot>
+                </footer>
+
+            </div>
+
+        </div>
+    `,
+})
+
+Vue.component('pagination', {
+    props: ['pages', 'currentPage'],
+
+    template: `
+        <nav v-if="0 < pages" class="pagination" style="margin-bottom: 10px;">
+            <nav class="pagination is-right">   
+                <ul class="pagination-list">
+                    <li v-show="1 < currentPage">
+                        <a class="pagination-link" @click="prevPage">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <p class="control">
+                            <span class="select">
+                                <select :value="currentPageCom" @change="changePage">
+                                    <option v-for="n in pages" :value="n" :selected="currentPageCom == n">
+                                        {{ n }}
+                                    </option>
+                                </select>
+                            </span>
+                        </p>
+                    </li>
+                    
+                    <li v-show="pages > currentPage">
+                        <a class="pagination-link" @click="nextPage">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </nav>
+    `,
+
+    methods: {
+        changePage(e) {
+            this.$emit('set-page', e.target.value)
+        },
+
+        nextPage() {
+            let page = parseInt(this.currentPage) + 1
+
+            this.$emit('set-page', page)
+        },
+
+        prevPage() {
+            let page = parseInt(this.currentPage) - 1
+
+            this.$emit('set-page', page)
+        },
+    },
+
+    computed: {
+        currentPageCom() {
+            return this.currentPage
+        },
+    },
+})
+
+let app = new Vue({
+    el: '#app',
+
+    data: {
+        currentPage: 0,
+        totals: 0,
+        perPage: 10,
+        pages: 0,
+
+        isLoadingOrders: false,
+
+        isLoadingCustoms: false,
+
+        customs: [],
+
+        currentIndex: null,
+
+        isNewModalOpen: false,
+
+        isEditModalOpen: false,
+
+        customSchema: {
+            id: 0,
+            name: null,
+            birthday: null,
+            lineAccount: null,
+            facebookAccount: null,
+            email: null,
+            mobil: null,
+            sex: null,
+            memo: null,
+            address: null,
+            orders: [],
+            auctions: [],
+        },
+
+        conditions: {
+            name: null,
+            mobil: null,
+            birthday_start: null,
+            birthday_end: null,
+            month: 0,
+            social: null,
+        },
+
+        newCustom: this.customSchema,
+
+        selectedCustom: this.customSchema,
+    },
+
+    computed: {
+        newModalClass() {
+            return {
+                modal: true,
+                'is-active': this.isNewModalOpen,
+            }
+        },
+
+        searchButtonClass() {
+            return {
+                button: true,
+                'is-info': true,
+                'is-loading': this.isLoadingCustoms,
+            }
+        },
+
+        editModalClass() {
+            return {
+                modal: true,
+                'is-active': this.isEditModalOpen,
+            }
+        },
+    },
+
+    methods: {
+        isIndexMatched(index) {
+            return _.isEqual(index, this.currentIndex)
+        },
+
+        setCurrentIndex(index) {
+            if (_.isEqual(this.currentIndex, index)) {
+                return
+            }
+
+            this.currentIndex = index
+
+            if (_.isNull(this.currentIndex)) {
+                return this.customSchema
+            }
+
+            this.selectedCustom = Object.assign({},  {
+                orders: [],
+                auctions: [],
+            }, this.customs[this.currentIndex])
+
+            this.loadOrders()
+        },
+
+        refreshPageParams(data) {
+            this.total = parseInt(data.total)
+            this.pages = parseInt(data.pages)
+            this.currentPage = parseInt(data.currentPage)
+            this.perPage = parseInt(data.perPage)
+        },
+
+        search(isReset = false) {
+            if (_.isEqual(true, isReset)) {
+                this.resetPageParams()
+            }
+
+            this.currentIndex = null
+
+            let url = Routing.generate('admin_custom_jsonfetch')
+
+            this.isLoadingCustoms = true
+            
+            axios.post(url + '?page=' + this.currentPage, this.conditions)
+                .then(function({ data }) {
+                    this.isLoadingCustoms = false
+
+                    if (data.is_error) {                        
+                        return alert(data.message)
+                    }
+
+                    this.customs = data.data
+
+                    this.refreshPageParams(data)
+                }.bind(this))
+                .catch(function (e) {
+                    alert(e)
+
+                    this.isLoadingCustoms = false
+                }.bind(this))
+        },
+
+        loadOrders() {
+            let url = Routing.generate('admin_customs_orders_jsonfetch')
+
+            this.isLoadingOrders = true
+
+            axios.get(`${url}?mobil=${this.customs[this.currentIndex].mobil}`)
+                .then(function ({ data }) {
+                    this.selectedCustom = Object.assign({}, this.selectedCustom, {
+                        orders: data.data.orders,
+                        auctions: data.data.auctions,
+                    })
+
+                    this.isLoadingOrders = false
+                }.bind(this))
+                .catch(function (e) {
+                    alert(e)
+
+                    this.isLoadingOrders = false
+                }.bind(this))
+        },
+
+        toggleNewModal(bool) {
+            this.isNewModalOpen = bool
+        },
+
+        toggleEditModal(bool) {
+            this.isEditModalOpen = bool
+        },
+
+        pageHandle(val) {
+            this.currentPage = val
+
+            this.search()
+        },
+
+        resetPageParams() {
+            this.currentPage = 1
+            this.pages = 0
+            this.totals = 0
+            this.perPage = 10
+        },
+
+        resetConditions() {
+            this.resetPageParams()
+
+            this.conditions = {
+                name: null,
+                mobil: null,
+                birthday_start: null,
+                birthday_end: null,
+                month: 0,
+                social: null,
+            }
+        },
+    },
+})
+
+
+</script>
+{% endverbatim %}
+</body>
+</html>
