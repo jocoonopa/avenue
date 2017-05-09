@@ -410,7 +410,7 @@ Vue.component('custom-form', {
                 <p class="control">
                     <span class="select">
                         <select v-model="custom.sex">
-                            <option value="" :selected="0 === custom.sex">未知</option>
+                            <option value="" :selected="'' === custom.sex">未知</option>
                             <option value="先生" :selected="'先生' === custom.sex">先生</option>
                             <option value="小姐" :selected="'小姐' === custom.sex">小姐</option>
                         </select>
@@ -614,11 +614,11 @@ let app = new Vue({
             id: 0,
             name: null,
             birthday: null,
-            lineAccount: null,
-            facebookAccount: null,
+            line_account: null,
+            facebook_account: null,
             email: null,
             mobil: null,
-            sex: null,
+            sex: '',
             memo: null,
             address: null,
             orders: [],
@@ -836,13 +836,27 @@ let app = new Vue({
                 }.bind(this))
         },
 
-        updateSelectedCustomHandle() {
-
-        },
-
         storeCustom() {
+            this.isSaving = true
 
+            axios.post(Routing.generate('admin_custom_vue_create'), this.newCustom)
+                .then(function({ data }) {
+                    this.newCustom = Object.assign({}, this.customSchema)
+
+                    this.isSaving = false
+
+                    this.toggleNewModal(false)
+                }.bind(this))
+                .catch(function(e) {
+                    this.isSaving = false
+
+                    console.log(e)
+                }.bind(this))
         },
+    },
+
+    mounted() {
+        this.newCustom = Object.assign({}, this.customSchema)
     },
 })
 

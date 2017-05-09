@@ -629,14 +629,20 @@ class CustomController extends Controller
         return $responseHandler->getETag($request, $jsonData, 'json');
     }
 
-    protected function arrayGet($arr, $key)
+    protected function arrayGet($arr, $key, $default = null)
     {
-        return array_key_exists($key, $arr) ? $arr[$key] : null;
+        $return = array_key_exists($key, $arr) ? $arr[$key] : $default;
+
+        if (is_null($return) && !is_null($default)) {
+            return $default;
+        }
+
+        return $return;
     }
 
     /**
      * 取得本店此手機號碼的客戶之備註, 因為詭異的架構導致此狀況, 沒辦法
-     * 
+     *
      * @Route("/vue_get_belongs_memo", name="admin_custom_get_belongs_memo", options={"expose"=true})
      * @Method("GET")
      */
@@ -663,8 +669,91 @@ class CustomController extends Controller
     }
 
     /**
+     * @Route("/vue_create", name="admin_custom_vue_create", options={"expose"=true})
+     * @Method("POST")
+     */
+    public function vueCreateAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $qb = $em->createQueryBuilder();
+
+        $responseHandler = new ResponseHandler;
+
+        /**
+         * The Current User
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $content = $this->get('request')->getContent();
+        $params = json_decode($content, true); // 2nd param to get as array
+
+        if (null === $user) {
+            return $this->redirect($this->generateUrl('login'), 302);
+        }
+
+        $stores = $qb->select('s')
+            ->from('WoojinStoreBundle:Store', 's')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        foreach ($stores as $store) {
+            $qb = $em->createQueryBuilder();
+            $custom = $qb
+                ->select('c')
+                ->from('WoojinOrderBundle:Custom', 'c')
+                ->where(
+                    $qb->expr()->andX(
+                        $qb->expr()->eq('c.mobil', $qb->expr()->literal($this->arrayGet($params, 'mobil'))),
+                        $qb->expr()->neq('c.mobil', $qb->expr()->literal('')),
+                        $qb->expr()->eq('c.store', $store->getId())
+                    )
+                )
+                ->getQuery()
+                ->getOneOrNullResult()
+            ;
+
+            if (!is_null($custom)) {
+                continue;
+            }
+
+            $custom = new Custom();
+            $custom
+                ->setStore($store)
+                ->setName($this->arrayGet($params, 'name'))
+                ->setSex($this->arrayGet($params, 'sex', ''))
+                ->setMobil($this->arrayGet($params, 'mobil', ''))
+                ->setEmail($this->arrayGet($params, 'email', ''))
+                ->setAddress($this->arrayGet($params, 'address', ''))
+                ->setLineAccount($this->arrayGet($params, 'line_account'))
+                ->setFacebookAccount($this->arrayGet($params, 'facebook_account'))
+                ->setCreatetime(new \DateTime())
+            ;
+
+            if (!empty($this->arrayGet($params, 'birthday'))) {
+                $custom->setBirthday(new \DateTime($this->arrayGet($params, 'birthday')));
+            }
+
+            $em->persist($custom);
+            $em->flush();
+        }
+
+        $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+
+        $data = [
+            'message' => 'Create custom successfully',
+        ];
+
+        $json = $serializer->serialize($data, 'json');
+
+        return $responseHandler->getETag($request, $json, 'json');
+    }
+
+    /**
      * 此 Action 是完全 copy 54 行的邏輯來用，只是改參數而已。
-     * 
+     *
      * @Route("/vue_update", name="admin_custom_vue_update", options={"expose"=true})
      * @Method("POST")
      */
@@ -702,10 +791,13 @@ class CustomController extends Controller
                 ->setMobil($this->arrayGet($params, 'mobil'))
                 ->setEmail($this->arrayGet($params, 'email'))
                 ->setAddress($this->arrayGet($params, 'address'))
-                ->setBirthday(new \DateTime($this->arrayGet($params, 'birthday')))
                 ->setLineAccount($this->arrayGet($params, 'line_account'))
                 ->setFacebookAccount($this->arrayGet($params, 'facebook_account'))
             ;
+
+            if (!empty($this->arrayGet($params, 'birthday'))) {
+                $custom->setBirthday(new \DateTime($this->arrayGet($params, 'birthday')));
+            }
 
             if ($custom->getStore()->getId() === $user->getStore()->getId()) {
                 $custom->setMemo($this->arrayGet($params, 'memo'));
@@ -733,10 +825,13 @@ class CustomController extends Controller
                 ->setMobil($this->arrayGet($params, 'mobil'))
                 ->setEmail($this->arrayGet($params, 'email'))
                 ->setAddress($this->arrayGet($params, 'address'))
-                ->setBirthday(new \DateTime($this->arrayGet($params, 'birthday')))
                 ->setLineAccount($this->arrayGet($params, 'line_account'))
                 ->setFacebookAccount($this->arrayGet($params, 'facebook_account'))
             ;
+
+            if (!empty($this->arrayGet($params, 'birthday'))) {
+                $custom->setBirthday(new \DateTime($this->arrayGet($params, 'birthday')));
+            }
 
             if ($custom->getStore()->getId() === $user->getStore()->getId()) {
                 $custom->setMemo($this->arrayGet($params, 'memo'));
