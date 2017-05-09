@@ -91,8 +91,8 @@
                 ></pagination>
 
                 <div class="columns">
-                    <div class="column is-6">  
-                        <div v-show="isLoadingCustoms" class="notification">                                
+                    <div class="column is-6">
+                        <div v-show="isLoadingCustoms" class="notification">
                             搜尋客戶中，請稍候...
                         </div>
 
@@ -108,25 +108,29 @@
                                     </span>
                                 </a>
                             </header>
-                            
+
                             <div class="card-content" v-if="isIndexMatched(index)">
                                 <div class="content">
-                                    <info :custom="custom"></info>
+                                    <div v-show="isSaving" class="notification">
+                                        載入中...
+                                    </div>
+
+                                    <info v-show="!isSaving" :custom="custom"></info>
                                 </div>
                             </div>
-                            
+
                             <footer class="card-footer" v-if="isIndexMatched(index)">
                                 <a class="card-footer-item" @click="toggleEditModal(true)">
-                                    <i class="fa fa-edit"></i>                                
+                                    <i class="fa fa-edit"></i>
                                 </a>
                             </footer>
                         </div>
                     </div>
 
-                    <div class="column is-6">                           
+                    <div class="column is-6">
                         <timeline v-show="!isLoadingOrders" :custom="selectedCustom"></timeline>
 
-                        <div v-show="isLoadingOrders" class="notification">                                
+                        <div v-show="isLoadingOrders" class="notification">
                             讀取記錄中，請稍候...
                         </div>
                     </div>
@@ -145,12 +149,16 @@
         </template>
 
         <template slot="body">
-            <new-form :custom="newCustom"></new-form>
+            <div v-show="isSaving" class="notification">
+                新增客戶中...
+            </div>
+
+            <custom-form v-show="!isSaving" :custom="newCustom"></custom-form>
         </template>
 
         <template slot="footer">
-            <a class="button is-success">Save changes</a>
-            <a class="button">Cancel</a>
+            <a class="button is-success" @click="storeCustom" :disabled="isSaving" >Save</a>
+            <a class="button" @click="toggleNewModal(false)">Cancel</a>
         </template>
     </modal>
 
@@ -162,12 +170,16 @@
         </template>
 
         <template slot="body">
-            <new-form :custom="selectedCustom"></new-form>
+            <div v-show="isSaving" class="notification">
+                正在更新客戶資訊...
+            </div>
+
+            <custom-form v-show="!isSaving" :custom="selectedCustom"></custom-form>
         </template>
 
         <template slot="footer">
-            <a class="button is-success">Save changes</a>
-            <a class="button" @click="toggleEditModal(false)">Cancel</a>
+            <a class="button is-success" @click="updateCustom" :disabled="isSaving" >Save</a>
+            <a class="button" @click="toggleEditModal(false)" @click="toggleEditModal(false)">Cancel</a>
         </template>
     </modal>
 </div>
@@ -209,6 +221,13 @@ Vue.component('info', {
             </tr>
             <tr>
                 <td>
+                    <strong>生日</strong>
+                </td>
+                <td v-if="custom.birthday">{{ custom.birthday.substr(0, 10) }}</td>
+                <td v-if="!custom.birthday"></td>
+            </tr>
+            <tr>
+                <td>
                     <strong>地址</strong>
                 </td>
                 <td>{{ custom.address }}</td>
@@ -217,13 +236,13 @@ Vue.component('info', {
                 <td>
                     <strong>Facebook</strong>
                 </td>
-                <td>{{ custom.facebookAccount}}</td>
+                <td>{{ custom.facebook_account}}</td>
             </tr>
             <tr>
                 <td>
                     <strong>Line</strong>
                 </td>
-                <td>{{ custom.lineAccount}}</td>
+                <td>{{ custom.line_account}}</td>
             </tr>
             <tr>
                 <td>
@@ -301,24 +320,24 @@ Vue.component('timeline', {
     props: ['custom'],
 
     template: `
-    <div>
+    <div v-if="custom">
         <h2 class="is-centered">
             {{ custom.name }}{{ custom.sex }}
         </h2><hr />
 
-        <div class="timeline" v-if="custom">
-            
+        <div class="timeline">
+
             <div class="timeline-item" v-for="order in custom.orders">
                 <div class="timeline-item-content">
                     <div>
                         <span class="tag">
                             {{ order.kind.name }}
-                        </span> 
+                        </span>
 
                         <strong>
                             <a :href="genProductUrl(order.goods_passport.sn)" target="_blank">
                                 {{ order.goods_passport.sn }}
-                            </a>                            
+                            </a>
                         </strong>
                     </div>
 
@@ -338,7 +357,7 @@ Vue.component('timeline', {
                                 ~ {{ ope.datetime.date.substr(0, 16) }}
                             </small>
                         </li>
-                    </ul>                    
+                    </ul>
                 </div>
             </div>
 
@@ -347,13 +366,13 @@ Vue.component('timeline', {
             >
                 <div class="timeline-item-content">
                     <div>
-                        競拍得標 
+                        競拍得標
 
-                        <small style="padding-left: 5px;"> 
+                        <small style="padding-left: 5px;">
                             ~ {{ auction.soldAt.date.substr(0, 16) }}
                         </small>
                     </div>
-                    
+
                     <strong>
                         <a :href="genProductUrl(auction.product.sn)" target="_blank">
                             {{ auction.product.sn }}
@@ -372,16 +391,16 @@ Vue.component('timeline', {
     },
 })
 
-Vue.component('new-form', {
+Vue.component('custom-form', {
     props: ['custom'],
 
     template: `
-        <form action="">
+        <form v-if="custom">
             <div class="field">
                 <label class="label">姓名</label>
 
                 <p class="control">
-                    <input class="input" type="text" placeholder="請輸入姓名">
+                    <input class="input" v-model="custom.name" type="text" placeholder="請輸入姓名">
                 </p>
             </div>
 
@@ -390,10 +409,10 @@ Vue.component('new-form', {
 
                 <p class="control">
                     <span class="select">
-                        <select>
-                            <option>未知</option>
-                            <option>男</option>
-                            <option>女</option>
+                        <select v-model="custom.sex">
+                            <option value="" :selected="0 === custom.sex">未知</option>
+                            <option value="先生" :selected="'先生' === custom.sex">先生</option>
+                            <option value="小姐" :selected="'小姐' === custom.sex">小姐</option>
                         </select>
                     </span>
                 </p>
@@ -403,7 +422,7 @@ Vue.component('new-form', {
                 <label class="label">手機</label>
 
                 <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="text" placeholder="請輸入手機">
+                    <input class="input" v-model="custom.mobil" type="text" placeholder="請輸入手機">
 
                     <span class="icon is-small is-left">
                         <i class="fa fa-mobile"></i>
@@ -415,7 +434,7 @@ Vue.component('new-form', {
                 <label class="label">Email</label>
 
                 <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="text" placeholder="請輸入 Email">
+                    <input class="input" v-model="custom.email" type="text" placeholder="請輸入 Email">
 
                     <span class="icon is-small is-left">
                         <i class="fa fa-envelope"></i>
@@ -427,7 +446,7 @@ Vue.component('new-form', {
                 <label class="label">生日</label>
 
                 <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="date" placeholder="請輸入生日，格式 1980-07-02">
+                    <input class="input" type="date" v-model="custom.birthday" placeholder="請輸入生日，格式 1980-07-02">
 
                     <span class="icon is-small is-left">
                         <i class="fa fa-mobile"></i>
@@ -439,7 +458,7 @@ Vue.component('new-form', {
                 <label class="label">地址</label>
 
                 <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="text" placeholder="請輸入地址">
+                    <input class="input" type="text" v-model="custom.address" placeholder="請輸入地址">
 
                     <span class="icon is-small is-left">
                         <i class="fa fa-address-card"></i>
@@ -451,7 +470,7 @@ Vue.component('new-form', {
                 <label class="label">Facebook</label>
 
                 <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="text" placeholder="請輸入臉書帳號">
+                    <input class="input" type="text" v-model="custom.facebook_account" placeholder="請輸入臉書帳號">
 
                     <span class="icon is-small is-left">
                         <i class="fa fa-facebook"></i>
@@ -463,7 +482,7 @@ Vue.component('new-form', {
                 <label class="label">Line</label>
 
                 <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="text" placeholder="請輸入Line ID">
+                    <input class="input" type="text" v-model="custom.line_account" placeholder="請輸入Line ID">
 
                     <span class="icon is-small is-left">
                         <i class="fa fa-info"></i>
@@ -474,7 +493,7 @@ Vue.component('new-form', {
             <div class="field">
                 <label class="label">備註</label>
                 <p class="control">
-                    <textarea class="textarea" placeholder="備註"></textarea>
+                    <textarea class="textarea" placeholder="備註" v-model="custom.memo"></textarea>
                 </p>
             </div>
         </form>
@@ -512,8 +531,8 @@ Vue.component('pagination', {
     props: ['pages', 'currentPage'],
 
     template: `
-        <nav v-if="0 < pages" class="pagination" style="margin-bottom: 10px;">
-            <nav class="pagination is-right">   
+        <nav v-if="1 < pages" class="pagination" style="margin-bottom: 10px;">
+            <nav class="pagination is-right">
                 <ul class="pagination-list">
                     <li v-show="1 < currentPage">
                         <a class="pagination-link" @click="prevPage">
@@ -532,7 +551,7 @@ Vue.component('pagination', {
                             </span>
                         </p>
                     </li>
-                    
+
                     <li v-show="pages > currentPage">
                         <a class="pagination-link" @click="nextPage">
                             <i class="fa fa-angle-right"></i>
@@ -576,6 +595,8 @@ let app = new Vue({
         totals: 0,
         perPage: 10,
         pages: 0,
+
+        isSaving: false,
 
         isLoadingOrders: false,
 
@@ -658,12 +679,41 @@ let app = new Vue({
                 return this.customSchema
             }
 
-            this.selectedCustom = Object.assign({},  {
+            let custom = Object.assign({},  {
                 orders: [],
                 auctions: [],
             }, this.customs[this.currentIndex])
 
-            this.loadOrders()
+            if (!_.isEmpty(custom.birthday)) {
+                custom.birthday = custom.birthday.substr(0, 10)
+            }
+
+            if (_.isEmpty(custom.mobil)) {
+                this.selectedCustom = custom
+
+                return this.loadOrders()
+            }
+
+            this.isSaving = true
+
+            axios.get(Routing.generate('admin_custom_get_belongs_memo') + '?mobil=' + custom.mobil)
+                .then(function ({ data }){
+                    this.isSaving = false
+
+                    custom.memo = data.data
+
+                    this.selectedCustom = custom
+
+                    this.loadOrders()
+                }.bind(this))
+                .catch(function (e) {
+                    this.isSaving = false
+
+                    this.selectedCustom = custom
+
+                    this.loadOrders()
+                }.bind(this))
+
         },
 
         refreshPageParams(data) {
@@ -683,12 +733,12 @@ let app = new Vue({
             let url = Routing.generate('admin_custom_jsonfetch')
 
             this.isLoadingCustoms = true
-            
+
             axios.post(url + '?page=' + this.currentPage, this.conditions)
                 .then(function({ data }) {
                     this.isLoadingCustoms = false
 
-                    if (data.is_error) {                        
+                    if (data.is_error) {
                         return alert(data.message)
                     }
 
@@ -756,6 +806,42 @@ let app = new Vue({
                 month: 0,
                 social: null,
             }
+        },
+
+        updateCustom() {
+            this.isSaving = true
+
+            axios.post(Routing.generate('admin_custom_vue_update'), this.selectedCustom)
+                .then(function({ data }) {
+                    let custom = data.data
+
+                    if (!_.isEmpty(custom.birthday)) {
+                        custom.birthday = custom.birthday.substr(0, 10)
+                    }
+
+                    this.selectedCustom = custom
+
+                    let index = _.findIndex(this.customs, { mobil: custom.mobil })
+
+                    this.customs.splice(index, 1, custom)
+
+                    this.isSaving = false
+
+                    this.toggleEditModal(false)
+                }.bind(this))
+                .catch(function(e) {
+                    this.isSaving = false
+
+                    console.log(e)
+                }.bind(this))
+        },
+
+        updateSelectedCustomHandle() {
+
+        },
+
+        storeCustom() {
+
         },
     },
 })

@@ -628,4 +628,136 @@ class CustomController extends Controller
 
         return $responseHandler->getETag($request, $jsonData, 'json');
     }
+
+    protected function arrayGet($arr, $key)
+    {
+        return array_key_exists($key, $arr) ? $arr[$key] : null;
+    }
+
+    /**
+     * 取得本店此手機號碼的客戶之備註, 因為詭異的架構導致此狀況, 沒辦法
+     * 
+     * @Route("/vue_get_belongs_memo", name="admin_custom_get_belongs_memo", options={"expose"=true})
+     * @Method("GET")
+     */
+    public function fetchTheBelongsMemo(Request $request)
+    {
+        /**
+         * The Current User
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($user->getStore(), $request->query->get('mobil'));
+
+        $responseHandler = new ResponseHandler;
+
+        $json = json_encode([
+            'data' => is_null($custom) ? '' : $custom->getMemo()
+        ]);
+
+        return $responseHandler->getETag($request, $json, 'json');
+    }
+
+    /**
+     * 此 Action 是完全 copy 54 行的邏輯來用，只是改參數而已。
+     * 
+     * @Route("/vue_update", name="admin_custom_vue_update", options={"expose"=true})
+     * @Method("POST")
+     */
+    public function vueUpdateAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $responseHandler = new ResponseHandler;
+
+        /**
+         * The Current User
+         *
+         * @var \Woojin\UserBundle\Entity\User
+         */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $qb = $em->createQueryBuilder();
+
+        $content = $this->get('request')->getContent();
+        $params = json_decode($content, true); // 2nd param to get as array
+
+        $stores = $qb->select('s')
+            ->from('WoojinStoreBundle:Store', 's')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        $custom = $em->find('WoojinOrderBundle:Custom', $this->arrayGet($params, 'id'));
+        $mobil = $custom->getMobil();
+
+        if (empty($mobil)) {
+            $custom
+                ->setName($this->arrayGet($params, 'name'))
+                ->setSex($this->arrayGet($params, 'sex'))
+                ->setMobil($this->arrayGet($params, 'mobil'))
+                ->setEmail($this->arrayGet($params, 'email'))
+                ->setAddress($this->arrayGet($params, 'address'))
+                ->setBirthday(new \DateTime($this->arrayGet($params, 'birthday')))
+                ->setLineAccount($this->arrayGet($params, 'line_account'))
+                ->setFacebookAccount($this->arrayGet($params, 'facebook_account'))
+            ;
+
+            if ($custom->getStore()->getId() === $user->getStore()->getId()) {
+                $custom->setMemo($this->arrayGet($params, 'memo'));
+            }
+
+            $em->persist($custom);
+            $em->flush();
+
+            return $responseHandler->getETag($request, json_encode([
+                'data' => $custom
+            ]), 'json');
+        }
+
+        foreach ($stores as $store) {
+            $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $mobil);
+
+            if (is_null($custom)) {
+                $custom = new Custom;
+                $custom->setStore($store);
+            }
+
+            $custom
+                ->setName($this->arrayGet($params, 'name'))
+                ->setSex($this->arrayGet($params, 'sex'))
+                ->setMobil($this->arrayGet($params, 'mobil'))
+                ->setEmail($this->arrayGet($params, 'email'))
+                ->setAddress($this->arrayGet($params, 'address'))
+                ->setBirthday(new \DateTime($this->arrayGet($params, 'birthday')))
+                ->setLineAccount($this->arrayGet($params, 'line_account'))
+                ->setFacebookAccount($this->arrayGet($params, 'facebook_account'))
+            ;
+
+            if ($custom->getStore()->getId() === $user->getStore()->getId()) {
+                $custom->setMemo($this->arrayGet($params, 'memo'));
+            }
+
+            $em->persist($custom);
+            $em->flush();
+        }
+
+        $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+
+        // 因為只有自己店的才會被更新到 memo, 為了回傳也能正常顯示 memo 一定要重抓
+        $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($user->getStore(), $mobil);
+
+        $data = [
+            'message' => 'Update successfully',
+            'data' => $custom,
+        ];
+
+        $json = $serializer->serialize($data, 'json');
+
+        return $responseHandler->getETag($request, $json, 'json');
+    }
 }
