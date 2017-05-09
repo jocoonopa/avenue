@@ -75,7 +75,9 @@
 
 	{% if app.user|has_auth('READ_CUSTOM') %}
 		<div id="orders-custom" >
-			<a class="btn btn-success" href="{{ path('order_custom_temp') }}" target="_blank"><i data-icon="w"></i>前往客戶資料管理</a>
+			{# <a class="btn btn-success" href="{{ path('order_custom_temp') }}" target="_blank"><i data-icon="w"></i>前往客戶資料管理</a> #}
+
+			<a class="btn btn-success" href="{{ path('order_custom_list') }}" target="_blank"><i data-icon="w"></i>客戶資料管理</a>
 		</div>
 	{% endif %}
 

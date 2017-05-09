@@ -643,10 +643,10 @@ class CustomController extends Controller
     /**
      * 取得本店此手機號碼的客戶之備註, 因為詭異的架構導致此狀況, 沒辦法
      *
-     * @Route("/vue_get_belongs_memo", name="admin_custom_get_belongs_memo", options={"expose"=true})
+     * @Route("/vue_get_belongs", name="admin_custom_get_belongs", options={"expose"=true})
      * @Method("GET")
      */
-    public function fetchTheBelongsMemo(Request $request)
+    public function fetchTheBelongs(Request $request)
     {
         /**
          * The Current User
@@ -661,9 +661,14 @@ class CustomController extends Controller
 
         $responseHandler = new ResponseHandler;
 
-        $json = json_encode([
-            'data' => is_null($custom) ? '' : $custom->getMemo()
-        ]);
+        $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+
+        $data = [
+            'message' => 'Get belongs custom',
+            'data' => $custom,
+        ];
+
+        $json = $serializer->serialize($data, 'json');
 
         return $responseHandler->getETag($request, $json, 'json');
     }

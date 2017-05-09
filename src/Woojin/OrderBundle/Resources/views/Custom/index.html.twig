@@ -696,13 +696,11 @@ let app = new Vue({
 
             this.isSaving = true
 
-            axios.get(Routing.generate('admin_custom_get_belongs_memo') + '?mobil=' + custom.mobil)
+            axios.get(Routing.generate('admin_custom_get_belongs') + '?mobil=' + custom.mobil)
                 .then(function ({ data }){
                     this.isSaving = false
 
-                    custom.memo = data.data
-
-                    this.selectedCustom = custom
+                    this.selectedCustom = data.data
 
                     this.loadOrders()
                 }.bind(this))
@@ -747,7 +745,7 @@ let app = new Vue({
                     this.refreshPageParams(data)
                 }.bind(this))
                 .catch(function (e) {
-                    alert(e)
+                    alert('您的憑證可能過期了，請重新登入系統')
 
                     this.isLoadingCustoms = false
                 }.bind(this))
@@ -768,7 +766,7 @@ let app = new Vue({
                     this.isLoadingOrders = false
                 }.bind(this))
                 .catch(function (e) {
-                    alert(e)
+                    alert('您的憑證可能過期了，請重新登入系統')
 
                     this.isLoadingOrders = false
                 }.bind(this))
