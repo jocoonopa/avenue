@@ -136,10 +136,11 @@ class OrderController extends Controller
          */
         $qb = $em->createQueryBuilder();
         $qb
-            ->select(['o', 'c', 'ope', 'u', 'g', 'k'])
+            ->select(['o', 'c', 'ope', 'u', 'g', 'k', 's'])
             ->from('WoojinOrderBundle:Orders', 'o')
             ->leftJoin('o.custom', 'c')
             ->leftJoin('o.kind', 'k')
+             ->leftJoin('o.status', 's')
             ->leftJoin('o.opes', 'ope')
             ->leftJoin('ope.user', 'u')
             ->leftJoin('o.goods_passport', 'g')
@@ -148,7 +149,8 @@ class OrderController extends Controller
             	$qb->expr()->gt('g.id', 0)
             )
             ->orderBy('o.id', 'desc')
-            ->groupBy('o.id')
+            ->orderBy('ope.id', 'desc')
+            ->groupBy('ope.id')
         ;
 
         $orders = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
@@ -158,10 +160,11 @@ class OrderController extends Controller
          */
         $qb = $em->createQueryBuilder();
         $qb
-            ->select(['au', 'p', 'b'])
+            ->select(['au', 'p', 'b', 's'])
             ->from('WoojinStoreBundle:Auction', 'au')
             ->leftJoin('au.product', 'p')
             ->leftJoin('au.buyer', 'b')
+            ->leftJoin('au.bsser', 's')
             ->where(
             	$qb->expr()->eq('b.mobil', $qb->expr()->literal($mobil))
             )

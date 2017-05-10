@@ -340,7 +340,15 @@ Vue.component('timeline', {
                             <a :href="genProductUrl(order.goods_passport.sn)" target="_blank">
                                 {{ order.goods_passport.sn }}
                             </a>
+
+                            <span class="tag">
+                                {{ order.goods_passport.name }}
+                            </span>
                         </strong>
+
+                        <span :class="getOrderStatusClass(order.status.id)">
+                            {{ order.status.name }}
+                        </span>
                     </div>
 
                     <ul>
@@ -352,7 +360,7 @@ Vue.component('timeline', {
                             <br>
 
                             <strong>
-                                <a href="#">Vivian</a>
+                                <a href="#">{{ ope.user.username }}</a>
                             </strong>
 
                             <small style="padding-left: 5px;">
@@ -368,18 +376,40 @@ Vue.component('timeline', {
             >
                 <div class="timeline-item-content">
                     <div>
-                        競拍得標
+                        <span class="tag is-dark">
+                            競拍
+                        </span>
 
-                        <small style="padding-left: 5px;">
-                            ~ {{ auction.soldAt.date.substr(0, 16) }}
-                        </small>
+                        <strong>
+                            <a :href="genProductUrl(auction.product.sn)" target="_blank">
+                                {{ auction.product.sn }}
+                            </a>
+
+                            <span class="tag">{{ auction.product.name }}</span>
+                        </strong>
+
+                        <span :class="getAuctionStatusClass(auction.status, auction.profitStatus)">
+                            {{ getAuctionStatusDesc(auction.status, auction.profitStatus) }}
+                        </span>                      
                     </div>
 
-                    <strong>
-                        <a :href="genProductUrl(auction.product.sn)" target="_blank">
-                            {{ auction.product.sn }}
-                        </a>
-                    </strong>
+                    <ul>
+                        <li class="content is-small">
+                            <span>
+                                得標價格 {{ auction.price }}
+                            </span>
+
+                            <br>
+
+                            <strong>
+                                <a href="#">{{ auction.bsser.username }}</a>
+                            </strong>
+
+                            <small style="padding-left: 5px;">
+                                ~ {{ auction.soldAt.date.substr(0, 16) }}
+                            </small>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -389,6 +419,38 @@ Vue.component('timeline', {
     methods: {
         genProductUrl(sn) {
             return Routing.generate('goods_edit_v2_from_sn' , { sn })
+        },
+
+        getOrderStatusClass(id) {
+            return {
+                tag: true,
+                'is-success': _.isEqual(2, parseInt(id)),
+                'is-warning': _.isEqual(1, parseInt(id)),
+                'is-danger': _.isEqual(3, parseInt(id)),
+            }
+        },
+
+        getAuctionStatusClass(id, pid) {
+            return {
+                tag: true,
+                'is-success': _.isEqual(1, parseInt(id)) && _.isEqual(1, parseInt(pid)),
+                'is-warning': _.isEqual(1, parseInt(id)) && _.isEqual(0, parseInt(pid)),
+                'is-danger': _.isEqual(0, parseInt(id)),
+            }
+        },
+
+        getAuctionStatusDesc(id, pid) {
+            if (_.isEqual(0, parseInt(id))) {
+                return '取消'
+            }
+
+            if (_.isEqual(1, parseInt(id)) && _.isEqual(1, parseInt(pid))) {
+                return '已付清'
+            }
+
+            if (_.isEqual(1, parseInt(id)) && _.isEqual(0, parseInt(pid))) {
+                return '待付清'
+            }
         },
     },
 })
