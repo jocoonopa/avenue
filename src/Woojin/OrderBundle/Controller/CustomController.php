@@ -657,7 +657,31 @@ class CustomController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($user->getStore(), $request->query->get('mobil'));
+        $store = $user->getStore();
+
+        $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $request->query->get('mobil'));
+
+        if (is_null($custom)) {
+            $otherCustom = $em->getRepository('WoojinOrderBundle:Custom')
+                ->findBy(['mobil' => $request->query->get('mobil')])[0];
+
+            $custom = new Custom();
+            $custom
+                ->setStore($store)
+                ->setName($otherCustom->getName())
+                ->setSex($otherCustom->getSex())
+                ->setMobil($otherCustom->getMobil())
+                ->setEmail($otherCustom->getEmail())
+                ->setAddress($otherCustom->getAddress())
+                ->setLineAccount($otherCustom->getLineAccount())
+                ->setFacebookAccount($otherCustom->getFacebookAccount())
+                ->setCreatetime(new \DateTime())
+                ->setBirthday($otherCustom->getBirthday())
+            ;
+
+            $em->persist($custom);
+            $em->flush();
+        }
 
         $responseHandler = new ResponseHandler;
 

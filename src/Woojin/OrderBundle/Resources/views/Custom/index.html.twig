@@ -195,6 +195,8 @@
 
 {% verbatim %}
 
+Vue.config.devtools = !_.includes(window.location.href, 'avenue2003')
+
 Vue.component('info', {
     props: ['custom'],
 
