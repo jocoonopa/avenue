@@ -748,12 +748,8 @@ let app = new Vue({
                 auctions: [],
             }, this.customs[this.currentIndex])
 
-            if (!_.isEmpty(custom.birthday)) {
-                custom.birthday = custom.birthday.substr(0, 10)
-            }
-
             if (_.isEmpty(custom.mobil)) {
-                this.selectedCustom = custom
+                this.setSelectedCustom(custom)
 
                 return this.loadOrders()
             }
@@ -764,18 +760,17 @@ let app = new Vue({
                 .then(function ({ data }){
                     this.isSaving = false
 
-                    this.selectedCustom = data.data
+                    this.setSelectedCustom(data.data)
 
                     this.loadOrders()
                 }.bind(this))
                 .catch(function (e) {
                     this.isSaving = false
 
-                    this.selectedCustom = custom
+                    this.setSelectedCustom(custom)
 
                     this.loadOrders()
                 }.bind(this))
-
         },
 
         refreshPageParams(data) {
@@ -875,13 +870,7 @@ let app = new Vue({
 
             axios.post(Routing.generate('admin_custom_vue_update'), this.selectedCustom)
                 .then(function({ data }) {
-                    let custom = data.data
-
-                    if (!_.isEmpty(custom.birthday)) {
-                        custom.birthday = custom.birthday.substr(0, 10)
-                    }
-
-                    this.selectedCustom = custom
+                    this.setSelectedCustom(data.data)
 
                     let index = _.findIndex(this.customs, { mobil: custom.mobil })
 
@@ -914,6 +903,12 @@ let app = new Vue({
 
                     console.log(e)
                 }.bind(this))
+        },
+
+        setSelectedCustom(custom) {            
+            this.selectedCustom = Object.assign({}, custom, {
+                birthday: _.isEmpty(custom.birthday) ? custom.birthday : custom.birthday.substr(0, 10)
+            })
         },
     },
 
