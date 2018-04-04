@@ -197,4 +197,27 @@ class CustomRepository extends EntityRepository
 
         return $res;
     }
+
+    public function findByNameAndStore(Store $store, $name)
+    {
+        $em = $this->getEntityManager();
+
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from('WoojinOrderBundle:Custom', 'c')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('c.name', $qb->expr()->literal($name)),
+                    $qb->expr()->neq('c.name', $qb->expr()->literal('')),
+                    $qb->expr()->eq('c.mobil', $qb->expr()->literal('')),
+                    $qb->expr()->eq('c.store', $store->getId())
+                )
+            )
+        ;
+
+        $res = $qb->getQuery()->getOneOrNullResult();
+
+        return $res;
+    }
 }

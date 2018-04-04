@@ -23,6 +23,10 @@
         <div role="tabpanel" class="tab-pane {% if loop.last %}active{% endif %}" id="auction_{{ auction.id }}">
             <div class="row margin-only-left-10">
                 <div class="col-md-12">
+                    <code style="display: block; font-size: 16px; margin: 20px 0 20px 0;">
+                        {{ auction.getMemo2() }}
+                    </code>
+
                     {% include 'WoojinGoodsBundle:Goods/v2/auction:_bso.html.twig' %}
 
                     {% if auction.status == constant('Woojin\\StoreBundle\\Entity\\Auction::STATUS_SOLD') %}

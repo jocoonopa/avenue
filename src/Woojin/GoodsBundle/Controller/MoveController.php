@@ -291,6 +291,10 @@ class MoveController extends Controller
 
         $goods = $em->find('WoojinGoodsBundle:GoodsPassport', $request->request->get('nGoodsPassportId'));
 
+        if ($goods->getStatus()->getId() !== Avenue::GS_ONSALE) {
+            return new \Exception('非店內上架商品不可新增調貨請求!');
+        }
+
         $destination = $em->getRepository('WoojinStoreBundle:Store')->findOneBy(array('sn' => $request->request->get('sStoreSn')));
 
         if ($from->getId() === $destination->getId()) {
@@ -547,7 +551,7 @@ class MoveController extends Controller
 
         $move
             ->setCloser($user)
-            ->setStatus($em->find('WoojinGoodsBundle:MoveStatus', Avenue::OK_MOVE_IN))
+            ->setStatus($em->find('WoojinGoodsBundle:MoveStatus', Avenue::MV_CANCEL))
         ;
 
         $goods = $move->getOrgGoods();

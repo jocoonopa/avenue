@@ -756,7 +756,7 @@ let app = new Vue({
 
             this.isSaving = true
 
-            axios.get(Routing.generate('admin_custom_get_belongs') + '?mobil=' + custom.mobil)
+            axios.get(Routing.generate('admin_custom_get_belongs') + '?mobil=' + custom.mobil + '&name=' + custom.name)
                 .then(function ({ data }){
                     this.isSaving = false
 
@@ -815,7 +815,7 @@ let app = new Vue({
 
             this.isLoadingOrders = true
 
-            axios.get(`${url}?mobil=${this.customs[this.currentIndex].mobil}`)
+            axios.get(`${url}?mobil=${this.customs[this.currentIndex].mobil}&name=${this.customs[this.currentIndex].name}`)
                 .then(function ({ data }) {
                     this.selectedCustom = Object.assign({}, this.selectedCustom, {
                         orders: data.data.orders,

@@ -64,7 +64,7 @@
 				</thead>
 				<tbody>
 					{% for key,goods in rGoods %}
-					<tr class="{{ goods.sn|replace({'%': ''}) }}">
+					<tr class="{{ goods.sn|replace({'%': '', '!': ''}) }}">
 						<td>{{ key + 1 }}</td>
 						<td>
 							<a href="{{ path('goods_edit_v2', {id: goods.id}) }}" target="_blank">{{ goods.sn|replace({'%': ''}) }}</a>
@@ -102,7 +102,7 @@
 <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
 <script src="/bundles/woojinfront/js/plugins/jquery.sidr.min.js"></script>
 <script src="/js/jquery.blockUI.js"></script>
-<script src="/js/stock_checker.js" ></script>
+<script src="/js/stock_checker.js?t=905" ></script>
 <script>
 $(function () {
 	var iStockChecker = new StockChecker();

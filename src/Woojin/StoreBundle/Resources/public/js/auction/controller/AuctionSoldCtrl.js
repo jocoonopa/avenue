@@ -13,6 +13,7 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
     $scope.productSn = '';
     $scope.price = '';
     $scope.customMobil = '';
+    $scope.note = '';
     $scope.tmpMobil = '';
     $scope.isAu = true;
     $scope.custom = {
@@ -80,11 +81,12 @@ auctionCtrl.controller('AuctionSoldCtrl', ['AuctionHelper', '$scope', '$routePar
       });
     };
 
-    $scope.sold = function (sn, price, mobil) {
+    $scope.sold = function (sn, price, mobil, note) {
       var data = $.param({
         sn: sn,
         mobil: mobil,
         price: price,
+        note: note,
         _method: 'PUT'
       });
 

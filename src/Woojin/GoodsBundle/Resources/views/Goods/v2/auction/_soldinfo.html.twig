@@ -18,8 +18,17 @@
         </div>
         {% endif %}
         <ul class="list-unstyled">
-            <li><b>買家:</b> {{ auction.getBuyerName()}} <span class="badge">{{ auction.getBuyerMobil}}</span> </li>
-            <li><b>客戶:{{ auction.getSellerName() }}{{ auction.getSellerMobil() }}分潤:</b> <span class="text-danger">{{ auction.getCustomProfit() }}</span></li>
+            <li>
+                <b>買家:</b> 
+
+                {{ auction.getBuyerName()}} 
+
+                <span class="badge">{{ auction.getBuyerMobil}}</span> 
+            </li>
+            <li>
+                <b>客戶:{{ auction.getSellerName() }}{{ auction.getSellerMobil() }}分潤:</b> 
+                <span class="text-danger">{{ auction.getCustomProfit() }}</span>
+            </li>
             {% if auction.profitStatus in [
                 constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_PAY_COMPLETE'),
                 constant('Woojin\\StoreBundle\\Entity\\Auction::PROFIT_STATUS_ASSIGN_COMPLETE')

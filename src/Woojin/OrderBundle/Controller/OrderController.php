@@ -144,10 +144,22 @@ class OrderController extends Controller
             ->leftJoin('o.opes', 'ope')
             ->leftJoin('ope.user', 'u')
             ->leftJoin('o.goods_passport', 'g')
-            ->where(
-            	$qb->expr()->eq('c.mobil', $qb->expr()->literal($mobil)),
-            	$qb->expr()->gt('g.id', 0)
-            )
+        ;
+
+        if (empty($mobil)) {
+            $qb->where(
+                $qb->expr()->eq('c.name', $qb->expr()->literal($request->query->get('name'))),
+                $qb->expr()->eq('c.mobil', $qb->expr()->literal('')),
+                $qb->expr()->gt('g.id', 0)
+            );
+        } else {
+            $qb->where(
+                $qb->expr()->eq('c.mobil', $qb->expr()->literal($mobil)),
+                $qb->expr()->gt('g.id', 0)
+            );
+        }
+        
+        $qb
             ->orderBy('o.id', 'desc')
             ->orderBy('ope.id', 'desc')
             ->groupBy('ope.id')
@@ -165,11 +177,25 @@ class OrderController extends Controller
             ->leftJoin('au.product', 'p')
             ->leftJoin('au.buyer', 'b')
             ->leftJoin('au.bsser', 's')
-            ->where(
-            	$qb->expr()->eq('b.mobil', $qb->expr()->literal($mobil))
-            )
-            ->orderBy('au.id', 'desc')
         ;
+
+        if (empty($mobil)) {
+            $qb
+                ->where(
+                    $qb->expr()->eq('b.mobil', $qb->expr()->literal('')),
+                    $qb->expr()->eq('b.name', $qb->expr()->literal($request->query->get('name')))
+                )
+                ->orderBy('au.id', 'desc')
+            ;
+        } else {
+            $qb
+                ->where(
+                    $qb->expr()->eq('b.mobil', $qb->expr()->literal($mobil))
+                )
+                ->orderBy('au.id', 'desc')
+            ;
+        }
+            
 
         $auctions = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 

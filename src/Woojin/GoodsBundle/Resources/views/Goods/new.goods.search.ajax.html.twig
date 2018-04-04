@@ -2,7 +2,7 @@
     {% if goods.sn|slice(0, 1) == 'C' %}{% else %}
     <div class="item" title="{{ goods.status.name }}-{{ goods.name }}-{{ goods.sn }}">
         <a href="{{ path('goods_edit_v2', {id: goods.id}) }}?iframe=true&width=100%&height=100%" rel="prettyPhoto[iframes]">
-            <img src="{% if goods.img %}{{ goods.img.path }}?t={{ 'now'|date('U') }}{% else %}{{ NothingPng }}{% endif %}" style="width: 100%;">
+            <img src="{% if goods.img %}{{ goods.img.path }}?t={{ 'now'|date('U') }}{% else %}{{ NothingPng }}{% endif %}" style="width: 100%; min-height: 150px; min-width: 150px;">
 
         </a>
         {% if true == goods.isAllowAuction  %}

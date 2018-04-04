@@ -224,6 +224,11 @@ class Auction
     protected $memo;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $memo2;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="sau_count", type="integer", nullable=true)
@@ -289,6 +294,7 @@ class Auction
             ->setBsser($options['bsser'])
             ->setBuyer($options['buyer'])
             ->setSoldAt($options['soldAt'])
+            ->setMemo2($options['memo2'])
             ->patchSoldUpdateCount()
         ;
     }
@@ -850,6 +856,30 @@ class Auction
     public function getMemo($isBr2n = false)
     {
         return true === $isBr2n ? str_replace(['<br>', '<br/>', '<br />'], "\r\n", $this->memo) : $this->memo;
+    }
+
+    /**
+     * Set memo2
+     *
+     * @param string $memo2
+     *
+     * @return Auction
+     */
+    public function setMemo2($memo)
+    {
+        $this->memo2 = $memo;
+
+        return $this;
+    }
+
+    /**
+     * Get memo2
+     *
+     * @return string
+     */
+    public function getMemo2($isBr2n = false)
+    {
+        return true === $isBr2n ? str_replace(['<br>', '<br/>', '<br />'], "\r\n", $this->memo2) : $this->memo2;
     }
 
     /**

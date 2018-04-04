@@ -659,7 +659,11 @@ class CustomController extends Controller
 
         $store = $user->getStore();
 
-        $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $request->query->get('mobil'));
+        if (!empty($request->query->get('mobil'))) {
+            $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $request->query->get('mobil'));
+        } else {
+            $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByNameAndStore($store, $request->query->get('name'));
+        }
 
         if (is_null($custom)) {
             $otherCustom = $em->getRepository('WoojinOrderBundle:Custom')
@@ -843,7 +847,9 @@ class CustomController extends Controller
         foreach ($stores as $store) {
             $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $mobil);
 
-            if (is_null($custom)) {
+            $checkExistCustom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $this->arrayGet($params, 'mobil'));
+
+            if (is_null($custom) && is_null($checkExistCustom)) {
                 $custom = new Custom;
                 $custom->setStore($store);
             }

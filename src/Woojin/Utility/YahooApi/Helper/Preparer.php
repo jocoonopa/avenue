@@ -53,7 +53,7 @@ class Preparer
         // 每次做新的簽章都要使用新的時間戳記
         $this
             ->setTimeStamp($this->getEchoTimeStamp())
-            ->setTimeDelay(((microtime() - $startTime) > 1) ? 1 : 0)
+            ->setTimeDelay(1)
             ->setSignature($this->makeSignature($this->filter($queryParamter, $ingores)))
         ;
 

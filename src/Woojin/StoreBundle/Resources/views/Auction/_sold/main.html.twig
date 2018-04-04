@@ -78,7 +78,7 @@
     <input type="number" name="price" class="form-control" placeholder="售價" required
       ng-class="{'alert-error': isFail(soldResponse), 'alert-ok': isSuccess(soldResponse)}"
       ng-model="price"
-      ng-enter="sold(productSn, price, customMobil)"
+      ng-enter="sold(productSn, price, customMobil, note)"
     />
   </div>
 
@@ -87,7 +87,7 @@
       <input type="text" class="form-control" placeholder="客戶手機"
         ng-model="customMobil"
         ng-keyup="isGhostMobil = false"
-        ng-enter="sold(productSn, price, customMobil)"
+        ng-enter="sold(productSn, price, customMobil, note)"
         typeahead-no-results="00000"
         typeahead="mobil for mobil in loadCustomsMobils($viewValue)"
       />
@@ -100,11 +100,17 @@
     </div>
   </div>
 
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="備註" 
+      ng-model="note"
+    />
+  </div>
+
   <div class="form-group">
     <div class="alert alert-danger pull-left" style="width: 100%" ng-show="isGhostMobil">
         手機號碼 <b>{{customMobil}}</b>無對應客戶，請新增客戶!
     </div>
-    <button type="button" class="btn btn-sm btn-primary pull-left" ng-click="sold(productSn, price, customMobil)"
+    <button type="button" class="btn btn-sm btn-primary pull-left" ng-click="sold(productSn, price, customMobil, note)"
       ng-disabled="!isInputValid(price, customMobil)"
     >
       <i class="glyphicon glyphicon-send"></i>

@@ -264,6 +264,13 @@ class AuctionController extends Controller
         $price = $request->request->get('price');
 
         /**
+         * Note
+         * 
+         * @var string
+         */
+        $note = $request->request->get('note');
+
+        /**
          * The custom entity
          *
          * @var \Woojin\OrderBundle\Entity\Custom
@@ -297,7 +304,8 @@ class AuctionController extends Controller
             'price' => $price,
             'buyer' => $custom,
             'bsser' => $user,
-            'soldAt' => new \DateTime
+            'soldAt' => new \DateTime,
+            'memo2' => $note
         ]);
 
         return $this->_genResponseWithServiceReturnAuction(\Woojin\StoreBundle\Entity\Auction::initVirtualProperty($result), $_format);

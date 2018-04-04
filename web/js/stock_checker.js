@@ -67,7 +67,7 @@ StockChecker.prototype.reverseReduce = function ($e) {
     var sn = $e.closest('tr').find('.target').text();
 
     if (confirm('確定要將' + sn + '還原成未盤點狀態嘛?')) {
-        $('.to-check-list').find('tr.' + sn).removeClass('hidden');
+        $('.to-check-list').find('tr.' + sn.replace('!', '')).removeClass('hidden');
 
         $e.closest('tr').remove();
 
@@ -119,7 +119,7 @@ StockChecker.prototype.resolve = function () {
 
 StockChecker.prototype.setTarget = function (val) {
     this._class = val;
-    this.$target = $('.' + this._class);
+    this.$target = $('.' + this._class.replace('!', ''));
     
     return this;
 };
