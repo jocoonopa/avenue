@@ -845,35 +845,40 @@ class CustomController extends Controller
         }
 
         foreach ($stores as $store) {
-            $custom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $mobil);
+            $customs = $em->getRepository('WoojinOrderBundle:Custom')->findMultiByMobilAndStore($store, $mobil);
 
             $checkExistCustom = $em->getRepository('WoojinOrderBundle:Custom')->findByMobilAndStore($store, $this->arrayGet($params, 'mobil'));
 
-            if (is_null($custom) && is_null($checkExistCustom)) {
+            if (0 === count($custom) && is_null($checkExistCustom)) {
                 $custom = new Custom;
                 $custom->setStore($store);
+                $customs = [
+                    $custom
+                ];
             }
 
-            $custom
-                ->setName($this->arrayGet($params, 'name'))
-                ->setSex($this->arrayGet($params, 'sex'))
-                ->setMobil($this->arrayGet($params, 'mobil'))
-                ->setEmail($this->arrayGet($params, 'email'))
-                ->setAddress($this->arrayGet($params, 'address'))
-                ->setLineAccount($this->arrayGet($params, 'line_account'))
-                ->setFacebookAccount($this->arrayGet($params, 'facebook_account'))
-            ;
+            foreach ($customs as $custom) {
+                $custom
+                    ->setName($this->arrayGet($params, 'name'))
+                    ->setSex($this->arrayGet($params, 'sex'))
+                    ->setMobil($this->arrayGet($params, 'mobil'))
+                    ->setEmail($this->arrayGet($params, 'email'))
+                    ->setAddress($this->arrayGet($params, 'address'))
+                    ->setLineAccount($this->arrayGet($params, 'line_account'))
+                    ->setFacebookAccount($this->arrayGet($params, 'facebook_account'))
+                ;
 
-            if (!empty($this->arrayGet($params, 'birthday'))) {
-                $custom->setBirthday(new \DateTime($this->arrayGet($params, 'birthday')));
+                if (!empty($this->arrayGet($params, 'birthday'))) {
+                    $custom->setBirthday(new \DateTime($this->arrayGet($params, 'birthday')));
+                }
+
+                if ($custom->getStore()->getId() === $user->getStore()->getId()) {
+                    $custom->setMemo($this->arrayGet($params, 'memo'));
+                }
+
+                $em->persist($custom);
+                $em->flush();
             }
-
-            if ($custom->getStore()->getId() === $user->getStore()->getId()) {
-                $custom->setMemo($this->arrayGet($params, 'memo'));
-            }
-
-            $em->persist($custom);
-            $em->flush();
         }
 
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();

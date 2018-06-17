@@ -193,7 +193,34 @@ class CustomRepository extends EntityRepository
             )
         ;
 
-        $res = $qb->getQuery()->getOneOrNullResult();
+        return $qb->getQuery()->setMaxResults(1)->getOneOrNullResult();
+    }
+
+    /**
+     * 找尋本店使用該手機號碼的客戶
+     *
+     * @param  Woojin\StoreBundle\Entity\Store   $store  Custom own store
+     * @param  string $mobil
+     * @return \Woojin\OrderBundle\Entity\Custom | null
+     */
+    public function findMultiByMobilAndStore(Store $store, $mobil)
+    {
+        $em = $this->getEntityManager();
+
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from('WoojinOrderBundle:Custom', 'c')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('c.mobil', $qb->expr()->literal($mobil)),
+                    $qb->expr()->neq('c.mobil', $qb->expr()->literal('')),
+                    $qb->expr()->eq('c.store', $store->getId())
+                )
+            )
+        ;
+
+        $res = $qb->getQuery()->getResult();
 
         return $res;
     }
