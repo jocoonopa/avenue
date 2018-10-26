@@ -77,7 +77,7 @@
         </div>
 
         <!-- 品名/序號 -->
-        <div class="my" style="top: {{ 5.1 + yShift + (key % 10) * 0.7 }}cm; left: 4.7cm;">{{ auction.product.name }}
+        <div class="my" style="top: {{ 5.1 + yShift + (key % 10) * 0.7 }}cm; left: 4.7cm;">{{ auction.product.brand.name }}{{ auction.product.name }}
         </div>
 
         <!-- 數量 -->
@@ -130,7 +130,7 @@
         <div class="my" style="top: {{ 20.0 + yShift + (key % 10) * 0.7 }}cm; left: 0.7cm;">{{ auction.product.sn }}</div>
 
     <!-- 品名/序號 -->
-    <div class="my" style="top: {{ 20.0 + yShift + (key % 10) * 0.7 }}cm; left: 4.7cm;">{{ auction.product.name }}
+    <div class="my" style="top: {{ 20.0 + yShift + (key % 10) * 0.7 }}cm; left: 4.7cm;">{{ auction.product.brand.name }}{{ auction.product.name }} 
     </div>
 
     <!-- 數量 -->
