@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Woojin\ApiBundle\Controller\AuctionValidaterTrait;
 use Woojin\GoodsBundle\Entity\BsoMoveLog;
 use Woojin\StoreBundle\Entity\Store;
 use Woojin\UserBundle\Entity\User;

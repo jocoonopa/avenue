@@ -40,7 +40,7 @@ class AppKernel extends Kernel
             
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             
-            new Genemu\Bundle\FormBundle\GenemuFormBundle(),
+            // new Genemu\Bundle\FormBundle\GenemuFormBundle(),
             
             new JMS\SerializerBundle\JMSSerializerBundle(),
 
