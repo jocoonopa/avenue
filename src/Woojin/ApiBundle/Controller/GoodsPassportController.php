@@ -347,4 +347,26 @@ class GoodsPassportController extends Controller
         // $condition->gd->status = new \stdClass;
         // $condition->gd->status->id = Avenue::GS_ONSALE;
     }
+
+    // @ParamConverter("goods", class="WoojinGoodsBundle:GoodsPassport", options={"sn": "sn"})
+
+    /**
+     * @Route("/goods_passport/print/label/{sn}/{_format}", defaults={"_format"="json"}, name="api_goodsPassport_printlabel", options={"expose"=true})
+     * 
+     * @Method("GET")
+     */
+    public function printlabel(Request $request, $_format)
+    {
+        $client = new \Predis\Client([
+            'scheme' => 'tcp',
+            'host' => $this->container->getParameter('redis.host'),
+            'port' => $this->container->getParameter('redis.port'),
+        ]);
+
+        $client->publish('test', json_encode(['foo' => 'bar']));
+
+        $responseHandler = new ResponseHandler;
+
+        return $responseHandler->getResponse(json_encode(['foo' => 'bar']), $_format);
+    }
 }

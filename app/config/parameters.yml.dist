@@ -38,3 +38,6 @@ parameters:
 
     test_username: YourUsername
     test_password: YourPassword
+
+    redis.host: 0.0.0.0
+    redis.port: 9999

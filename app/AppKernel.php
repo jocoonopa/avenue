@@ -47,7 +47,7 @@ class AppKernel extends Kernel
             new Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
             new Gregwar\ImageBundle\GregwarImageBundle(),
 
-            new SunCat\MobileDetectBundle\MobileDetectBundle()
+            new SunCat\MobileDetectBundle\MobileDetectBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
