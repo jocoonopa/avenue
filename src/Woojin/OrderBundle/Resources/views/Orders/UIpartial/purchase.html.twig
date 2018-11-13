@@ -70,6 +70,11 @@ window.phone_length = 10;
 		<input type="text" id="web_price" name="webPrice" class="numberic" placeholder="網路售價" />
 	</div>
 
+	<div>
+		<label class="vader" for="wholesale_price">*批發售價:</label>
+		<input type="text" id="wholesale_price" name="wholesalePrice" class="numberic" placeholder="批發價" />
+	</div>
+
 	<div class="nFeedBack hidden">
 		<label class="vader">*寄賣實拿金額</label>
 		<input type="text" name="nFeedBack" class="numeric" placeholder="寄賣商品" value="" readonly />
@@ -158,6 +163,11 @@ window.phone_length = 10;
 	<div>
 		<label class="vader">是否上架官網:</label>
 		<input type="checkbox" name="isAllowWeb" value="1">
+	</div>
+
+	<div>
+		<label class="vader">是否允許批發:</label>
+		<input type="checkbox" name="isAllowWholesale" value="1">
 	</div>
 
 	<div>
@@ -761,6 +771,7 @@ $(function () {
 		var val = parseInt($(this).val() * $selectBrand.find('option:selected').data('ratio'));
 
 		$('input[name="webPrice"]').val(val);
+		$('input[name="wholesalePrice"]').val(val);
 	});
 
 	$selectBrand.change(function () {

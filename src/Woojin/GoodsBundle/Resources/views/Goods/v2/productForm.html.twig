@@ -247,6 +247,27 @@
     </div>
 
     <div class="form-group">
+        <label class="col-md-2">批發價</label>
+
+        <div class="col-md-10">
+            {% if
+            goods.status.id in [
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ONSALE'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_ACTIVITY'),
+                constant('Woojin\\Utility\\Avenue\\Avenue::GS_BEHALF')
+            ] and (
+                (app.user|is_own(goods) and app.user|has_auth('EDIT_PRICE_OWN')
+                or app.user|has_auth('EDIT_PRICE_ALL'))
+            )
+            %}
+            <input type="text" name="wholesale_price" class="form-control numeric" value="{{ goods.wholesalePrice }}" />
+            {% else %}
+            <span>{{ goods.wholesalePrice|number_format }}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-group">
         <label class="col-md-2">成本</label>
 
         <div class="col-md-10">
@@ -447,6 +468,17 @@
         <div class="col-md-10">
             <input type="checkbox" name="isAllowWeb" value="1"
                 {% if goods.isAllowWeb %}checked{% endif %}
+                {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
+               >
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2">是否批發</label>
+
+        <div class="col-md-10">
+            <input type="checkbox" name="isAllowWholesale" value="1"
+                {% if goods.isAllowWholesale %}checked{% endif %}
                 {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled{% endif %}
                >
         </div>

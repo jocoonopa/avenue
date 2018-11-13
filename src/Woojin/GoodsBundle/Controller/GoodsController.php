@@ -66,7 +66,7 @@ class GoodsController extends Controller
      * @Route("/search_old", name="goods_search")
      * @Template("WoojinGoodsBundle:Goods:goods.search.html.twig")
      */
-    public function goodsSearchAction (Request $request)
+    public function goodsSearchAction(Request $request)
     {
         $oUser = $this->get('security.token_storage')->getToken()->getUser();
 
@@ -114,7 +114,7 @@ class GoodsController extends Controller
      * @Route("/new_search", name="goods_new_search")
      * @Template("WoojinGoodsBundle:New:search.html.twig")
      */
-    public function goodsNewSearchAction (Request $request)
+    public function goodsNewSearchAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -125,7 +125,7 @@ class GoodsController extends Controller
      * @Route("/move/activity", name="goods_move_activity")
      * @Template("WoojinGoodsBundle:Goods/Move:activity.html.twig")
      */
-    public function goodsMoveActivity ()
+    public function goodsMoveActivity()
     {
         return array();
     }
@@ -489,7 +489,7 @@ class GoodsController extends Controller
      * @Template("WoojinGoodsBundle:Goods:goods.search.ajax.html.twig")
      * @Method("POST")
      */
-    public function goodsBatchResAjaxAction (Request $request)
+    public function goodsBatchResAjaxAction(Request $request)
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
@@ -2161,6 +2161,20 @@ class GoodsController extends Controller
             $isAllowWeb = ($request->request->get('isAllowWeb', null) == 1) ? true : false;
 
             /**
+             * 是否允許批發
+             *
+             * @var boolean
+             */
+            $isAllowWholesale = ($request->request->get('isAllowWholesale', null) == 1) ? true : false;
+
+            /**
+             * 批發價
+             *
+             * @var integer
+             */
+            $wholesalePrice = $request->request->get('wholesale_price', $goods->getWebPrice());
+
+            /**
              * 是否允許刷卡付費
              *
              * @var boolean
@@ -2288,6 +2302,8 @@ class GoodsController extends Controller
                 ->setMemo($memo)
                 ->setIsAllowWeb($isAllowWeb)
                 ->setIsAllowCreditCard($isAllowCreditCard)
+                ->setIsAllowWholesale($isAllowWholesale)
+                ->setWholesalePrice($wholesalePrice)
                 ->setWebPrice($webPrice)
             ;
 

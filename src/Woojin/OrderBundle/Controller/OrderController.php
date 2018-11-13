@@ -158,7 +158,7 @@ class OrderController extends Controller
                 $qb->expr()->gt('g.id', 0)
             );
         }
-        
+
         $qb
             ->orderBy('o.id', 'desc')
             ->orderBy('ope.id', 'desc')
@@ -195,7 +195,6 @@ class OrderController extends Controller
                 ->orderBy('au.id', 'desc')
             ;
         }
-            
 
         $auctions = $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 

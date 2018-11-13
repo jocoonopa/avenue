@@ -39,7 +39,7 @@ class GoodsPassport
      */
     protected $seoSlogan2;
 
-   /**
+    /**
      * @Exclude
      * @ORM\OneToMany(targetEntity="Behalf", mappedBy="want")
      * @var WantBehalfs[]
@@ -164,160 +164,167 @@ class GoodsPassport
      * @ORM\OneToMany(targetEntity="GoodsPassport", mappedBy="parent")
      */
     protected $inherits;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="GoodsStatus", inversedBy="goods_passports")
+     * @var Status
+     */
+    protected $status;
 
+     /**
+     * @ORM\ManyToOne(targetEntity="GoodsSource", inversedBy="goods_passport")
+     * @var Source
+     */
+    protected $source;
 
-  /**
-   * @ORM\ManyToOne(targetEntity="GoodsStatus", inversedBy="goods_passports")
-   * @var Status
-   */
-  protected $status;
+    /**
+     * @ORM\ManyToOne(targetEntity="Img", inversedBy="goods_passport")
+     * @var Img
+     */
+    protected $img;
 
-   /**
-   * @ORM\ManyToOne(targetEntity="GoodsSource", inversedBy="goods_passport")
-   * @var Source
-   */
-  protected $source;
+    /**
+     * @ORM\ManyToOne(targetEntity="\Woojin\StoreBundle\Entity\Activity", inversedBy="goods_passport")
+     * @var Activity
+     */
+    protected $activity;
 
-  /**
-   * @ORM\ManyToOne(targetEntity="Img", inversedBy="goods_passport")
-   * @var Img
-   */
-  protected $img;
+    /**
+     * @ORM\ManyToOne(targetEntity="GoodsMT", inversedBy="goods_passports")
+     * @var GoodsMT
+     */
+    protected $mt;
 
-  /**
-   * @ORM\ManyToOne(targetEntity="\Woojin\StoreBundle\Entity\Activity", inversedBy="goods_passport")
-   * @var Activity
-   */
-  protected $activity;
+    /**
+     * @ORM\ManyToOne(targetEntity="GoodsLevel", inversedBy="goods_passports")
+     * @var Level
+     */
+    protected $level;
 
-  /**
-   * @ORM\ManyToOne(targetEntity="GoodsMT", inversedBy="goods_passports")
-   * @var GoodsMT
-   */
-  protected $mt;
+    /**
+     * @Exclude
+     * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\StockTakeRecord", mappedBy="goods_passport")
+     * @var StockTakeRecord[]
+     */
+    protected $stock_take_record;
 
-  /**
-   * @ORM\ManyToOne(targetEntity="GoodsLevel", inversedBy="goods_passports")
-   * @var Level
-   */
-  protected $level;
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
 
-  /**
-   * @Exclude
-   * @ORM\OneToMany(targetEntity="\Woojin\StoreBundle\Entity\StockTakeRecord", mappedBy="goods_passport")
-   * @var StockTakeRecord[]
-   */
-  protected $stock_take_record;
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    protected $sn;
 
-  /**
-   * @ORM\Id
-   * @ORM\Column(type="integer")
-   * @ORM\GeneratedValue(strategy="AUTO")
-   */
-  protected $id;
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $name;
 
-  /**
-   * @ORM\Column(type="string", length=100, nullable=true)
-   */
-  protected $sn;
+    /**
+     * @ORM\Column(type="integer", length=10)
+     */
+    protected $cost;
 
-  /**
-   * @ORM\Column(type="string", nullable=true)
-   */
-  protected $name;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $price;
 
-  /**
-   * @ORM\Column(type="integer", length=10)
-   */
-  protected $cost;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $wholesalePrice;
 
-  /**
-   * @ORM\Column(type="integer")
-   */
-  protected $price;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $webPrice;
 
-  /**
-   * @ORM\Column(type="integer")
-   */
-  protected $webPrice;
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    protected $org_sn;
 
-  /**
-   * @ORM\Column(type="string", length=100, nullable=true)
-   */
-  protected $org_sn;
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $memo;
 
-  /**
-   * @ORM\Column(type="text", nullable=true)
-   */
-  protected $memo;
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    protected $colorSn;
 
-  /**
-   * @ORM\Column(type="string", length=50, nullable=true)
-   */
-  protected $colorSn;
+    /**
+     * @ORM\Column(type="datetime", length=50, nullable=true)
+     */
+    protected $created_at;
 
-  /**
-   * @ORM\Column(type="datetime", length=50, nullable=true)
-   */
-  protected $created_at;
+    /**
+     * @ORM\Column(type="datetime", length=50, nullable=true)
+     */
+    protected $updateAt;
 
-  /**
-   * @ORM\Column(type="datetime", length=50, nullable=true)
-   */
-  protected $updateAt;
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    protected $model;
 
-  /**
-   * @ORM\Column(type="string", length=50, nullable=true)
-   */
-  protected $model;
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    protected $customSn;
 
-  /**
-   * @ORM\Column(type="string", length=10, nullable=true)
-   */
-  protected $customSn;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isAllowWeb;
 
-  /**
-   * @ORM\Column(type="boolean")
-   */
-  protected $isAllowWeb;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isAllowWholesale;
 
-  /**
-   * @ORM\Column(type="boolean")
-   */
-  protected $isAllowCreditCard;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isAllowCreditCard;
 
-  /**
-   * @ORM\Column(type="boolean")
-   */
-  protected $isBehalf;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isBehalf;
 
-  /**
-   * @ORM\Column(type="string", length=40, nullable=true)
-   */
-  protected $yahooId;
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    protected $yahooId;
 
-  /**
-   * @ORM\Column(type="boolean")
-   */
-  protected $isAllowAuction;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isAllowAuction;
 
-  /**
-   * @ORM\Column(type="boolean")
-   */
-  protected $isAlanIn;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isAlanIn;
 
-  /**
-   * @ORM\Column(type="string", length=40, nullable=true)
-   */
-  protected $seoWord;
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    protected $seoWord;
 
-  /**
-   * @ORM\Column(type="integer", nullable=true)
-   */
-  protected $bsoCustomPercentage;
-
-  
-
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $bsoCustomPercentage;
+    
     /**
      * Constructor
      */
@@ -333,6 +340,7 @@ class GoodsPassport
         $this->isBehalf = false;
         $this->isAllowCreditCard = true;
         $this->isAllowAuction = false;
+        $this->isAllowWholesale = false;
     }
 
     /**
@@ -353,7 +361,7 @@ class GoodsPassport
     public function isBehalfAndSold()
     {
         return (in_array($this->status->getId(), array(Avenue::GS_SOLDOUT, Avenue::GS_BEHALF))
-            && ($this->isBehalf));
+                    && ($this->isBehalf));
     }
 
     /**
@@ -399,7 +407,8 @@ class GoodsPassport
     public function getValidOutOrder()
     {
         foreach ($this->orders as $order) {
-            if ($order->getKind()->getType() === Avenue::OKT_OUT
+            if (
+                $order->getKind()->getType() === Avenue::OKT_OUT
                 && $order->getStatus()->getId() === Avenue::OS_COMPLETE
             ) {
                 return $order;
@@ -448,15 +457,15 @@ class GoodsPassport
 
         // 如果本商品屬於促銷活動，且該促銷活動有效
         if ($this->promotion && $this->promotion->isValid()) {
-            $displayPrice = (($this->webPrice && $this->webPrice >= 100) ? $this->webPrice : $this->price);
-            // 根據贈送金額是否大於0判斷是否為滿額贈活動
+                $displayPrice = (($this->webPrice && $this->webPrice >= 100) ? $this->webPrice : $this->price);
+                // 根據贈送金額是否大於0判斷是否為滿額贈活動
             if ($this->promotion->getGift() > 0) {
                 // 售價若大於滿額贈門檻
                 if ($displayPrice >= $this->promotion->getThread()) {
                     return ($this->promotion->getIsStack()) // 累計模式 或是單次模式
-                        ? $displayPrice - ($this->promotion->getGift() * floor($displayPrice/$this->promotion->getThread()))
-                        : $displayPrice - $this->promotion->getGift()
-                    ;
+                            ? $displayPrice - ($this->promotion->getGift() * floor($displayPrice/$this->promotion->getThread()))
+                            : $displayPrice - $this->promotion->getGift()
+                        ;
                 }
             }
 
@@ -481,7 +490,8 @@ class GoodsPassport
      */
     public function isValidToShow()
     {
-        return ($this->isAllowWeb
+        return (
+            $this->isAllowWeb
             && (
                 in_array($this->status->getId(), array(Avenue::GS_ONSALE, Avenue::GS_ACTIVITY))
                 || (in_array($this->status->getId(), array(Avenue::GS_SOLDOUT, Avenue::GS_BEHALF)) &&$this->isBehalf)
@@ -571,8 +581,8 @@ class GoodsPassport
     public function getCostVerifyed(User $user, $msg = '無閱讀權限')
     {
         return (
-            ($this->isOwnProduct($user) && $user->getRole()->hasAuth('READ_COST_OWN'))
-            || $user->getRole()->hasAuth('READ_COST_ALL')
+            ($this->isOwnProduct($user) && $user->getRole()->hasAuth('READ_COST_OWN')) || 
+            $user->getRole()->hasAuth('READ_COST_ALL')
         )
             ? $this->getCost()
             : $msg
@@ -657,6 +667,16 @@ class GoodsPassport
     }
 
     /**
+     * @ORM\PostPersist
+     */
+    public function autoSetWholesalePrice()
+    {
+        if (is_null($this->getWholesalePrice())) {
+            $this->setWholesalePrice($this->getPrice());
+        }
+    }
+
+    /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -676,9 +696,10 @@ class GoodsPassport
 
         $dirParts[] = 'img';
         $dirParts[] = 'product';
-        $dirParts[] = $user->getStore()->getSn();
-        $dirParts[] = ($this->brand) ? $this->brand->getName() : 'NoBrand';
-        $dirParts[] = ($this->pattern) ? $this->pattern->getName() : 'NoPattern';
+        $dirParts[] = (new \Datetime())->format('Y-m-d');
+        // $dirParts[] = $user->getStore()->getSn();
+        // $dirParts[] = ($this->brand) ? $this->brand->getName() : 'NoBrand';
+        // $dirParts[] = ($this->pattern) ? $this->pattern->getName() : 'NoPattern';
         $dirParts[] = $this->sn;
 
         return '/' . implode('/', $dirParts);
@@ -2061,9 +2082,9 @@ class GoodsPassport
      */
     public function setAuctionOutBsoAt($auctionOutBsoAt)
     {
-        $this->auctionOutBsoAt = $auctionOutBsoAt;
+            $this->auctionOutBsoAt = $auctionOutBsoAt;
 
-        return $this;
+            return $this;
     }
 
     /**
@@ -2108,5 +2129,45 @@ class GoodsPassport
     public function getBsoMoveLogs()
     {
         return $this->bsoMoveLogs;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWholesalePrice()
+    {
+        return $this->wholesalePrice;
+    }
+
+    /**
+     * @param mixed $wholesalePrice
+     *
+     * @return self
+     */
+    public function setWholesalePrice($wholesalePrice)
+    {
+        $this->wholesalePrice = $wholesalePrice;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsAllowWholesale()
+    {
+        return $this->isAllowWholesale;
+    }
+
+    /**
+     * @param mixed $isAllowWholesale
+     *
+     * @return self
+     */
+    public function setIsAllowWholesale($isAllowWholesale)
+    {
+        $this->isAllowWholesale = $isAllowWholesale;
+
+        return $this;
     }
 }

@@ -59,7 +59,7 @@ class ImgFactory
 
         $imgName = $product->getImgName($options['file']);
         $relDir = $product->getImgRelDir($options['user']);
-        $absDir = $_SERVER['DOCUMENT_ROOT'] . $relDir;
+        $absDir = "{$_SERVER['DOCUMENT_ROOT']}{$relDir}";
 
         if (!is_dir($absDir)) {
             mkdir($absDir, 0777, true); 

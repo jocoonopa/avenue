@@ -226,9 +226,15 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $isActive;
 
+    /**
+     * @ORM\Column(name="is_partner", type="boolean")
+     */
+    private $isPartner;
+
     public function __construct()
     {
         $this->isActive = true;
+        $this->isPartner = false;
         $this->salt = md5(uniqid(null, true));
     }
 
@@ -240,6 +246,10 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function hasAuth($str)
     {
+        if ($this->getIsPartner()) {
+            return false;
+        }
+
         return $this->getRole()->hasAuth($str);
     }
 
@@ -533,6 +543,29 @@ class User implements AdvancedUserInterface, \Serializable
     public function getIsActive()
     {
     return $this->isActive;
+    }
+
+    /**
+     * Set isPartner
+     *
+     * @param boolean $isPartner
+     * @return User
+     */
+    public function setIsPartner($isPartner)
+    {
+    $this->isPartner = $isPartner;
+
+    return $this;
+    }
+
+    /**
+     * Get isPartner
+     *
+     * @return boolean
+     */
+    public function getIsPartner()
+    {
+    return $this->isPartner;
     }
 
     /**

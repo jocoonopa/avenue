@@ -239,6 +239,10 @@ class BaseController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($usersLog);
 		$em->flush();
+
+		if ($user->getIsPartner()) {
+			return $this->redirect($this->generateUrl('wholesaler_index'), 301);
+		}
 		
 		return $this->redirect($this->generateUrl('order'), 301);
 	}

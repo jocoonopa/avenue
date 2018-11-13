@@ -57,6 +57,8 @@ class ProductFactory
             'orderKindFeedback',
             'paytype',
             'webPrice',
+            'wholesalePrice',
+            'isAllowWholesale',
             'isAlanIn',
             'isAllowAuction',
             'bsoCustomPercentage'
@@ -99,6 +101,8 @@ class ProductFactory
                 ->setIsAllowWeb($options['isAllowWeb'])
                 ->setIsAllowCreditCard($options['isAllowCreditCard'])
                 ->setWebPrice($options['webPrice'])
+                ->setWholesalePrice($options['wholesalePrice'])
+                ->setIsAllowWholesale($options['isAllowWholesale'])
                 ->setIsBehalf($options['isBehalf'])
                 ->setIsAlanIn($options['isAlanIn'])
                 ->setIsAllowAuction($options['isAllowAuction'])
@@ -144,6 +148,8 @@ class ProductFactory
 
             // 官網新增屬性
             ->setWebPrice($product->getWebPrice())
+            ->setWholesalePrice($product->getWholesalePrice())
+            ->setIsAllowWholesalePrice($product->getIsAllowWholesalePrice())
             ->setDesimg($product->getDesimg())
             ->setBrief($product->getBrief())
             ->setDescription($product->getDescription())
