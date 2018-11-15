@@ -214,6 +214,15 @@ class BaseController extends Controller
 	}
 
 	/**
+	 * @Route("/wholesale_index", name="wholesale_index")
+	 * @Template("WoojinBaseBundle:Wholesale:index.html.twig")wholesale_index
+	 */
+	public function wholesalerIndex()
+	{
+	    return array();
+	}
+
+	/**
 	 * @Route("/record_users_log", name="base_record_users_log")
 	 * @Template()
 	 */
@@ -241,7 +250,7 @@ class BaseController extends Controller
 		$em->flush();
 
 		if ($user->getIsPartner()) {
-			return $this->redirect($this->generateUrl('wholesaler_index'), 301);
+			return $this->redirect($this->generateUrl('wholesale_index'), 301);
 		}
 		
 		return $this->redirect($this->generateUrl('order'), 301);

@@ -34,6 +34,11 @@ class Desimg
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $yahooName;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isTrashed;
     
     /**
      * Constructor
@@ -95,6 +100,10 @@ class Desimg
      */
     public function getPath()
     {
+        // if ($this->getIsTrashed()) {
+        //     return 'http://avenue.jocoonopa.com/' . $this->path;
+        // }
+        
         return $this->path;
     }
 
@@ -157,5 +166,25 @@ class Desimg
     public function getYahooName()
     {
         return $this->yahooName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsTrashed()
+    {
+        return $this->isTrashed;
+    }
+
+    /**
+     * @param mixed $isTrashed
+     *
+     * @return self
+     */
+    public function setIsTrashed($isTrashed)
+    {
+        $this->isTrashed = $isTrashed;
+
+        return $this;
     }
 }

@@ -54,6 +54,9 @@ $php app/console doctrine:schema:update --dump-sql
 - 進貨
 - editv2
 
+$isAllowWholesale
+$wholesalePrice 
+
 ## 三天份量
 
 建立一個 CRUD 批發商的頁面
@@ -65,3 +68,6 @@ $php app/console doctrine:schema:update --dump-sql
 ## 兩天份量
 
 - 查貨頁面條件搜尋 + 頁面呈現 + 登出
+
+
+
