@@ -2,18 +2,19 @@
 
 namespace Woojin\BaseBundle\Controller;
 
-use Woojin\StoreBundle\Entity\Store;
-use Woojin\UserBundle\Entity\UsersLog;
-use Woojin\UserBundle\Entity\UserHabit;
-
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Woojin\StoreBundle\Entity\Store;
+use Woojin\UserBundle\Entity\UserHabit;
+use Woojin\UserBundle\Entity\UsersLog;
+use Woojin\Utility\Avenue\Avenue;
 
 class BaseController extends Controller
 {
@@ -214,12 +215,75 @@ class BaseController extends Controller
 	}
 
 	/**
-	 * @Route("/wholesale_index", name="wholesale_index")
-	 * @Template("WoojinBaseBundle:Wholesale:index.html.twig")wholesale_index
+	 * @Route("/wholesale_index", name="wholesale_index", options={"expose"=true})
+	 * @Template("WoojinBaseBundle:Wholesale:index.html.twig")
 	 */
-	public function wholesalerIndex()
+	public function wholesalerIndex(Request $request)
 	{
-	    return array();
+		$perPage = 50;
+		$em =  $this->getDoctrine()->getManager();
+
+		$qb = $em->createQueryBuilder();
+		$qb
+			->select(array('g', 'i'))
+			->from('WoojinGoodsBundle:GoodsPassport', 'g')
+			->leftJoin('g.img', 'i')
+			->where(
+				$qb->expr()->eq('g.isAllowWholesale', true),
+				$qb->expr()->notIn('g.status', [
+					Avenue::GS_SOLDOUT,
+					Avenue::GS_OFFSALE,
+					Avenue::GS_BSO_SOLD,
+				])
+			)
+		;
+
+		if (!empty($request->query->get('brand_ids', []))) {
+			$qb->andWhere(
+				$qb->expr()->in('g.brand', $request->query->get('brand_ids'))
+			);
+		}
+
+		if (!empty($request->query->get('pattern_ids', []))) {
+			$qb->andWhere(
+				$qb->expr()->in('g.pattern', $request->query->get('pattern_ids'))
+			);
+		}
+
+		$qb
+			->setFirstResult(($request->query->get('page', 1) - 1) * $perPage)
+            ->setMaxResults($perPage)
+        ;
+
+		$products = new Paginator($qb, true);
+
+		$qb = $em->createQueryBuilder();
+		$brands = $qb->select(array('b'))
+            ->from('WoojinGoodsBundle:Brand', 'b')
+            ->orderBy('b.name')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        $qb = $em->createQueryBuilder();
+		$patterns = $qb->select(array('p'))
+            ->from('WoojinGoodsBundle:Pattern', 'p')
+            ->orderby('p.name')
+            ->getQuery()
+            ->getResult()
+       ;
+
+	    return [
+	    	'products' => $products,
+	    	'count' => count($products),
+	    	'page' => $request->query->get('page', 1),
+	    	'lastpage' => ceil(count($products)/$perPage),
+	    	'per_page' => $perPage,
+	    	'brands' => $brands,
+	    	'patterns' => $patterns,
+	    	'brand_ids' => $request->query->get('brand_ids', []),
+	    	'pattern_ids' => $request->query->get('pattern_ids', []),
+	    ];
 	}
 
 	/**

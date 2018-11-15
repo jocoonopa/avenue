@@ -110,7 +110,16 @@ class Img
      */
     public function getPath($isAbs = false)
     {
+        if ($this->getIsTrashed() && !isAbs) {
+            return "http://avenue.jocoonopa.com/storage{$this->path}"; 
+        }
+
         return ($isAbs) ? $_SERVER['DOCUMENT_ROOT'] . $this->path : $this->path;
+    }
+
+    public function _getPath()
+    {
+        return $this->path;
     }
 
     /**

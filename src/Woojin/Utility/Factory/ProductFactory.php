@@ -149,7 +149,7 @@ class ProductFactory
             // 官網新增屬性
             ->setWebPrice($product->getWebPrice())
             ->setWholesalePrice($product->getWholesalePrice())
-            ->setIsAllowWholesalePrice($product->getIsAllowWholesalePrice())
+            ->setIsAllowWholesale($product->getIsAllowWholesale())
             ->setDesimg($product->getDesimg())
             ->setBrief($product->getBrief())
             ->setDescription($product->getDescription())

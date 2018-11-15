@@ -256,10 +256,16 @@ class FixController extends Controller
             $imgs = $qb->getQuery()->getResult();
 
             foreach ($imgs as $key => $img) {
-                echo $img->getPath() . ': is-trashed = ' . $img->getIsTrashed() . "<br/>";
+                $file = $_SERVER['DOCUMENT_ROOT'] . $img->_getPath();
 
-                if (false !== strpos($img->getPath(), '.jpg')) {
-                    echo "{$img->getId()}刪除之!";
+                echo $file . "<br/>";
+
+                if (false !== strpos($file, '.jpg')) {
+                    if (file_exists($file)) {
+                        unlink($file);
+
+                        echo "{$img->getId()}刪除之!";
+                    }
                 }
             }
         }
@@ -317,10 +323,16 @@ class FixController extends Controller
             $imgs = $qb->getQuery()->getResult();
 
             foreach ($imgs as $key => $img) {
-                echo $img->getPath() . ': is-trashed = ' . $img->getIsTrashed() . "<br/>";
+                $file = $_SERVER['DOCUMENT_ROOT'] . $img->_getPath();
 
-                if (false !== strpos($img->getPath(), '.jpg')) {
-                    echo "{$img->getId()}刪除之!";
+                echo $file . "<br/>";
+
+                if (false !== strpos($file, '.jpg')) {
+                    if (file_exists($file)) {
+                        unlink($file);
+
+                        echo "{$img->getId()}刪除之!";
+                    }   
                 }
             }
         }

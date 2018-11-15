@@ -117,6 +117,7 @@ class UserController extends Controller
 			->setRoles($role)
 			->setChmod(self::CHMOD)
 			->setIsActive(self::IS_ACTIVE)
+			->setIsPartner($oStore->getSn() === '@')
 			->setPassword($password)
 		;
 		
@@ -130,8 +131,10 @@ class UserController extends Controller
 		$this->get('my_meta_record_method')->recordMeta($sMsg);
 		
 		array_push($rUser, $oUser);
+
+		$users = $this->getDoctrine()->getRepository('WoojinUserBundle:User')->findBy(array('store' => $oStore->getId()));
 		
-		return array('rUser' => $rUser);
+		return array('rUser' => $rUser, 'users' => $users);
 	}
 
 	/**

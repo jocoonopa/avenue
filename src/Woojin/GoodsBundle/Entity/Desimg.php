@@ -100,9 +100,9 @@ class Desimg
      */
     public function getPath()
     {
-        // if ($this->getIsTrashed()) {
-        //     return 'http://avenue.jocoonopa.com/' . $this->path;
-        // }
+        if ($this->getIsTrashed()) {
+            return "http://avenue.jocoonopa.com/storage{$this->path}"; 
+        }
         
         return $this->path;
     }
