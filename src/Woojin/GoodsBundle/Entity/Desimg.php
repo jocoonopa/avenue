@@ -46,6 +46,7 @@ class Desimg
     public function __construct()
     {
         $this->goodsPassports = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->isTrashed = false;
     }
 
     public function getPurePath()
@@ -101,7 +102,7 @@ class Desimg
     public function getPath()
     {
         if ($this->getIsTrashed()) {
-            return "http://avenue.jocoonopa.com/storage{$this->path}"; 
+            return "http://laravel.avenue2003.com/storage{$this->path}"; 
         }
         
         return $this->path;

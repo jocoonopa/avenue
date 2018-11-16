@@ -419,7 +419,7 @@
         <label class="col-md-2">商品描述</label>
 
         <div class="col-md-10">
-            <textarea name="description" class="form-control" {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and  app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}readonly{% endif %}>
+            <textarea name="description" class="form-control" {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}readonly{% endif %}>
                 {% if goods.description %}{{ goods.description.content }}{% endif %}
             </textarea>
         </div>

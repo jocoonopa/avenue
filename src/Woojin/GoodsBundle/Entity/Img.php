@@ -46,6 +46,7 @@ class Img
     public function __construct()
     {
         $this->goods_passport = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->isTrashed = false;
     }
 
     /**
@@ -110,8 +111,8 @@ class Img
      */
     public function getPath($isAbs = false)
     {
-        if ($this->getIsTrashed() && !isAbs) {
-            return "http://avenue.jocoonopa.com/storage{$this->path}"; 
+        if ($this->getIsTrashed() && !$isAbs) {
+            return "http://laravel.avenue2003.com/storage{$this->path}"; 
         }
 
         return ($isAbs) ? $_SERVER['DOCUMENT_ROOT'] . $this->path : $this->path;
