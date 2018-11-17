@@ -28,6 +28,7 @@ security:
         - { path: ^/admin/user, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/admin/auction, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/admin/activity, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/admin/base/wholesale_index, roles: IS_AUTHENTICATED_FULLY}
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
     providers:

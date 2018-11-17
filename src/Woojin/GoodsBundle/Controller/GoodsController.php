@@ -59,6 +59,10 @@ class GoodsController extends Controller
      */
     public function indexAction()
     {
+        if ($user->getIsPartner()) {
+            return $this->redirect($this->generateUrl('wholesale_index'), 301);
+        }
+        
         return array();
     }
 
@@ -2378,7 +2382,10 @@ class GoodsController extends Controller
                     }
 
                     if ($files->move($comDir, $fileName)) {
-                        $img->setPath($srcPath);
+                        $img
+                            ->setPath($srcPath)
+                            ->setIsTrashed(false)
+                        ;
 
                         $em->persist($img);
                     }
@@ -2389,7 +2396,7 @@ class GoodsController extends Controller
                         $files->move($request->server->get('DOCUMENT_ROOT') . $img->getPurePath(), $img->getName());
                     } else {
                         if ($files->move($comDir, $fileName)) {
-                            $img->setPath($srcPath);
+                            $img->setPath($srcPath)->setIsTrashed(false);
 
                             $em->persist($img);
                         }
@@ -2416,7 +2423,10 @@ class GoodsController extends Controller
                     }
 
                     if ($desFiles->move($comDir, $fileName)) {
-                        $desimg->setPath($srcPath);
+                        $desimg
+                            ->setPath($srcPath)
+                            ->setIsTrashed(false)
+                        ;
 
                         $em->persist($desimg);
                     }
@@ -2427,7 +2437,7 @@ class GoodsController extends Controller
                         $desFiles->move($request->server->get('DOCUMENT_ROOT') . $desimg->getPurePath(), $desimg->getName());
                     } else {
                         if ($desFiles->move($comDir, $fileName)) {
-                            $desimg->setPath($srcPath);
+                            $desimg->setPath($srcPath)->setIsTrashed(false);
 
                             $em->persist($desimg);
                         }

@@ -10,7 +10,7 @@ body {
 
 <div class="panel panel-default mt-30">
     <!-- Default panel contents -->
-    <div class="panel-heading">香榭後台登入頁面</div>
+    <div class="panel-heading">香榭後台{% if app.request.get('type') == 'wholesale' %}批發商{% endif %}登入頁面</div>
     <div class="panel-body">
         {% if error %}
             <div class="alert alert-warning alert-dismissable">

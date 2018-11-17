@@ -228,6 +228,7 @@ class BaseController extends Controller
 			->select(array('g', 'i'))
 			->from('WoojinGoodsBundle:GoodsPassport', 'g')
 			->leftJoin('g.img', 'i')
+			->leftJoin('g.brand', 'b')
 			->where(
 				$qb->expr()->eq('g.isAllowWholesale', true),
 				$qb->expr()->notIn('g.status', [
@@ -296,11 +297,6 @@ class BaseController extends Controller
 
 		$ip = $request->server->get('REMOTE_ADDR');
 
-		$baseMethod = $this->get('base_method');
-		if ($baseMethod->isMobile()) {
-			return array();
-		}
-
 		$usersLog = new UsersLog();
 		$usersLog
 			->setUser($user)
@@ -315,6 +311,11 @@ class BaseController extends Controller
 
 		if ($user->getIsPartner()) {
 			return $this->redirect($this->generateUrl('wholesale_index'), 301);
+		}
+
+		$baseMethod = $this->get('base_method');
+		if ($baseMethod->isMobile()) {
+			return array();
 		}
 		
 		return $this->redirect($this->generateUrl('order'), 301);

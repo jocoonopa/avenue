@@ -24,6 +24,10 @@ class OrderController extends Controller
 	 */
 	public function indexAction()
 	{
+        if ($user->getIsPartner()) {
+            return $this->redirect($this->generateUrl('wholesale_index'), 301);
+        }
+        
 		$em = $this->getDoctrine()->getManager();
 
 		return array(

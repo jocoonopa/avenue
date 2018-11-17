@@ -4,6 +4,11 @@
 
 <div class="row mt-30">
     <div class="col-md-12">
+        <h3>
+            批發商查貨
+            
+            <button id="logout" class="btn btn-info btn-sm">登出</span>
+        </h3>
         <!-- Nav tabs -->
         <div id="navbar-example">
             <ul class="nav nav-tabs" role="tablist">
@@ -34,17 +39,16 @@
                 </div>
 
                 {% for product in products %}
-                <div class="col-md-4 col-xs-12 mt-20">
+                <div class="col-md-3 col-xs-6 mt-20">
+                    {% if product.img %}
+                    <img src="{{ product.img.path }}"  class="img-responsive lazy" style="height: 200px;" alt="圖片" />
+                    {% endif %}
                     {# `售價` + `批發價` + `圖片` + `品名` + `店名` #}
                     {# <p>所在店: {{ product.sn|slice(0, 1)}}</p> #}
-                    <p>品名: {{ product.name }}</p>
-                    <p>型號: {{ product.model }}</p>
-                    <p>售價: {{ product.price|number_format }}</p>
-                    <p>批發價: {{ product.wholesalePrice|number_format }}</p>
-
-                    {% if product.img %}
-                    <img src="{{ product.img.path }}"  class="img-responsive" style="height: 200px;" alt="圖片" />
-                    {% endif %}
+                    <p>{{ product.name }} {% if product.brand %}<b>[{{ product.brand.name }}]</b>{% endif %}</p>{# <p>型號: {{ product.model }}</p> #}
+                    <span>售價 {{ product.price|number_format }}</span>
+                    <span>批發 {{ product.wholesalePrice|number_format }}</span>
+                    {# <p>型號: {{ product.model }}</p> #}
                 </div>
                 {% endfor %}
 
@@ -75,7 +79,7 @@
                     </div>
 
                     {# 品牌 #}
-                    <div class="col-md-6 col-xs-12">
+                    <div class="col-md-12 col-xs-12">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
                                 <a href="#brand" aria-controls="brand" role="tab" data-toggle="tab">品牌</a>
@@ -91,11 +95,13 @@
                                 <h3>品牌</h3>
 
                                 {% for brand in brands %}
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="brand_ids_{{ brand.id }}" name="brand_ids[]" {% if brand.id in brand_ids  %}checked{% endif %} value="{{ brand.id }}">
-                                            {{ brand.name }}
-                                        </label>
+                                    <div class="col-xs-6">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="brand_ids_{{ brand.id }}" name="brand_ids[]" {% if brand.id in brand_ids  %}checked{% endif %} value="{{ brand.id }}">
+                                                {{ brand.name }}
+                                            </label>
+                                        </div>
                                     </div>
                                 {% endfor %}
                             </div>
@@ -104,11 +110,13 @@
                                 <h3>款式</h3>
 
                                 {% for pattern in patterns %}
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="pattern_ids_{{ pattern.id }}" name="pattern_ids[]" {% if pattern.id in pattern_ids %}checked{% endif %} value="{{ pattern.id }}">
-                                            {{ pattern.name }}
-                                        </label>
+                                    <div class="col-xs-6">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="pattern_ids_{{ pattern.id }}" name="pattern_ids[]" {% if pattern.id in pattern_ids %}checked{% endif %} value="{{ pattern.id }}">
+                                                {{ pattern.name }}
+                                            </label>
+                                        </div>
                                     </div>
                                 {% endfor %}
                             </div>
@@ -122,6 +130,7 @@
 
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="/bundles/woojinfront/js/plugins/jquery.lazyload.min.js"></script>
 <script>
 
 $('select[name="page"]').change(function () {
@@ -158,6 +167,10 @@ function searchFunc() {
 
     window.location.href = Routing.generate('wholesale_index') + '?' + $.param(myParams);
 }
+
+$('#logout').click(function () {
+    window.location.href = '/admin/login?type=wholesale'
+})
 
 </script>
 
