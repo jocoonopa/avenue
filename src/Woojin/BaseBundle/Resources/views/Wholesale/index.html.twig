@@ -1,5 +1,23 @@
 {% extends '::bootstrap.html.twig' %}
 
+{% block external %}
+<style>
+.row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
+  flex-wrap: wrap;
+}
+.row > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
+}
+</style>
+
+{% endblock %}
+
+
 {% block body %}
 
 <div class="row mt-30">
@@ -46,8 +64,8 @@
                     {# `售價` + `批發價` + `圖片` + `品名` + `店名` #}
                     {# <p>所在店: {{ product.sn|slice(0, 1)}}</p> #}
                     <p>{{ product.name }} {% if product.brand %}<b>[{{ product.brand.name }}]</b>{% endif %}</p>{# <p>型號: {{ product.model }}</p> #}
-                    <span>售價 {{ product.price|number_format }}</span>
-                    <span>批發 {{ product.wholesalePrice|number_format }}</span>
+                    <p>售價 {{ product.price|number_format }}</p>
+                    <p>批發 {{ product.wholesalePrice|number_format }}</p>
                     {# <p>型號: {{ product.model }}</p> #}
                 </div>
                 {% endfor %}
