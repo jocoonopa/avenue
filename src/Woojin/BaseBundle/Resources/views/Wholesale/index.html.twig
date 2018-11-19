@@ -43,44 +43,46 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade in active" id="product">
-                <div class="col-md-12">
-                    <h3>
-                        共 {{ count }} 筆 (每頁 50 筆)
-                        <small>
-                            <select name="page">
-                                {% for i in 1..lastpage %}
-                                    <option value="{{ i }}" {% if i == page %}selected{% endif %}>第{{ i }}頁</option>
-                                {% endfor %}
-                            </select>
-                        </small>
-                    </h3>
-                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>
+                            共 {{ count }} 筆 (每頁 50 筆)
+                            <small>
+                                <select name="page">
+                                    {% for i in 1..lastpage %}
+                                        <option value="{{ i }}" {% if i == page %}selected{% endif %}>第{{ i }}頁</option>
+                                    {% endfor %}
+                                </select>
+                            </small>
+                        </h3>
+                    </div>
 
-                {% for product in products %}
-                <div class="col-md-3 col-xs-6 mt-20">
-                    {% if product.img %}
-                    <img src="{{ product.img.path }}"  class="img-responsive lazy" style="height: 200px;" alt="圖片" />
-                    {% endif %}
-                    {# `售價` + `批發價` + `圖片` + `品名` + `店名` #}
-                    {# <p>所在店: {{ product.sn|slice(0, 1)}}</p> #}
-                    <p>{{ product.name }} {% if product.brand %}<b>[{{ product.brand.name }}]</b>{% endif %}</p>{# <p>型號: {{ product.model }}</p> #}
-                    <p>售價 {{ product.price|number_format }}</p>
-                    <p>批發 {{ product.wholesalePrice|number_format }}</p>
-                    {# <p>型號: {{ product.model }}</p> #}
-                </div>
-                {% endfor %}
+                    {% for product in products %}
+                    <div class="col-md-3 col-xs-6 mt-20">
+                        {% if product.img %}
+                        <img src="{{ product.img.path }}"  class="img-responsive lazy" style="height: 200px;" alt="圖片" />
+                        {% endif %}
+                        {# `售價` + `批發價` + `圖片` + `品名` + `店名` #}
+                        {# <p>所在店: {{ product.sn|slice(0, 1)}}</p> #}
+                        <p>{{ product.name }} {% if product.brand %}<b>[{{ product.brand.name }}]</b>{% endif %}</p>{# <p>型號: {{ product.model }}</p> #}
+                        <p>售價 {{ product.price|number_format }}</p>
+                        <p>批發 {{ product.wholesalePrice|number_format }}</p>
+                        {# <p>型號: {{ product.model }}</p> #}
+                    </div>
+                    {% endfor %}
 
-                <div class="col-md-12">
-                    <h3>
-                        共 {{ count }} 筆 (每頁 50 筆)
-                        <small>
-                            <select name="page">
-                                {% for i in 1..count %}
-                                    <option value="{{ i }}" {% if i == page %}selected{% endif %}>第{{ i }}頁</option>
-                                {% endfor %}
-                            </select>
-                        </small>
-                    </h3>
+                    <div class="col-md-12">
+                        <h3>
+                            共 {{ count }} 筆 (每頁 50 筆)
+                            <small>
+                                <select name="page">
+                                    {% for i in 1..lastpage %}
+                                        <option value="{{ i }}" {% if i == page %}selected{% endif %}>第{{ i }}頁</option>
+                                    {% endfor %}
+                                </select>
+                            </small>
+                        </h3>
+                    </div>
                 </div>
             </div>
 
