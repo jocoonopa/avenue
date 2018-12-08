@@ -127,13 +127,13 @@ class AuctionRepository extends \Doctrine\ORM\EntityRepository
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq('auction.createStore', ':createStoreId'),
-                    $qb->expr()->eq('auction.profitStatus', ':profitStatus')
+                    $qb->expr()->neq('auction.profitStatus', ':profitStatus')
                 )
             );
 
         $qb
             ->setParameter('createStoreId', $user->getStore()->getId())
-            ->setParameter('profitStatus', Auction::PROFIT_STATUS_PAY_COMPLETE)
+            ->setParameter('profitStatus', Auction::PROFIT_STATUS_ASSIGN_COMPLETE)
         ;
 
         return $qb->getQuery()->getResult();

@@ -24,6 +24,8 @@ class OrderController extends Controller
 	 */
 	public function indexAction()
 	{
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        
         if ($user->getIsPartner()) {
             return $this->redirect($this->generateUrl('wholesale_index'), 301);
         }
