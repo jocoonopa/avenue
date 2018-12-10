@@ -290,6 +290,10 @@ class Auction
     {
         return $this
             ->setStatus(Auction::STATUS_SOLD)
+
+            // 2018-12-10 momo 說改成直接當作付清
+            ->setProfitStatus(Auction::PROFIT_STATUS_PAY_COMPLETE)
+            
             ->setPrice($options['price'])
             ->setBsser($options['bsser'])
             ->setBuyer($options['buyer'])
