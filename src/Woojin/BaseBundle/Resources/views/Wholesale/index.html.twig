@@ -45,7 +45,7 @@
             <div role="tabpanel" class="tab-pane fade in active" id="product">
                 <div class="row">
                     <div class="col-md-12">
-                        <h3>
+                        <h4>
                             共 {{ count }} 筆 (每頁 50 筆)
                             <small>
                                 <select name="page">
@@ -54,7 +54,7 @@
                                     {% endfor %}
                                 </select>
                             </small>
-                        </h3>
+                        </h4>
                     </div>
 
                     {% for product in products %}
@@ -72,16 +72,30 @@
                     {% endfor %}
 
                     <div class="col-md-12">
-                        <h3>
+                        <h4>
                             共 {{ count }} 筆 (每頁 50 筆)
-                            <small>
+                            {# <small>
                                 <select name="page">
                                     {% for i in 1..lastpage %}
                                         <option value="{{ i }}" {% if i == page %}selected{% endif %}>第{{ i }}頁</option>
                                     {% endfor %}
                                 </select>
+                            </small> #}
+
+                            <small>
+                                {% if page != 1 and lastpage != 1 %}
+                                    <button id="prev" class="btn btn-default" type="button">
+                                        <i class="glyphicon glyphicon-chevron-left"></i>
+                                    </button>
+                                {% endif %}
+
+                                {% if page != lastpage and lastpage != 1 %}
+                                <button id="next" class="btn btn-default" type="button">
+                                    <i class="glyphicon glyphicon-chevron-right"></i>
+                                </button>
+                                {% endif %}
                             </small>
-                        </h3>
+                        </h4>
                     </div>
                 </div>
             </div>
@@ -159,14 +173,34 @@ $('select[name="page"]').change(function () {
 });
 
 $('#submit').click(function () {
-    searchFunc()
+    searchFunc($(this))
 });
 
 $('#clear-all').click(function () {
     $('input:checkbox').removeAttr('checked');
 });
 
-function searchFunc() {
+$('button#prev').click(function () {
+    var patternIds = [];
+    $('input[name="pattern_ids[]"]:checked').each(function () {
+        patternIds.push($(this).val());
+    });
+
+    var brandIds = [];
+    $('input[name="brand_ids[]"]:checked').each(function () {
+        brandIds.push($(this).val());
+    });
+    
+    let myParams = {
+        page: ($('select[name="page"]').val() - 1),
+        brand_ids: brandIds,
+        pattern_ids: patternIds,
+    }
+
+    window.location.href = Routing.generate('wholesale_index') + '?' + $.param(myParams);
+});
+
+$('button#next').click(function () {
     var patternIds = [];
     $('input[name="pattern_ids[]"]:checked').each(function () {
         patternIds.push($(this).val());
@@ -178,7 +212,27 @@ function searchFunc() {
     });
 
     let myParams = {
-        page: $('select[name="page"]').val(),
+        page: ($('select[name="page"]').val() + 1),
+        brand_ids: brandIds,
+        pattern_ids: patternIds,
+    }
+
+    window.location.href = Routing.generate('wholesale_index') + '?' + $.param(myParams);
+});
+
+function searchFunc($select) {
+    var patternIds = [];
+    $('input[name="pattern_ids[]"]:checked').each(function () {
+        patternIds.push($(this).val());
+    });
+
+    var brandIds = [];
+    $('input[name="brand_ids[]"]:checked').each(function () {
+        brandIds.push($(this).val());
+    });
+
+    let myParams = {
+        page: $select.val(),
         brand_ids: brandIds,
         pattern_ids: patternIds,
     }
