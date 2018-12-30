@@ -369,4 +369,41 @@ class GoodsPassportController extends Controller
 
         return $responseHandler->getResponse(json_encode(['foo' => 'bar']), $_format);
     }
+
+    /**
+     * * @Route("/goods_passport/{id}/storage/{_format}", requirements={"id"="\d+"}, defaults={"_format"="json"}, name="api_goodsPassport_storage", options={"expose"=true})
+     * @ParamConverter("goods", class="WoojinGoodsBundle:GoodsPassport")
+     */
+    public function storage(Request $request, GoodsPassport $goods, $_format)
+    {
+        $responseHandler = new ResponseHandler;
+
+        $em = $this->getDoctrine()->getManager();
+
+        $em->persist($goods);
+        $em->flush();
+
+        return $responseHandler->getNoncached($request, json_encode(['status' => 200]), $_format);
+    }
+
+    /**
+     * @Route("/goods_passport/{id}/shipment/{_format}", requirements={"id"="\d+"}, defaults={"_format"="json"}, name="api_goodsPassport_shipment", options={"expose"=true})
+     * @ParamConverter("goods", class="WoojinGoodsBundle:GoodsPassport")
+     * 
+     * @Method("GET")
+     */
+    public function shipment(Request $request, GoodsPassport $goods, $_format)
+    {
+        $responseHandler = new ResponseHandler;
+
+        $em = $this->getDoctrine()->getManager();
+
+        $goods->setIsInShipment(1 == request('is_in_shipment'));
+        $goods->save();
+
+        $em->persist($goods);
+        $em->flush();
+
+        return $responseHandler->getNoncached($request, json_encode(['status' => 200]), $_format);
+    }
 }

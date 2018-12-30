@@ -1,0 +1,181 @@
+{% extends '::bootstrap.html.twig' %}
+
+{% block body %}
+
+<style>
+.drawingBuffer {
+    display: none;
+}
+
+#interactive video {
+    max-width: 100%;
+}
+
+</style>
+
+<div class="row mt-10">
+    <div class="col-md-12">
+        {% if product is null %}
+            <h3>
+                無此商品: {{ product_sn }}
+            </h3>
+        {% else %}
+            <h3>
+                目前產編: 
+                <a href="{{ path('goods_edit_v2_from_sn', {'sn': product.sn })}}" target='_blank"'>
+                    {{ product.sn }}
+                </a>
+            </h3>
+
+            <p>批號: {{ batch.sn }}</p>
+            <p>
+                第一筆: 
+                <a href="{{ path('goods_edit_v2_from_sn', {'sn': batch.products.first.sn })}}" target='_blank"'>
+                {{ batch.products.first.sn }}
+                </a>
+            </p>
+            <p>數量: {{ batch.products.count }}</p>
+        {% endif %}
+
+        <form action="{{ path('admin_goods_goods_storage') }}" method="GET">
+            <div class="form-group">
+                <label>產編</label>
+
+                <input type="text" id="sn" name="sn" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <section id="container" class="container">
+                    <div class="controls">
+                        <fieldset class="input-group">
+                            {# <button type="button" class="btn btn-default stop">Stop</button> #}
+
+                            <button type="button"  class="btn btn-primary scan">掃描</button>
+                        </fieldset>
+                        <fieldset class="reader-config-group">
+                            <label style="display: none">
+                                <span>Barcode-Type</span>
+                                <select name="decoder_readers">
+                                    {# <option value="code_128" selected="selected">Code 128</option> #}
+                                    <option value="code_39" selected="selected">Code 39</option>
+                                   {#  <option value="code_39_vin">Code 39 VIN</option>
+                                    <option value="ean">EAN</option>
+                                    <option value="ean_extended">EAN-extended</option>
+                                    <option value="ean_8">EAN-8</option>
+                                    <option value="upc">UPC</option>
+                                    <option value="upc_e">UPC-E</option>
+                                    <option value="codabar">Codabar</option>
+                                    <option value="i2of5">Interleaved 2 of 5</option>
+                                    <option value="2of5">Standard 2 of 5</option>
+                                    <option value="code_93">Code 93</option> #}
+                                </select>
+                            </label>
+                            <label style="display: none">
+                                <span>Resolution (width)</span>
+                                <select name="input-stream_constraints">
+                                    <option value="160x120" selected="selected">160px</option>
+                                   {#  <option selected="selected" value="640x480">640px</option>
+                                    <option value="800x600">800px</option>
+                                    <option value="1280x720">1280px</option>
+                                    <option value="1600x960">1600px</option>
+                                    <option value="1920x1080">1920px</option> #}
+                                </select>
+                            </label>
+                            <label style="display: none">
+                                <span>Patch-Size</span>
+                                <select name="locator_patch-size">
+                                    <option selected="selected" value="x-small">x-small</option>
+                                    <option value="small">small</option>
+                                    <option value="medium">medium</option>
+                                    <option value="large">large</option>
+                                    <option value="x-large">x-large</option>
+                                </select>
+                            </label>
+                            <label style="display: none">
+                                <span>Half-Sample</span>
+                                <input type="checkbox" checked="checked" name="locator_half-sample" />
+                            </label>
+                            <label style="display: none">
+                                <span>Workers</span>
+                                <select name="numOfWorkers">
+                                    {# <option value="0">0</option>
+                                    <option value="1">1</option> #}
+                                    <option value="2" selected="selected">2</option>
+                                    {# <option selected="selected" value="4">4</option>
+                                    <option value="8">8</option> #}
+                                </select>
+                            </label>
+                            <label style="display: none">
+                                <span>Camera</span>
+                                <select name="input-stream_constraints" id="deviceSelection">
+                                </select>
+                            </label>
+                            <label style="display: none">
+                                <span>Zoom</span>
+                                <select name="settings_zoom"></select>
+                            </label>
+                            <label style="display: none">
+                                <span>Torch</span>
+                                <input type="checkbox" name="settings_torch" />
+                            </label>
+                        </fieldset>
+                    </div>
+                      <div id="result_strip">
+                        <ul class="thumbnails"></ul>
+                        <ul class="collector"></ul>
+                      </div>
+                    <div id="interactive" class="hidden viewport"></div>
+                </section>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-12">
+        <table class="table">
+            <tr>
+                <td>尺寸/顏色</td>
+                {% for color in colors %}
+                    <td>{{ color }}</td>
+                {% endfor %}
+            </tr>
+
+            {% for size in sizes %}
+                <tr>
+                    <td>{{ size }}</td>
+
+                    {% for color in colors %}
+                        {% if table[color] is defined and table[color][size] is defined %}
+                            <td>{{ table[color][size] }}</td>
+                        {% else %}
+                            <td>無</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="//webrtc.github.io/adapter/adapter-latest.js" type="text/javascript"></script>
+<script src="/js/quagga.min.js" type="text/javascript"></script>
+<script src="/js/live_w_locator.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+$('input[name="sn"]').keyup(function(e){
+    if (e.keyCode == 13) {
+        $('form').submit();
+    }
+});
+
+$('button.scan').click(function () {
+    $('#interactive').toggleClass('hidden');
+
+    return false;
+});
+
+</script>
+
+{% endblock %}

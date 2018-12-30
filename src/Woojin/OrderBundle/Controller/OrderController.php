@@ -33,6 +33,7 @@ class OrderController extends Controller
 		$em = $this->getDoctrine()->getManager();
 
 		return array(
+            'sizes' => $em->getRepository('WoojinGoodsBundle:GoodsSize')->findBy(array(), array('name' => 'ASC')),
 			'brands' => $em->getRepository('WoojinGoodsBundle:Brand')->findBy(array(), array('name' => 'ASC')),
 			'patterns' => $em->getRepository('WoojinGoodsBundle:Pattern')->findBy(array(), array('name' => 'ASC')),
 			'colors' => $em->getRepository('WoojinGoodsBundle:Color')->findAll(),

@@ -15,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Woojin\GoodsBundle\Entity\GoodsPassport;
 use Woojin\GoodsBundle\Entity\Description;
 use Woojin\GoodsBundle\Entity\Brief;
+use Woojin\GoodsBundle\Entity\GoodsBatch;
 
 use Woojin\StoreBundle\Entity\Auction;
 use Woojin\StoreBundle\Event\PurchaseEvent;
@@ -105,12 +106,15 @@ class InController extends Controller
                     ->setSn($product->genSn($user->getStore()->getSn()))
                     ->setImg($img)
                     ->setDesimg($desimg)
+                    // ->setBatch($batch)
                 ;
 
                 $em->persist($product);
             }
 
             foreach ($event->getOrders() as $order) {
+                $content = $sculper->setAfter($order)->getContent();
+
                 $clue = new AvenueClue;
                 $clue
                     ->setUser($user)
@@ -129,11 +133,50 @@ class InController extends Controller
             throw $e;
         }
 
+        // bind batch
+        $this->bindBatch($products, $request, $em);
+
         foreach ($products as $product) {
             $ids[] = $product->getId();
         }
 
         return new JsonResponse($ids);
+    }
+
+    protected function bindBatch($products, $request, $em)
+    {
+         // GoodsBatch 處理
+        $repository = $this->getDoctrine()->getRepository(GoodsBatch::class);
+
+        $batch = null;
+
+        if (!empty($request->request->get('batchSn'))) {
+            $batches = $repository->findBySn($request->request->get('batchSn'));
+
+            if ($batches && 0 < count($batches)) {
+                $batch = $batches[0];
+            }
+        }
+
+        if (is_null($batch)) {
+            $batch = new GoodsBatch();
+        }
+
+        $em->persist($batch);
+
+        if (empty($batch->getSn()) && $products) {
+            $sn = $products[0]->getModel() ? $products[0]->getModel() . '-' . $products[0]->getSn() : $products[0]->getSn();
+
+            $batch->setSn($sn);
+            $em->persist($batch);
+        }
+
+        foreach ($products as $product) {
+            $product->setBatch($batch);
+            $em->persist($product);
+        }
+
+        $em->flush();
     }
 
     protected function getOptions(Request $request, EntityManager $em, User $user)

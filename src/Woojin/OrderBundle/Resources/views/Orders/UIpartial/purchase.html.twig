@@ -132,6 +132,11 @@ window.phone_length = 10;
 	</div>
 
 	<div>
+		<label class="vader" id="batchSn">批號:</label>
+		<input type="text" id="batchSn" name="batchSn" />
+	</div>
+
+	<div>
 		<label class="vader" for="org_sn">品牌序號:</label>
 		<input type="text" id="org_sn" name="org_sn" placeholder="可不填寫" />
 	</div>
@@ -158,6 +163,18 @@ window.phone_length = 10;
 		<input type="text" name="colorName" placeholder="選擇顏色" readonly />
 		<a href="#color" class="btn btn-default btn-sm cancelColor" style="color: #000;">取消顏色</a>
 		<input type="hidden" name="color" />
+	</div>
+
+	<div>
+		<label class="vader" for="size">尺寸:</label>
+
+		<select name="size" id="size">
+			<option value="0">請選擇</option>
+
+			{% for size in sizes %}
+				<option value="{{ size.id }}">{{ size.name }}</option>
+			{% endfor %}
+		</select>
 	</div>
 
 	<div>
@@ -269,7 +286,7 @@ window.phone_length = 10;
 		<input type="number" id ="purchase_amount" name="purchase_amount" class="numeric" value="1" />
 	</div>
 
-	<div>
+	<div style="margin-top: 200px;">
 		<button onkeydown="preventEnterSubmit();" type="button" class="btn btn-default"><span data-icon="#">新增</span></button>
 	</div>
 </div>

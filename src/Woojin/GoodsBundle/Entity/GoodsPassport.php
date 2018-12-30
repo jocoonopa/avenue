@@ -105,6 +105,12 @@ class GoodsPassport
     protected $promotion;
 
     /**
+     * @ORM\ManyToOne(targetEntity="GoodsBatch", inversedBy="products")
+     * @var GoodsBatch
+     */
+    protected $batch;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Brand", inversedBy="goodsPassports")
      * @var Brand
      */
@@ -115,6 +121,12 @@ class GoodsPassport
      * @var Color
      */
     protected $color;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="GoodsSize", inversedBy="goodsPassports")
+     * @var GoodsSize
+     */
+    protected $size;
 
     /**
      * @ORM\ManyToOne(targetEntity="Pattern", inversedBy="goodsPassports")
@@ -231,7 +243,7 @@ class GoodsPassport
     protected $cost;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $price;
 
@@ -293,6 +305,11 @@ class GoodsPassport
     /**
      * @ORM\Column(type="boolean")
      */
+    protected $isInShipment;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
     protected $isAllowCreditCard;
 
     /**
@@ -336,6 +353,7 @@ class GoodsPassport
         $this->inherits = new \Doctrine\Common\Collections\ArrayCollection();
         $this->stock_take_record = new \Doctrine\Common\Collections\ArrayCollection();
         $this->isAllowWeb = false;
+        $this->isInShipment = false;
         $this->webPrice = 0;
         $this->isBehalf = false;
         $this->isAllowCreditCard = true;
@@ -2167,6 +2185,66 @@ class GoodsPassport
     public function setIsAllowWholesale($isAllowWholesale)
     {
         $this->isAllowWholesale = $isAllowWholesale;
+
+        return $this;
+    }
+
+    /**
+     * @return GoodsBatch
+     */
+    public function getBatch()
+    {
+        return $this->batch;
+    }
+
+    /**
+     * @param GoodsBatch $batch
+     *
+     * @return self
+     */
+    public function setBatch(GoodsBatch $batch)
+    {
+        $this->batch = $batch;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsInShipment()
+    {
+        return $this->isInShipment;
+    }
+
+    /**
+     * @param mixed $isInShipment
+     *
+     * @return self
+     */
+    public function setIsInShipment($isInShipment)
+    {
+        $this->isInShipment = $isInShipment;
+
+        return $this;
+    }
+
+    /**
+     * @return GoodsSize
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param GoodsSize $size
+     *
+     * @return self
+     */
+    public function setSize(GoodsSize $size)
+    {
+        $this->size = $size;
 
         return $this;
     }

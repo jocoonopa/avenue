@@ -114,6 +114,9 @@
 		<a class="btn btn-success" href="{{ path('movelog') }}" target="_blank"><i data-icon="w"></i>前往BSO調貨管理</a>
 
 		<a class="btn btn-success" href="{{ path('auction') }}#/auction" target="_blank"><i data-icon="w"></i>前往BSO管理</a>
+	
+		{# GoodsBundle/GoodsController@goodsStorage #}
+		<a class="btn btn-success" href="{{ path('admin_goods_goods_storage') }}" target="_blank"><i data-icon="w"></i>前往庫存查看</a>
 	</div>
 
 	{% if app.user|has_auth('HAND_GEN_INVOICE') %}

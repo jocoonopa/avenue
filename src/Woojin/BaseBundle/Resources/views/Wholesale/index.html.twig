@@ -90,7 +90,7 @@
                                 {% endif %}
 
                                 {% if page != lastpage and lastpage != 1 %}
-                                <button id="next" class="btn btn-default" type="button">
+                                <button id="next" data-last-page="{{ lastpage }}" class="btn btn-default" type="button">
                                     <i class="glyphicon glyphicon-chevron-right"></i>
                                 </button>
                                 {% endif %}
@@ -190,9 +190,11 @@ $('button#prev').click(function () {
     $('input[name="brand_ids[]"]:checked').each(function () {
         brandIds.push($(this).val());
     });
-    
+
+    let page = (Number($('select[name="page"]').val()) - 1);
+
     let myParams = {
-        page: ($('select[name="page"]').val() - 1),
+        page: page < 1 ? 1 : page,
         brand_ids: brandIds,
         pattern_ids: patternIds,
     }
@@ -211,8 +213,10 @@ $('button#next').click(function () {
         brandIds.push($(this).val());
     });
 
+    let page = (Number($('select[name="page"]').val()) + 1);
+
     let myParams = {
-        page: ($('select[name="page"]').val() + 1),
+        page: page > Number($(this).data('last-page')) ? Number($(this).data('last-page')) : page,
         brand_ids: brandIds,
         pattern_ids: patternIds,
     }

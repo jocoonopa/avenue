@@ -2655,6 +2655,76 @@ class GoodsController extends Controller
         return array('products' => $products);
     }
 
+    /**
+     * Goods Storage
+     *
+     * @Route("/goods-storage", name="admin_goods_goods_storage")
+     * @Method("GET")
+     * @Template()
+     */
+    public function goodsStorage(Request $request)
+    {
+        $sn = $request->query->get('sn');
+
+        $em = $this->getDoctrine()->getManager();
+        $qb = $em->createQueryBuilder();
+
+        $products = $qb
+            ->select(['g','b'])
+            ->from('WoojinGoodsBundle:GoodsPassport', 'g')
+            ->leftJoin('g.batch', 'b')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('g.sn', $qb->expr()->literal($sn))
+                )
+            )
+            ->getQuery()
+            ->getResult()
+        ;
+
+        $ta = $products ? $products[0] : null;
+        $colors = array();
+        $sizes = array();
+        $table = array();
+
+        if (is_null($ta)) {
+            return array(
+                'product' => null,
+                'table' => array(),
+                'batch' => null,
+                'product_sn' => $request->query->get('sn'),
+                'colors' => array(),
+                'sizes' => array()
+            );
+        }
+
+        foreach ($ta->getBatch()->getProducts() as $product) {
+            $color = $product->getColor() ? $product->getColor()->getName() : '無';
+            $size = $product->getSize() ? $product->getSize()->getName() : '無';
+            $colors[] = $color;
+            $sizes[] = $size;
+            
+            if (!array_key_exists($color, $table)) {
+                $table[$color] = array();
+            }
+
+            if (!array_key_exists($size, $table[$color])) {
+                $table[$color][$size] = 0;
+            }
+
+            $table[$color][$size] ++;
+        }
+
+        return array(
+            'product' => $products ? $products[0] : null,
+            'table' => $table,
+            'product_sn' => $request->query->get('sn'),
+            'batch' => is_null($product) ? null : $product->getBatch(),
+            'colors' => array_unique($colors),
+            'sizes' => array_unique($sizes)
+        );
+    }
+
     protected function filterNoImg(GoodsPassport $product)
     {
         return (!file_exists($_SERVER['DOCUMENT_ROOT'] . $product->getImg()->getPath()) || !file_exists($_SERVER['DOCUMENT_ROOT'] . $product->getDesimg()->getPath()));
