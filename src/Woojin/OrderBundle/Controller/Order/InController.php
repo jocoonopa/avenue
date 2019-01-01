@@ -150,8 +150,13 @@ class InController extends Controller
 
         $batch = null;
 
-        if (!empty($request->request->get('batchSn'))) {
-            $batches = $repository->findBySn($request->request->get('batchSn'));
+        $batchSn = empty($request->request->get('batchSn')) ? 
+            $request->request->get('model') : 
+            $request->request->get('batchSn')
+        ;
+
+        if (!empty($batchSn)) {
+            $batches = $repository->findBySn($batchSn);
 
             if ($batches && 0 < count($batches)) {
                 $batch = $batches[0];
@@ -165,7 +170,7 @@ class InController extends Controller
         $em->persist($batch);
 
         if (empty($batch->getSn()) && $products) {
-            $sn = $products[0]->getModel() ? $products[0]->getModel() . '-' . $products[0]->getSn() : $products[0]->getSn();
+            $sn = !empty($products[0]->getModel()) ? $products[0]->getModel() : $products[0]->getSn();
 
             $batch->setSn($sn);
             $em->persist($batch);

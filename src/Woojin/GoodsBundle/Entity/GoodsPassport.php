@@ -16,7 +16,7 @@ use Woojin\Utility\Avenue\Avenue;
 
 /**
  * @ORM\Entity(repositoryClass="Woojin\GoodsBundle\Entity\GoodsPassportRepository")
- * @ORM\Table(name="goods_passport")
+ * @ORM\Table(name="goods_passport", options={"collate"="utf8_unicode_ci"})
  * @ORM\HasLifecycleCallbacks()
  */
 class GoodsPassport
@@ -2202,7 +2202,7 @@ class GoodsPassport
      *
      * @return self
      */
-    public function setBatch(GoodsBatch $batch)
+    public function setBatch(GoodsBatch $batch = null)
     {
         $this->batch = $batch;
 
@@ -2242,7 +2242,7 @@ class GoodsPassport
      *
      * @return self
      */
-    public function setSize(GoodsSize $size)
+    public function setSize(GoodsSize $size = null)
     {
         $this->size = $size;
 

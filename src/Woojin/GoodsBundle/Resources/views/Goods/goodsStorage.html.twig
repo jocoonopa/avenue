@@ -154,6 +154,19 @@
             {% endfor %}
         </table>
     </div>
+    
+    {% if batch is null %}
+    {% else %}
+        <div class="col-md-12">
+            <ul>
+                {% for siblingProduct in batch.products %}
+                <li>
+                    <a href="{{ path('goods_edit_v2_from_sn', {'sn': siblingProduct.sn })}}" target="_blank">{{ siblingProduct.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 </div>
 
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>

@@ -1857,6 +1857,7 @@ class GoodsController extends Controller
             'patterns' => $em->getRepository('WoojinGoodsBundle:Pattern')->findBy(array(), array('name' => 'ASC')),
             'sources' => $em->getRepository('WoojinGoodsBundle:GoodsSource')->findBy(array(), array('name' => 'ASC')),
             'colors' => $em->getRepository('WoojinGoodsBundle:Color')->findBy(array(), array('name' => 'ASC')),
+            'sizes' => $em->getRepository('WoojinGoodsBundle:GoodsSize')->findBy(array(), array('name' => 'ASC')),
             'mts' => $em->getRepository('WoojinGoodsBundle:GoodsMT')->findBy(array(), array('name' => 'ASC')),
             'levels' => $em->getRepository('WoojinGoodsBundle:GoodsLevel')->findBy(array(), array('name' => 'ASC')),
             'payTypes' => $em->getRepository('WoojinOrderBundle:PayType')->findAll(),
@@ -1933,6 +1934,7 @@ class GoodsController extends Controller
             'patterns' => $em->getRepository('WoojinGoodsBundle:Pattern')->findBy(array(), array('name' => 'ASC')),
             'sources' => $em->getRepository('WoojinGoodsBundle:GoodsSource')->findBy(array(), array('name' => 'ASC')),
             'colors' => $em->getRepository('WoojinGoodsBundle:Color')->findBy(array(), array('name' => 'ASC')),
+            'sizes' => $em->getRepository('WoojinGoodsBundle:GoodsSize')->findBy(array(), array('name' => 'ASC')),
             'mts' => $em->getRepository('WoojinGoodsBundle:GoodsMT')->findBy(array(), array('name' => 'ASC')),
             'levels' => $em->getRepository('WoojinGoodsBundle:GoodsLevel')->findBy(array(), array('name' => 'ASC')),
             'payTypes' => $em->getRepository('WoojinOrderBundle:PayType')->findAll(),
@@ -2132,6 +2134,13 @@ class GoodsController extends Controller
             $color = $em->find('WoojinGoodsBundle:Color', $request->request->get('color'));
 
             /**
+             * 尺寸實體
+             *
+             * @var \Woojin\GoodsBundle\Entity\GoodsSize
+             */
+            $size = $em->find('WoojinGoodsBundle:GoodsSize', $request->request->get('size'));
+
+            /**
              * 款式實體
              *
              * @var \Woojin\GoodsBundle\Entity\Pattern
@@ -2292,6 +2301,7 @@ class GoodsController extends Controller
                 ->setSeoSlogan2($em->find('WoojinGoodsBundle:SeoSlogan', $request->request->get('seoSlogan2_id')))
                 ->setSeoWord($request->request->get('seoWord'))
                 ->setColor($color)
+                ->setSize($size)
                 ->setPattern($pattern)
                 ->setColorSn($colorSn)
                 ->setCustomSn($customSn)
@@ -2687,7 +2697,7 @@ class GoodsController extends Controller
         $sizes = array();
         $table = array();
 
-        if (is_null($ta)) {
+        if (is_null($ta) || is_null($ta->getBatch())) {
             return array(
                 'product' => null,
                 'table' => array(),
@@ -2712,7 +2722,9 @@ class GoodsController extends Controller
                 $table[$color][$size] = 0;
             }
 
-            $table[$color][$size] ++;
+            if (in_array($product->getStatus()->getId(), array(1, 9))) {
+                $table[$color][$size] ++;
+            }
         }
 
         return array(

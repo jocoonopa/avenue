@@ -2,25 +2,24 @@
 
 namespace Woojin\FrontBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Avenue\Adapter\Adapter;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
-use Woojin\GoodsBundle\Entity\GoodsPassport;
-use Woojin\OrderBundle\Entity\Orders;
-use Woojin\OrderBundle\Entity\Ope;
-
-use Avenue\Adapter\Adapter;
-use Woojin\Utility\Avenue\Avenue;
-
-use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Woojin\GoodsBundle\Entity\Color;
+use Woojin\GoodsBundle\Entity\GoodsBatch;
+use Woojin\GoodsBundle\Entity\GoodsPassport;
+use Woojin\GoodsBundle\Entity\GoodsSize;
+use Woojin\OrderBundle\Entity\Ope;
+use Woojin\OrderBundle\Entity\Orders;
+use Woojin\Utility\Avenue\Avenue;
 
 class QueController extends Controller
 {
@@ -28,16 +27,16 @@ class QueController extends Controller
     /**
      * 付款完成通知
      * %數請參考 https://www.allpay.com.tw/Business/payment_fees
-     * 
+     *
      * @Route("/que/return", name="front_que_return", options={"expose"=true})
      */
     public function returnAction(Request $request)
     {
         $adapter = new Adapter;
         $adapter->init(
-            $this->container->getParameter('allpay_hashkey'), 
-            $this->container->getParameter('allpay_hashiv'), 
-            $this->container->getParameter('allpay_merchantid'), 
+            $this->container->getParameter('allpay_hashkey'),
+            $this->container->getParameter('allpay_hashiv'),
+            $this->container->getParameter('allpay_merchantid'),
             true
         );
         //$adapter->initTest();
@@ -119,7 +118,7 @@ class QueController extends Controller
             $fp = fopen($request->server->get('DOCUMENT_ROOT') . '/cronLog/countStat/fail' . date('Y-m-d') . '.txt', 'a+');
             fwrite($fp, '時間:' . date('Y-m-d H:i:s') . '驗證碼: ' . $key . ', ip:' . $_SERVER['REMOTE_ADDR'] . "\r\n");
             fclose($fp);
-            
+
             throw new \Exception('error');
         }
 
@@ -139,7 +138,7 @@ class QueController extends Controller
 
         /**
          * 所有分類
-         * 
+         *
          * @var array{\Woojin\GoodsBundle\Entity\Category}
          */
         $categorys = $em->getRepository('WoojinGoodsBundle:Category')->findAll();
@@ -157,7 +156,7 @@ class QueController extends Controller
         return new Response($executeCost);
     }
 
-    protected function setEntityProductCount($entityName, $categorys) 
+    protected function setEntityProductCount($entityName, $categorys)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -171,12 +170,12 @@ class QueController extends Controller
             $secondhandCount = 0;
 
             foreach ($goodses as $goods) {
-                if ($goods->getIsAllowWeb() 
+                if ($goods->getIsAllowWeb()
                     && in_array($goods->getStatus()->getId(), array(Avenue::GS_ONSALE, Avenue::GS_ACTIVITY))
                 ) {
                     foreach ($categorys as $category) {
                         if ($goods->hasCategory($category)) {
-                            switch ($category->getId()) 
+                            switch ($category->getId())
                             {
                                 case Avenue::CT_WOMEN:
                                     $womenCount ++;
@@ -205,7 +204,7 @@ class QueController extends Controller
             ;
             $em->persist($entity);
         }
-        
+
         $em->flush();
     }
 
@@ -219,9 +218,9 @@ class QueController extends Controller
      *     2. 製作mail
      *     3. 發送給該店店長以及老闆
      * ]
-     * 
+     *
      * 2. 清除七天前內容
-     * 
+     *
      * @Route("/que/cluecron/{key}", name="que_cluecron")
      * @Method("GET")
      */
@@ -239,13 +238,13 @@ class QueController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $chiefs = array(
-            $em->find('WoojinUserBundle:User', Avenue::USER_CHIEF_Z), 
-            $em->find('WoojinUserBundle:User', Avenue::USER_CHIEF_Y), 
-            $em->find('WoojinUserBundle:User', Avenue::USER_CHIEF_X), 
-            $em->find('WoojinUserBundle:User', Avenue::USER_CHIEF_P), 
+            $em->find('WoojinUserBundle:User', Avenue::USER_CHIEF_Z),
+            $em->find('WoojinUserBundle:User', Avenue::USER_CHIEF_Y),
+            $em->find('WoojinUserBundle:User', Avenue::USER_CHIEF_X),
+            $em->find('WoojinUserBundle:User', Avenue::USER_CHIEF_P),
             $em->find('WoojinUserBundle:User', Avenue::USER_CHIEF_L),
             $em->find('WoojinUserBundle:User', Avenue::USER_CHIEF_T),
-            $em->find('WoojinUserBundle:User', Avenue::USER_STOCK) 
+            $em->find('WoojinUserBundle:User', Avenue::USER_STOCK)
         );
 
         $boss = $em->find('WoojinUserBundle:User', Avenue::USER_BOSS);
@@ -269,16 +268,16 @@ class QueController extends Controller
 
             $clues = $qb->getQuery()->getResult();
             $notifier->clue($clues, array($manager, $boss), $chief->getStore());
-            
+
             unset($clues);
-            unset($qb); 
+            unset($qb);
         }
 
         return new JsonResponse(array('status' => 1));
     }
 
     /**
-     * 
+     *
      * @Route("/que/inode", name="que_inode")
      * @Method("GET")
      */
@@ -296,19 +295,120 @@ class QueController extends Controller
 
         $total = 0;
 
-        foreach ($finder as $file) {      
-            echo $file->getRealPath() . ":{$total}<br/>";          
+        foreach ($finder as $file) {
+            echo $file->getRealPath() . ":{$total}<br/>";
             if (!file_exists($file->getRealPath())) {
                 continue;
             }
-            
+
             unset($file);
 
-            $total ++;  
+            $total ++;
         }
 
         // all: 63477, vendor:11126, src: 810, web: 44922, bundles: 6660, productImg: 32115
         return new Response("all: {$allInode}, total: {$total}");
+    }
+
+    /**
+     * @Route("/que/color", name="que_color")
+     * @Method("GET")
+     */
+    public function queColor()
+    {
+        set_time_limit(0);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $qb = $em->createQueryBuilder();
+        $qb1 = $em->createQueryBuilder();
+        $qb2 = $em->createQueryBuilder();
+
+        $colors = $qb1->select(array('i'))->from('WoojinGoodsBundle:Color', 'i')->getQuery()->getResult();
+
+        $colorArr = array();
+
+        foreach ($colors as $color) {
+            $colorArr[] = [
+                'id' => $color->getId(),
+                'name' => $color->getName(),
+            ];
+
+            if (false !== strpos($color->getName(), '色')) {
+                $colorArr[] = [
+                    'id' => $color->getId(),
+                    'name' => str_replace('色', '', $color->getName()),
+                ];
+            }
+        }
+
+        $qb2->select('COUNT(g.id)')
+            ->from('WoojinGoodsBundle:GoodsPassport', 'g')
+            ->where(
+                $qb2->expr()->andX(
+                    $qb2->expr()->like('g.sn', $qb2->expr()->literal('!%')),
+                    //$qb2->expr()->isNull('g.color'),
+                    $qb2->expr()->eq('g.status', 1)
+                )
+            )
+        ;
+
+        $total = $qb2->getQuery()->getSingleScalarResult();
+
+        $qb
+            ->select('g')
+            ->from('WoojinGoodsBundle:GoodsPassport', 'g')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->like('g.sn', $qb->expr()->literal('!%')),
+                    //$qb->expr()->isNull('g.color'),
+                    $qb->expr()->eq('g.status', 1)
+                )
+            )
+        ;
+
+        for ($i = 0; $i < $total; $i = $i + 100) {
+            $qb
+                ->setFirstResult($i)
+                ->setMaxResults($i + 100)
+            ;
+
+            $products = $qb->getQuery()->getResult();
+
+            foreach ($products as $product) {
+                if (!is_null($product->getColor())) {
+                    continue;
+                }
+
+                $colorId = $this->findMappedColor($colorArr, $product->getName());
+
+                if (is_null($colorId)) {
+                    echo $product->getName() . "沒有對應顏色 <br/>";
+                    continue;
+                }
+
+                echo $product->getName() . " Fount it! <br/>";
+
+                $product->setColor($this->getDoctrine()->getRepository(Color::class)->find($colorId));
+
+                $em->persist($product);
+            }
+
+            $em->flush();
+        }
+
+        return new Response($total);
+    }
+
+    protected function findMappedColor($colorArr, $name)
+    {
+        foreach ($colorArr as $colorInfo) {
+            if (false !== strpos($name, $colorInfo['name'])) {
+                return $colorInfo['id'];
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -317,7 +417,7 @@ class QueController extends Controller
      * 2. Iterate collection
      * 3. Get each path without filename
      * 4. Delete dir (rmdir($file->getRealPath());)
-     * 
+     *
      * @Route("/que/delete_desimg", name="que_img_delete_desimg")
      * @Method("GET")
      */
@@ -342,30 +442,30 @@ class QueController extends Controller
                         // echo 'leave: ' . $desimg->getPath() . "<br/>";
                         // $total ++;
                     }
-                    
+
                     continue;
                 }
 
                 $finder = new Finder();
-                $path = pathinfo($_SERVER['DOCUMENT_ROOT'] . $desimg->getPath());     
+                $path = pathinfo($_SERVER['DOCUMENT_ROOT'] . $desimg->getPath());
                 $finder->files()->in($path['dirname'])->name('des*')->notName(basename($desimg->getPath()));
 
                 echo '<br>m: ' . basename($desimg->getPath()) . '<hr>';
 
-                foreach ($finder as $file) {      
+                foreach ($finder as $file) {
                     $total ++;
-                    echo $file->getRealPath() . ":{$total}<br/>";          
+                    echo $file->getRealPath() . ":{$total}<br/>";
                     if (!file_exists($file->getRealPath())) {
                         continue;
                     }
-                    
-                    unlink($file->getRealPath());               
+
+                    unlink($file->getRealPath());
                     unset($file);
                 }
                 unset($finder);
-                
+
             }
-            
+
             unset($desimgs);
         }
 
@@ -375,12 +475,12 @@ class QueController extends Controller
     protected function fetchDesimgCollection($page)
     {
         return new Paginator($this->genFetchDesimgQ($page), $fetchJoinCollection = false);
-    }   
+    }
 
     protected function genFetchDesimgQ($page)
     {
         $em = $this->getDoctrine()->getManager();
-        
+
         $date = new \DateTime();
 
         $qb = $em->createQueryBuilder();
@@ -393,7 +493,7 @@ class QueController extends Controller
         //     // $qb->expr()->in('gs.id', array(2)),
         //     // $qb->expr()->eq('ok.type', 2),
         //     // $qb->expr()->eq('os.id', 2),
-        //     $qb->expr()->lt('gd.updateAt', $qb->expr()->literal($date->modify('-1 months')->format('Y-m-d H:i:s'))) 
+        //     $qb->expr()->lt('gd.updateAt', $qb->expr()->literal($date->modify('-1 months')->format('Y-m-d H:i:s')))
         // ));
 
         return $qb->orderBy('img.id', 'ASC')
@@ -405,5 +505,172 @@ class QueController extends Controller
     protected function fetchCountDesimg()
     {
         return count($this->fetchDesimgCollection(0));
+    }
+
+    /**
+     * @Route("/que/size", name="que_size")
+     * @Method("GET")
+     */
+    public function fixSize(Request $request)
+    {
+        set_time_limit(0);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $qb = $em->createQueryBuilder();
+        $qb1 = $em->createQueryBuilder();
+        $qb2 = $em->createQueryBuilder();
+
+        $sizes = $qb1->select(array('s'))->from('WoojinGoodsBundle:GoodsSize', 's')->getQuery()->getResult();
+
+        $sizeArr = array();
+
+        foreach ($sizes as $size) {
+            $sizeArr[] = [
+                'id' => $size->getId(),
+                'name' => $size->getName(),
+            ];
+        }
+
+        $qb2->select('COUNT(g.id)')
+            ->from('WoojinGoodsBundle:GoodsPassport', 'g')
+            ->where(
+                $qb2->expr()->andX(
+                    $qb2->expr()->like('g.sn', $qb2->expr()->literal('!%')),
+                    //$qb2->expr()->isNull('g.color'),
+                    $qb2->expr()->eq('g.status', 1)
+                )
+            )
+        ;
+
+        $total = $qb2->getQuery()->getSingleScalarResult();
+
+        $qb
+            ->select('g')
+            ->from('WoojinGoodsBundle:GoodsPassport', 'g')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->like('g.sn', $qb->expr()->literal('!%')),
+                    //$qb->expr()->isNull('g.color'),
+                    $qb->expr()->eq('g.status', 1)
+                )
+            )
+        ;
+
+        for ($i = 0; $i < $total; $i = $i + 100) {
+            $qb
+                ->setFirstResult($i)
+                ->setMaxResults($i + 100)
+            ;
+
+            $products = $qb->getQuery()->getResult();
+
+            foreach ($products as $product) {
+                if (!is_null($product->getSize())) {
+                    continue;
+                }
+
+                $sizeId = $this->findMappedColor($sizeArr, $product->getName());
+
+                if (is_null($sizeId)) {
+                    echo $product->getName() . "沒有對應尺寸 <br/>";
+                    continue;
+                }
+
+                echo $product->getName() . " Fount it! <br/>";
+
+                $product->setSize($this->getDoctrine()->getRepository(GoodsSize::class)->find($sizeId));
+
+                $em->persist($product);
+            }
+
+            $em->flush();
+        }
+
+        return new Response($total);
+    }
+
+    /**
+     * 建立 GoodsBatch
+     *
+     * @Route("/que/product_batch", name="fix_product_batch")
+     * @Method("GET")
+     */
+    public function fixBatch(Request $request)
+    {
+        set_time_limit(0);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $qb = $em->createQueryBuilder();
+        $qb2 = $em->createQueryBuilder();
+
+        $qb2->select('COUNT(g.id)')
+            ->from('WoojinGoodsBundle:GoodsPassport', 'g')
+            ->where(
+                $qb2->expr()->andX(
+                    $qb2->expr()->like('g.sn', $qb2->expr()->literal('!%')),
+                    //$qb2->expr()->isNull('g.color'),
+                    $qb2->expr()->eq('g.status', 1)
+                )
+            )
+        ;
+
+        $total = $qb2->getQuery()->getSingleScalarResult();
+
+        $qb
+            ->select('g')
+            ->from('WoojinGoodsBundle:GoodsPassport', 'g')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->like('g.sn', $qb->expr()->literal('!%')),
+                    //$qb->expr()->isNull('g.color'),
+                    $qb->expr()->eq('g.status', 1)
+                )
+            )
+            ->orderBy('g.id', 'desc')
+        ;
+
+        $batchRepo = $this->getDoctrine()->getRepository(GoodsBatch::class);
+
+        for ($i = 0; $i < $total; $i = $i + 100) {
+            $qb
+                ->setFirstResult($i)
+                ->setMaxResults($i + 100)
+            ;
+
+            $products = $qb->getQuery()->getResult();
+
+            foreach ($products as $product) {
+                if (empty($product->getModel()) || !is_null($product->getBatch())) {
+                    continue;
+                }
+
+                $batch = null;
+
+                //try {
+                    $batch = $batchRepo->findOneBySn($product->getModel());
+
+                    if (is_null($batch)) {
+                        $batch = new GoodsBatch();
+                        $batch->setSn($product->getModel());
+                        $em->persist($batch);
+                    }
+                // } catch (\Exception $e) {
+                //     $batch = new GoodsBatch();
+                //     $batch->setSn($product->getModel());
+                //     $em->persist($batch);
+                // }
+
+                $product->setBatch($batch);
+
+                $em->persist($product);
+                $em->flush();
+
+                echo $product->getSn() . " bind on batch: {$batch->getSn()}<br/>";
+            }
+        }
+
+        return new Response($total);
     }
 }
