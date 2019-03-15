@@ -4,7 +4,7 @@ namespace Woojin\OrderBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Exclude;
-
+use Woojin\AgencyBundle\Entity\AgencyObject;
 use Symfony\Component\Validator\Constraints as Assert;
 use Woojin\Utility\Handler\FacebookResponseHandler;
 use Woojin\UserBundle\Entity\User;
@@ -49,7 +49,7 @@ class Custom
 
     /**
      * @Exclude
-     * @ORM\OneToMany(targetEntity="\Woojin\AgencyBundle\Entity\Object", mappedBy="custom")
+     * @ORM\OneToMany(targetEntity="\Woojin\AgencyBundle\Entity\AgencyObject", mappedBy="custom")
      * @var Object[]
      */
     protected $objects;
@@ -633,10 +633,10 @@ class Custom
     /**
      * Add objects
      *
-     * @param \Woojin\AgencyBundle\Entity\Object $objects
+     * @param \Woojin\AgencyBundle\Entity\AgencyObject $objects
      * @return Custom
      */
-    public function addObject(\Woojin\AgencyBundle\Entity\Object $objects)
+    public function addObject(AgencyObject $objects)
     {
         $this->objects[] = $objects;
 
@@ -646,9 +646,9 @@ class Custom
     /**
      * Remove objects
      *
-     * @param \Woojin\AgencyBundle\Entity\Object $objects
+     * @param \Woojin\AgencyBundle\Entity\AgencyObject $objects
      */
-    public function removeObject(\Woojin\AgencyBundle\Entity\Object $objects)
+    public function removeObject(AgencyObject $objects)
     {
         $this->objects->removeElement($objects);
     }

@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Operation
 {
   /**
-   * @ORM\ManyToOne(targetEntity="Object", inversedBy="operations")
+   * @ORM\ManyToOne(targetEntity="AgencyObject", inversedBy="operations")
    * @var Object
    */
   protected $object;
@@ -159,7 +159,7 @@ class Operation
      * @param \Woojin\AgencyBundle\Entity\Object $object
      * @return Operation
      */
-    public function setObject(\Woojin\AgencyBundle\Entity\Object $object = null)
+    public function setObject($object = null)
     {
         $this->object = $object;
     

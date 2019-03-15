@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class AgencyItem
 {
   /**
-   * @ORM\OneToMany(targetEntity="Object", mappedBy="agency_item")
+   * @ORM\OneToMany(targetEntity="AgencyObject", mappedBy="agency_item")
    * @var Object[]
    */
   protected $objects;
@@ -84,10 +84,10 @@ class AgencyItem
   /**
    * Add objects
    *
-   * @param \Woojin\AgencyBundle\Entity\Object $objects
+   * @param \Woojin\AgencyBundle\Entity\AgencyObject $objects
    * @return AgencyItem
    */
-  public function addObject(\Woojin\AgencyBundle\Entity\Object $objects)
+  public function addObject(\Woojin\AgencyBundle\Entity\AgencyObject $objects)
   {
       $this->objects[] = $objects;
   
@@ -97,9 +97,9 @@ class AgencyItem
   /**
    * Remove objects
    *
-   * @param \Woojin\AgencyBundle\Entity\Object $objects
+   * @param \Woojin\AgencyBundle\Entity\AgencyObject $objects
    */
-  public function removeObject(\Woojin\AgencyBundle\Entity\Object $objects)
+  public function removeObject(\Woojin\AgencyBundle\Entity\AgencyObject $objects)
   {
       $this->objects->removeElement($objects);
   }

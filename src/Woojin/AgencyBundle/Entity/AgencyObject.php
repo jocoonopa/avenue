@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Object
  *
- * @ORM\Table()
+ * @ORM\Table("Object")
  * @ORM\Entity
  */
-class Object
+class AgencyObject
 {
   /**
    * @ORM\ManyToOne(targetEntity="\Woojin\OrderBundle\Entity\Custom", inversedBy="objects")

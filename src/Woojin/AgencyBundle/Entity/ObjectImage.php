@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ObjectImage
 {
   /**
-   * @ORM\ManyToOne(targetEntity="Object", inversedBy="object_images")
+   * @ORM\ManyToOne(targetEntity="AgencyObject", inversedBy="object_images")
    * @var Object
    */
   protected $object;
@@ -136,10 +136,10 @@ class ObjectImage
   /**
    * Set object
    *
-   * @param \Woojin\AgencyBundle\Entity\Object $object
+   * @param \Woojin\AgencyBundle\Entity\AgencyObject $object
    * @return ObjectImage
    */
-  public function setObject(\Woojin\AgencyBundle\Entity\Object $object = null)
+  public function setObject(\Woojin\AgencyBundle\Entity\AgencyObject $object = null)
   {
       $this->object = $object;
   
@@ -149,7 +149,7 @@ class ObjectImage
   /**
    * Get object
    *
-   * @return \Woojin\AgencyBundle\Entity\Object 
+   * @return \Woojin\AgencyBundle\Entity\AgencyObject 
    */
   public function getObject()
   {

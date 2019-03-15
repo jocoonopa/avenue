@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class ObjectStatus
 {
   /**
-   * @ORM\OneToMany(targetEntity="Object", mappedBy="object_status")
+   * @ORM\OneToMany(targetEntity="AgencyObject", mappedBy="object_status")
    * @var Object[]
    */
   protected $objects;
@@ -78,10 +78,10 @@ class ObjectStatus
   /**
    * Add objects
    *
-   * @param \Woojin\AgencyBundle\Entity\Object $objects
+   * @param \Woojin\AgencyBundle\Entity\AgencyObject $objects
    * @return ObjectStatus
    */
-  public function addObject(\Woojin\AgencyBundle\Entity\Object $objects)
+  public function addObject(\Woojin\AgencyBundle\Entity\AgencyObject $objects)
   {
     $this->objects[] = $objects;
   
@@ -91,9 +91,9 @@ class ObjectStatus
   /**
    * Remove objects
    *
-   * @param \Woojin\AgencyBundle\Entity\Object $objects
+   * @param \Woojin\AgencyBundle\Entity\AgencyObject $objects
    */
-  public function removeObject(\Woojin\AgencyBundle\Entity\Object $objects)
+  public function removeObject(\Woojin\AgencyBundle\Entity\AgencyObject $objects)
   {
     $this->objects->removeElement($objects);
   }

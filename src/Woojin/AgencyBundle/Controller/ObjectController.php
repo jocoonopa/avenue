@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Woojin\AgencyBundle\Entity\Object;
+use Woojin\AgencyBundle\Entity\AgencyObject;
 use Woojin\AgencyBundle\Form\ObjectType;
 
 /**
@@ -44,7 +44,7 @@ class ObjectController extends Controller
      */
     public function createAction(Request $request)
     {
-        $entity = new Object();
+        $entity = new AgencyObject();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
@@ -90,7 +90,7 @@ class ObjectController extends Controller
      */
     public function newAction()
     {
-        $entity = new Object();
+        $entity = new AgencyObject();
         $form   = $this->createCreateForm($entity);
 
         return array(

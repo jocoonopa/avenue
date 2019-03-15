@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Contractor
 {
     /**
-     * @ORM\OneToMany(targetEntity="Object", mappedBy="contractor")
+     * @ORM\OneToMany(targetEntity="AgencyObject", mappedBy="contractor")
      * @var Object[]
      */
     protected $objects;
@@ -168,10 +168,10 @@ class Contractor
     /**
      * Add objects
      *
-     * @param \Woojin\AgencyBundle\Entity\Object $objects
+     * @param \Woojin\AgencyBundle\Entity\AgencyObject $objects
      * @return Contractor
      */
-    public function addObject(\Woojin\AgencyBundle\Entity\Object $objects)
+    public function addObject(\Woojin\AgencyBundle\Entity\AgencyObject $objects)
     {
         $this->objects[] = $objects;
     
@@ -181,9 +181,9 @@ class Contractor
     /**
      * Remove objects
      *
-     * @param \Woojin\AgencyBundle\Entity\Object $objects
+     * @param \Woojin\AgencyBundle\Entity\AgencyObject $objects
      */
-    public function removeObject(\Woojin\AgencyBundle\Entity\Object $objects)
+    public function removeObject(\Woojin\AgencyBundle\Entity\AgencyObject $objects)
     {
         $this->objects->removeElement($objects);
     }
