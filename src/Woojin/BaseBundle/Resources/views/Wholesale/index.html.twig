@@ -60,11 +60,11 @@
                     {% for product in products %}
                     <div class="col-md-3 col-xs-6 mt-20">
                         {% if product.img %}
-                        <img src="{{ product.img.path }}"  class="img-responsive lazy" style="height: 200px;" alt="圖片" />
+                        <img src="{{ product.img.path }}" data-id="{{ product.id }}"  class="img-responsive lazy" style="height: 200px;" alt="圖片" />
                         {% endif %}
                         {# `售價` + `批發價` + `圖片` + `品名` + `店名` #}
                         {# <p>所在店: {{ product.sn|slice(0, 1)}}</p> #}
-                        <p>{{ product.name }} {% if product.brand %}<b>[{{ product.brand.name }}]</b>{% endif %}</p>{# <p>型號: {{ product.model }}</p> #}
+                        <p>{{ product.name }} {% if product.brand %}<b>[{{ product.brand.name }}]</b>{% endif %} {% if product.pattern %}<b>[{{ product.pattern.name }}]</b>{% endif %}</p>{# <p>型號: {{ product.model }}</p> #}
                         <p>售價 {{ product.price|number_format }}</p>
                         <p>批發 {{ product.wholesalePrice|number_format }}</p>
                         {# <p>型號: {{ product.model }}</p> #}

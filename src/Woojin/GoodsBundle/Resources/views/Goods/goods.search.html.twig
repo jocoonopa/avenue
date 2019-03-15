@@ -5,426 +5,414 @@
 
 <style>
 .res-container {
-    position: relative;
-    width: 70%;
-    overflow: auto;
-    float: right;
+        position: relative;
+        width: 70%;
+        overflow: auto;
+        float: right;
 
 }
 
 .item {
-    width:  150px;
-    float: left;
-    min-height: 150px;
-    margin-bottom: 10px;
+        width:  150px;
+        float: left;
+        min-height: 150px;
+        margin-bottom: 10px;
 }
 
 </style>
 <link rel="stylesheet" href="/prettyPhoto/css/prettyPhoto.css">
 
 <div class="condition_add">
-  <div>
-      <a href="{{ path('admin_search') }}" target="_blank" class="btn btn-primary">前往新版商品搜尋</a>
-  </div>
+    <div>
+            <a href="{{ path('admin_search') }}" target="_blank" class="btn btn-primary">前往新版商品搜尋</a>
+    </div>
 
-  <div>
-      <a href="{{ path('admin_goods_findnoimg') }}" target="_blank" class="btn btn-danger">
-          掉圖的商品
-      </a>
-  </div>
+    <div>
+            <a href="{{ path('admin_goods_findnoimg') }}" target="_blank" class="btn btn-danger">
+                    掉圖的商品
+            </a>
+    </div>
 
-  <div>
-      &nbsp;
-  </div>
-	{# <div style="position: relative; left: 20px; margin-bottom: 20px;">
-		<a href="{{ path('goods_fix_cn') }}" class="btn btn-primary btn-lg active" role="button">大陸應急修改介面</a>
-	</div> #}
+    <div>
+            &nbsp;
+    </div>
+    {# <div style="position: relative; left: 20px; margin-bottom: 20px;">
+        <a href="{{ path('goods_fix_cn') }}" class="btn btn-primary btn-lg active" role="button">大陸應急修改介面</a>
+    </div> #}
 
-  {# <div>
-    <a href="#" class="btn btn-primary btn-lg active">手機查貨頁</a>
-  </div> #}
+    {# <div>
+        <a href="#" class="btn btn-primary btn-lg active">手機查貨頁</a>
+    </div> #}
 
-	<!-- 條件增加區 -->
-	<div class="goods_search_condition">
-		<p class='not_condition' data-condition="0">請選擇查詢條件</p>
-		<p data-condition="1">店鋪</p>
-		<p data-condition="2">品名&序號</p>
-		<p data-condition="3">產品產編</p>
-		<p data-condition="4">產品成本</p> 
-		<p data-condition="5">產品價格</p> 
-		<p data-condition="6">操作時間</p>
-		<p class="Phidden" data-condition="7">品牌</p>
-	 	<p data-condition="8">商品新舊</p> 
-		<p data-condition="9">商品狀態</p>
-	 	<p class="Phidden" data-condition="10">有無圖片</p> 
-	 	<p class="Phidden" data-condition="11">有無備註</p> 
-		<p data-condition="12">訂單種類</p>
-		<p data-condition="13">訂單狀態</p>
-	 	<p class="Phidden" data-condition="14">商品來源</p>
-	 	<p class="Phidden" data-condition="15">品牌( 顏色/選單 )</p> 
-	 	<p class="Phidden" data-condition="16">型號搜尋</p>
-	 	<p data-condition="17">材質</p>
-	 	<p data-condition="18">活動</p>
-    <p data-condition="19">顏色</p>  
-    <p data-condition="20">款式</p>
-    <p data-condition="21">品牌</p>
-    <p data-condition="22">色號</p>
-    <p data-condition="23">型號</p>
-    <p data-condition="24">品牌自定內碼</p>
-    <p data-condition="25">官網上架</p>
-    <p data-condition="26">寄賣客戶電話</p>
-    <p data-condition="27">Yahoo商城</p>
-	</div>
-     <select name="pager" style="display: none;"></select>
-	<button class="goods_search_submit btn btn-default" onclick="javascript:ajaxLoaded();"><span data-icon="S">查詢</span></button>
-	<p>&nbsp;&nbsp;每頁40筆資料</p>
+    <!-- 條件增加區 -->
+    <div class="goods_search_condition">
+        <p class='not_condition' data-condition="0">請選擇查詢條件</p>
+        <p data-condition="1">店鋪</p>
+        <p data-condition="2">品名&序號</p>
+        <p data-condition="3">產品產編</p>
+        <p data-condition="4">產品成本</p> 
+        <p data-condition="5">產品價格</p> 
+        <p data-condition="6">操作時間</p>
+        <p class="Phidden" data-condition="7">品牌</p>
+        <p data-condition="8">商品新舊</p> 
+        <p data-condition="9">商品狀態</p>
+        <p class="Phidden" data-condition="10">有無圖片</p> 
+        <p class="Phidden" data-condition="11">有無備註</p> 
+        <p data-condition="12">訂單種類</p>
+        <p data-condition="13">訂單狀態</p>
+        <p class="Phidden" data-condition="14">商品來源</p>
+        <p class="Phidden" data-condition="15">品牌( 顏色/選單 )</p> 
+        <p class="Phidden" data-condition="16">型號搜尋</p>
+        <p data-condition="17">材質</p>
+        <p data-condition="18">活動</p>
+        <p data-condition="19">顏色</p>  
+        <p data-condition="20">款式</p>
+        <p data-condition="21">品牌</p>
+        <p data-condition="22">色號</p>
+        <p data-condition="23">型號</p>
+        <p data-condition="24">品牌自定內碼</p>
+        <p data-condition="25">官網上架</p>
+        <p data-condition="26">寄賣客戶電話</p>
+        <p data-condition="27">Yahoo商城</p>
+        <p data-condition="28">是否為批貨</p>
+    </div>
+         <select name="pager" style="display: none;"></select>
+    <button class="goods_search_submit btn btn-default" onclick="javascript:ajaxLoaded();"><span data-icon="S">查詢</span></button>
+    <p>&nbsp;&nbsp;每頁40筆資料</p>
 </div>
 {% endblock %}
 {% block form %}
-	<input type="hidden" name="bGoods" value="1" />
-	<div>
-		<select name="orderCondition" style="width: 140px;">
-			<option value="">請選擇排序條件</option>
-			<option value="gd.id">按照建立時間排序</option>
-			<option value="gd.cost">按照成本排序</option>
-			<option value="gd.price">按照價格排序</option>
-			<option value="gd.source">按照來源地排序</option>
-			<option value="gd.level">按照新舊程度排序</option>
-		</select>
-		<select name="orderSort" >
-			<option value="ASC">正向</option>
-			<option value="DESC">反向</option>
-		</select>
+    <input type="hidden" name="bGoods" value="1" />
+    <div>
+        <select name="orderCondition" style="width: 140px;">
+            <option value="">請選擇排序條件</option>
+            <option value="gd.id">按照建立時間排序</option>
+            <option value="gd.cost">按照成本排序</option>
+            <option value="gd.price">按照價格排序</option>
+            <option value="gd.source">按照來源地排序</option>
+            <option value="gd.level">按照新舊程度排序</option>
+        </select>
+        <select name="orderSort" >
+            <option value="ASC">正向</option>
+            <option value="DESC">反向</option>
+        </select>
 
-        <input type="hidden" name="page" value="1" />
-	</div>
+                <input type="hidden" name="page" value="1" />
+    </div>
 
 {% endblock %}
 {% block js %}
 <div class="ordersEditFormDialog" title="訂單編輯"></div>
 <div class="div_right_bottom">
-	<button class="btn btn-default">記錄條件</button>
+    <button class="btn btn-default">記錄條件</button>
 </div>
 <div class="changeOrdersCustomDialog" title="修改客戶">
-	<input type="text" placeholder="請輸入客戶電話" />
-	<div data-id="0"></div>
+    <input type="text" placeholder="請輸入客戶電話" />
+    <div data-id="0"></div>
 </div>
 <script>
 $(function() {
-	{#{ render( controller("WoojinBaseBundle:Base:getBrandSelect") ) }#}
-	{#{ render( controller("WoojinBaseBundle:Base:getBrandSelectColor") ) }#}
+    {#{ render( controller("WoojinBaseBundle:Base:getBrandSelect") ) }#}
+    {#{ render( controller("WoojinBaseBundle:Base:getBrandSelectColor") ) }#}
 
-    $('select[name="pager"]').change(function () {
-        $(this).fadeIn(500);
-        $('input[name="page"]').val($(this).val());
+        $('select[name="pager"]').change(function () {
+                $(this).fadeIn(500);
+                $('input[name="page"]').val($(this).val());
 
-        //$('button.goods_search_submit').click();
-    });
+                //$('button.goods_search_submit').click();
+        });
 
-	var 
-		isClickFirst = [],
-		repo = [],
-        brand_str = '',
-        brand_type_option_arr = [],
-        brand_sn_option_arr = [];
+    var 
+        isClickFirst = [],
+        repo = [],
+                brand_str = '',
+                brand_type_option_arr = [],
+                brand_sn_option_arr = [];
 
-    for (var i = 1; i <= parseInt($('div.goods_search_condition').find('p').length - 1); i ++) {
-    	isClickFirst[i] = true;
-    }
-
-	var 
-        url = Routing.generate('goods_search_ajax'),
-        $tab = $('#tabs-search'),
-		$goodsSearchOperate = $tab.find('.operatePanel'),
-        $goodsSearchOpen = $tab.find('.panelSwitch'),
-        $goodsSearchAjaxResponse = $tab.find('.res-container'),
-
-        $goodsSearchCondition = $tab.find('.goods_search_condition'),
-        $pCondition = $goodsSearchCondition.find('p').not('.not_condition'),
-        $goodsSearchSubmit = $tab.find('.goods_search_submit'),
-        $goodsSearchForm = $tab.find('.woojinForm'),
-        $goodsNameInput = $tab.find('.goods_search_goods_name'),
-        // $ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog'),
-        // $ordersEditFormDialog = $('.ordersEditFormDialog'),
-        // $changeOrdersCustomDialog = $('.changeOrdersCustomDialog'),
-        $recordConditionButton = $tab.find('.div_right_bottom'),
-        sCheckExistUrl = Routing.generate('admin_custom_checkExist'),
-        rUsersHabit = [];
-        animateSpeed = 700;
-
-    var bindHoverOnDeleteButton = function () {
-      	$goodsSearchForm.children('div').hover(
-    			function () {
-    				if (!$(this).hasClass('isHoverShow') || $('.isHoverShow').length < 1) {
-    					if ($('.isHoverShow').length>=1) {
-    						$(this).addClass('isHoverShow').find('.delete_parent_div').fadeIn(80);
-    					} else {
-    						$(this).addClass('isHoverShow').find('.delete_parent_div').fadeIn(animateSpeed);
-    					}	
-    				}	
-    			},function () {
-    				if ($('.isHoverShow').length > 0) {
-    					$(this).find('.delete_parent_div').fadeOut(100, function () {
-    						$(this).parent().removeClass('isHoverShow');
-    					});
-    			}	
-    	});
-    };
-
-    var genSelect = function (condition_add, entity, route, appendInput) {
-      	var appendInput = appendInput || '';
-
-      	if (isClickFirst[condition_add]) {
-        	ajaxLoaded();
-
-        	$.get(route, function (res) {
-        		var funName = 'set' + entity + 'Param';
-        		
-                window[funName](res);
-
-        		repo[condition_add] = res;
-
-        		if (typeof window['gen' + entity + 'Select'] == 'function') {
-        			window['gen' + entity + 'Select'](appendInput);
-        		}
-    				
-				onDeleteEvent();
-    				
-				bindHoverOnDeleteButton();
-    				
-				$.unblockUI();
-    				
-				isClickFirst[condition_add] = false;
-        	});			
-        } else {
-        	if (!appendInput) {
-        		window['set' + entity + 'Param'](repo[condition_add]);
-        	} else {
-        		window['gen' + entity + 'Select'](appendInput);
-        	}
-       
-    		onDeleteEvent();
-    			
-    		bindHoverOnDeleteButton();
+        for (var i = 1; i <= parseInt($('div.goods_search_condition').find('p').length - 1); i ++) {
+            isClickFirst[i] = true;
         }
+
+    var 
+                url = Routing.generate('goods_search_ajax'),
+                $tab = $('#tabs-search'),
+        $goodsSearchOperate = $tab.find('.operatePanel'),
+                $goodsSearchOpen = $tab.find('.panelSwitch'),
+                $goodsSearchAjaxResponse = $tab.find('.res-container'),
+
+                $goodsSearchCondition = $tab.find('.goods_search_condition'),
+                $pCondition = $goodsSearchCondition.find('p').not('.not_condition'),
+                $goodsSearchSubmit = $tab.find('.goods_search_submit'),
+                $goodsSearchForm = $tab.find('.woojinForm'),
+                $goodsNameInput = $tab.find('.goods_search_goods_name'),
+                // $ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog'),
+                // $ordersEditFormDialog = $('.ordersEditFormDialog'),
+                // $changeOrdersCustomDialog = $('.changeOrdersCustomDialog'),
+                $recordConditionButton = $tab.find('.div_right_bottom'),
+                sCheckExistUrl = Routing.generate('admin_custom_checkExist'),
+                rUsersHabit = [];
+                animateSpeed = 700;
+
+        var bindHoverOnDeleteButton = function () {
+                $goodsSearchForm.children('div').hover(
+                    function () {
+                        if (!$(this).hasClass('isHoverShow') || $('.isHoverShow').length < 1) {
+                            if ($('.isHoverShow').length>=1) {
+                                $(this).addClass('isHoverShow').find('.delete_parent_div').fadeIn(80);
+                            } else {
+                                $(this).addClass('isHoverShow').find('.delete_parent_div').fadeIn(animateSpeed);
+                            }   
+                        }   
+                    },function () {
+                        if ($('.isHoverShow').length > 0) {
+                            $(this).find('.delete_parent_div').fadeOut(100, function () {
+                                $(this).parent().removeClass('isHoverShow');
+                            });
+                    }   
+            });
+        };
+
+        var genSelect = function (condition_add, entity, route, appendInput) {
+                var appendInput = appendInput || '';
+
+                if (isClickFirst[condition_add]) {
+                    ajaxLoaded();
+
+                    $.get(route, function (res) {
+                        var funName = 'set' + entity + 'Param';
+                        
+                                window[funName](res);
+
+                        repo[condition_add] = res;
+
+                        if (typeof window['gen' + entity + 'Select'] == 'function') {
+                            window['gen' + entity + 'Select'](appendInput);
+                        }
+                        
+                onDeleteEvent();
+                        
+                bindHoverOnDeleteButton();
+                        
+                $.unblockUI();
+                        
+                isClickFirst[condition_add] = false;
+                    });         
+                } else {
+                    if (!appendInput) {
+                        window['set' + entity + 'Param'](repo[condition_add]);
+                    } else {
+                        window['gen' + entity + 'Select'](appendInput);
+                    }
+             
+                onDeleteEvent();
+                    
+                bindHoverOnDeleteButton();
+                }
+        };
+
+    window.setStoreParam = function (res) {
+        $goodsSearchForm.append(res + '<button class="delete_parent_div">x</button>');
     };
 
-  window.setStoreParam = function (res) {
-  	$goodsSearchForm.append(res + '<button class="delete_parent_div">x</button>');
-  };
+    window.setGoodsMTParam = function (res) {
+        $goodsSearchForm.append( '<div>' + res + '<button class="delete_parent_div">x</button></div>');
+    };
 
-  window.setGoodsMTParam = function (res) {
-  	$goodsSearchForm.append( '<div>' + res + '<button class="delete_parent_div">x</button></div>');
-  };
+    window.setGoodsLevelParam = function (res) {
+        $goodsSearchForm.append( res );
+    };
 
-  window.setGoodsLevelParam = function (res) {
-  	$goodsSearchForm.append( res );
-  };
+    window.setGoodsStatusParam = function (res) {
+        $goodsSearchForm.append( res );
+    };
 
-  window.setGoodsStatusParam = function (res) {
-  	$goodsSearchForm.append( res );
-  };
+    window.setOrdersKindParam = function (res) {
+        $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+    };
 
-  window.setOrdersKindParam = function (res) {
-  	$goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
-  };
+    window.setOrdersStatusParam = function (res) {
+        $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+    };
 
-  window.setOrdersStatusParam = function (res) {
-  	$goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
-  };
+    window.setActivityParam = function (res) {
+        $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+    };
 
-  window.setActivityParam = function (res) {
-  	$goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
-  };
+    window.setColorParam = function (res) {
+        $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+    };
 
-  window.setColorParam = function (res) {
-    $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
-  };
+    window.setBrandParam = function (res) {
+        $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+    };
 
-  window.setBrandParam = function (res) {
-    $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
-  };
+    window.setPatternParam = function (res) {
+        $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
+    };
 
-  window.setPatternParam = function (res) {
-    $goodsSearchForm.append('<div>' + res + '<button class="delete_parent_div">x</button></div>');
-  };
+    $pCondition.on('click', function () {
+        var $p = $(this);
+        var condition_add = $p.data('condition');
+        var appendInput;
 
-	$pCondition.on('click', function () {
-    var $p = $(this);
-    var condition_add = $p.data('condition');
-		var appendInput;
+        rUsersHabit.push(condition_add);
 
-    rUsersHabit.push(condition_add);
+        switch (condition_add) {
+            case 1:
 
-		switch (condition_add) {
-			case 1:
+                genSelect( condition_add, 'Store' , "{{ path('base_get_store_select') }}", false);
 
-				genSelect( condition_add, 'Store' , "{{ path('base_get_store_select') }}", false);
+                break;
 
-				break;
-
-			case 2:
-				appendInput = '<div><input type="text" class="goods_search_goods_name" name="goods_search_goods_name[]" placeholder="產品名稱"/><button class="delete_parent_div">x</button></div>';
-				$goodsSearchForm.append(appendInput);
-				$('.goods_search_goods_name').not('.hasAutocomplete').autocomplete({
-			        source      : Routing.generate('goods_search_ajax_name'),
-			        minLength   : 2
-			    }).addClass('hasAutocomplete');
-				
-				onDeleteEvent();
-			
-				bindHoverOnDeleteButton();
-				break;
-
-			case 3:
-				appendInput = '<div><input type="text" class="goods_search_goods_sn" name="goods_search_goods_sn[]" placeholder="產品產編" /><button class="delete_parent_div">x</button></div>';
-				$goodsSearchForm.append(appendInput);
-
-				onDeleteEvent();
-			
-				bindHoverOnDeleteButton();
-
-				break;
-
-			case 4:
-				appendInput = '<div><input type="text" class="goods_search_cost_min numeric" name="goods_search_cost_min[]" placeholder="成本區間[低]" /><span>~</span><input type="number" class="goods_search_cost_max numeric" name="goods_search_cost_max[]" placeholder="成本區間[高]" /><button class="delete_parent_div">x</button></div>';
-				
-        $goodsSearchForm.append(appendInput);
-        onDeleteEvent();
-				// onNumeric();
-				break;
-
-			case 5:
-				appendInput = '<div><input type="text" class="goods_search_price_min numeric" name="goods_search_price_min[]" placeholder="價格區間[低]" /><span>~</span><input type="number" class="goods_search_price_max numeric" name="goods_search_price_max[]" placeholder="價格區間[高]" /><button class="delete_parent_div">x</button></div>';
-				$goodsSearchForm.append(appendInput);
-        onDeleteEvent();
-				
-        // onNumeric();
-				break;
-
-			case 6:
-				appendInput = '<div><input type="text" class="goods_search_create_time_start" name="goods_search_create_time_start[]" placeholder="動作時間" value="{{ "now"|date("Y-m-d") }}" /><span>~</span><input type="text" class="goods_search_create_time_end" name="goods_search_create_time_end[]" placeholder="動作時間" value="{{ "now"|date("Y-m-d") }}" /><button class="delete_parent_div">x</button></div>';
-				$goodsSearchForm.append(appendInput);
-				onDatetimePicker();
-
-				onDeleteEvent();
-			
-				bindHoverOnDeleteButton();
-
-				break;
-
-			case 7:
-                genSelect(condition_add, 'Brand', "{{ path('base_get_onlybrand_select')}}", false);
+            case 2:
+                appendInput = '<div><input type="text" class="goods_search_goods_name" name="goods_search_goods_name[]" placeholder="產品名稱"/><button class="delete_parent_div">x</button></div>';
+                $goodsSearchForm.append(appendInput);
+                $('.goods_search_goods_name').not('.hasAutocomplete').autocomplete({
+                            source      : Routing.generate('goods_search_ajax_name'),
+                            minLength   : 2
+                    }).addClass('hasAutocomplete');
                 
-				break;
+                onDeleteEvent();
+            
+                bindHoverOnDeleteButton();
+                break;
 
-			case 8:
-				genSelect(condition_add,  'GoodsLevel',  "{{ path('base_get_goods_level_select')}}", false);
+            case 3:
+                appendInput = '<div><input type="text" class="goods_search_goods_sn" name="goods_search_goods_sn[]" placeholder="產品產編" /><button class="delete_parent_div">x</button></div>';
+                $goodsSearchForm.append(appendInput);
 
-				break;
+                onDeleteEvent();
+            
+                bindHoverOnDeleteButton();
 
-			case 9:
-				genSelect(condition_add, 'GoodsStatus', "{{ path('base_get_goods_status_select')}}", false);
+                break;
 
-				break;
+            case 4:
+                appendInput = '<div><input type="text" class="goods_search_cost_min numeric" name="goods_search_cost_min[]" placeholder="成本區間[低]" /><span>~</span><input type="number" class="goods_search_cost_max numeric" name="goods_search_cost_max[]" placeholder="成本區間[高]" /><button class="delete_parent_div">x</button></div>';
+                
+                $goodsSearchForm.append(appendInput);
+                onDeleteEvent();
+                // onNumeric();
+                break;
 
-			case 10:
-			case 11:
-				
-				break;
+            case 5:
+                appendInput = '<div><input type="text" class="goods_search_price_min numeric" name="goods_search_price_min[]" placeholder="價格區間[低]" /><span>~</span><input type="number" class="goods_search_price_max numeric" name="goods_search_price_max[]" placeholder="價格區間[高]" /><button class="delete_parent_div">x</button></div>';
+                $goodsSearchForm.append(appendInput);
+                onDeleteEvent();
+                
+                // onNumeric();
+                break;
 
-			case 12:
-				genSelect(condition_add, 'OrdersKind', "{{ path('base_get_ordersKind_select')}}", false);
+            case 6:
+                appendInput = '<div><input type="text" class="goods_search_create_time_start" name="goods_search_create_time_start[]" placeholder="動作時間" value="{{ "now"|date("Y-m-d") }}" /><span>~</span><input type="text" class="goods_search_create_time_end" name="goods_search_create_time_end[]" placeholder="動作時間" value="{{ "now"|date("Y-m-d") }}" /><button class="delete_parent_div">x</button></div>';
+                $goodsSearchForm.append(appendInput);
+                onDatetimePicker();
 
-				break;
+                onDeleteEvent();
+            
+                bindHoverOnDeleteButton();
 
-			case 13:
-				genSelect(condition_add, 'OrdersStatus', "{{ path('base_get_ordersStatus_select')}}", false);
+                break;
 
-				break;
+            case 7:
+                                genSelect(condition_add, 'Brand', "{{ path('base_get_onlybrand_select')}}", false);
+                                
+                break;
 
-			case 14:
-			case 15:
-    
-				
-				break;
+            case 8:
+                genSelect(condition_add,  'GoodsLevel',  "{{ path('base_get_goods_level_select')}}", false);
 
-			case 16:
-				appendInput = '<div><input type="text" class="goods_search_brandSn_name" name="goods_search_brandSn_name[]" placeholder="型號名稱"/><button class="delete_parent_div">x</button></div>';
-				$goodsSearchForm.append(appendInput);
+                break;
 
-				onDeleteEvent();
-			
-				bindHoverOnDeleteButton();
+            case 9:
+                genSelect(condition_add, 'GoodsStatus', "{{ path('base_get_goods_status_select')}}", false);
 
-				break;
-			
-			case 17:
+                break;
 
-				genSelect(condition_add, 'GoodsMT', "{{ path('base_get_goodsMT_select')}}", false);
+            case 10:
+            case 11:
+                
+                break;
 
-				break;
-			
-			case 18:
-				
-				genSelect(condition_add, 'Activity', "{{ path('base_get_activity_select')}}", false);
+            case 12:
+                genSelect(condition_add, 'OrdersKind', "{{ path('base_get_ordersKind_select')}}", false);
 
-				break;
+                break;
+
+            case 13:
+                genSelect(condition_add, 'OrdersStatus', "{{ path('base_get_ordersStatus_select')}}", false);
+
+            break;
+
+            case 14:
+            case 15:
+            break;
+
+            case 16:
+                appendInput = '<div><input type="text" class="goods_search_brandSn_name" name="goods_search_brandSn_name[]" placeholder="型號名稱"/><button class="delete_parent_div">x</button></div>';
+                $goodsSearchForm.append(appendInput);
+
+                onDeleteEvent();
+            
+                bindHoverOnDeleteButton();
+
+            break;
+            
+            case 17:
+                genSelect(condition_add, 'GoodsMT', "{{ path('base_get_goodsMT_select')}}", false);
+            break;
+            
+            case 18:
+                genSelect(condition_add, 'Activity', "{{ path('base_get_activity_select')}}", false);
+            break;
 
             case 19:
-                
                 genSelect(condition_add, 'Color', "{{ path('base_get_color_select')}}", false);
+            break;
 
-                break;
-
-            case 20:
-                
+            case 20:      
                 genSelect(condition_add, 'Pattern', "{{ path('base_get_pattern_select')}}", false);
+            break;
 
-                break;
-
-            case 21:
-                
+            case 21:  
                 genSelect(condition_add, 'Brand', "{{ path('base_get_onlybrand_select')}}", false);
-
-                break;
+            break;
 
             case 22:
 
-                appendInput = '<div><input type="text" class="colorSn" name="colorSn[]" placeholder="色號"/><button class="delete_parent_div">x</button></div>';
-                $goodsSearchForm.append(appendInput);
+                    appendInput = '<div><input type="text" class="colorSn" name="colorSn[]" placeholder="色號"/><button class="delete_parent_div">x</button></div>';
+                    $goodsSearchForm.append(appendInput);
 
-                onDeleteEvent();
+                    onDeleteEvent();
             
-                bindHoverOnDeleteButton();
+                    bindHoverOnDeleteButton();
 
-                break;
+                    break;
 
             case 23:
 
-                appendInput = '<div><input type="text" class="model" name="model[]" placeholder="型號"/><button class="delete_parent_div">x</button></div>';
-                $goodsSearchForm.append(appendInput);
+                    appendInput = '<div><input type="text" class="model" name="model[]" placeholder="型號"/><button class="delete_parent_div">x</button></div>';
+                    $goodsSearchForm.append(appendInput);
 
-                onDeleteEvent();
+                    onDeleteEvent();
             
-                bindHoverOnDeleteButton();
+                    bindHoverOnDeleteButton();
 
-                break;
+                    break;
 
             case 24:
-
                 appendInput = '<div><input type="text" class="customSn" name="customSn[]" placeholder="品牌自定義內碼"/><button class="delete_parent_div">x</button></div>';
                 $goodsSearchForm.append(appendInput);
 
                 onDeleteEvent();
-            
+        
                 bindHoverOnDeleteButton();
 
-                break;
+            break;
 
             case 25:
                 if ($('select[name="isAllowWeb"]').length > 0) {
-                    return false;
+                        return false;
                 }
                 
                 appendInput = '<div><select class="isAllowWeb" name="isAllowWeb"><option value="1">允許官網顯示</option><option value="0">禁止官網顯示</option></select><button class="delete_parent_div">x</button></div>';
@@ -432,24 +420,22 @@ $(function() {
                 $goodsSearchForm.append(appendInput);
 
                 onDeleteEvent();
-            
+        
                 bindHoverOnDeleteButton();
-
-                break;
+            break;
 
             case 26:
                 appendInput = '<div><input type="text" class="consignPhone" name="phone[]" placeholder="寄賣客戶電話"/><button class="delete_parent_div">x</button></div>';
                 $goodsSearchForm.append(appendInput);
 
                 onDeleteEvent();
-            
+        
                 bindHoverOnDeleteButton();
-
-                break;
+            break;
 
             case 27:
                 if ($('select[name="yahooId"]').length > 0) {
-                    return false;
+                        return false;
                 }
                 
                 appendInput = '<div><select class="yahooId" name="yahooId"><option value="1">已上傳商城</option><option value="0">未上傳商城</option></select><button class="delete_parent_div">x</button></div>';
@@ -457,212 +443,232 @@ $(function() {
                 $goodsSearchForm.append(appendInput);
 
                 onDeleteEvent();
-            
+        
                 bindHoverOnDeleteButton();
+            break;
 
-                break;
+            case 28:
+                if ($('select[name="isAllowWholesale"]').length > 0) {
+                    return false;
+                }
+                
+                appendInput = `
+                    <div>
+                        <select class="isAllowWholesale" name="isAllowWholesale">
+                            <option value="1">批貨</option>
+                            <option value="0">非批貨</option>
+                        </select>
+                        <button class="delete_parent_div">x</button>
+                    </div>
+                `
 
-			default:
-				break;
-		}
-	});
+                $goodsSearchForm.append(appendInput);
 
-  $goodsSearchForm.append('<input type="hidden" name="page" value="1">');
+                onDeleteEvent();
+        
+                bindHoverOnDeleteButton();
+            break;
+            default:
+            break;
+        }
+    });
 
-  $goodsSearchCondition.find('.not_condition').on('click', function () {
-    if ( !$goodsSearchCondition.hasClass('isSlideDown') ) {
-    	$goodsSearchCondition.stop().animate(
-	    	{
-          'height'            : '480px',
-          'margin-bottom'     : '15px'
-	    	}, animateSpeed+200).addClass('isSlideDown');
-    } else {
-  		$goodsSearchCondition.stop().animate(
-    	{
-        'height'            : '20px',
-        'margin-bottom'     : '0'
-    	}, animateSpeed+300).removeClass('isSlideDown');	
-  	}  
-  });
+    $goodsSearchForm.append('<input type="hidden" name="page" value="1">');
 
-  $recordConditionButton.on('click', function () {
-    var 
-    	$form = $( '.woojinForm' ),
-      url = Routing.generate( 'user_ajax_record_habit' ),
-      record = JSON.stringify( rUsersHabit );
-    ajaxLoaded();
-  	$.post(
-  		url, 
-  		{ 
-  			'users_habit_name'	: 'goods_search', 
-  			'users_habit_value'	: record
-  		}
-  	)
-  	.done(function () {
-			alert('以儲存您的使用習慣');
-			$.unblockUI();
-  	})
-  	.fail(function(xhr, textStatus, errorThrown) {
-    	alert('ajax error!');
-			$.unblockUI();
-  	});
-  });
+    $goodsSearchCondition.find('.not_condition').on('click', function () {
+        if ( !$goodsSearchCondition.hasClass('isSlideDown') ) {
+            $goodsSearchCondition.stop().animate(
+                {
+                    'height'            : '480px',
+                    'margin-bottom'     : '15px'
+                }, animateSpeed+200).addClass('isSlideDown');
+        } else {
+            $goodsSearchCondition.stop().animate(
+            {
+                'height'            : '20px',
+                'margin-bottom'     : '0'
+            }, animateSpeed+300).removeClass('isSlideDown');    
+        }  
+    });
 
-	$goodsSearchForm.ajaxForm({ 
-        url: url,
-        error: function () {
+    $recordConditionButton.on('click', function () {
+        var 
+            $form = $( '.woojinForm' ),
+            url = Routing.generate( 'user_ajax_record_habit' ),
+            record = JSON.stringify( rUsersHabit );
+        ajaxLoaded();
+        $.post(
+            url, 
+            { 
+                'users_habit_name'  : 'goods_search', 
+                'users_habit_value' : record
+            }
+        )
+        .done(function () {
+            alert('以儲存您的使用習慣');
             $.unblockUI();
-	       alert('ajax error!'); 
-        },
-        success: function (response) { 
-        	if (response == '') { 	
-                $.unblockUI();	
-        		$goodsSearchAjaxResponse.html( '' );
-        		
-                return false;
-        	}
+        })
+        .fail(function(xhr, textStatus, errorThrown) {
+            alert('ajax error!');
+            $.unblockUI();
+        });
+    });
 
-        	$goodsSearchAjaxResponse.html(response);
+    $goodsSearchForm.ajaxForm({ 
+                url: url,
+                error: function () {
+                        $.unblockUI();
+                 alert('ajax error!'); 
+                },
+                success: function (response) { 
+                    if (response == '') {   
+                                $.unblockUI();  
+                        $goodsSearchAjaxResponse.html( '' );
+                        
+                                return false;
+                    }
 
-            var container = document.querySelector('.res-container');
-            var msnry = new Masonry(container, {
-                itemSelector: '.item',
-                columnWidth: 140,
-                "gutter": 30
+                    $goodsSearchAjaxResponse.html(response);
+
+                        var container = document.querySelector('.res-container');
+                        var msnry = new Masonry(container, {
+                                itemSelector: '.item',
+                                columnWidth: 140,
+                                "gutter": 30
+                        });
+
+                        $pageData = $('script.page-data');
+
+                        genPageSelect($pageData);
+                        getNowPage($pageData);
+
+                        $("[rel^='prettyPhoto']").prettyPhoto();
+                        $.unblockUI();
+                } 
+    });
+
+        function getNowPage ($pageData) {
+                var $select = $('select[name="pager"]');
+
+                $select.val($pageData.data('page')).change();
+        }
+
+        function genPageSelect ($pageData) {
+                var count = $pageData.data('count');
+                var $select = $('select[name="pager"]');
+
+                $select.html('');
+
+                for (var i = 1; i <= (Math.floor(count/40) + 1); i ++) {
+                        $select.append($('<option>').attr('value', i).text(i));
+                } 
+        }
+
+    $goodsSearchSubmit.on('click', function () {
+        var 
+            $input = $goodsSearchForm.find('input'),
+            hasValue = true;
+        
+                $input.each(function () {
+            var $this = $(this);
+            var thisValue = $this.val();
+            
+                        if (thisValue == '') {
+                hasValue = false;
+                $this.addClass('noValue');
+            }
+        });
+
+        if ($input.length > 0 && hasValue == false) {
+                        $.unblockUI();
+
+            bootbox.dialog({
+                                message : '請將空白欄位刪除或是輸入內容',
+                                title : '您有欄位未填寫喔!',
+                                buttons : {
+                            'danger': {
+                                                label: '確定',
+                                                className: 'btn-danger'
+                                },
+                                main: {
+                                                label : "繼續",
+                                            classNam : "btn-default",
+                                                callback : function () {
+                                        $('.noValue').parent().remove();
+                                                        $goodsSearchForm.submit();
+                                    }
+                                }
+                        }
+                    });
+        } else {
+                        $goodsSearchForm.submit();
+        }
+    });
+    
+        initSearchCondition();
+    
+    function initSearchCondition () {
+        {% if users_habit %}
+            {% autoescape false %}
+                var usersHabitValue = $.parseJSON('{{ users_habit.value }}');
+            {% endautoescape %}
+            $.each(usersHabitValue, function(key, value){
+                $('.goods_search_condition').find('p').eq(value).click();
             });
-
-            $pageData = $('script.page-data');
-
-            genPageSelect($pageData);
-            getNowPage($pageData);
-
-            $("[rel^='prettyPhoto']").prettyPhoto();
-            $.unblockUI();
-        } 
-	});
-
-    function getNowPage ($pageData) {
-        var $select = $('select[name="pager"]');
-
-        $select.val($pageData.data('page')).change();
+            $('.goods_search_goods_name').autocomplete({
+                source : Routing.generate('goods_search_ajax_name'),
+                minLength : 2
+            }).addClass('hasAutocomplete');
+        {% endif %}
     }
 
-    function genPageSelect ($pageData) {
-        var count = $pageData.data('count');
-        var $select = $('select[name="pager"]');
-
-        $select.html('');
-
-        for (var i = 1; i <= (Math.floor(count/40) + 1); i ++) {
-            $select.append($('<option>').attr('value', i).text(i));
-        } 
+    function onDeleteEvent () {
+        var $deleteParentDiv = $('.delete_parent_div');
+        $deleteParentDiv.not('.hasOnEvent').on('click', function () { 
+            var 
+                $element = $(this).closest('div'),
+                $goodsSearchOperate = $element.parent().find('div'),
+                index_ = $goodsSearchOperate.index($element);
+            rUsersHabit.splice(index_-1, 1);
+            $element.remove(); 
+        }).addClass('hasOnEvent').button()
+        .parent().on('keydown', function(e){ 
+            //if (e.keyCode == 27) $(this).remove(); 
+            if (e.keyCode == 13) {
+                $('.goods_search_submit').click();
+                return false;
+            }
+        })
+        .find('input').on('change', function(){
+            var $input = $(this); 
+            if ($input.hasClass('noValue'))
+                $input.removeClass('noValue');
+            else if($input.val() == '')
+                $input.addClass('noValue');
+        });
     }
 
-	$goodsSearchSubmit.on('click', function () {
-		var 
-			$input = $goodsSearchForm.find('input'),
-			hasValue = true;
-		
-        $input.each(function () {
-			var $this = $(this);
-			var	thisValue = $this.val();
-			
-            if (thisValue == '') {
-				hasValue = false;
-				$this.addClass('noValue');
-			}
-		});
+    function onDatetimePicker () {
+        var $dateTimeTarget = $('[class^=goods_search_create_time]').not('.hasOnEvent');
+        $dateTimeTarget.datepicker(
+            { 
+                'dateFormat' : 'yy-mm-dd'
+            }
+        ).addClass('hasOnEvent');
+        return false;
+    }
 
-		if ($input.length > 0 && hasValue == false) {
-            $.unblockUI();
-
-			bootbox.dialog({
-                message : '請將空白欄位刪除或是輸入內容',
-                title : '您有欄位未填寫喔!',
-                buttons : {
-        			'danger': {
-                        label: '確定',
-                        className: 'btn-danger'
-            		},
-            		main: {
-                        label : "繼續",
-            	        classNam : "btn-default",
-                        callback : function () {
-            				$('.noValue').parent().remove();
-                            $goodsSearchForm.submit();
-            			}
-            		}
-        		}
-        	});
-		} else {
-            $goodsSearchForm.submit();
-		}
-	});
-	
-    initSearchCondition();
-	
-	function initSearchCondition () {
-		{% if users_habit %}
-			{% autoescape false %}
-        var usersHabitValue = $.parseJSON('{{ users_habit.value }}');
-			{% endautoescape %}
-		 	$.each(usersHabitValue, function(key, value){
-		 		$('.goods_search_condition').find('p').eq(value).click();
-		 	});
-		 	$('.goods_search_goods_name').autocomplete({
-        source : Routing.generate('goods_search_ajax_name'),
-        minLength : 2
-	    }).addClass('hasAutocomplete');
-		{% endif %}
-	}
-
-	function onDeleteEvent () {
-		var $deleteParentDiv = $('.delete_parent_div');
-		$deleteParentDiv.not('.hasOnEvent').on('click', function () { 
-      var 
-      	$element = $(this).closest('div'),
-        $goodsSearchOperate = $element.parent().find('div'),
-        index_ = $goodsSearchOperate.index($element);
-			rUsersHabit.splice(index_-1, 1);
-			$element.remove(); 
-		}).addClass('hasOnEvent').button()
-		.parent().on('keydown', function(e){ 
-			//if (e.keyCode == 27) $(this).remove(); 
-			if (e.keyCode == 13) {
-				$('.goods_search_submit').click();
-				return false;
-			}
-		})
-		.find('input').on('change', function(){
-			var $input = $(this); 
-			if ($input.hasClass('noValue'))
-				$input.removeClass('noValue');
-			else if($input.val() == '')
-				$input.addClass('noValue');
-		});
-	}
-
-	function onDatetimePicker () {
-    var $dateTimeTarget = $('[class^=goods_search_create_time]').not('.hasOnEvent');
-		$dateTimeTarget.datepicker(
-			{ 
-				'dateFormat' : 'yy-mm-dd'
-			}
-		).addClass('hasOnEvent');
-		return false;
-	}
-
-	function onNumeric () {
-		var $numericTarget = $('.numeric');
-		$numericTarget.not('hasOnEvent').numeric().addClass('hasOnEvent');
-		return false;
-	}
-});	
+    function onNumeric () {
+        var $numericTarget = $('.numeric');
+        $numericTarget.not('hasOnEvent').numeric().addClass('hasOnEvent');
+        return false;
+    }
+}); 
 </script>
-            <script src="{{ asset('/js/jquery.form.js')}}"></script>
-            <script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
-            <script src="{{ asset('/js/jquery.numeric.js') }}"></script>
-            <script src="{{ asset('/bower_components/masonry/dist/masonry.pkgd.min.js')}}"></script>
-            <script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
-            <script src="{{ asset('/prettyPhoto/js/jquery.prettyPhoto.js') }}"></script>
+                        <script src="{{ asset('/js/jquery.form.js')}}"></script>
+                        <script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+                        <script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+                        <script src="{{ asset('/bower_components/masonry/dist/masonry.pkgd.min.js')}}"></script>
+                        <script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
+                        <script src="{{ asset('/prettyPhoto/js/jquery.prettyPhoto.js') }}"></script>
 {% endblock %}

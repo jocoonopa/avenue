@@ -154,15 +154,25 @@ window.phone_length = 10;
 	<div style="width: 80%;">
 		<label id="color" class="vader">顏色<strong class="colorName" style="font-size: 27px;"></strong></label>
 
-		{% for color in colors %}
+		<select name="color" id="color">
+			<option value="0">請選擇</option>
+
+			{% for color in colors %}
+				{% if color.id > 111 %}
+					<option value="{{ color.id }}">{{ color.name }}</option>
+				{% endif %}
+			{% endfor %}
+		</select>
+
+		{# {% for color in colors %}
 			<div class="colorButton" style="display: inline-block; background-color: {{ color.code }}; width: 20px; height: 20px; margin: 2px; color: {{ color.code }};" title="{{ color.name }}" data-id="{{ color.id }}" data-title="{{ color.name }}">-</div>
-		{% endfor %}
+		{% endfor %} #}
 
 		<br/>
 
-		<input type="text" name="colorName" placeholder="選擇顏色" readonly />
+		{# <input type="text" name="colorName" placeholder="選擇顏色" readonly />
 		<a href="#color" class="btn btn-default btn-sm cancelColor" style="color: #000;">取消顏色</a>
-		<input type="hidden" name="color" />
+		<input type="hidden" name="color" /> #}
 	</div>
 
 	<div>

@@ -234,6 +234,7 @@ class BaseController extends Controller
 				$qb->expr()->notIn('g.status', [
 					Avenue::GS_SOLDOUT,
 					Avenue::GS_OFFSALE,
+					Avenue::GS_GETBACK,
 					Avenue::GS_BSO_SOLD,
 				])
 			)

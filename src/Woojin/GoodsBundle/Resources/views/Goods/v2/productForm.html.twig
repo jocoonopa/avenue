@@ -352,8 +352,14 @@
             <select name="color" class="form-control" {% if (app.user|has_auth('EDIT_PRODUCT_OWN') and  app.user|is_own(goods)) or app.user|has_auth('EDIT_PRODUCT_ALL') %}{% else %}disabled="disabled"{% endif %}>
                 <option value="">請選擇</option>
 
+                {% if goods.color and (goods.color.id <= 111) %}
+                    <option value="{{ goods.color.id }}" selected>{{ goods.color.name }}</option>
+                {% endif %}
+
                 {% for color in colors %}
-                    <option value="{{ color.id }}" {% if goods.color and (goods.color.id == color.id) %}selected{% endif %}>{{ color.name }}</option>
+                    {% if color.id > 111 %}
+                        <option value="{{ color.id }}" {% if goods.color and (goods.color.id == color.id) %}selected{% endif %}>{{ color.name }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
         </div>
