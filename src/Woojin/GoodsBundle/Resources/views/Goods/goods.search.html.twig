@@ -5,18 +5,17 @@
 
 <style>
 .res-container {
-        position: relative;
-        width: 70%;
-        overflow: auto;
-        float: right;
-
+    position: relative;
+    width: 70%;
+    overflow: auto;
+    float: right;
 }
 
 .item {
-        width:  150px;
-        float: left;
-        min-height: 150px;
-        margin-bottom: 10px;
+    width:  150px;
+    float: left;
+    min-height: 150px;
+    margin-bottom: 10px;
 }
 
 </style>
@@ -97,7 +96,7 @@
             <option value="DESC">反向</option>
         </select>
 
-                <input type="hidden" name="page" value="1" />
+        <input type="hidden" name="page" value="1" />
     </div>
 
 {% endblock %}
@@ -125,70 +124,72 @@ $(function() {
     var 
         isClickFirst = [],
         repo = [],
-                brand_str = '',
-                brand_type_option_arr = [],
-                brand_sn_option_arr = [];
+        brand_str = '',
+        brand_type_option_arr = [],
+        brand_sn_option_arr = [];
 
         for (var i = 1; i <= parseInt($('div.goods_search_condition').find('p').length - 1); i ++) {
             isClickFirst[i] = true;
         }
 
     var 
-                url = Routing.generate('goods_search_ajax'),
-                $tab = $('#tabs-search'),
+        url = Routing.generate('goods_search_ajax'),
+        $tab = $('#tabs-search'),
         $goodsSearchOperate = $tab.find('.operatePanel'),
-                $goodsSearchOpen = $tab.find('.panelSwitch'),
-                $goodsSearchAjaxResponse = $tab.find('.res-container'),
+        $goodsSearchOpen = $tab.find('.panelSwitch'),
+        $goodsSearchAjaxResponse = $tab.find('.res-container'),
 
-                $goodsSearchCondition = $tab.find('.goods_search_condition'),
-                $pCondition = $goodsSearchCondition.find('p').not('.not_condition'),
-                $goodsSearchSubmit = $tab.find('.goods_search_submit'),
-                $goodsSearchForm = $tab.find('.woojinForm'),
-                $goodsNameInput = $tab.find('.goods_search_goods_name'),
-                // $ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog'),
-                // $ordersEditFormDialog = $('.ordersEditFormDialog'),
-                // $changeOrdersCustomDialog = $('.changeOrdersCustomDialog'),
-                $recordConditionButton = $tab.find('.div_right_bottom'),
-                sCheckExistUrl = Routing.generate('admin_custom_checkExist'),
-                rUsersHabit = [];
-                animateSpeed = 700;
+        $goodsSearchCondition = $tab.find('.goods_search_condition'),
+        $pCondition = $goodsSearchCondition.find('p').not('.not_condition'),
+        $goodsSearchSubmit = $tab.find('.goods_search_submit'),
+        $goodsSearchForm = $tab.find('.woojinForm'),
+        $goodsNameInput = $tab.find('.goods_search_goods_name'),
+        // $ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog'),
+        // $ordersEditFormDialog = $('.ordersEditFormDialog'),
+        // $changeOrdersCustomDialog = $('.changeOrdersCustomDialog'),
+        $recordConditionButton = $tab.find('.div_right_bottom'),
+        sCheckExistUrl = Routing.generate('admin_custom_checkExist'),
+        rUsersHabit = [];
+        animateSpeed = 700;
 
-        var bindHoverOnDeleteButton = function () {
-                $goodsSearchForm.children('div').hover(
-                    function () {
-                        if (!$(this).hasClass('isHoverShow') || $('.isHoverShow').length < 1) {
-                            if ($('.isHoverShow').length>=1) {
-                                $(this).addClass('isHoverShow').find('.delete_parent_div').fadeIn(80);
-                            } else {
-                                $(this).addClass('isHoverShow').find('.delete_parent_div').fadeIn(animateSpeed);
-                            }   
-                        }   
-                    },function () {
-                        if ($('.isHoverShow').length > 0) {
-                            $(this).find('.delete_parent_div').fadeOut(100, function () {
-                                $(this).parent().removeClass('isHoverShow');
-                            });
+    var bindHoverOnDeleteButton = function () {
+        $goodsSearchForm.children('div').hover(
+            function () {
+                if (!$(this).hasClass('isHoverShow') || $('.isHoverShow').length < 1) {
+                    if ($('.isHoverShow').length>=1) {
+                        $(this).addClass('isHoverShow').find('.delete_parent_div').fadeIn(80);
+                    } else {
+                        $(this).addClass('isHoverShow').find('.delete_parent_div').fadeIn(animateSpeed);
                     }   
-            });
-        };
+                }   
+            },
+            function () {
+                if ($('.isHoverShow').length > 0) {
+                    $(this).find('.delete_parent_div').fadeOut(100, function () {
+                        $(this).parent().removeClass('isHoverShow');
+                    });
+                }   
+            }
+        );
+    };
 
-        var genSelect = function (condition_add, entity, route, appendInput) {
-                var appendInput = appendInput || '';
+    var genSelect = function (condition_add, entity, route, appendInput) {
+        var appendInput = appendInput || '';
 
-                if (isClickFirst[condition_add]) {
-                    ajaxLoaded();
+        if (isClickFirst[condition_add]) {
+            ajaxLoaded();
 
-                    $.get(route, function (res) {
-                        var funName = 'set' + entity + 'Param';
-                        
-                                window[funName](res);
+            $.get(route, function (res) {
+                var funName = 'set' + entity + 'Param';
+                
+                window[funName](res);
 
-                        repo[condition_add] = res;
+                repo[condition_add] = res;
 
-                        if (typeof window['gen' + entity + 'Select'] == 'function') {
-                            window['gen' + entity + 'Select'](appendInput);
-                        }
-                        
+                if (typeof window['gen' + entity + 'Select'] == 'function') {
+                    window['gen' + entity + 'Select'](appendInput);
+                }
+                    
                 onDeleteEvent();
                         
                 bindHoverOnDeleteButton();
@@ -196,19 +197,19 @@ $(function() {
                 $.unblockUI();
                         
                 isClickFirst[condition_add] = false;
-                    });         
-                } else {
-                    if (!appendInput) {
-                        window['set' + entity + 'Param'](repo[condition_add]);
-                    } else {
-                        window['gen' + entity + 'Select'](appendInput);
-                    }
-             
-                onDeleteEvent();
-                    
-                bindHoverOnDeleteButton();
-                }
-        };
+            });         
+        } else {
+            if (!appendInput) {
+                window['set' + entity + 'Param'](repo[condition_add]);
+            } else {
+                window['gen' + entity + 'Select'](appendInput);
+            }
+         
+            onDeleteEvent();
+                
+            bindHoverOnDeleteButton();
+        }
+    };
 
     window.setStoreParam = function (res) {
         $goodsSearchForm.append(res + '<button class="delete_parent_div">x</button>');
@@ -379,26 +380,22 @@ $(function() {
             break;
 
             case 22:
+                appendInput = '<div><input type="text" class="colorSn" name="colorSn[]" placeholder="色號"/><button class="delete_parent_div">x</button></div>';
+                $goodsSearchForm.append(appendInput);
 
-                    appendInput = '<div><input type="text" class="colorSn" name="colorSn[]" placeholder="色號"/><button class="delete_parent_div">x</button></div>';
-                    $goodsSearchForm.append(appendInput);
-
-                    onDeleteEvent();
-            
-                    bindHoverOnDeleteButton();
-
-                    break;
+                onDeleteEvent();
+        
+                bindHoverOnDeleteButton();
+            break;
 
             case 23:
+                appendInput = '<div><input type="text" class="model" name="model[]" placeholder="型號"/><button class="delete_parent_div">x</button></div>';
+                $goodsSearchForm.append(appendInput);
 
-                    appendInput = '<div><input type="text" class="model" name="model[]" placeholder="型號"/><button class="delete_parent_div">x</button></div>';
-                    $goodsSearchForm.append(appendInput);
-
-                    onDeleteEvent();
-            
-                    bindHoverOnDeleteButton();
-
-                    break;
+                onDeleteEvent();
+        
+                bindHoverOnDeleteButton();
+            break;
 
             case 24:
                 appendInput = '<div><input type="text" class="customSn" name="customSn[]" placeholder="品牌自定義內碼"/><button class="delete_parent_div">x</button></div>';
@@ -407,7 +404,6 @@ $(function() {
                 onDeleteEvent();
         
                 bindHoverOnDeleteButton();
-
             break;
 
             case 25:
@@ -476,17 +472,15 @@ $(function() {
     $goodsSearchForm.append('<input type="hidden" name="page" value="1">');
 
     $goodsSearchCondition.find('.not_condition').on('click', function () {
-        if ( !$goodsSearchCondition.hasClass('isSlideDown') ) {
-            $goodsSearchCondition.stop().animate(
-                {
-                    'height'            : '480px',
-                    'margin-bottom'     : '15px'
-                }, animateSpeed+200).addClass('isSlideDown');
+        if (! $goodsSearchCondition.hasClass('isSlideDown')) {
+            $goodsSearchCondition.stop().animate({
+                'height' : '480px',
+                'margin-bottom' : '15px'
+            }, animateSpeed+200).addClass('isSlideDown');
         } else {
-            $goodsSearchCondition.stop().animate(
-            {
-                'height'            : '20px',
-                'margin-bottom'     : '0'
+            $goodsSearchCondition.stop().animate({
+                'height' : '20px',
+                'margin-bottom' : '0'
             }, animateSpeed+300).removeClass('isSlideDown');    
         }  
     });
@@ -515,97 +509,97 @@ $(function() {
     });
 
     $goodsSearchForm.ajaxForm({ 
-                url: url,
-                error: function () {
-                        $.unblockUI();
-                 alert('ajax error!'); 
-                },
-                success: function (response) { 
-                    if (response == '') {   
-                                $.unblockUI();  
-                        $goodsSearchAjaxResponse.html( '' );
-                        
-                                return false;
-                    }
+        url: url,
+        error: function () {
+            $.unblockUI();
+            alert('ajax error!'); 
+        },
+        success: function (response) { 
+            if (response == '') {   
+                $.unblockUI();  
+                $goodsSearchAjaxResponse.html( '' );
+                
+                return false;
+            }
 
-                    $goodsSearchAjaxResponse.html(response);
+            $goodsSearchAjaxResponse.html(response);
 
-                        var container = document.querySelector('.res-container');
-                        var msnry = new Masonry(container, {
-                                itemSelector: '.item',
-                                columnWidth: 140,
-                                "gutter": 30
-                        });
+            var container = document.querySelector('.res-container');
+            var msnry = new Masonry(container, {
+                itemSelector: '.item',
+                columnWidth: 140,
+                "gutter": 30
+            });
 
-                        $pageData = $('script.page-data');
+            $pageData = $('script.page-data');
 
-                        genPageSelect($pageData);
-                        getNowPage($pageData);
+            genPageSelect($pageData);
+            getNowPage($pageData);
 
-                        $("[rel^='prettyPhoto']").prettyPhoto();
-                        $.unblockUI();
-                } 
+            $("[rel^='prettyPhoto']").prettyPhoto();
+            $.unblockUI();
+        } 
     });
 
-        function getNowPage ($pageData) {
-                var $select = $('select[name="pager"]');
+    function getNowPage ($pageData) {
+        var $select = $('select[name="pager"]');
 
-                $select.val($pageData.data('page')).change();
-        }
+        $select.val($pageData.data('page')).change();
+    }
 
-        function genPageSelect ($pageData) {
-                var count = $pageData.data('count');
-                var $select = $('select[name="pager"]');
+    function genPageSelect ($pageData) {
+        var count = $pageData.data('count');
+        var $select = $('select[name="pager"]');
 
-                $select.html('');
+        $select.html('');
 
-                for (var i = 1; i <= (Math.floor(count/40) + 1); i ++) {
-                        $select.append($('<option>').attr('value', i).text(i));
-                } 
-        }
+        for (var i = 1; i <= (Math.floor(count/40) + 1); i ++) {
+            $select.append($('<option>').attr('value', i).text(i));
+        } 
+    }
 
     $goodsSearchSubmit.on('click', function () {
         var 
             $input = $goodsSearchForm.find('input'),
             hasValue = true;
         
-                $input.each(function () {
+        $input.each(function () {
             var $this = $(this);
             var thisValue = $this.val();
             
-                        if (thisValue == '') {
+            if (thisValue == '') {
                 hasValue = false;
                 $this.addClass('noValue');
             }
         });
 
         if ($input.length > 0 && hasValue == false) {
-                        $.unblockUI();
+            $.unblockUI();
 
             bootbox.dialog({
-                                message : '請將空白欄位刪除或是輸入內容',
-                                title : '您有欄位未填寫喔!',
-                                buttons : {
-                            'danger': {
-                                                label: '確定',
-                                                className: 'btn-danger'
-                                },
-                                main: {
-                                                label : "繼續",
-                                            classNam : "btn-default",
-                                                callback : function () {
-                                        $('.noValue').parent().remove();
-                                                        $goodsSearchForm.submit();
-                                    }
-                                }
+                message : '請將空白欄位刪除或是輸入內容',
+                title : '您有欄位未填寫喔!',
+                buttons : {
+                    'danger': {
+                        label: '確定',
+                        className: 'btn-danger'
+                    },
+                    main: {
+                        label : "繼續",
+                        classNam : "btn-default",
+                        callback : function () {
+                            $('.noValue').parent().remove();
+                            $goodsSearchForm.submit();
                         }
-                    });
+                    }
+                }
+            });
         } else {
-                        $goodsSearchForm.submit();
+            $goodsSearchForm.submit();
         }
     });
     
-        initSearchCondition();
+    initSearchCondition();
     
     function initSearchCondition () {
         {% if users_habit %}
@@ -650,11 +644,10 @@ $(function() {
 
     function onDatetimePicker () {
         var $dateTimeTarget = $('[class^=goods_search_create_time]').not('.hasOnEvent');
-        $dateTimeTarget.datepicker(
-            { 
-                'dateFormat' : 'yy-mm-dd'
-            }
-        ).addClass('hasOnEvent');
+        $dateTimeTarget.datepicker({ 
+            'dateFormat' : 'yy-mm-dd'
+        }).addClass('hasOnEvent');
+
         return false;
     }
 
@@ -665,10 +658,10 @@ $(function() {
     }
 }); 
 </script>
-                        <script src="{{ asset('/js/jquery.form.js')}}"></script>
-                        <script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
-                        <script src="{{ asset('/js/jquery.numeric.js') }}"></script>
-                        <script src="{{ asset('/bower_components/masonry/dist/masonry.pkgd.min.js')}}"></script>
-                        <script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
-                        <script src="{{ asset('/prettyPhoto/js/jquery.prettyPhoto.js') }}"></script>
+<script src="{{ asset('/js/jquery.form.js')}}"></script>
+<script src="{{ asset('/js/jquery.blockUI.js')}}"></script>
+<script src="{{ asset('/js/jquery.numeric.js') }}"></script>
+<script src="{{ asset('/bower_components/masonry/dist/masonry.pkgd.min.js')}}"></script>
+<script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
+<script src="{{ asset('/prettyPhoto/js/jquery.prettyPhoto.js') }}"></script>
 {% endblock %}
