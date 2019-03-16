@@ -110,6 +110,10 @@ class GoodsPassportController extends Controller
         $goods->setCost(0);
         $goods->setSn($goods->getSn(true));
 
+        if ($goods->getLevel() && $goods->getSize()) {
+            $goods->getLevel()->setName($goods->getLevel()->getName() . $goods->getSize()->getName());
+        }
+
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
 
         $jsonGoodsPassport = $serializer->serialize($goods, $_format);
@@ -156,6 +160,10 @@ class GoodsPassportController extends Controller
         foreach ($products as $product) {
             $product->setCost(0);
             $product->setSn($product->getSn(true));
+
+            if ($product->getLevel() && $product->getSize()) {
+                $product->getLevel()->setName($product->getLevel()->getName() . $product->getSize()->getName());
+            }
         }
 
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();

@@ -1,5 +1,9 @@
 重寫了...唉
 
+## api
+
+`ApiBundle/Controller/GoodsPassportController.php@showByMultiSnAction`
+
 ```c#
 
 // C#  
