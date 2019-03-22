@@ -142,6 +142,8 @@ StockChecker.prototype.bindInput = function () {
                 self.addNotHere().clearInput();
         }
 
+        val = val.substr(0, 13);
+
         if (20 <= val.length) {
             if (!self.isSilent) {
                 document.getElementById('alert-long').play();

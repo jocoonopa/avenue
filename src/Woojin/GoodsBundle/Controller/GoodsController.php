@@ -1152,6 +1152,8 @@ class GoodsController extends Controller
      */
     public function goodsCheckonsaleAction ()
     {
+        ini_set('memory_limit', '256M');
+
         $sStoreSn = $this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn();
 
         $em = $this->getDoctrine()->getManager();
