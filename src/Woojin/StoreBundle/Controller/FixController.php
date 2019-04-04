@@ -24,14 +24,14 @@ class FixController extends Controller
 {
     /**
      * 修正調貨後, 網路售價 NULL 的問題
-     * 
+     *
      * @Route("/webpricenull", name="fix_webpricenull")
      * @Method("GET")
      */
-    public function moveWebPriceNullProblem(Request $request) 
+    public function moveWebPriceNullProblem(Request $request)
     {
         if ('jocoonopa' !== $request->query->get('token')) {
-            throw $this->createNotFoundException('Token invalid'); 
+            throw $this->createNotFoundException('Token invalid');
         }
 
         set_time_limit(0);
@@ -57,14 +57,14 @@ class FixController extends Controller
         ;
 
         $iterableResult = $qb->getQuery()->iterate();
-       
+
         foreach ($iterableResult as $row) {
             $move = $row[0];
             $org = $move->getOrgGoods();
             $new = $move->getNewGoods();
 
             echo $new->getSn() . "<br />";
-            
+
             $new->setWebPrice($org->getWebPrice());
 
             $em->persist($new);
@@ -84,7 +84,7 @@ class FixController extends Controller
 
     /**
      * fix_nothere
-     * 
+     *
      * @Route("/nothere", name="fix_nothere", options={"expose"=true})
      * @Method("GET")
      */
@@ -110,7 +110,7 @@ class FixController extends Controller
             $em->flush();
 
             return new JsonResponse(array('status' => '1|ok'));
-        } 
+        }
 
         // 2, 4, 6, 8 (id < 10000)
         $guessId = substr($sn, 1, 1) . substr($sn, 3, 1) . substr($sn, 5, 1) . substr($sn, 7, 1);
@@ -135,10 +135,10 @@ class FixController extends Controller
      * @Route("/removesplicedesimg", name="fix_removesplicedesimg")
      * @Method("GET")
      */
-    public function removeSpliceDesImg(Request $request) 
+    public function removeSpliceDesImg(Request $request)
     {
         if ('jocoonopa' !== $request->query->get('token')) {
-            throw $this->createNotFoundException('Token invalid'); 
+            throw $this->createNotFoundException('Token invalid');
         }
 
         set_time_limit(0);
@@ -162,7 +162,7 @@ class FixController extends Controller
         ;
 
         $iterableResult = $qb->getQuery()->iterate();
-       
+
         foreach ($iterableResult as $row) {
             $product = $row[0];
             $des = $product->getDesimg();
@@ -189,7 +189,7 @@ class FixController extends Controller
     public function tagImgTrashed()
     {
         set_time_limit(0);
-        
+
         $date = new \DateTime();
         $updateAt = $date->modify('-6 months')->format('Y-m-d');
 
@@ -208,11 +208,11 @@ class FixController extends Controller
 
     /**
      * 刪除圖片
-     * 
+     *
      * @Route("/remove-image", name="remove_image")
      * @Method("GET")
      */
-    public function removeImage(Request $request) 
+    public function removeImage(Request $request)
     {
         set_time_limit(0);
         $max = 10000000;
@@ -247,7 +247,7 @@ class FixController extends Controller
             if ($i > $max) {
                 break;
             }
-            
+
             $qb
                 ->setFirstResult($i)
                 ->setMaxResults($i + $size)
@@ -275,11 +275,11 @@ class FixController extends Controller
 
     /**
      * 刪除圖片
-     * 
+     *
      * @Route("/remove-desimage", name="remove_desimage")
      * @Method("GET")
      */
-    public function removeDesImage(Request $request) 
+    public function removeDesImage(Request $request)
     {
         set_time_limit(0);
         $max = 10000000;
@@ -314,7 +314,7 @@ class FixController extends Controller
             if ($i > $max) {
                 break;
             }
-            
+
             $qb
                 ->setFirstResult($i)
                 ->setMaxResults($i + $size)
@@ -332,7 +332,7 @@ class FixController extends Controller
                         unlink($file);
 
                         echo "{$img->getId()}刪除之!";
-                    }   
+                    }
                 }
             }
         }
@@ -342,7 +342,7 @@ class FixController extends Controller
 
     /**
      * 刪除空資料夾
-     * 
+     *
      * @Route("/remove-empty", name="remove_empty")
      * @Method("GET")
      */
@@ -355,7 +355,7 @@ class FixController extends Controller
         return new Response('');
     }
 
-    protected function removeEmptySubFolders($path) 
+    protected function removeEmptySubFolders($path)
     {
         $empty = true;
 
@@ -368,12 +368,12 @@ class FixController extends Controller
                 $empty = false;
             }
         }
-        
+
         if ($empty) {
             echo "移除資料夾 {$path} <br/>";
             rmdir($path);
         }
-        
+
         return $empty;
     }
 }

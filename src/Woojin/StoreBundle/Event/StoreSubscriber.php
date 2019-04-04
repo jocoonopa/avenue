@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class StoreSubscriber implements EventSubscriberInterface
 {
     public function __construct(ProductFactory $productFactory, OrderFactory $orderFactory, OpeFactory $opeFactory)
-    {        
+    {
         $this->productFactory = $productFactory;
         $this->orderFactory = $orderFactory;
         $this->opeFactory = $opeFactory;

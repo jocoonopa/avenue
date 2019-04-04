@@ -16,13 +16,13 @@ use Woojin\GoodsBundle\Entity\Desimg;
 class PurchaseEvent extends Event
 {
     protected $products;
-    
+
     protected $orders;
-    
+
     protected $opes;
-    
+
     protected $img;
-    
+
     protected $desimg;
 
     protected $options;

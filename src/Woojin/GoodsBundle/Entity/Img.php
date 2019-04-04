@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Woojin\GoodsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -39,7 +39,7 @@ class Img
      * @ORM\Column(type="boolean")
      */
     protected $isTrashed;
-    
+
     /**
      * Constructor
      */
@@ -52,7 +52,7 @@ class Img
     /**
      * Get goods_passport
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProducts()
     {
@@ -66,12 +66,12 @@ class Img
 
     public function getPathNoBorder($isAbs = false)
     {
-        return (($isAbs) ? $_SERVER['DOCUMENT_ROOT'] : '') .  substr($this->path, 0, -4) . '_' . $this->getProducts()->last()->getSn() . '.jpg'; 
+        return (($isAbs) ? $_SERVER['DOCUMENT_ROOT'] : '') .  substr($this->path, 0, -4) . '_' . $this->getProducts()->last()->getSn() . '.jpg';
     }
 
     /**
      * 取得圖片檔案名稱
-     * 
+     *
      * @return string
      */
     public function getName()
@@ -84,7 +84,7 @@ class Img
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -100,19 +100,19 @@ class Img
     public function setPath($path)
     {
         $this->path = $path;
-    
+
         return $this;
     }
 
     /**
      * Get path
      *
-     * @return string 
+     * @return string
      */
     public function getPath($isAbs = false)
     {
         if ($this->getIsTrashed() && !$isAbs) {
-            return "http://laravel.avenue2003.com/storage{$this->path}"; 
+            return "http://laravel.avenue2003.com/storage{$this->path}";
         }
 
         return ($isAbs) ? $_SERVER['DOCUMENT_ROOT'] . $this->path : $this->path;
@@ -132,7 +132,7 @@ class Img
     public function addGoodsPassport(\Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassport)
     {
         $this->goods_passport[] = $goodsPassport;
-    
+
         return $this;
     }
 
@@ -149,7 +149,7 @@ class Img
     /**
      * Get goods_passport
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGoodsPassport()
     {
@@ -165,14 +165,14 @@ class Img
     public function setYahooName($yahooName)
     {
         $this->yahooName = $yahooName;
-    
+
         return $this;
     }
 
     /**
      * Get yahooName
      *
-     * @return string 
+     * @return string
      */
     public function getYahooName()
     {

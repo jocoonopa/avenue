@@ -156,13 +156,18 @@ class GoodsPassportController extends Controller
         ;
 
         $products = $qb->getQuery()->getResult();
+        $mtOriginNameMap = [];
 
         foreach ($products as $product) {
             $product->setCost(0);
             $product->setSn($product->getSn(true));
 
-            if ($product->getLevel() && $product->getSize()) {
-                $product->getLevel()->setName($product->getLevel()->getName() . $product->getSize()->getName());
+            if ($product->getMt() && $product->getSize()) {
+                if (! array_key_exists($product->getMt()->getId(), $mtOriginNameMap)) {
+                    $mtOriginNameMap[$product->getMt()->getId()] = $product->getMt()->getName();
+                }
+
+                $product->getMt()->setName("{$mtOriginNameMap[$product->getMt()->getId()]} {$product->getSize()->getName()}");
             }
         }
 
@@ -360,7 +365,7 @@ class GoodsPassportController extends Controller
 
     /**
      * @Route("/goods_passport/print/label/{sn}/{_format}", defaults={"_format"="json"}, name="api_goodsPassport_printlabel", options={"expose"=true})
-     * 
+     *
      * @Method("GET")
      */
     public function printlabel(Request $request, $_format)
@@ -397,7 +402,7 @@ class GoodsPassportController extends Controller
     /**
      * @Route("/goods_passport/{id}/shipment/{_format}", requirements={"id"="\d+"}, defaults={"_format"="json"}, name="api_goodsPassport_shipment", options={"expose"=true})
      * @ParamConverter("goods", class="WoojinGoodsBundle:GoodsPassport")
-     * 
+     *
      * @Method("GET")
      */
     public function shipment(Request $request, GoodsPassport $goods, $_format)

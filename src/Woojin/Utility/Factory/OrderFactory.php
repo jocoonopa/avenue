@@ -19,7 +19,7 @@ class OrderFactory
         $this->storage = new ArrayCollection();
 
         $this->resolver = new OptionsResolver();
-        
+
         $this->configureOptions($this->resolver);
     }
 
@@ -64,7 +64,7 @@ class OrderFactory
     }
 
     public function create(array $options = array())
-    { 
+    {
         foreach ($options['products'] as $product) {
             if ($options['custom']) {
                 $this->onConsign($options, $product);
@@ -86,7 +86,7 @@ class OrderFactory
         $this->storage[] = $order;
 
         return $this;
-    } 
+    }
 
     protected function onPurchase(array $options, GoodsPassport $product)
     {
@@ -125,7 +125,7 @@ class OrderFactory
             ->setStatus($options['orderStatusHandling'])
             ->setCustom($order->getCustom())
             ->setGoodsPassport($order->getProduct())
-            ->setPayType($order->getPayType())      
+            ->setPayType($order->getPayType())
             ->setRequired($order->getProduct()->getCost())
             ->setPaid(0)
             ->setParent($order)
