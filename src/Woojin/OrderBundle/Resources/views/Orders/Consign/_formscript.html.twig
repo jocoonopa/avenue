@@ -1,6 +1,8 @@
-<form action="" method="POST" class="hidden">
+<form id="consign_done_done" action="" method="POST" class="hidden">
 	<input type="hidden" name="_method" value="PUT" />
 	<input type="hidden" name="require" value="0" />
+
+	<button id="fix_error" class="hidden" type="button"></button>
 </form>
 <script src="/js/bootbox_v4.js"></script>
 <script>
@@ -17,14 +19,22 @@ $(function () {
 				}
 
 				if (res) {
-					$('form').attr('action', $this.attr('href'));
-					$('input[name="require"]').val(res);
-					$('form').submit();
+					$('form#consign_done_done').first().attr('action', $this.attr('href'));
+					$('form#consign_done_done>input[name="require"]').first().val(res);
 				}
 
-				return true;
+				return setTimeout(function () {
+					$('#fix_error').click();
+				}, 2000);
 			}
 		});
+
+		return false;
+	});
+
+	$('#fix_error').click(function () {
+		console.log($('form#consign_done_done>input[name="require"]').first().val());
+		$('form#consign_done_done').first().submit();
 
 		return false;
 	});

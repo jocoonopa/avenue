@@ -23,7 +23,7 @@ class DefaultController extends Controller
         $output = $this
             ->get('api_caller')
             ->call(
-                new HttpGetJson('http://tw.ews.mall.yahooapis.com/stauth/v1/echo', 
+                new HttpGetJson('http://tw.ews.mall.yahooapis.com/stauth/v1/echo',
                 array('Format' => 'json')
             ))
         ;
@@ -52,7 +52,7 @@ class DefaultController extends Controller
      * @Method("PUT")
      */
     public function stockCheckUpdateAction(Request $request)
-    {   
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $file = fopen($user->getStore()->getStockCheckFileName(), 'w');

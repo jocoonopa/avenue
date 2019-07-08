@@ -27,10 +27,10 @@ class ModifyController extends Controller
      * @Route("/multisale/rollback", name="admin_multisale_rollback", options={"expose"=true})
      * @Method("POST")
      */
-    public function rollbackMultiSell (Request $request) 
+    public function rollbackMultiSell (Request $request)
     {
         $backs = $request->request->get('jRollBack');
-        
+
         $em = $this->getDoctrine()->getManager();
 
         $gStatus = $em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_ONSALE);
@@ -58,7 +58,7 @@ class ModifyController extends Controller
      *
      * #傳入的訂單為寄賣回扣訂單:訂單
      * #取得'訂單'關連商品:商品
-     * 
+     *
      * '商品'不為本店商品，拋出意外結束
      *
      * '商品'狀態為他店:
@@ -68,22 +68,22 @@ class ModifyController extends Controller
      *   ->'調進單'的應付和已付
      *   ->修改'訂單' 狀態，已付，應付
      *   ->修改'商品'成本
-     *     
+     *
      * '商品'狀態為售出:
      *   ->修改'訂單' 狀態，已付，應付
      *   ->修改'商品'成本
-     * 
+     *
      * ========== End ==========
-     * 
+     *
      * @Route("/feedback/ok/{id}", name="order_feedback_ok", options={"expose"=true})
      * @ParamConverter("order", class="WoojinOrderBundle:Orders")
      * @Method("PUT")
      */
-    public function orderAjaxFeedbackOkAction (Request $request, Orders $order) 
+    public function orderAjaxFeedbackOkAction (Request $request, Orders $order)
     {
         /**
          * 取得'訂單'關連商品
-         * 
+         *
          * @var \Woojin\GoodsBundle\Entity\GoodsPassports
          */
         $goods = $order->getProduct();
@@ -92,30 +92,30 @@ class ModifyController extends Controller
 
         /**
          * 目前登入的使用者
-         * 
+         *
          * @var \Woojin\UserBundle\Entity\User
          */
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         // 若'商品'不為本店商品，拋出意外結束
         if ($user->getStore()->getSn() !== substr($goods->getSn(), 0, 1)) {
-            throw \Exception('非商品所屬店成員不可同意議價');
+            throw new \Exception('非商品所屬店成員不可同意議價');
         }
 
         $em = $this->getDoctrine()->getManager();
         $em->getConnection()->beginTransaction();
-        
+
         try {
             /**
              * 訂單完成狀態
-             * 
+             *
              * @var \Woojin\OrderBundle\Entity\OrdersStatus
              */
-            $status = $em->find('WoojinOrderBundle:OrdersStatus', Avenue::OS_COMPLETE);  
-            
+            $status = $em->find('WoojinOrderBundle:OrdersStatus', Avenue::OS_COMPLETE);
+
             /**
              * 議定價格
-             * 
+             *
              * @var integer
              */
             $price = $request->request->get('require');
@@ -183,7 +183,7 @@ class ModifyController extends Controller
             }
 
             $em->flush();
-            
+
             $msg = '完成寄賣回扣訂單:'. $goods->getSn();
             $msg.= '原訂' .  $order->getRequired();
             $msg.= '元，議價為:' . $price . '元';
@@ -200,14 +200,14 @@ class ModifyController extends Controller
             return $this->redirect($this->generateUrl('order_consign_done_list'));
         } catch (\Exception $e) {
             $em->getConnection()->rollback();
-            
+
             throw $e;
-        }    
+        }
     }
 
     /**
      * 將寄賣訂單轉換成進貨訂單
-     * 
+     *
      * @Route("/inverse_to_purchase/{id}", name="order_inverse_to_purchase", options={"expose"=true})
      * @ParamConverter("order", class="WoojinOrderBundle:Orders")
      * @Method("POST")
@@ -236,7 +236,7 @@ class ModifyController extends Controller
         try {
             // 訂單轉換動作歷程記錄
             $this->get('logger.ope')->recordOpe($order, $order->getCustom()->getName() . '-' . $order->getCustom()->getMobil() . '寄賣訂單轉換為店內');
-            
+
             $goods = $order->getProduct();
 
             $sculper->setBefore($goods);
@@ -293,7 +293,7 @@ class ModifyController extends Controller
      * 還原取消之訂單
      *
      * ========== Flow ===========
-     * 
+     *
      * ->訂單還原為處理中 | 完成，狀態視應付和實付不同，父訂單也要一起關連處理
      * ->操作記錄添加一筆還原訂單記錄
      *
@@ -307,7 +307,7 @@ class ModifyController extends Controller
      *          ->還原成活動
      *
      * ========== End ============
-     * 
+     *
      * @Route("/reverseCancel/{id}/", name="order_reverse_cancel", options={"expose"=true})
      * @ParamConverter("order", class="WoojinOrderBundle:Orders", options={"expose"=true})
      * @Method("POST")
@@ -329,9 +329,9 @@ class ModifyController extends Controller
             $this->get('logger.ope')->recordOpe($order, '訂單取消還原');
 
             // 若父訂單存在，還原父訂單狀態
-            // 
+            //
             // ===== 有些沒有綁定，因此還是用硬找法 ====
-            // 
+            //
             // if ($relates = $order->getRelates()) {
             //  if ($relate = $relates->first()) {
             //      $relate->setStatus($em->find('WoojinOrderBundle:OrdersStatus', $relate->getLogicStatusCode()));
@@ -340,12 +340,12 @@ class ModifyController extends Controller
             //      $this->recordOpe($relate, '訂單取消還原');
             //  }
             // }
-            // 
+            //
             // ====================================
 
             /**
              * 關連之商品
-             * 
+             *
              * @var \Woojin\GoodsBundle\Entity\GoodsPassport
              */
             $goods = $order->getProduct();
@@ -387,18 +387,18 @@ class ModifyController extends Controller
      * ======== 流程 =========
      *
      * 根據手機和所屬店找出客戶實體-> :客戶
-     * 
+     *
      * 如果訂單為一般進貨:
      *  -> 將該訂單狀態改為寄賣訂單，成本不變。
-     *  -> 將訂單客戶關連實體綁定'客戶'。    
+     *  -> 將訂單客戶關連實體綁定'客戶'。
      *  -> 新增一筆寄賣回扣訂單關連原本訂單，成本相同，已付為0。
-     *  -> 將訂單客戶關連實體綁定'客戶'。    
-     *  
+     *  -> 將訂單客戶關連實體綁定'客戶'。
+     *
      * 如果訂單為寄賣:
-     *  -> 將訂單客戶關連實體綁定'客戶'。        
-     * 
+     *  -> 將訂單客戶關連實體綁定'客戶'。
+     *
      * ======== End ==========
-     * 
+     *
      * @Route("/custom/{id}/mobil/{mobil}", requirements={"id" = "\d+"}, name="orders_v2_custom_alter", options={"expose"=true})
      * @ParamConverter("order", class="WoojinOrderBundle:Orders")
      * @Method("POST")
@@ -413,7 +413,7 @@ class ModifyController extends Controller
 
         /**
          * 訂單關聯客戶
-         * 
+         *
          * @var \Woojin\OrderBundle\Entity\Custom
          */
         $custom = $em->getRepository('WoojinOrderBundle:Custom')->findOneBy(array(
@@ -426,7 +426,7 @@ class ModifyController extends Controller
             throw new \Exception('客戶不存在!');
         }
 
-        switch ($order->getKind()->getId()) 
+        switch ($order->getKind()->getId())
         {
             // 如果訂單為一般進貨
             case Avenue::OK_IN:
@@ -441,12 +441,12 @@ class ModifyController extends Controller
                     // 將訂單客戶關連實體綁定為手機查找到的客戶
                     ->setCustom($custom)
                 ;
-                
+
                 $product->setCustom($custom);
                 $em->persist($product);
 
                 $sculper->setAfter($product);
-                
+
                 $clue = new AvenueClue;
                 $clue->setUser($user)->setContent($sculper->getContent());
 
@@ -454,7 +454,7 @@ class ModifyController extends Controller
 
                 /**
                  * 新增的寄賣回扣訂單
-                 * 
+                 *
                  * @var \Woojin\OrderBundle\Entity\Orders
                  */
                 $consignOrder = new Orders;
@@ -504,15 +504,15 @@ class ModifyController extends Controller
 
             case Avenue::OK_OUT:
             case Avenue::OK_EXCHANGE_OUT:
-            case Avenue::OK_TURN_OUT:         
-            case Avenue::OK_WEB_OUT:       
-            case Avenue::OK_SPECIAL_SELL:   
+            case Avenue::OK_TURN_OUT:
+            case Avenue::OK_WEB_OUT:
+            case Avenue::OK_SPECIAL_SELL:
             case Avenue::OK_SAME_BS:
                 $order->setCustom($custom);
                 $em->persist($order);
                 $em->flush();
 
-                break;  
+                break;
 
             default:
                 break;
@@ -535,7 +535,7 @@ class ModifyController extends Controller
      * @Method("POST")
      */
     public function v2UpdateAction(Request $request, Orders $order)
-    {           
+    {
         if ($order->getStatus()->getId() !== 1) {
             return new \Exception('訂單非處理中狀態!');
         }
@@ -553,56 +553,56 @@ class ModifyController extends Controller
         try{
             /**
              * 訂單狀態:完成 實體
-             *  
+             *
              * @var \Woojin\OrderBundle\Entity\OrdersStatus
              */
             $complete = $em->find('WoojinOrderBundle:OrdersStatus', Avenue::OS_COMPLETE);
 
             /**
              * 付費方式實體
-             * 
+             *
              * @var \Woojin\OrderBundle\Entity\PayType
              */
             $payType = $em->find('WoojinOrderBundle:PayType', $request->request->get('pay_type', Avenue::PT_CASH));
 
             /**
              * 本次動作實際支付金額
-             * 
+             *
              * @var integer
              */
             $paid = $request->request->get('paid');
 
             /**
              * 本次動作未計算折扣支付金額
-             * 
+             *
              * @var integer
              */
             $paidOrg = $request->request->get('paid_org');
 
             /**
              * 今次動作優惠差額
-             * 
+             *
              * @var integer
              */
             $diff = $paidOrg - $paid;
 
             /**
              * 目前總共支付金額 = 訂單已經支付 + 本次動作實際支付金額
-             * 
+             *
              * @var integer
              */
             $totalPaid = $order->getPaid() + $paid;
 
             /**
              * 目前應付金額 = 訂單應付金額 - 今次動作優惠差額
-             * 
+             *
              * @var integer
              */
             $required = $order->getRequired() - $diff;
 
             /**
              * 訂單備註
-             * 
+             *
              * @var string
              */
             $memo = $request->request->get('memo');
@@ -619,12 +619,12 @@ class ModifyController extends Controller
             if ($required <= $totalPaid) {
                 $order->setStatus($complete);
             }
-                
+
             $em->persist($order);
 
             $opeLogger = $this->get('logger.ope');
             $opeLogger->log($order, $user, $payType, (int) $paidOrg, '增加請款:['. $paid . '元][' . $payType->getName() . ']');
-            
+
             $sculper = $this->get('sculper.clue');
             $sculper->initPatch();
             $sculper->setAfter($opeLogger->getOpe());
@@ -644,8 +644,8 @@ class ModifyController extends Controller
             $em->getConnection()->rollback();
 
             throw $e;
-        }    
-        
+        }
+
         return new Response('ok');
     }
 
@@ -655,7 +655,7 @@ class ModifyController extends Controller
      * @Method("POST")
      */
     public function v2CancelAction(Request $request, Orders $order)
-    {       
+    {
         if ($order->getStatus()->getId() === Avenue::OS_CANCEL) {
             throw new \Exception('訂單已經是取消狀態!');
         }
@@ -686,11 +686,11 @@ class ModifyController extends Controller
 
             // 由訂單種類判斷商品狀態應該是上架或是下架
             // 判斷基準是"是否為寄賣或是進貨"
-            $goodsStatus = $em->find('WoojinGoodsBundle:GoodsStatus',   
-                    in_array( 
-                        $kind->getId(), 
-                        array(Avenue::OK_IN, Avenue::OK_CONSIGN_IN, Avenue::OK_MOVE_IN) 
-                    ) ? Avenue::GS_OFFSALE : Avenue::GS_ONSALE 
+            $goodsStatus = $em->find('WoojinGoodsBundle:GoodsStatus',
+                    in_array(
+                        $kind->getId(),
+                        array(Avenue::OK_IN, Avenue::OK_CONSIGN_IN, Avenue::OK_MOVE_IN)
+                    ) ? Avenue::GS_OFFSALE : Avenue::GS_ONSALE
                 );
 
             if (is_object($goods->getActivity())) {
@@ -705,8 +705,8 @@ class ModifyController extends Controller
             // 設定該訂單狀態為取消
             if (Avenue::OK_MOVE_IN !== $kind->getId()) {
                 $order->setStatus($cancel);
-                $em->persist($order); 
-            }            
+                $em->persist($order);
+            }
 
             // 設定該商品狀態為前面取得的商品狀態
             $goods->setStatus($goodsStatus);
@@ -715,18 +715,18 @@ class ModifyController extends Controller
             // 若是寄賣訂單，
             // -> 則找到寄賣回扣訂單
             // -> 一同將其狀態改為取消
-            // 
+            //
             // *若沒找到寄賣回扣訂單,丟出意外
             if (Avenue::OK_CONSIGN_IN === $kind->getId()) {
                 // 根據商品id和訂單種類找到其關連訂單
                 $relate = $this
                         ->getDoctrine()
                         ->getRepository('WoojinOrderBundle:Orders')
-                        ->findOneBy( 
-                            array( 
+                        ->findOneBy(
+                            array(
                                 'goods_passport' => $goods->getId(),
                                 'kind' => Avenue::OK_FEEDBACK
-                            ) 
+                            )
                         )
                     ;
 
@@ -737,7 +737,7 @@ class ModifyController extends Controller
 
                 // 改變關連訂單狀態
                 $relate->setStatus($cancel);
-                
+
                 $em->persist($relate);
                 $em->flush();
 
@@ -758,7 +758,7 @@ class ModifyController extends Controller
                 ->setContent($sculper->getContent())
             ;
 
-            $em->persist($clue);           
+            $em->persist($clue);
             $em->flush();
 
             $opeLogger->recordOpe($order, '取消' . $order->getKind()->getName() . '訂單');
@@ -768,7 +768,7 @@ class ModifyController extends Controller
             $em->getConnection()->rollback();
 
             throw $e;
-        }    
+        }
 
         return new Response('ok');
     }
@@ -778,7 +778,7 @@ class ModifyController extends Controller
      * @ParamConverter("order", class="WoojinOrderBundle:Orders")
      * @Method("PUT")
      */
-    public function v2GetBackAction(Request $request, Orders $order) 
+    public function v2GetBackAction(Request $request, Orders $order)
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
@@ -787,10 +787,10 @@ class ModifyController extends Controller
 
         try {
             $redirectUrl = $this->generateUrl(
-                'goods_edit_v2', 
+                'goods_edit_v2',
                 array('id' => $order->getProduct()->getId())
             );
-            
+
             $session = $this->get('session');
 
             $cancel = $em->find('WoojinOrderBundle:OrdersStatus', Avenue::OS_CANCEL);
@@ -798,25 +798,25 @@ class ModifyController extends Controller
 
             if (Avenue::OK_CONSIGN_IN !== $order->getKind()->getId()) {
                 $session->getFlashBag()->add('error', '此訂單非寄賣訂單!');
-                    
+
                 return $this->redirect($redirectUrl);
             }
-            
+
             $product = $order->getProduct();
 
             if (in_array($product->getStatus()->getId(), array(
-                Avenue::GS_SOLDOUT, 
-                Avenue::GS_OFFSALE, 
-                Avenue::GS_BEHALF, 
+                Avenue::GS_SOLDOUT,
+                Avenue::GS_OFFSALE,
+                Avenue::GS_BEHALF,
                 Avenue::GS_GETBACK
             ))) {
                 $session->getFlashBag()->add('error', $product->getSn() . '商品不在店內!');
-                
+
                 return $this->redirect($redirectUrl);
             }
 
             // 根據商品id和訂單種類找到其關連訂單
-            $relate = $this->getDoctrine()->getRepository('WoojinOrderBundle:Orders')->findOneBy(array( 
+            $relate = $this->getDoctrine()->getRepository('WoojinOrderBundle:Orders')->findOneBy(array(
                     'goods_passport' => $product->getId(),
                     'kind' => Avenue::OK_FEEDBACK
                 ));
@@ -824,7 +824,7 @@ class ModifyController extends Controller
             // 若沒找到則回應錯誤訊息
             if (!$relate) {
                 $session->getFlashBag()->add('error', $product->getSn() . '未找到寄賣請款訂單!');
-                
+
                 return $this->redirect($redirectUrl);
             }
 

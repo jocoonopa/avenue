@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Woojin\StoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -133,11 +133,11 @@ class Store
     {
         return 'stock_check_' . $this->getSn() . '.json';
     }
-    
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -153,14 +153,14 @@ class Store
     public function setSn($sn)
     {
         $this->sn = $sn;
-    
+
         return $this;
     }
 
     /**
      * Get sn
      *
-     * @return string 
+     * @return string
      */
     public function getSn()
     {
@@ -176,14 +176,14 @@ class Store
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -199,7 +199,7 @@ class Store
     public function addFromMove(\Woojin\GoodsBundle\Entity\Move $fromMoves)
     {
         $this->fromMoves[] = $fromMoves;
-    
+
         return $this;
     }
 
@@ -216,7 +216,7 @@ class Store
     /**
      * Get fromMoves
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getFromMoves()
     {
@@ -232,7 +232,7 @@ class Store
     public function addDestinationMove(\Woojin\GoodsBundle\Entity\Move $destinationMoves)
     {
         $this->destinationMoves[] = $destinationMoves;
-    
+
         return $this;
     }
 
@@ -249,7 +249,7 @@ class Store
     /**
      * Get destinationMoves
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getDestinationMoves()
     {
@@ -265,7 +265,7 @@ class Store
     public function addUser(\Woojin\UserBundle\Entity\User $users)
     {
         $this->users[] = $users;
-    
+
         return $this;
     }
 
@@ -282,7 +282,7 @@ class Store
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {
@@ -298,7 +298,7 @@ class Store
     public function addCustom(\Woojin\OrderBundle\Entity\Custom $customs)
     {
         $this->customs[] = $customs;
-    
+
         return $this;
     }
 
@@ -315,7 +315,7 @@ class Store
     /**
      * Get customs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCustoms()
     {
@@ -331,7 +331,7 @@ class Store
     public function addInvoice(\Woojin\OrderBundle\Entity\Invoice $invoices)
     {
         $this->invoices[] = $invoices;
-    
+
         return $this;
     }
 
@@ -348,7 +348,7 @@ class Store
     /**
      * Get invoices
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getInvoices()
     {
@@ -364,14 +364,14 @@ class Store
     public function setExchangeRate(\Woojin\StoreBundle\Entity\ExchangeRate $exchangeRate = null)
     {
         $this->exchange_rate = $exchangeRate;
-    
+
         return $this;
     }
 
     /**
      * Get exchange_rate
      *
-     * @return \Woojin\StoreBundle\Entity\ExchangeRate 
+     * @return \Woojin\StoreBundle\Entity\ExchangeRate
      */
     public function getExchangeRate()
     {
@@ -387,14 +387,14 @@ class Store
     public function setAddress($address)
     {
         $this->address = $address;
-    
+
         return $this;
     }
 
     /**
      * Get address
      *
-     * @return string 
+     * @return string
      */
     public function getAddress()
     {
@@ -410,14 +410,14 @@ class Store
     public function setPhone($phone)
     {
         $this->phone = $phone;
-    
+
         return $this;
     }
 
     /**
      * Get phone
      *
-     * @return string 
+     * @return string
      */
     public function getPhone()
     {
@@ -433,14 +433,14 @@ class Store
     public function setOpenRegion($openRegion)
     {
         $this->openRegion = $openRegion;
-    
+
         return $this;
     }
 
     /**
      * Get openRegion
      *
-     * @return string 
+     * @return string
      */
     public function getOpenRegion()
     {
@@ -456,14 +456,14 @@ class Store
     public function setMail($mail)
     {
         $this->mail = $mail;
-    
+
         return $this;
     }
 
     /**
      * Get mail
      *
-     * @return string 
+     * @return string
      */
     public function getMail()
     {
@@ -479,14 +479,14 @@ class Store
     public function setIsShow($isShow)
     {
         $this->isShow = $isShow;
-    
+
         return $this;
     }
 
     /**
      * Get isShow
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsShow()
     {
@@ -502,7 +502,7 @@ class Store
     public function addGoodsPassport(\Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports)
     {
         $this->goodsPassports[] = $goodsPassports;
-    
+
         return $this;
     }
 
@@ -519,7 +519,7 @@ class Store
     /**
      * Get goodsPassports
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGoodsPassports()
     {
