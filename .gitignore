@@ -9,7 +9,6 @@
 /vendor/
 /bin/
 /composer.phar
-/web/img/*
 /web/HTML
 /web/csv
 /web/bower_components
