@@ -6,18 +6,17 @@
 
 # Entity
 
-Img 以及 Desimg 增加 `is_trashed` 欄位 (一定要開成 INT, 不然 doctrine 抓不到)，透過 Query 直接進行 updated 
+Img 以及 Desimg 增加 `is_trashed` 欄位 (一定要開成 INT, 不然 doctrine 抓不到)，透過 Query 直接進行 updated
 
 ```sql
 
-UPDATE desimg 
-LEFT JOIN goods_passport 
-ON desimg.id = goods_passport.desimg_id 
-SET desimg.yahooName = 'yyy' 
+UPDATE desimg
+LEFT JOIN goods_passport
+ON desimg.id = goods_passport.desimg_id
+SET desimg.yahooName = 'yyy'
 WHERE goods_passport.status_id in (2, 10) and goods_passport.updateAt <= '2018-05-05'/*
 
 ```
-
 
 # 清除圖片
 
@@ -82,9 +81,9 @@ function RemoveEmptySubFolders($path)
             $empty=false;
         }
     }
-    
+
     if ($empty) rmdir($path);
-    
+
     return $empty;
 }
 
