@@ -31,7 +31,7 @@ class UserController extends Controller
 	 * @Method("GET")
 	 */
 	public function editAction(User $user)
-	{	
+	{
 		$em = $this->getDoctrine()->getManager();
 
 		return array(
@@ -67,17 +67,17 @@ class UserController extends Controller
 
         return $this->redirect($this->generateUrl('admin_role_index'));
 	}
-	
+
 	/**
 	* @Route("", name="user_base", options={"expose"=true})
 	* @Template("WoojinUserBundle:User:user.html.twig")
 	*/
 	public function indexAction()
-	{	  	
+	{
 	  	$em = $this->getDoctrine()->getManager();
 
 	  	$user = $this->get('security.token_storage')->getToken()->getUser();
-		
+
 		$store = $user->getStore();
 
 		$users = $this->getDoctrine()->getRepository('WoojinUserBundle:User')->findBy(array('store' => $store->getId()));
@@ -90,23 +90,23 @@ class UserController extends Controller
 	* @Template("WoojinUserBundle:Frag:_user.tbody.html.twig")
 	*/
 	public function userAjaxAddAction(Request $request)
-	{		
+	{
 		$factory = $this->get('security.encoder_factory');
-		
+
 		$oUser = new User();
-		
+
 		$rUser = array();
-		
+
 		$oStore = $this->get('security.token_storage')->getToken()->getUser()->getStore();
-		
+
 		$nRoleId = ($oStore->getId() == self::STORE_DEPOT)? self::ROLE_SPECIAL_STAFF : self::ROLE_STAFF;
-		
+
 		$em = $this->getDoctrine()->getManager();
-		
+
 		$role = $em->find('WoojinUserBundle:Role', $nRoleId);
-   
+
 		$encoder = $factory->getEncoder($oUser);
-		
+
 		$password = $encoder->encodePassword($request->request->get('sUserPassword'), $oUser->getSalt());
 		$oUser
 			->setUsername($request->request->get('sUsername'))
@@ -120,7 +120,7 @@ class UserController extends Controller
 			->setIsPartner($oStore->getSn() === '@')
 			->setPassword($password)
 		;
-		
+
 		$em->persist($oUser);
 		$em->flush();
 
@@ -129,11 +129,11 @@ class UserController extends Controller
 		$sMsg.= '['.$request->request->get('sEmail').']';
 
 		$this->get('my_meta_record_method')->recordMeta($sMsg);
-		
+
 		array_push($rUser, $oUser);
 
 		$users = $this->getDoctrine()->getRepository('WoojinUserBundle:User')->findBy(array('store' => $oStore->getId()));
-		
+
 		return array('rUser' => $rUser, 'users' => $users);
 	}
 
@@ -141,30 +141,30 @@ class UserController extends Controller
 	* @Route("/ajax/edit", name="user_ajax_edit", options={"expose"=true})
 	*/
 	public function userAjaxEditAction(Request $request)
-	{			
+	{
 		$em = $this->getDoctrine()->getManager();
 
 		$oUser = $em->find('WoojinUserBundle:User', $request->request->get('nId'));
-		
+
 	  	$em->getConnection()->beginTransaction();
 
 	  	try{
 			if ($request->request->get('sUserName') != '')
 				$oUser->setUsername(trim($request->request->get('sUserName')));
-			
+
 			if ($request->request->get('sEmail') != '')
 				$oUser->setEmail(trim($request->request->get('sEmail')));
-			
+
 			if ($request->request->get('sMobil') != '')
 				$oUser->setMobil(trim($request->request->get('sMobil')));
-			
+
 			if ($request->request->get('sPassword') != '') {
 				$factory = $this->get('security.encoder_factory');
-				
+
 				$encoder = $factory->getEncoder($oUser);
-				
+
 				$password = $encoder->encodePassword(
-					$request->request->get('sPassword'), 
+					$request->request->get('sPassword'),
 					$oUser->getSalt()
 				);
 
@@ -179,7 +179,7 @@ class UserController extends Controller
 			$em->getConnection()->rollback();
 
 			return new Response('error');
-		}    
+		}
 
 		return new Response('ok');
 	}
@@ -190,7 +190,7 @@ class UserController extends Controller
 	public function userAjaxActiveAction(Request $request)
 	{
 		if ($request->getMethod() != 'POST')
-			return new Response('error');	
+			return new Response('error');
 
 		if ($request->request->get('sActive') != 'do')
 			return new Response('');
@@ -207,7 +207,7 @@ class UserController extends Controller
 
 		$oUser->setIsActive($nActive);
 		$oUser->setStoptime($sStoptime);
-			
+
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($oUser);
 		$em->flush();
@@ -232,7 +232,7 @@ class UserController extends Controller
     	$nStoreId = $oUser->getId();
 
     	$rUsers = $this->getDoctrine()->getRepository('WoojinUserBundle:User')->findBy(array('store_id' => $nStoreId));
-        
+
         return array('rUsers' => $rUsers);
 	}
 
@@ -247,7 +247,7 @@ class UserController extends Controller
 
 		foreach ($request->request->keys() as $key)
 			$$key = $request->request->get($key);
-		
+
 		$oUser 		= $this->get('security.token_storage')->getToken()->getUser();
 		$em 		= $this->getDoctrine()->getManager();
 		$qb 		= $em->createQueryBuilder();
@@ -258,18 +258,18 @@ class UserController extends Controller
 		$oRes = $qb
 				->select('op')
 				->from('WoojinOrderBundle:Ope', 'op')
-				->where( 
-					$qb->expr()->eq('op.user', $nId) 
+				->where(
+					$qb->expr()->eq('op.user', $nId)
 				)
 				->andWhere($dql)
 				->orderBy('op.id', 'DESC')
 				->getQuery()
 			;
-		
+
 		$rOpe = $oRes->getResult();
-		
+
 		$dql = 'm.datetime <=\''.$sTimeEnd.'\' AND m.datetime >=\''.$sTimeStart.'\'';
-		
+
 		$oRes = $qb
 				->select('m')
 				->from('WoojinStoreBundle:MetaRecord', 'm')
@@ -280,7 +280,7 @@ class UserController extends Controller
 			;
 
     	$rMetaRecord = $oRes->getResult();
-		
+
 		return array('rOpe' => $rOpe, 'rMetaRecord'=> $rMetaRecord);
 	}
 
@@ -295,10 +295,10 @@ class UserController extends Controller
 
 		foreach ($request->request->keys() as $key)
 			$$key = $request->request->get($key);
-		
+
 		$con = array('user' => $user_id, 'name' => $users_habit_name);
-		
-		$users_habit = $this->getDoctrine()->getRepository('WoojinUserBundle:UsersHabit')->findOneBy($con);					
+
+		$users_habit = $this->getDoctrine()->getRepository('WoojinUserBundle:UsersHabit')->findOneBy($con);
 
 		if ($users_habit) {
 			$users_habit->setValue($users_habit_value);
@@ -308,17 +308,17 @@ class UserController extends Controller
 				->setName($users_habit_name)
 				->setValue($users_habit_value)
 				->setUser($user)
-			;	
+			;
 		}
 
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($users_habit);
 		$em->flush();
-    	
-        return new Response('ok');									
+
+        return new Response('ok');
 	}
 
-	
+
 	/**
 	 * @Route("/user/own_store_change", name="user_own_store_change", options={"expose"=true})
 	 */
@@ -327,15 +327,15 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
 
 		$oUser = $this->get('security.token_storage')->getToken()->getUser();
-		
+
 		$oUser->setStore($em->find('WoojinStoreBundle:Store', $request->request->get('store_id')));
-		
+
 		$em->persist($oUser);
 		$em->flush();
 
 		return new Response('ok');
 	}
-	
+
 	/**
 	 * @Route("/user/ajax_change_role", name="user_ajax_change_role", options={"expose"=true})
 	 */
@@ -345,17 +345,17 @@ class UserController extends Controller
 
         $oUserChange = $em->find('WoojinUserBundle:User', $request->request->get('id'));
 
-        $roleId = ($oUserChange->getTheRoles()->getId() != self::ROLE_STAFF) 
-			? self::ROLE_STAFF 
+        $roleId = ($oUserChange->getTheRoles()->getId() != self::ROLE_STAFF)
+			? self::ROLE_STAFF
 			: self::ROLE_OLD_STAFF
 		;
 
         $oRoles = $em->find('WoojinUserBundle:Role', $roleId);
 
 		$oUserChange->setRoles($oRoles);
-		
+
 		$em->persist($oUserChange);
-		$em->flush();   
+		$em->flush();
 
 		$oMetaRecord = $this->get('my_meta_record_method');
         $oMetaRecord->recordMeta('更改權限為' . $oRoles->getName());

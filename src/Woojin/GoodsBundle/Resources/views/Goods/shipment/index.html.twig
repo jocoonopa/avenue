@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <title>待出貨區</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+</head>
+<body>
+{% verbatim %}
+
+<div id="app">
+    <section class="section">
+        <div class="container">
+            <h1 class="title">待出貨商品 [{{ products.length }}]</h1>
+
+            <template v-show="! isLoading">
+                <input  v-model="sn" class="input" type="text" placeholder="產編" @keyup.enter="pushToShipments">
+                <span>{{ snExists }}</span>
+            </template>
+
+            <div style="margin-top: 3px;">
+                <div class="notification is-success" v-show="successMessage">
+                    {{ successMessage }}
+                </div>
+
+                <div class="notification is-warning" v-show="failMessage">
+                    {{ failMessage }}
+                </div>
+            </div>
+
+
+            <span v-show="isLoading">{{ '處理中...' }}</span>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th v-for="column in columns">{{ column }}</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th v-for="column in columns">{{ column }}</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr v-for="product in products">
+                        <th>{{ product.id }}</th>
+                        <td>
+                            <a :href="editV2Url(product)" target="_blank">
+                                {{ product.sn }}
+                            </a>
+                        </td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ _.get(product, 'brand.name') }}</td>
+                        <td>{{ _.get(product, 'pattern.name') }}</td>
+                        <td>{{ _.get(product, 'level.name')  }}</td>
+                        <td>{{ _.get(product, 'color.name') }}</td>
+                        <td>
+                            <a v-show="! isLoading" class="button is-primary" @click.prevent="removeFromShipments(product)">
+                                移出
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div :class="modalClass">
+        <div class="modal-background"></div>
+
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Woops! Something wrong!</p>
+            </header>
+
+            <section class="modal-card-body">
+                {{ sn + ' 沒有符合此產品編號的商品或是發生了其他錯誤' }}
+            </section>
+
+            <footer class="modal-card-foot">
+                <button class="button" @click="closeModal">關閉</button>
+            </footer>
+        </div>
+    </div>
+</div>
+
+{% endverbatim %}
+
+<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.3/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.1/axios.min.js"></script>
+<script>
+
+{% verbatim %}
+
+let app = new Vue({
+    el: '#app',
+
+    data: {
+        sn: '',
+        isLoading: false,
+        modalDisplay: false,
+        successMessage: null,
+        failMessage: null,
+        products: [],
+        columns: [
+            'id', '產編', '名稱',
+            '品牌', '款式', '新舊',
+            '顏色', '移出'
+        ],
+    },
+
+    computed: {
+        modalClass() {
+            return {
+                'modal': true,
+                'is-active': this.modalDisplay,
+            }
+        },
+
+        snExists() {
+            if (_.isEmpty(this.sn)) {
+                return ''
+            }
+
+            return _.find(this.products, {sn: this.sn}) ? '已存在' : '';
+        },
+    },
+
+    methods: {
+        fetch() {
+            let url = Routing.generate('api_goodsPassport_shipments');
+            let self = this;
+
+            return axios.get(url)
+                .then(function (response) {
+                    self.products = response.data
+                });
+        },
+
+        editV2Url(product) {
+            return Routing.generate('goods_edit_v2', {id: product.id});
+        },
+
+        updateShipment(value, sn) {
+            let self = this;
+            let url = Routing.generate('api_goodsPassport_shipment', {sn});
+
+            this.successMessage = null;
+            this.failMessage = null;
+
+            return axios.get(url + '?is_in_shipment=' + value)
+                .then(function () {
+                    self.successMessage = sn + '執行完成';
+                })
+                .catch(function (error) {
+                    self.modalDisplay = true;
+
+                    self.failMessage = sn + '發生錯誤';
+                })
+                .finally(function () {
+                    self.isLoading = false;
+                });
+        },
+
+        pushToShipments() {
+            if (this.isLoading || 12 > this.sn.length) {
+                return;
+            }
+
+            let self = this;
+
+            this.isLoading = true;
+
+            this.updateShipment(1, this.sn).then(function () {
+                self.sn = '';
+                self.fetch();
+            });
+        },
+
+        removeFromShipments(product) {
+            if (this.isLoading) {
+                return;
+            }
+
+            let self = this;
+
+            this.isLoading = true;
+
+            this.updateShipment(0, product.sn).then(function () {
+                self.fetch();
+            });
+        },
+
+        closeModal() {
+            this.modalDisplay = false;
+        }
+    },
+
+    mounted() {
+        this.fetch();
+    },
+});
+
+</script>
+{% endverbatim %}
+</body>
+</html>

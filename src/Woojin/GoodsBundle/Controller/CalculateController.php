@@ -37,7 +37,7 @@ class CalculateController extends Controller
 
         /**
          * 所有分類
-         * 
+         *
          * @var array{\Woojin\GoodsBundle\Entity\Category}
          */
         $categorys = $em->getRepository('WoojinGoodsBundle:Category')->findAll();
@@ -70,7 +70,7 @@ class CalculateController extends Controller
     /**
      * @Route("/calculate/product")
      */
-    protected function setEntityProductCount($entityName, $categorys) 
+    protected function setEntityProductCount($entityName, $categorys)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -84,12 +84,12 @@ class CalculateController extends Controller
             $secondhandCount = 0;
 
             foreach ($goodses as $goods) {
-                if ($goods->getIsAllowWeb() 
+                if ($goods->getIsAllowWeb()
                     && in_array($goods->getStatus()->getId(), array(self::GS_ONSALE, self::GS_ACTIVITY))
                 ) {
                     foreach ($categorys as $category) {
                         if ($goods->hasCategory($category)) {
-                            switch ($category->getId()) 
+                            switch ($category->getId())
                             {
                                 case self::CT_WOMEN:
                                     $womenCount ++;
@@ -118,7 +118,7 @@ class CalculateController extends Controller
             ;
             $em->persist($entity);
         }
-        
+
         $em->flush();
     }
 

@@ -74,6 +74,10 @@
 			<li><a href="#product-tl">搶購商品設定</a></li>
 		{% endif %}
 
+		{% if app.user|has_auth('TIMELINESS_SETTINGS') %}
+			<li><a href="#product-shipment">待出貨</a></li>
+		{% endif %}
+
 		{% if app.user|has_auth('EDIT_SEO_SLOGAN') %}
 			<li><a href="#seoslogan">關鍵字設定</a></li>
 		{% endif %}
@@ -153,6 +157,11 @@
 			<a class="btn btn-success" href="{{ path('producttl') }}" target="_blank"><i data-icon="w"></i>前往搶購商品設定</a>
 		</div>
 	{% endif %}
+
+
+	<div id="product-tl">
+		<a class="btn btn-success" href="{{ path('admin_product_shipment') }}" target="_blank"><i data-icon="w"></i>待出貨</a>
+	</div>
 
 	{% if app.user|has_auth('EDIT_SEO_SLOGAN') %}
 		<div id="seoslogan">

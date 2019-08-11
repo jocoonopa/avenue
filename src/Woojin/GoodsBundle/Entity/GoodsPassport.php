@@ -176,7 +176,7 @@ class GoodsPassport
      * @ORM\OneToMany(targetEntity="GoodsPassport", mappedBy="parent")
      */
     protected $inherits;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="GoodsStatus", inversedBy="goods_passports")
      * @var Status
@@ -341,7 +341,7 @@ class GoodsPassport
      * @ORM\Column(type="integer", nullable=true)
      */
     protected $bsoCustomPercentage;
-    
+
     /**
      * Constructor
      */
@@ -599,7 +599,7 @@ class GoodsPassport
     public function getCostVerifyed(User $user, $msg = '無閱讀權限')
     {
         return (
-            ($this->isOwnProduct($user) && $user->getRole()->hasAuth('READ_COST_OWN')) || 
+            ($this->isOwnProduct($user) && $user->getRole()->hasAuth('READ_COST_OWN')) ||
             $user->getRole()->hasAuth('READ_COST_ALL')
         )
             ? $this->getCost()

@@ -40,7 +40,7 @@ class ReportController extends Controller
      * 2. 寄賣/銷售 客戶電話 gcMobil/scMobil
      * 3. 品牌選擇不動, 改參數名稱 brands[]
      * 4. 活動改成multi select, 改參數名稱 activitys[]
-     * 
+     *
      * @Route("/instore", name="admin_store_stock_report", options={"expose"=true})
      * @Template("WoojinStoreBundle:Report:_instore.html.twig")
      * @Method("POST")
@@ -58,9 +58,8 @@ class ReportController extends Controller
         $qb
             ->select('g')
             ->from('WoojinGoodsBundle:GoodsPassport', 'g')
-            ->leftJoin('g.custom', 'c')
-        ;
-        
+            ->leftJoin('g.custom', 'c');
+
         $and = $qb->expr()->andX();
 
         if (($brands = $request->request->get('brand')) and $brands[0] != 0) {
@@ -91,7 +90,7 @@ class ReportController extends Controller
         }
 
         $qb->andWhere($and);
-        
+
         $qb->orderBy('g.updateAt', 'ASC');
         $qb->addOrderBy('g.id', 'ASC');
 
@@ -99,7 +98,7 @@ class ReportController extends Controller
 
         if ((int) $request->request->get('bExport') === 0) {
             return array('products' => $products);
-        }   
+        }
 
         $exporter = $this->get('exporter.stock');
         $exporter->create($products);
@@ -127,11 +126,10 @@ class ReportController extends Controller
             ->leftJoin('o.goods_passport', 'gd')
             ->leftJoin('gd.custom', 'gc')
             ->leftJoin('o.custom', 'oc')
-            ->leftJoin('o.opes', 'p')
-        ;
+            ->leftJoin('o.opes', 'p');
 
         $and = $qb->expr()->andX();
-        
+
         $startAt = new \DateTime($request->request->get('startAt'));
 
         $stopAt = new \DateTime($request->request->get('stopAt'));
@@ -139,8 +137,8 @@ class ReportController extends Controller
 
         $and->add(
             $qb->expr()->between(
-                'p.datetime', 
-                $qb->expr()->literal($startAt->format('Y-m-d')), 
+                'p.datetime',
+                $qb->expr()->literal($startAt->format('Y-m-d')),
                 $qb->expr()->literal($stopAt->format('Y-m-d'))
             )
         );
@@ -180,19 +178,22 @@ class ReportController extends Controller
             }
 
             $and->add($qb->expr()->in('o.kind', $kind));
-        }   
+        }
 
         $and->add($qb->expr()->eq('o.status', Avenue::OS_COMPLETE));
         $and->add($qb->expr()->eq('gd.status', Avenue::GS_SOLDOUT));
         $and->add($qb->expr()->neq('o.pay_type', Avenue::PT_STAFF));
 
-        $qb->andWhere($and)->groupBy('gd.id');
+        $qb->andWhere($and)
+            ->groupBy('gd.id')
+            ->groupBy('o.id');
+
         $orders = $qb->getQuery()->getResult();
 
         $products = array();
 
         foreach ($orders as $order) {
-            if ($order->getOpes()->last()->getDatetime() >= $startAt 
+            if ($order->getOpes()->last()->getDatetime() >= $startAt
                 && $order->getOpes()->last()->getDatetime() <= $stopAt
             ) {
                 $products[] = $order->getProduct();
@@ -205,7 +206,7 @@ class ReportController extends Controller
 
         $exporter = $this->get('exporter.profit');
         $exporter->setMap($em->getRepository('WoojinStoreBundle:Store')->genStoreSnMap())->create($products);
-        
+
         return $exporter->getResponse();
     }
 }

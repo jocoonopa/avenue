@@ -390,7 +390,7 @@ Vue.component('timeline', {
 
                         <span :class="getAuctionStatusClass(auction.status, auction.profitStatus)">
                             {{ getAuctionStatusDesc(auction.status, auction.profitStatus) }}
-                        </span>                      
+                        </span>
                     </div>
 
                     <ul>
@@ -905,7 +905,7 @@ let app = new Vue({
                 }.bind(this))
         },
 
-        setSelectedCustom(custom) {            
+        setSelectedCustom(custom) {
             this.selectedCustom = Object.assign({}, custom, {
                 birthday: _.isEmpty(custom.birthday) ? custom.birthday : custom.birthday.substr(0, 10)
             })

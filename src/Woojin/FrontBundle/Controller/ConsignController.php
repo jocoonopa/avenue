@@ -51,7 +51,7 @@ class ConsignController extends Controller
 
     /**
      * confirm login process
-     * 
+     *
      * @Route("/confirm", name="consign_login_confirm")
      * @Method("POST")
      */
@@ -62,7 +62,7 @@ class ConsignController extends Controller
         }
 
         $session = $this->get('session');
-        
+
         if (!in_array($request->request->get('password'), array('avenue2003'))) {
             $session->getFlashBag()->add('error', 'error');
 

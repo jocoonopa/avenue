@@ -24,8 +24,25 @@ class GoodsPassportRepository extends EntityRepository
             ->from('WoojinGoodsBundle:GoodsPassport', 'g')
             ->where($qb->expr()->andX($qb->expr()->in('g.id', $ids)))
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+    }
+
+    /**
+     * findInShipment
+     */
+    public function findInShipment()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb->select('g')
+            ->from('WoojinGoodsBundle:GoodsPassport', 'g')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('g.isInShipment', true)
+                )
+            );
+
+        return $qb->getQuery()->getResult();
     }
 
     public function findStoreOnSale($store_sn)
@@ -44,8 +61,7 @@ class GoodsPassportRepository extends EntityRepository
                 )
             )
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     public function findGuessOne($id, $price, $cost)
@@ -65,8 +81,7 @@ class GoodsPassportRepository extends EntityRepository
                     $qb->expr()->eq('g.price', $price),
                     $qb->expr()->eq('g.cost', $cost)
                 )
-            )
-        ;
+            );
 
         return $qb->getQuery()->getOneOrNullResult();
     }
@@ -89,8 +104,7 @@ class GoodsPassportRepository extends EntityRepository
             )
             ->groupBy('gp.id')
             ->getQuery()
-            ->getArrayResult()
-        ;
+            ->getArrayResult();
     }
 
     public function findIsActivityByGoodsSn($goodsSn)
@@ -128,7 +142,7 @@ class GoodsPassportRepository extends EntityRepository
                     $qb->expr()->orX(
                         $qb->expr()->eq('g.status', Avenue::GS_SOLDOUT),
                         $qb->expr()->andX(
-                            // BSO競拍售出且當初沒有勾選允許競拍，表示需要回給客戶寄賣回扣 
+                            // BSO競拍售出且當初沒有勾選允許競拍，表示需要回給客戶寄賣回扣
                             $qb->expr()->eq('g.status', Avenue::GS_BSO_SOLD),
                             $qb->expr()->eq('auctions.profitStatus', Auction::PROFIT_STATUS_ASSIGN_COMPLETE),
                             $qb->expr()->neq('g.isAllowAuction', true)
@@ -138,8 +152,7 @@ class GoodsPassportRepository extends EntityRepository
                     $qb->expr()->eq('o.status', Avenue::OS_HANDLING),
                     $qb->expr()->eq('o.kind', Avenue::OK_FEEDBACK)
                 )
-            )
-        ;
+            );
 
         return $qb->getQuery()->getResult();
     }
@@ -161,8 +174,7 @@ class GoodsPassportRepository extends EntityRepository
                     $qb->expr()->eq('po.status', Avenue::OS_HANDLING),
                     $qb->expr()->eq('SUBSTRING(p.sn, 1, 1)', $qb->expr()->literal($user->getStore()->getSn()))
                 )
-            )
-        ;
+            );
 
         return $qb->getQuery()->getResult();
     }

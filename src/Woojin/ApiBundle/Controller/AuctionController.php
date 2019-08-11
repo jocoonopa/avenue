@@ -88,7 +88,8 @@ class AuctionController extends Controller
          *
          * @var mixed \Woojin\GoodsBundle\Entity\GoodsPassport||NULL
          */
-        $product = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->findOneBy(array('sn' => $sn));
+        $product = $em->getRepository('WoojinGoodsBundle:GoodsPassport')
+            ->findOneBy(['sn' => $sn]);
 
         /**
          * The auction entity
@@ -266,7 +267,7 @@ class AuctionController extends Controller
 
         /**
          * Note
-         * 
+         *
          * @var string
          */
         $note = $request->request->get('note');

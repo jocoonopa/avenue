@@ -479,6 +479,7 @@ class CustomController extends Controller
         $qb
             ->orderBy('c.id')
             ->groupBy('c.mobil')
+            ->groupBy('c.id')
             ->setMaxResults(Avenue::PER_PAGE)
             ->setFirstResult((($nNowPage - 1) * Avenue::PER_PAGE))
         ;

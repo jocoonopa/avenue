@@ -26,12 +26,12 @@ class ProductHelperController extends Controller
      * @Method("GET")
      */
     public function orderAutoComplaeteGoodsSnAction(Request $request)
-    {                
+    {
         $em = $this->getDoctrine()->getManager();
 
         $qb = $em->createQueryBuilder();
         $sns = array();
-        
+
         $products = $qb->select('g')
             ->from('WoojinGoodsBundle:GoodsPassport', 'g')
             ->where(
@@ -58,13 +58,13 @@ class ProductHelperController extends Controller
      * @Method("GET")
      */
     public function orderAutoComplaeteGoodsSnSelledAction(Request $request)
-    {        
+    {
         $em = $this->getDoctrine()->getManager();
-        
+
         $qb = $em->createQueryBuilder();
 
         $sns = array();
-        
+
         $products = $qb
                 ->select('g')
                 ->from('WoojinGoodsBundle:GoodsPassport', 'g')
@@ -84,7 +84,7 @@ class ProductHelperController extends Controller
         foreach ($products as $product) {
             $sns[] = $product->getSn();
         }
-            
+
         return new JsonResponse($sns);
     }
 
@@ -97,7 +97,7 @@ class ProductHelperController extends Controller
         $sn = $request->request->get('sGoodsSn');
 
         $em = $this->getDoctrine()->getManager();
-           
+
         $products = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->findIsActivityByGoodsSn($sn);
 
         return array('GoodsPassports' => $products);
@@ -108,7 +108,7 @@ class ProductHelperController extends Controller
      * @Template("WoojinGoodsBundle:Goods:goods.search.ajax.html.twig")
      */
     public function orderSearchByGoodsSnAction(Request $request)
-    {            
+    {
         $sn = $request->request->get('sGoodsSn');
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -128,20 +128,20 @@ class ProductHelperController extends Controller
      * @Template("WoojinGoodsBundle:Goods:goods.search.ajax.html.twig")
      */
     public function orderSearchByGoodsSnSelledAction(Request $request)
-    {            
+    {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $qb
             ->select('gd')
             ->from('WoojinGoodsBundle:GoodsPassport', 'gd')
-            ->where( 
-                $qb->expr()->andX( 
-                    $qb->expr()->eq('gd.sn', $qb->expr()->literal($request->request->get('sGoodsSn'))), 
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('gd.sn', $qb->expr()->literal($request->request->get('sGoodsSn'))),
                     $qb->expr()->eq('gd.status', Avenue::GS_SOLDOUT)
-                )  
+                )
             )
         ;
-        
+
         $products = $qb->getQuery()->getResult();
 
         return array('GoodsPassports'  => $products);
@@ -151,15 +151,15 @@ class ProductHelperController extends Controller
      * @Route("/selled_sn", name="order_selled_search_by_goodsSn", options={"expose"=true})
      */
     public function orderSelledSearchByGoodsSn(Request $request)
-    {            
+    {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
 
         $order = $qb->select('o')
             ->from('WoojinOrderBundle:Orders' , 'o')
             ->join('o.goods_passport', 'g')
-            ->where( 
-                $qb->expr()->andX( 
+            ->where(
+                $qb->expr()->andX(
                     $qb->expr()->eq('g.sn', $qb->expr()->literal($request->request->get('sGoodsSn'))),
                     $qb->expr()->eq('g.status', Avenue::GS_SOLDOUT),
                     $qb->expr()->neq('o.status', Avenue::OS_CANCEL),
@@ -170,9 +170,9 @@ class ProductHelperController extends Controller
                             Avenue::OK_WEB_OUT,
                             Avenue::OK_SPECIAL_SELL,
                             Avenue::OK_SAME_BS
-                        ) 
+                        )
                     )
-                ) 
+                )
             )
             ->orderBy('o.id', 'DESC')
             ->getQuery()

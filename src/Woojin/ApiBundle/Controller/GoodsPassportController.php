@@ -400,23 +400,46 @@ class GoodsPassportController extends Controller
     }
 
     /**
-     * @Route("/goods_passport/{id}/shipment/{_format}", requirements={"id"="\d+"}, defaults={"_format"="json"}, name="api_goodsPassport_shipment", options={"expose"=true})
-     * @ParamConverter("goods", class="WoojinGoodsBundle:GoodsPassport")
+     * @Route("/goods_passport_shipments/{sn}/shipment/{_format}", defaults={"_format"="json"}, name="api_goodsPassport_shipment", options={"expose"=true})
      *
      * @Method("GET")
      */
-    public function shipment(Request $request, GoodsPassport $goods, $_format)
+    public function shipment(Request $request, $sn, $_format)
     {
-        $responseHandler = new ResponseHandler;
-
         $em = $this->getDoctrine()->getManager();
 
-        $goods->setIsInShipment(1 == request('is_in_shipment'));
-        $goods->save();
+        $sn = str_replace('%', '', $sn);
+
+        $goods = $em->getRepository('WoojinGoodsBundle:GoodsPassport')
+            ->findOneBy(array('sn' => $sn));
+
+        $responseHandler = new ResponseHandler;
+
+        $goods->setIsInShipment(1 === (int) $request->get('is_in_shipment'));
 
         $em->persist($goods);
         $em->flush();
 
         return $responseHandler->getNoncached($request, json_encode(['status' => 200]), $_format);
+    }
+
+    /**
+     * @Route("/goods_passport_shipments/{_format}", defaults={"_format"="json"}, name="api_goodsPassport_shipments", options={"expose"=true})
+     *
+     * @Method("GET")
+     */
+    public function shipments(Request $request, $_format)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $products = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->findInShipment();
+
+        $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+
+        $jsonProducts = $serializer->serialize($products, $_format);
+
+        $responseHandler = new ResponseHandler;
+
+        return $responseHandler->getNoncached($request, $jsonProducts, $_format);
     }
 }

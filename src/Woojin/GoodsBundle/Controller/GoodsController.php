@@ -60,11 +60,11 @@ class GoodsController extends Controller
     public function indexAction()
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        
+
         if ($user->getIsPartner()) {
             return $this->redirect($this->generateUrl('wholesale_index'), 301);
         }
-        
+
         return array();
     }
 
@@ -1965,9 +1965,9 @@ class GoodsController extends Controller
      *  -> logHandler
      *  -> imgHandler
      *  -> desimgHandler
-     *  
+     *
      * GenParamPool, UpdateService, MetaService,ImgService, DesImgService
-     * 
+     *
      * @Route("/edit/{id}/v2/update", requirements={"id" = "\d+"}, name="goods_update_v2", options={"expose"=true})
      * @ParamConverter("goods", class="WoojinGoodsBundle:GoodsPassport")
      * @Template()
@@ -2698,8 +2698,7 @@ class GoodsController extends Controller
                 )
             )
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
 
         $ta = $products ? $products[0] : null;
         $colors = array();
@@ -2722,7 +2721,7 @@ class GoodsController extends Controller
             $size = $product->getSize() ? $product->getSize()->getName() : '無';
             $colors[] = $color;
             $sizes[] = $size;
-            
+
             if (!array_key_exists($color, $table)) {
                 $table[$color] = array();
             }
@@ -2744,6 +2743,18 @@ class GoodsController extends Controller
             'colors' => array_unique($colors),
             'sizes' => array_unique($sizes)
         );
+    }
+
+    /**
+     * Goods Shipment
+     *
+     * @Route("/product-shipment", name="admin_product_shipment")
+     * @Method("GET")
+     * @Template("WoojinGoodsBundle:Goods/shipment:index.html.twig")
+     */
+    public function productShipment(Request $request)
+    {
+        return [];
     }
 
     protected function filterNoImg(GoodsPassport $product)
