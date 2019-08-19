@@ -2694,7 +2694,8 @@ class GoodsController extends Controller
             ->leftJoin('g.batch', 'b')
             ->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('g.sn', $qb->expr()->literal($sn))
+                    $qb->expr()->eq('g.sn', $qb->expr()->literal($sn)),
+                    $qb->expr()->eq('g.isInShipment', false)
                 )
             )
             ->getQuery()

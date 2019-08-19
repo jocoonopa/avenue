@@ -14,10 +14,20 @@
 <div id="app">
     <section class="section">
         <div class="container">
-            <h1 class="title">待出貨商品 [{{ products.length }}]</h1>
+            <h1 class="title">
+                待出貨商品 [{{ products.length }}]
+
+                <a v-show="! isFetching" class="button is-info" @click.prevent="fetch">
+                    刷新
+                </a>
+            </h1>
+
+            <h4 class="sub-title is-4" v-show="0 < reloadSeconds">
+                數量更新中...
+            </h4>
 
             <template v-show="! isLoading">
-                <input  v-model="sn" class="input" type="text" placeholder="產編" @keyup.enter="pushToShipments">
+                <input v-model="sn" class="input" type="text" placeholder="產編" @keyup.enter="pushToShipments">
                 <span>{{ snExists }}</span>
             </template>
 
@@ -30,7 +40,6 @@
                     {{ failMessage }}
                 </div>
             </div>
-
 
             <span v-show="isLoading">{{ '處理中...' }}</span>
 
@@ -104,7 +113,10 @@ let app = new Vue({
 
     data: {
         sn: '',
+        reloadPoint: 0,
         isLoading: false,
+        isFetching: false,
+        reloadSeconds: 0,
         modalDisplay: false,
         successMessage: null,
         failMessage: null,
@@ -138,9 +150,15 @@ let app = new Vue({
             let url = Routing.generate('api_goodsPassport_shipments');
             let self = this;
 
+            self.isFetching = true
+
             return axios.get(url)
                 .then(function (response) {
-                    self.products = response.data
+                    self.products = response.data;
+
+                    self.isFetching = false;
+
+                    self.reloadPoint = 0;
                 });
         },
 
@@ -166,6 +184,8 @@ let app = new Vue({
                 })
                 .finally(function () {
                     self.isLoading = false;
+
+                    self.reloadPoint = 3;
                 });
         },
 
@@ -178,10 +198,9 @@ let app = new Vue({
 
             this.isLoading = true;
 
-            this.updateShipment(1, this.sn).then(function () {
-                self.sn = '';
-                self.fetch();
-            });
+            this.updateShipment(1, this.sn);
+
+            this.sn = '';
         },
 
         removeFromShipments(product) {
@@ -193,14 +212,42 @@ let app = new Vue({
 
             this.isLoading = true;
 
-            this.updateShipment(0, product.sn).then(function () {
-                self.fetch();
-            });
+            this.updateShipment(0, product.sn);
         },
 
         closeModal() {
             this.modalDisplay = false;
+        },
+
+        reFetch() {
+            let self = this;
+
+            if (0 === this.reloadSeconds) {
+                return this.fetch();
+            }
+
+            return setTimeout(function () {
+                self.reloadSeconds --;
+
+                return self.reFetch();
+            }, 1000);
         }
+    },
+
+    watch: {
+        reloadPoint(value) {
+            let self = this;
+
+            self.reloadSeconds = 2;
+
+            if (0 < value && ! self.isFetching) {
+                self.isFetching = true;
+
+                return setTimeout(function () {
+                    self.reFetch();
+                }, 5000);
+            }
+        },
     },
 
     mounted() {

@@ -76,6 +76,8 @@
 
 		{% if app.user|has_auth('TIMELINESS_SETTINGS') %}
 			<li><a href="#product-shipment">待出貨</a></li>
+
+			<li><a href="#admin_goods_goods_storage">庫存查看</a></li>
 		{% endif %}
 
 		{% if app.user|has_auth('EDIT_SEO_SLOGAN') %}
@@ -159,8 +161,12 @@
 	{% endif %}
 
 
-	<div id="product-tl">
+	<div id="product-shipment">
 		<a class="btn btn-success" href="{{ path('admin_product_shipment') }}" target="_blank"><i data-icon="w"></i>待出貨</a>
+	</div>
+
+	<div id="admin_goods_goods_storage">
+		<a class="btn btn-success" href="{{ path('admin_goods_goods_storage') }}" target="_blank"><i data-icon="w"></i>庫存查看</a>
 	</div>
 
 	{% if app.user|has_auth('EDIT_SEO_SLOGAN') %}

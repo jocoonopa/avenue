@@ -91,9 +91,8 @@ function RemoveEmptySubFolders($path)
 
 ## 搬圖片
 
-- 下載壓縮的 `.tar`
 - 壓縮的 `.tar` 上傳透過 ftp upload 到 public/img, 然後解壓縮
 - 移除 `.tar`
-
+- 更改 isTrashed
 
 
