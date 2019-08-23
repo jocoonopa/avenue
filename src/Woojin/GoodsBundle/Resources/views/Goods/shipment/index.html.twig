@@ -150,6 +150,8 @@ let app = new Vue({
             let url = Routing.generate('api_goodsPassport_shipments');
             let self = this;
 
+            console.log('fetch');
+
             self.isFetching = true
 
             return axios.get(url)
@@ -194,6 +196,8 @@ let app = new Vue({
                 return;
             }
 
+            console.log('push');
+
             let self = this;
 
             this.isLoading = true;
@@ -209,6 +213,8 @@ let app = new Vue({
             }
 
             let self = this;
+
+            console.log('remove');
 
             this.isLoading = true;
 
@@ -226,9 +232,9 @@ let app = new Vue({
                 return this.fetch();
             }
 
-            return setTimeout(function () {
-                self.reloadSeconds --;
+            self.reloadSeconds --;
 
+            return setTimeout(function () {
                 return self.reFetch();
             }, 1000);
         }
@@ -238,10 +244,10 @@ let app = new Vue({
         reloadPoint(value) {
             let self = this;
 
-            self.reloadSeconds = 2;
-
             if (0 < value && ! self.isFetching) {
                 self.isFetching = true;
+
+                self.reloadSeconds = 2;
 
                 return setTimeout(function () {
                     self.reFetch();
