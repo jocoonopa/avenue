@@ -403,10 +403,17 @@ class GoodsController extends Controller
                     } else if ($eachCon == 0) {
                         $qb->andWhere($qb->expr()->eq('gd.isAllowWholesale', false));
                     }
-                    break;
+                break;
+                case 'isInShipment':
+                    if ($eachCon == 1) {
+                        $qb->andWhere($qb->expr()->eq('gd.isInShipment', true));
+                    } else if ($eachCon == 0) {
+                        $qb->andWhere($qb->expr()->eq('gd.isInShipment', false));
+                    }
+                break;
                 default:
 
-                    break;
+                break;
             }
         }
 

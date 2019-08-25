@@ -46,7 +46,7 @@
             <tr>
                 <td><a href="{{ path('move_edit', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
                 <td>
-                    <span class="label 
+                    <span class="label
                     {% if entity.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::MV_REJECT') %}label-danger{% endif %}
                     {% if entity.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::MV_CANCEL')%}label-default{% endif %}
                     {% if entity.status.id == constant('Woojin\\Utility\\Avenue\\Avenue::MV_COMPLETE')%}label-success{% endif %}
@@ -66,7 +66,13 @@
                     {% if entity.orgGoods.brand %}
                         <strong>{{ entity.orgGoods.brand.name }}&nbsp;</strong>
                     {% endif %}
-                    <a href="{{ path('goods_edit_v2', {id: entity.orgGoods.id }) }}?iframe=true&width=100%&height=100%" rel="prettyPhoto[iframes]" >{{ entity.orgGoods.name }}</a> &nbsp; {{ entity.orgGoods.sn }}</small></td>
+
+                    <a href="{{ path('goods_edit_v2', {id: entity.orgGoods.id }) }}?iframe=true&width=100%&height=100%" rel="prettyPhoto[iframes]" >{{ entity.orgGoods.name }}</a> &nbsp; {{ entity.orgGoods.sn }}</small>
+
+                    {% if entity.orgGoods.isInShipment %}
+                        <span class="label label-danger">待出貨</span>
+                    {% endif %}
+                </td>
                 <td>
                     {% if entity.from %}
                         {{ entity.from }} <span class="label {% if app.user.store.id == entity.from.id %}label-primary{% else %}label-default{% endif %}">{{ entity.thrower }}</span>
@@ -86,7 +92,7 @@
                             <a href="{{ path('order_backOrder_agree', {id: entity.id}) }}" class="btn btn-primary btn-sm">同意</a>
                             {% endif %}
 
-                            {% if entity.status.id in 
+                            {% if entity.status.id in
                             [
                                 constant('Woojin\\Utility\\Avenue\\Avenue::MV_NOT_CONFIRM'),
                                 constant('Woojin\\Utility\\Avenue\\Avenue::MV_CONFIRM')
@@ -101,7 +107,7 @@
                             <a href="{{ path('order_backOrder_confirm', {id: entity.id}) }}" class="btn btn-primary btn-sm">到貨</a>
                             {% endif %}
 
-                            {% if entity.status.id in 
+                            {% if entity.status.id in
                             [
                                 constant('Woojin\\Utility\\Avenue\\Avenue::MV_NOT_CONFIRM'),
                                 constant('Woojin\\Utility\\Avenue\\Avenue::MV_CONFIRM')

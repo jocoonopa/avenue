@@ -31,6 +31,10 @@
                 <span class="label label-warning">{{ goods.custom.name }}寄賣</span>
             {% endif %}
 
+            {% if goods.isInShipment %}
+                <span class="label label-danger">待出貨</span>
+            {% endif %}
+
             {% if goods.isAllowWeb %}
                 <span class="label label-success">官網已上架</span>
             {% else %}

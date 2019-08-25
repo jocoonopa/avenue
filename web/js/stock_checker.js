@@ -17,7 +17,7 @@ StockChecker.prototype.setView = function () {
     this.$input = $('input');
     this.$notHere = $('.not_here');
     this.$notFound = $('.not_found');
-    
+
     return this;
 };
 
@@ -25,14 +25,14 @@ StockChecker.prototype.initModel = function () {
     this.notfound = this.$table.find('tbody').find('tr').length;
     this.nothere = 0;
     this._class = false;
-    
+
     return this;
 };
 
 StockChecker.prototype.updateView = function () {
     this.$notHere.text(this.nothere);
     this.$notFound.text(this.notfound);
-    
+
     return this;
 };
 
@@ -40,7 +40,7 @@ StockChecker.prototype.reduce = function () {
     if (this.$target.hasClass('hidden')) {
         if (!this.isSilent) {
             document.getElementById('alert-repeat').play();
-        }   
+        }
 
         return this;
     }
@@ -49,7 +49,7 @@ StockChecker.prototype.reduce = function () {
 
     $('table.be-checked-list').prepend(this.genBeCheckedListTd(this.$target));
     this.setSumNum();
-    
+
     if (!this.isSilent) {
         document.getElementById('alert-ok').play();
     }
@@ -72,7 +72,7 @@ StockChecker.prototype.reverseReduce = function ($e) {
         $e.closest('tr').remove();
 
         this.setSumNum();
-    }   
+    }
 };
 
 StockChecker.prototype.addNotHere = function (val) {
@@ -84,9 +84,9 @@ StockChecker.prototype.addNotHere = function (val) {
             self.reduce().clearInput();
         } else {
             self.nothere ++;
-    
+
             self.$notHere.text(self.nothere);
-            
+
             if (!self.isSilent) {
                 document.getElementById('alert-nothere').play();
             }
@@ -100,8 +100,8 @@ StockChecker.prototype.addNotHere = function (val) {
 
 /**
  * 移除有問題的, 並且更改有問題顯示的統計數字
- * 
- * @param  {jQueryElement} $e 
+ *
+ * @param  {jQueryElement} $e
  * @return {[type]}    [description]
  */
 StockChecker.prototype.removeNotHere = function ($e) {
@@ -120,13 +120,13 @@ StockChecker.prototype.resolve = function () {
 StockChecker.prototype.setTarget = function (val) {
     this._class = val;
     this.$target = $('.' + this._class.replace('!', ''));
-    
+
     return this;
 };
 
 StockChecker.prototype.clearInput = function () {
     this.$input.val('');
-    
+
     return this;
 };
 
@@ -137,8 +137,8 @@ StockChecker.prototype.bindInput = function () {
         var val = $(this).val().replace('%', '');
 
         if (13 === event.keyCode) {
-            return ('-' === self.setTarget(val.toUpperCase()).resolve()) ? 
-                self.reduce().clearInput() : 
+            return ('-' === self.setTarget(val.toUpperCase()).resolve()) ?
+                self.reduce().clearInput() :
                 self.addNotHere().clearInput();
         }
 
@@ -184,7 +184,7 @@ StockChecker.prototype.saveStatus = function () {
 
     var $trs = $('tr.danger');
     container = [];
-    
+
     $trs.each(function () {
         container.push($(this).find('td').eq(1).text());
     });
@@ -246,7 +246,7 @@ StockChecker.prototype.loadStatus = function () {
                 if (0 === dangerStatus[i].length) {
                     continue;
                 }
-                
+
                 self.setTarget(dangerStatus[i]).addNotHere(dangerStatus[i]);
             }
         }
@@ -262,7 +262,7 @@ StockChecker.prototype.syncData = function () {
     var putData = {
         'wordStatus': localStorage.getItem('wordStatus'),
         'dangerStatus': localStorage.getItem('dangerStatus')
-    }; 
+    };
 
     var request = $.ajax({
         method: 'PUT',
@@ -273,12 +273,12 @@ StockChecker.prototype.syncData = function () {
         data: {"content": JSON.stringify(putData)},
         dataType: 'json'
     });
-    
+
     request.done(function(msg) {
         $.unblockUI();
         alert('儲存狀態完成');
     });
-    
+
     request.fail(function () {
         $.unblockUI();
         alert('儲存狀態失敗');

@@ -18,8 +18,8 @@
 {% if app.user|has_auth('CHECK_STOCK') %}
     <header class="navbar navbar-static-top bs-docs-nav">
 		<h1>
-			盤點&nbsp; 
-			
+			盤點&nbsp;
+
 			<button id="save-record" class="btn btn-success pull-right ml-5">
 				<i class="glyphicon glyphicon-floppy-save"></i>儲存記錄
 			</button>
@@ -30,16 +30,16 @@
 
 			<a id="left-menu" class="btn btn-primary" href="#left-menu">
 				<i class="glyphicon glyphicon-th-list"></i>已盤點
-			</a> 
+			</a>
 		</h1><hr />
-		
+
 		<input type="text" class="form-control" placeholder="刷條碼" />
-		
+
 		<p class="text-left">
 			產編有錯誤或是非庫存狀態:&nbsp;&nbsp;
 			<span class="label label-warning not_here"></span>
 		</p>
-		
+
 		<p class="text-left">
 			沒盤到:&nbsp;&nbsp;
 			<span class="label label-default not_found"></span>
@@ -50,7 +50,6 @@
 			<span class="label label-success has_checked"></span>
 		</p>
 	</header>
-	
 	<div class="row">
 		<div class="col-md-12">
 			<table class="table to-check-list">
@@ -70,7 +69,13 @@
 							<a href="{{ path('goods_edit_v2', {id: goods.id}) }}" target="_blank">{{ goods.sn|replace({'%': ''}) }}</a>
 						</td>
 						<td>{% if goods.brand %}{{ goods.brand.name }}{% endif %} <span class="badge">{{ goods.customSn }}</span></td>
-						<td>{{ goods.name }}</td>
+						<td>
+							{% if goods.isInShipment %}
+								<span class="label label-danger">待出貨</span>
+							{% endif %}
+
+							{{ goods.name }}
+						</td>
 					</tr>
 					{% endfor %}
 				</tbody>
