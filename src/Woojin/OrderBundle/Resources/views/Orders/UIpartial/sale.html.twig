@@ -15,6 +15,15 @@ window.phone_length = 10;
 <script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
 
 <div class="sellStart">
+    <div class="">
+        <button class="btn btn-primary" id="copy-to-clip">
+            準備貼上產編
+        </button>
+
+        <button class="btn btn-danger" id="clear-copysn">
+            清除複製產編
+        </button>
+    </div>
 	<div class="customMobil">
 		<label class="vader">輸入電話號碼:</label>
 		<input type="text" class="numeric" name="nCustomMobil" placeholder="請輸入電話號碼" />
@@ -24,6 +33,8 @@ window.phone_length = 10;
 	<div class="goodsSn" style="display:none;">
 		<label class="vader">輸入產編:</label>
 		<input type="text" name="sGoodsSn" value="{#{ app.user.getStore.getStoreSn }#}" placeholder="請輸入產編" />
+
+        <button id="copy-sn-to-localstorage">複製</button>
 	</div>
 
 	<div class="sellsType">
@@ -36,7 +47,7 @@ window.phone_length = 10;
         <label for="radio3"><span data-icon='"'>網售</span></label>
         <input type="radio" name="sell_type" id="radio4" vale="same_business" />
         <label for="radio4"><span data-icon='a'>同行批貨</span></label>
-	</div>	
+	</div>
 </div>
 
 <div class="sellFlow flowSepStart" >
@@ -47,7 +58,7 @@ window.phone_length = 10;
 	<form method="POST" enctype="multipart/form-data">
 		<input type="hidden" name="form[_token]" value="{{ _token }}" />
 		<input type="hidden" name="invoice_key" />
-	
+
 		<div class="step1">
 			<label class="vader">付費方式:</label>
 			<select name="nPayTypeId">
@@ -74,7 +85,7 @@ window.phone_length = 10;
 
 		<div class="step1">
 			<label class="vader">訂單備註:</label>
-			<textarea name="sOrdersMemo" placeholder="可不填寫"></textarea>	
+			<textarea name="sOrdersMemo" placeholder="可不填寫"></textarea>
 		</div>
 
 		<div class="step1">
@@ -87,7 +98,7 @@ window.phone_length = 10;
 		<input type="hidden" name="nOrdersKindId" value="6" />
 
 		<button type="button" class="step1 submitButton btn btn-default" onkeydown="preventEnterSubmit();">
-			<span><i class="icon-play"></i>確定</span>
+			<span onclick="copysn"><i class="icon-play"></i>確定</span>
 		</button>
 
 		<button type="button" class="step1 btn btn-inverse invoice" onkeydown="preventEnterSubmit();">
@@ -97,12 +108,12 @@ window.phone_length = 10;
 </div>
 
 <div class="invoice_list">
-		<!-- 
-		品名: 
-		產編: 
-		售價: 
+		<!--
+		品名:
+		產編:
+		售價:
 		訂金:
-		尾款: 
+		尾款:
 		-->
 </div>
 {% else %}
@@ -115,7 +126,7 @@ window.phone_length = 10;
 <script>
 
 $(function(){
-	var 
+	var
     $tab                    = $('#orders-sale'),
     $editDialog             = $('.edit_custom_dialog'),
     $resRight               = $tab.find('.ajaxResMsgRight'),
@@ -149,10 +160,14 @@ $(function(){
     sFixUrl                 = Routing.generate('goods_fix_res_show'),
     sFormLoadedUrl          = Routing.generate('goods_edit_form_loaded'),
     reMobil                 = /^[09]{2}[0-9]{8}$/;
-	
+
 	$('button.invoice').click(function () {
 		$('input[name="invoice_key"]').val(getGUID());
 	});
+
+    $('#copy-sn-to-localstorage').click(copysn);
+
+
 
 	function cancelOrdersEvent (e) {}
 
@@ -171,7 +186,7 @@ $(function(){
 
 			$('img.' + sImgClass).attr('src', '{{ CancelPng }}');
 		} else if ($ordersUl.find('.orders_kind').data('id') == 9) {
-			var 
+			var
 				$refreshTarget = $ordersUl.prev(),
 				nOrdersId = $refreshTarget.find('.button').data('id'),
 				sImgClass = $refreshTarget.attr('id'),
@@ -186,18 +201,18 @@ $(function(){
 	}
 
 	function editDialogRefresh ( nCustomId ) {
-		var 
+		var
 			sEditFormUrl = Routing.generate('orders_custom_edit_form'),
 			sCheckExistUrl = Routing.generate('admin_custom_checkExist'),
       sUpdateCustomUrl = Routing.generate('admin_custom_update');
 
       $.post(sEditFormUrl, { 'nCustomId' : nCustomId }, function(res){
         $editDialog.html(res);
-        var 
+        var
         	$form = $('.editCustomForm'),
           sOrgCustomEmail = $form.find('[name="sCustomEmail"]').val(),
           sOrgCustomMobil = $form.find('[name="sCustomMobil"]').val();
-          
+
         $form.find('.datepicker').datepicker({
           changeYear      : true,
           dateFormat      : "yy-mm-dd",
@@ -206,7 +221,7 @@ $(function(){
         });
 
         $form.find('[name="sCustomEmail"]').on('blur', function(){
-          var 
+          var
           	$this = $(this),
             sEmail = $this.val();
           if ( !reEmail.test(sEmail) && sEmail != '' ) {
@@ -219,13 +234,13 @@ $(function(){
                 if (res != '') {
                   alert('電子信箱已存在');
                   $this.val('');
-                }         
+                }
               });
             }
           }
         });
         $form.find('[name="sCustomMobil"]').numeric().on('blur', function(){
-          var 
+          var
           	$this = $(this),
             sMobil = $this.val();
           if (sOrgCustomMobil != sMobil && sMobil != '') {
@@ -233,7 +248,7 @@ $(function(){
               if (res != '') {
                 alert('電話號碼已存在');
                 $this.val(sOrgCustomMobil);
-              }         
+              }
             });
           }
         });
@@ -280,9 +295,9 @@ $(function(){
     .end()
     .find('.detail_goods').each(function () {
       var $this = $(this);
-      
+
       $this.on('click', function(){
-        var 
+        var
         	nGoodsId = $(this).data('id'),
           sOneGoodsDetailUrl  = Routing.generate('goods_one_detail_info');
 
@@ -300,16 +315,16 @@ $(function(){
     .end()
     .find('.customHistoryTable').each(function(){ // table pager must put at last or enevs wont bind on DOM
       var $this = $(this);
-      
+
       if ( $this.find('.customBuyHistory').size() == 0 )
         $this.add( $this.next() ).hide();
       else {
       	$this.tablesorter().tablesorterPager(
-        	{ 
-        		container: $this.next() 
+        	{
+        		container: $this.next()
         	}
         );
-      }  
+      }
     });
     return $.unblockUI();
   };
@@ -317,7 +332,10 @@ $(function(){
   $resRight.accordion();
 	$sellTypeDiv.buttonset();
 	$buttonSubmit.on('click', function () {
+        copysn();
+
 		$(this).closest('form').submit();
+
 		ajaxLoaded();
 	});
 
@@ -343,7 +361,7 @@ $(function(){
 	});
 
 	$nCustomMobilInput.on('blur', function(){
-		var 
+		var
 			$this = $(this),
       sMobil = $this.val(),
       $nCustomMobilInputHidden = $tab.find('[name="nCustomMobil"]'),
@@ -360,7 +378,7 @@ $(function(){
 			$sellTypeDiv.fadeOut(nAminateSpeed);
 			return false;
 		};
-		
+
 		if (sMobil == '') {
 			return initRes();
 		}
@@ -368,10 +386,10 @@ $(function(){
 		$resRight.html('<img src="{{ AjaxLoadingGif }}" style="margin: 150px;"/>');
 		$resLeft.html('');
 		$.post(
-			sMobilFindUrl, 
-			{ 
-				'custom_mobil[]': sMobil, 
-				'form[_token]': $('[name="form[_token]"]').eq(0).val() 
+			sMobilFindUrl,
+			{
+				'custom_mobil[]': sMobil,
+				'form[_token]': $('[name="form[_token]"]').eq(0).val()
 			}
 		)
 		.done(function (res) {
@@ -404,13 +422,13 @@ $(function(){
   });
 
   $ajaxGoodsSn.on('blur', function () {
-    var 
+    var
     	$this = $ajaxGoodsSn,
     	$tab = $('#orders-sale'),
     	sJudge = '{{ app.user.store.sn }}';
 
     	$this.val( $this.val().toUpperCase() );
-    var 
+    var
     	sGoodsSn = $this.val();
 
     $this.attr('title', '');
@@ -440,35 +458,35 @@ $(function(){
 			$goodsPrice.val(  parseInt( parseInt( $ajaxGoodsSn.val().substr(-4,4) ) )*window.fix_rate );
 			$flowSepStart.fadeOut(nAminateSpeed);
 			attachOnNewElement();
-			$ajaxGoodsSn.attr('title', '');    	
+			$ajaxGoodsSn.attr('title', '');
 	  	$sellFlowForm.find('[name="sGoodsSn"]').val('');
 	  	$sellTypeDiv.fadeOut(nAminateSpeed);
 	  	$tab.find('[name="nPayTypeId"]').val('sell');
 
   		$.post(
-  			sSearchByGoodsSnUrl, 
+  			sSearchByGoodsSnUrl,
   			{
-  				'sGoodsSn': sGoodsSn, 
+  				'sGoodsSn': sGoodsSn,
   				'form[_token]': $('[name="form[_token]"]').eq(0).val()
   			}
   		)
 			.done(function (res) {
 				var nOrdersRequired = parseInt( sGoodsSn.substr(-4, 4) )*window.fix_rate;
-  				
+
 				$resRight.html(res).accordion();
 				attachOnNewElement();
 
-				var 
+				var
 					$ajaxTabs = $resRight.find('.goodsResTabs'),
 					$ajaxButton = $ajaxTabs.find('button'),
 					$ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog');
-			
+
 				$ajaxTabs.tabs({
 					collapsible: true
 		    }).find('button').button();
 
 		    $ajaxButton.filter('.edit_goods').on('click', function(){
-		    	var 
+		    	var
 		    		$this = $(this),
 		    		nGoodsPassportId = $this.parent().data('id');
 
@@ -524,7 +542,7 @@ $(function(){
 
   // 決定銷售方式, 預設使用一般販售
 	$sellTypeRadio.on('click', function(){
-		var 
+		var
 			$this = $(this),
 			sVal = $this.attr('id');
 
@@ -552,19 +570,19 @@ $(function(){
 		url : sSellUrl,
 		success: function (id) {
     	$.post(
-    		sFixUrl, 
-    		{ 
+    		sFixUrl,
+    		{
 	    		'nGoodsPassportId': id,
-	    		'bGoods': 1 
-	    	}, 
+	    		'bGoods': 1
+	    	},
 	    	function (response) {
 	    		$resRight.html(response).accordion('destroy').accordion(
-	    			{ 
-	    				'heightStyle' : 'content' 
+	    			{
+	    				'heightStyle' : 'content'
 	    			}
     			);
 
-	    		var 
+	    		var
 	    			$ajaxTabs = $('.goodsResTabs'),
             $ajaxButton = $ajaxTabs.find('button'),
             $ajaxEditGoodsDialog = $('.ajaxEditGoodsDialog');
@@ -574,7 +592,7 @@ $(function(){
 				   }).find('button').button();
 
 			    $ajaxButton.filter('.edit_goods').on('click', function(){
-			    	var 
+			    	var
 			    		$this = $(this),
 			    		nGoodsPassportId = $this.parent().data('id');
 
@@ -603,13 +621,14 @@ $(function(){
 			$sellFlowForm.find('[name="sOrdersMemo"]').val('');
 			$ajaxGoodsSn.val('{{ app.user.store.sn }}');
 			$flowSepStart.fadeOut(nAminateSpeed);
-			
+
 			attachOnNewElement();
 			$ajaxGoodsSn.attr('title', '');
-    	$sellFlowForm.find('[name="sGoodsSn"]').val('');
-    	$sellTypeDiv.fadeOut(nAminateSpeed);
-    	$tab.find('[name="nPayTypeId"]').val('sell');
-    	$.unblockUI();
+
+        	$sellFlowForm.find('[name="sGoodsSn"]').val('');
+        	$sellTypeDiv.fadeOut(nAminateSpeed);
+        	$tab.find('[name="nPayTypeId"]').val('sell');
+        	$.unblockUI();
 			scrollToPageTop();
 			$('input[name="invoice_key"]').val();
 		}
@@ -642,14 +661,14 @@ $(function(){
 		}
 
 		$ordersPaid.val(Math.ceil(parseInt($this.val()/(2 - nDis))));
-		
+
 		if ($this.val() == 'NaN') {
 			$this.val(0);
 		}
 	});
 
 	$ordersRequired.on('change', function(){
-		var 
+		var
 			nOrdersRequired = $(this).val(),
 			nDis = $nPayTypeId.find('option:selected').data('discount');
 
@@ -669,6 +688,18 @@ $(function(){
 		$customNoData.prop('checked', true).change();
 	}, 500);
 
+    $('#clear-copysn').click(function () {
+        if (confirm('確定要清除嗎?')) {
+            localStorage.removeItem('copysn');
+        }
+    })
+
+    $('#copy-to-clip').click(function () {
+        let arr = JSON.parse(localStorage.getItem('copysn'));
+
+        alert(arr.join(' '));
+    })
+
 	// $('input[name="sOpeTime"]').datetimepicker({
 	// 	timeFormat: 'hh:mm:00',
 	// 	dateFormat: 'yy-mm-dd'
@@ -677,13 +708,13 @@ $(function(){
 
 function preventEnterSubmit () {
 	if (event.keyCode == 13) {
-    event.cancelBubble  = true;
-    event.returnValue   = false;
+        event.cancelBubble  = true;
+        event.returnValue   = false;
 	}
 }
 
 function attachOnNewElement() {
-	var	
+	var
 		$tab = $('#orders-sale'),
 		$goodsSearchAjaxLoadImg = $tab.find('.ajaxResLeft'),
 		$ajaxSearchDiv = $tab.find('.ajaxResMsgRight'),
@@ -693,6 +724,26 @@ function attachOnNewElement() {
 		$goodsSearchAjaxLoadImg.html( '<img src="'+$(this).data('imgpath')+'" />'  );
 	}).eq(0).click();
 	return false;
+}
+
+function copysn() {
+    let copysns = localStorage.getItem('copysn') || '[]'
+
+    copysns = JSON.parse(copysns);
+
+    copysns = copysns.filter(function (el) {
+        return el != null && el != '';
+    });
+
+    copysns.push($('[name="sGoodsSn"]').val());
+
+    var uniqueNames = [];
+
+    $.each(copysns, function(i, el){
+        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+    });
+
+    localStorage.setItem('copysn', JSON.stringify(uniqueNames));
 }
 
 </script>

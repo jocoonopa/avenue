@@ -2702,6 +2702,7 @@ class GoodsController extends Controller
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq('g.sn', $qb->expr()->literal($sn)),
+                    $qb->expr()->notIn('g.status', [2, 5, 8, 10]),
                     $qb->expr()->eq('g.isInShipment', false)
                 )
             )

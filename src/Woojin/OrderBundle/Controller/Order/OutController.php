@@ -49,7 +49,7 @@ class OutController extends Controller
     {
         foreach ($request->request->keys() as $key) {
             $$key = $request->request->get($key);
-        }   
+        }
 
         $products = array();
 
@@ -62,14 +62,14 @@ class OutController extends Controller
         $qb = $em->createQueryBuilder();
 
         $em->getConnection()->beginTransaction();
-        
+
         try{
             $user = $this->get('security.token_storage')->getToken()->getUser();
 
             $paytype = $em->find('WoojinOrderBundle:PayType', $nPayTypeId);
-            
+
             $productTurnIn = $em->getRepository('WoojinGoodsBundle:GoodsPassport')->findOneBy(array('sn' => $sGoodsTurnSn));
-            
+
             $productTurnOut = $em->find('WoojinGoodsBundle:GoodsPassport', $nGoodsChangeId);
 
             $orderSold = $qb
@@ -77,33 +77,33 @@ class OutController extends Controller
                 ->from('WoojinOrderBundle:Orders', 'od')
                 ->join('od.goods_passport', 'gp')
                 ->where(
-                    $qb->expr()->andX( 
+                    $qb->expr()->andX(
                         $qb->expr()->eq('od.goods_passport', $productTurnIn->getId()),
                         $qb->expr()->eq('gp.status', Avenue::GS_SOLDOUT),
                         $qb->expr()->in('od.kind', array(
-                                Avenue::OK_OUT, 
-                                Avenue::OK_TURN_OUT, 
+                                Avenue::OK_OUT,
+                                Avenue::OK_TURN_OUT,
                                 Avenue::OK_EXCHANGE_OUT,
                                 Avenue::OK_WEB_OUT,
                                 Avenue::OK_SPECIAL_SELL,
                                 Avenue::OK_SAME_BS
-                            ) 
+                            )
                         ),
                         $qb->expr()->neq('od.status', Avenue::OS_CANCEL)
-                    ) 
+                    )
                 )
                 ->orderBy('od.id', 'DESC')
                 ->getQuery()
                 ->getOneOrNullResult()
             ;
-            
+
             if ($orderSold) {
                 $orderSold->setStatus($em->find('WoojinOrderBundle:OrdersStatus', Avenue::OS_CANCEL));
-            
+
                 $em->persist($orderSold);
             }
-            
-            $opeLogger->recordOpe($orderSold, $orderSold->getKind()->getName() . '訂單取消[退款:' . $orderSold->getPaid() . '元]');           
+
+            $opeLogger->recordOpe($orderSold, $orderSold->getKind()->getName() . '訂單取消[退款:' . $orderSold->getPaid() . '元]');
 
             $ordersTurnIn = new Orders();
             $ordersTurnIn
@@ -121,13 +121,13 @@ class OutController extends Controller
 
             $productTurnIn->setStatus($em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_ONSALE));
             $em->persist($productTurnIn);
-            
+
             $nBalanceCache = $nBalance;
 
             $nBalance = $nBalance - ($nOrdersPaidReal - $nOrdersPaid);
-            
+
             $ostatusId = ($nBalance > $nOrdersPaid) ? Avenue::OS_HANDLING : Avenue::OS_COMPLETE;
-            
+
             $invoice = new Invoice;
             $invoice
                 ->setCustom($orderSold->getCustom())
@@ -137,7 +137,7 @@ class OutController extends Controller
             ;
 
             $em->persist($invoice);
-            
+
             $orderTurnOut = new Orders();
             $orderTurnOut
                 ->setInvoice($invoice)
@@ -157,7 +157,7 @@ class OutController extends Controller
 
             $productTurnOut->setStatus($em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_SOLDOUT));
             $em->persist($productTurnOut);
-            
+
             $opeLogger->recordOpe($ordersTurnIn, '成立換貨(進)訂單:[' . $productTurnOut->getSn() . ']');
             $opeLogger->log($orderTurnOut, $user, $paytype, (int) $nOrdersPaidReal, '成立換貨(出)訂單:[' . $nOrdersPaidReal . '元][' . $paytype->getName() . '][' . $productTurnOut->getSn() . ']');
 
@@ -177,8 +177,8 @@ class OutController extends Controller
         }
 
         $rRes['purIn'] = $productTurnIn->getId();
-        $rRes['sellOut'] = $nGoodsChangeId; 
-        
+        $rRes['sellOut'] = $nGoodsChangeId;
+
         return new JsonResponse($rRes);
     }
 
@@ -186,11 +186,11 @@ class OutController extends Controller
      * @Route("/sell_goods", name="order_sell_goods" , options={"expose"=true})
      */
     public function orderSellGoodsAction(Request $request)
-    { 
+    {
         foreach ($request->request->keys() as $key) {
             $$key = $request->request->get($key);
         }
-            
+
         $dc = $this->getDoctrine();
         $em = $dc->getManager();
         $em->getConnection()->beginTransaction();
@@ -200,15 +200,15 @@ class OutController extends Controller
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        try{      
+        try{
             $paytype = $em->find('WoojinOrderBundle:PayType', $nPayTypeId);
             $orderKind = $em->find('WoojinOrderBundle:OrdersKind', $nOrdersKindId);
             $productStatus = $em->find('WoojinGoodsBundle:GoodsStatus', Avenue::GS_SOLDOUT);
-            $oCustom = $dc->getRepository('WoojinOrderBundle:Custom')->findOneBy( 
+            $oCustom = $dc->getRepository('WoojinOrderBundle:Custom')->findOneBy(
                         array(
-                            'mobil' => $nCustomMobil, 
-                            'store' => $user->getStore()->getId() 
-                        ) 
+                            'mobil' => $nCustomMobil,
+                            'store' => $user->getStore()->getId()
+                        )
                     )
                 ;
 
@@ -258,7 +258,7 @@ class OutController extends Controller
             } else {
                 $Invoice = $Invoices[0];
             }
-            
+
             $order->setInvoice($Invoice);
 
             $em->persist($order);
@@ -288,14 +288,14 @@ class OutController extends Controller
             $adapter = $this->get('yahoo.syncer');
             $adapter->delete($product);
         }
-        
+
         return new Response($product->getId());
     }
 
     /**
      * @Route("/multisale/sell", name="order_multisale_sell", options={"expose"=true})
      */
-    public function orderMultieSell (Request $request) 
+    public function orderMultieSell (Request $request)
     {
         foreach ($request->request->keys() as $key) {
             $$key = $request->request->get($key);
@@ -318,7 +318,7 @@ class OutController extends Controller
             // 金額總計
             $nTotal = 0;
 
-            // 回傳產編字串      
+            // 回傳產編字串
             $returnSn = '';
 
             // 取得付款方式
@@ -336,10 +336,10 @@ class OutController extends Controller
             // 取得客戶
             $oCustom = $dc->getRepository('WoojinOrderBundle:Custom')
                 ->findOneBy(
-                    array( 
-                        'mobil' => (($mobil == '')? '00000' : $mobil), 
-                        'store' => $user->getStore()->getId() 
-                    ) 
+                    array(
+                        'mobil' => (($mobil == '')? '00000' : $mobil),
+                        'store' => $user->getStore()->getId()
+                    )
                 );
 
             // 若找尋的客戶不存在, 回覆錯誤訊息
@@ -363,13 +363,13 @@ class OutController extends Controller
             <h4 class="alert-heading">無傳入資料</h4>
           </div>');
             }
-            
+
             // 移除重複的id
             $rId = array_unique($rId);
 
             /**
              * 新增一張發票
-             * 
+             *
              * @var Invoice
              */
             $invoice = new Invoice();
@@ -391,15 +391,15 @@ class OutController extends Controller
 
                 // 更新商品狀態
                 $product->setStatus($productStatus);
-                
+
                 $em->persist($product);
 
                 // 計算折扣後的應付金額
                 $nOrdersRequired = ($rOrdersRequired[$key] * $nDisRate);
 
                 // 根據應付金額與實付金額決定訂單狀態
-                $nOrdersStatusId = (($nOrdersRequired - $rOrdersRequired[$key]) != 0) 
-                    ? Avenue::OS_HANDLING 
+                $nOrdersStatusId = (($nOrdersRequired - $rOrdersRequired[$key]) != 0)
+                    ? Avenue::OS_HANDLING
                     : Avenue::OS_COMPLETE
                 ;
 
@@ -423,7 +423,7 @@ class OutController extends Controller
                 ;
 
                 $em->persist($order);
-                
+
                 $nTotal += $nOrdersRequired;
 
                 $opeLogger->log($order, $user, $paytype, $nOrdersRequired, '成立' . $orderKind->getName() . '訂單[' . $rOrdersRequired[$key] . '元][' . $paytype->getName() . ']');
@@ -439,13 +439,13 @@ class OutController extends Controller
 
                 // 存入rollback陣列
                 array_push($rRollback, $order->getId());
-                
+
                 if ($product->getYahooId()) {
                     $successProducts[] = $product;
                 }
-                
-                $returnSn.= "<a href=\"" . $this->get('router')->generate('goods_edit_v2', array('id' => $product->getId())) . "?iframe=true&width=100%&height=100%\" rel=\"prettyPhoto[iframes]\">"  
-                . $rGoodsSn[$key] 
+
+                $returnSn.= "<a href=\"" . $this->get('router')->generate('goods_edit_v2', array('id' => $product->getId())) . "?iframe=true&width=100%&height=100%\" rel=\"prettyPhoto[iframes]\">"
+                . $rGoodsSn[$key]
                 . ($product->getColor() ? $product->getColor()->getName() : '')
                 .  '</a>,';
             }
@@ -460,7 +460,7 @@ class OutController extends Controller
         }catch (Exception $e){
             $em->getConnection()->rollback();
             throw $e;
-        }   
+        }
 
         if (empty($returnSn)) {
             return new Response( '<div class="alert alert-block alert-warning fade in">

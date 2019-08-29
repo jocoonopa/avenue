@@ -9,7 +9,7 @@ $(function() {
         $openButton             = $('.panelSwitch'),
         $ajaxEditGoodsDialog    = $('.ajaxEditGoodsDialog'),
         $ordersEditFormDialog   = $('.ordersEditFormDialog'),
-        nAminateSpeed           = 700;                   
+        nAminateSpeed           = 700;
 
     $orders.tabs(
     	{
@@ -20,9 +20,9 @@ $(function() {
     $a.on('click', function(){
     	var sTargeId 	     = $(this).attr('href');
 			$theOpenButton   = $(sTargeId).find('.panelSwitch');
-    	
+
     	if( $theOpenButton.hasClass('itsOpen') )
-            $theOpenButton.click(); 
+            $theOpenButton.click();
 
         $openButton.not('.itsOpen').not($theOpenButton).click();
     });
@@ -32,13 +32,13 @@ $(function() {
         // if ($this.hasClass('itsOpen'))
         // {
             $this.parent().stop().animate({'left': 0}, nAminateSpeed, function(){
-                $this.children('img').attr('src', '/img/Actions-go-previous-icon.png').end().removeClass('itsOpen'); 
+                $this.children('img').attr('src', '/img/Actions-go-previous-icon.png').end().removeClass('itsOpen');
             });
         //}
         // else
         // {
         //     $this.parent().stop().animate({'left': -($this.parent().innerWidth()-40)}, nAminateSpeed, function(){
-        //         $this.children('img').attr('src', '/img/Actions-go-next-icon.png').end().addClass('itsOpen'); 
+        //         $this.children('img').attr('src', '/img/Actions-go-next-icon.png').end().addClass('itsOpen');
         //     });
         // }
     }).eq(0).click();
@@ -59,7 +59,7 @@ $(function() {
             function(){
                 $(this).dialog('close');
             }
-        }       
+        }
     });
 
     $ordersEditFormDialog.dialog({
@@ -78,7 +78,7 @@ $(function() {
             function(){
                 $(this).dialog('close');
             }
-        }       
+        }
     });
 });
 
