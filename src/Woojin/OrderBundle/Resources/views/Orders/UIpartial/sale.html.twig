@@ -15,15 +15,6 @@ window.phone_length = 10;
 <script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
 
 <div class="sellStart">
-    <div class="">
-        <button class="btn btn-primary" id="copy-to-clip">
-            準備貼上產編
-        </button>
-
-        <button class="btn btn-danger" id="clear-copysn">
-            清除複製產編
-        </button>
-    </div>
 	<div class="customMobil">
 		<label class="vader">輸入電話號碼:</label>
 		<input type="text" class="numeric" name="nCustomMobil" placeholder="請輸入電話號碼" />
@@ -33,8 +24,6 @@ window.phone_length = 10;
 	<div class="goodsSn" style="display:none;">
 		<label class="vader">輸入產編:</label>
 		<input type="text" name="sGoodsSn" value="{#{ app.user.getStore.getStoreSn }#}" placeholder="請輸入產編" />
-
-        <button id="copy-sn-to-localstorage">複製</button>
 	</div>
 
 	<div class="sellsType">
@@ -164,11 +153,6 @@ $(function(){
 	$('button.invoice').click(function () {
 		$('input[name="invoice_key"]').val(getGUID());
 	});
-
-    $('#copy-sn-to-localstorage').click(copysn);
-
-
-
 	function cancelOrdersEvent (e) {}
 
 	function specialOrdersRefresh ($ordersUl) {
@@ -688,18 +672,6 @@ $(function(){
 		$customNoData.prop('checked', true).change();
 	}, 500);
 
-    $('#clear-copysn').click(function () {
-        if (confirm('確定要清除嗎?')) {
-            localStorage.removeItem('copysn');
-        }
-    })
-
-    $('#copy-to-clip').click(function () {
-        let arr = JSON.parse(localStorage.getItem('copysn'));
-
-        alert(arr.join(' '));
-    })
-
 	// $('input[name="sOpeTime"]').datetimepicker({
 	// 	timeFormat: 'hh:mm:00',
 	// 	dateFormat: 'yy-mm-dd'
@@ -725,26 +697,5 @@ function attachOnNewElement() {
 	}).eq(0).click();
 	return false;
 }
-
-function copysn() {
-    let copysns = localStorage.getItem('copysn') || '[]'
-
-    copysns = JSON.parse(copysns);
-
-    copysns = copysns.filter(function (el) {
-        return el != null && el != '';
-    });
-
-    copysns.push($('[name="sGoodsSn"]').val());
-
-    var uniqueNames = [];
-
-    $.each(copysns, function(i, el){
-        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
-    });
-
-    localStorage.setItem('copysn', JSON.stringify(uniqueNames));
-}
-
 </script>
 {% endblock %}

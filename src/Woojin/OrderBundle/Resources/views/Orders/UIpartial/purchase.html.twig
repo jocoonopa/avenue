@@ -8,6 +8,16 @@ window.phone_length = 10;
 </script>
 
 <div>
+    <div class="" style="margin-top: 10px; margin-bottom: 30px;">
+        <button type="button" class="btn btn-info" id="copy-to-clip">
+            貼上產編
+        </button>
+
+        <button type="button" class="btn btn-default" id="clear-copysn">
+            清除複製
+        </button>
+    </div>
+
 	<div class="purType">
 		<label class="vader">進貨方式:</label>
 		<input type="radio" name="purchasetype" id="purRadio1" checked="checked" vale="purNormal"/>
@@ -474,6 +484,10 @@ $(function () {
 			$goodsSearchAjaxLoadImg.html( '<img src="'+$(this).data('imgpath')+'" />'  );
 		}).eq(0).click();
 
+		$('p.p__product-sn').on('click', function () {
+			copysn($(this).text())
+		});
+
 		$ajaxTabs.tabs({
 			collapsible: true
 		})
@@ -825,5 +839,38 @@ $('#isAllowAuction').change(function () {
 	$('#bsoCustomPercentage').prop('readonly', !isChecked);
 	$('#make-cost-0').prop('disabled', !isChecked);
 });
+
+$('#clear-copysn').click(function () {
+    if (confirm('確定要清除嗎?')) {
+        localStorage.removeItem('copysn');
+    }
+});
+
+$('#copy-to-clip').click(function () {
+    let arr = JSON.parse(localStorage.getItem('copysn'));
+
+    alert(arr.join(' '));
+})
+
+function copysn(value) {
+    let copysns = localStorage.getItem('copysn') || '[]'
+
+    copysns = JSON.parse(copysns);
+
+    copysns = copysns.filter(function (el) {
+        return el != null && el != '';
+    });
+
+    copysns.push(value);
+
+    var uniqueNames = [];
+
+    $.each(copysns, function(i, el){
+        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+    });
+
+    localStorage.setItem('copysn', JSON.stringify(uniqueNames));
+}
+
 </script>
 {% endblock %}

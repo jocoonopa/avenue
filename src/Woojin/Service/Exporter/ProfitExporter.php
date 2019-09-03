@@ -108,7 +108,7 @@ class ProfitExporter implements IExporter
             'B1' => '品牌',
             'C1' => '款式',
             'D1' => '型號',
-            'E1' => '顏色',
+            'E1' => '付款方式',
             'F1' => '包名',
             'G1' => '產編',
             'H1' => '新舊',
@@ -124,7 +124,7 @@ class ProfitExporter implements IExporter
             'R1' => '售出人',
             'S1' => '備註',
             'T1' => '活動',
-            'U1' => '來源單號',
+            'U1' => '訂單建立時間',
             'V1' => '來源門市'
         );
     }
@@ -169,7 +169,7 @@ class ProfitExporter implements IExporter
                 'B' => ($brand = $product->getBrand()) ? $brand->getName() : null,
                 'C' => ($pattern = $product->getPattern()) ? $pattern->getName() : null, // 款式
                 'D' => $product->getModel(), // 型號
-                'E' => $product->getColorSn(), // 顏色
+                'E' => $order->getPayType()->getName(), // 顏色
                 'F' => $product->getName(),
                 'G' => $product->getSn(),
                 'H' => ($level = $product->getLevel()) ? $level->getName() : null,
@@ -185,7 +185,7 @@ class ProfitExporter implements IExporter
                 'R' => $order->getOpes()->last()->getUser()->getUsername(),
                 'S' => $order->getMemo(),
                 'T' => ($activity = $product->getActivity()) ? $activity->getName() : '門市出售',
-                'U' => $product->getParent()->getSn(),
+                'U' => $order->getCreateAt()->format('Y-m-d H:i:s'),
                 'V' => $this->map[substr($product->getParent()->getSn(), 0, 1)]->getName()
             )
             : array(

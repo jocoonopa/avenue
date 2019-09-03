@@ -1,6 +1,6 @@
-avenue-step-3: 
-    - 建立 redis + symfony and 
-    - symfony print controller and 
+avenue-step-3:
+    - 建立 redis + symfony and
+    - symfony print controller and
     - symfony print model
 avenue-step-4: c# 程式 decompile and listen on redis, 然後打包好點...
 
@@ -29,7 +29,7 @@ avenue-step-4: c# 程式 decompile and listen on redis, 然後打包好點...
 
 如果不能了事，那就把 digitalocean 那台當圖床來用。
 
-丟給我 sn + 圖片 + type, 
+丟給我 sn + 圖片 + type,
 我接收儲存並且切圖,
 完成後我回給你 url
 
@@ -38,7 +38,7 @@ avenue-step-4: c# 程式 decompile and listen on redis, 然後打包好點...
 
 - db.printers.name
 - client.setting.name = $name
-- redis 
+- redis
 
 
 # 清除圖片
@@ -82,9 +82,9 @@ function RemoveEmptySubFolders($path)
             $empty=false;
         }
     }
-    
+
     if ($empty) rmdir($path);
-    
+
     return $empty;
 }
 
