@@ -1834,37 +1834,38 @@ class GoodsController extends Controller
             )
             ->getQuery()->getResult();
 
-        /**
-         * Yahoo api 的一個 facade
-         *
-         * @var \Woojin\Utility\YahooApi\Client
-         */
-        $apiClient = $this->get('yahoo.api.client');
+        // /**
+        //  * Yahoo api 的一個 facade
+        //  *
+        //  * @var \Woojin\Utility\YahooApi\Client
+        //  */
+        // $apiClient = $this->get('yahoo.api.client');
 
-        /**
-         * 店內分類
-         *
-         * @var array(\StdClass)
-         */
-        $sc = $apiClient->storeCategoryGet();
+        // /**
+        //  * 店內分類
+        //  *
+        //  * @var array(\StdClass)
+        //  */
+        // $sc = $apiClient->storeCategoryGet();
 
-        $storeCategorys = NULL === $sc || 'fail' === $sc->Response->Status ? $sc : $sc->Response->StoreCategoryList->StoreCategory;
+        // $storeCategorys = NULL === $sc || 'fail' === $sc->Response->Status ? $sc : $sc->Response->StoreCategoryList->StoreCategory;
+
 
         /**
          * 店內允許付費方式
          *
          * @var array(\StdClass)
          */
-        $sp = $apiClient->storePaymentGet();
-        $storePayments = NULL === $sp || 'fail' === $sp->Response->Status ? $sp : $sp->Response->PayTypeList->PayType;//$apiClient->storePaymentGet()->Response->PayTypeList->PayType;
+        // $sp = $apiClient->storePaymentGet();
+        // $storePayments = NULL === $sp || 'fail' === $sp->Response->Status ? $sp : $sp->Response->PayTypeList->PayType;//$apiClient->storePaymentGet()->Response->PayTypeList->PayType;
 
         /**
          * 店內允許物流方式
          *
          * @var array(\StdClass)
          */
-        $ss = $apiClient->storeShippingGet();
-        $storeShippings = NULL === $ss || 'fail' === $ss->Response->Status ? $ss : $ss->Response->ShippingTypeList->ShippingType;//$apiClient->storeShippingGet()->Response->ShippingTypeList->ShippingType;
+        // $ss = $apiClient->storeShippingGet();
+        // $storeShippings = NULL === $ss || 'fail' === $ss->Response->Status ? $ss : $ss->Response->ShippingTypeList->ShippingType;//$apiClient->storeShippingGet()->Response->ShippingTypeList->ShippingType;
 
         return array(
             'goods' => $goods,
@@ -1878,10 +1879,10 @@ class GoodsController extends Controller
             'levels' => $em->getRepository('WoojinGoodsBundle:GoodsLevel')->findBy(array(), array('name' => 'ASC')),
             'payTypes' => $em->getRepository('WoojinOrderBundle:PayType')->findAll(),
             'categorys' => $em->getRepository('WoojinGoodsBundle:Category')->findAll(),
-            'yahooCategorys' => $em->getRepository('WoojinGoodsBundle:YahooCategory')->findAll(),
-            'storeCategorys' => $storeCategorys,
-            'storePayments' => $storePayments,
-            'storeShippings' => $storeShippings,
+            'yahooCategorys' => [],//$em->getRepository('WoojinGoodsBundle:YahooCategory')->findAll(),
+            'storeCategorys' => [],//$storeCategorys,
+            'storePayments' => [],//$storePayments,
+            'storeShippings' => [],//$storeShippings,
             'seoSlogans' => $em->getRepository('WoojinGoodsBundle:SeoSlogan')->findAll(),
             'shippingOptions' => $em->getRepository('WoojinStoreBundle:ShippingOption')->findAll()
         );

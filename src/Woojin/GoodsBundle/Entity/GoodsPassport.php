@@ -662,6 +662,11 @@ class GoodsPassport
     {
         $sn = null;
         $id = ($this->id > 9999) ? substr($this->id, 1) : str_pad($this->id, 4, 0, STR_PAD_LEFT);
+
+        if ($this->id > 99999) {
+            $id = substr($this->id, 2);
+        }
+
         $cost = str_pad($this->cost/Avenue::SN_RATE, 4, 0, STR_PAD_LEFT);
         $price = str_pad($this->price/Avenue::SN_RATE, 4, 0, STR_PAD_LEFT);
 

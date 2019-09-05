@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+
         <title>{% block title %}香榭國際精品館{% endblock %}</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -17,7 +17,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
         <link rel="stylesheet" href="/bundles/woojinfront/css/custom.css">
-        
+
         <link rel="stylesheet" href="{{ asset('/css/ui-darkness/jquery-ui-1.10.3.custom.min.css') }}" />
 
         <script src="{{ asset('/js/jquery-1.9.1.min.js') }}"></script>
@@ -26,11 +26,11 @@
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-        
+
         <script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
-        
+
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-        
+
         {% block external %}{% endblock %}
     </head>
     <body>
@@ -42,16 +42,16 @@
         {%if delete_form is defined%}
             {% form_theme delete_form 'WoojinGoodsBundle:Common:_deleteform.html.twig' %}
         {%endif%}
-        
+
         {%if form is defined%}
             {% form_theme form 'WoojinGoodsBundle:Common:_createform.html.twig' %}
         {%endif%}
-        
+
         <div class="row">
             <div class="col-md-1 col-xs-0"></div>
 
             <div class="col-md-10 col-xs-12">{% block body %}{% endblock %}</div>
-            
+
             <div class="col-md-1 col-xs-0"></div>
         </div>
         {% block footer %}{% endblock %}
