@@ -172,10 +172,13 @@ class ReportController extends Controller
             $and->add($qb->expr()->in('gd.activity', $activitys));
         }
 
-        if (($kind = $request->request->get('reportKind', array(Avenue::OK_OUT, Avenue::OK_EXCHANGE_OUT, Avenue::OK_TURN_OUT))) and $kind != '') {
-            if ((int) $kind === Avenue::OK_OUT) {
-                $kind = array(Avenue::OK_OUT, Avenue::OK_EXCHANGE_OUT, Avenue::OK_TURN_OUT);
-            }
+        if (
+            $kind = $request->request->get('reportKind', []) &&
+            ! empty($kind)
+        ) {
+            // if ((int) $kind === Avenue::OK_OUT) {
+            //     $kind = array(Avenue::OK_OUT, Avenue::OK_EXCHANGE_OUT, Avenue::OK_TURN_OUT);
+            // }
 
             $and->add($qb->expr()->in('o.kind', $kind));
         }

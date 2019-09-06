@@ -17,7 +17,7 @@
 
 {% if app.user|has_auth('BENEFIT_REPORT_ALL') %}
     <label class="vader">指定店:(可多選)</label>
-    <select class="goods_search_store" name="store[]" multiple="multiple">
+    <select class="goods_search_store" name="store[]" style="height: 210px;" multiple="multiple">
         {% for store in stores %}
             <option value="{{ store.sn }}">{{ store.name }}</option>
         {% endfor %}
@@ -53,11 +53,25 @@
 </div>
 
 <div class="select" style="margin: 10px 0 0 0;">
-	<select name="reportKind">
+	<select multiple name="reportKind[]" style="height: 216px;">
 		<option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::OK_OUT') }}">店內業績</option>
 		<option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::OK_WEB_OUT') }}">網路售出</option>
 		<option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::OK_SPECIAL_SELL') }}">特殊活動</option>
 		<option value="{{ constant('Woojin\\Utility\\Avenue\\Avenue::OK_SAME_BS') }}">同行批貨</option>
+
+        <option value="16">香榭粉絲團</option>
+
+        <option value="17">香榭 LIVE 粉絲團</option>
+
+        <option value="18">Angie 粉絲團</option>
+
+        <option value="19">LINE@</option>
+
+        <option value="20}">官網</option>
+
+        <option value="21">Yahoo購物中心</option>
+
+        <option value="22">MOMO購物中心</option>
 	</select>
 	<select name="bExport">
 		<option value="0">顯示</option>
@@ -132,7 +146,7 @@
 {% block js %}
 <script>
 $(function () {
-	var 
+	var
 		$tab = $('#orders-financial'),
 		$resRight = $tab.find('.ajaxResMsgRight'),
 		$form = $tab.find('form'),
@@ -148,12 +162,12 @@ $(function () {
 		sFinancialUrl = Routing.generate('admin_store_profit_report');
 
 	goodsDetailInfo = function (e) {
-		var 
+		var
 			$this = e,
 			$detailGoodsDialog = $('.detail_of_custom_goods');
 
 		$this.on('click', function () {
-			var 
+			var
 				nGoodsId = $(this).data('id'),
 				sOneGoodsDetailUrl  = Routing.generate('goods_one_detail_info');
 
@@ -166,25 +180,25 @@ $(function () {
 			});
 		});
 	};
-	
-    $startTime.datepicker({ 
+
+    $startTime.datepicker({
 		changeYear: true,
 		dateFormat: "yy-mm-dd",
 		yearRange: "2013:{{ 'now'|date('Y') }}",
 		defaultDate: "+0y"
 	});
 
-	$endTime.datepicker({ 
+	$endTime.datepicker({
 		changeYear: true,
 		dateFormat: "yy-mm-dd",
 		yearRange: "2013:{{ 'now'|date('Y') }}",
 		defaultDate: "+0y"
 	});
-	
+
     $button.filter('.delete_parent_div').remove();
-	
+
     $select.filter('.goods_search_store').prepend('<option value="0">全部</option>');
-	
+
     $resRight.tabs().hide();
 
 	$('.detail_of_custom_goods').dialog({
@@ -213,7 +227,7 @@ $(function () {
 	$cancelAllButton.on('click', function () {
 		$columnDecide.find('input').prop('checked', false);
 	});
-	
+
 	$form.ajaxForm({
 		url: sFinancialUrl,
 		success: function (res) {
@@ -225,7 +239,7 @@ $(function () {
 
             	var $table = $resRight.find('.financialReportTable');
             	$table.each(function () {
-            		var 
+            		var
             			$this = $(this),
             			nGoodsCost = 0,
             			nAchievement = 0,
@@ -237,12 +251,12 @@ $(function () {
             			return $this.siblings().addBack().remove();
             		}
 
-            		if ( ($this.find( '.profit' ).length == 0) ) {	
+            		if ( ($this.find( '.profit' ).length == 0) ) {
             			return $this.hide().next().hide();
             		}
 
             		$this.find('tbody').find('tr').each( function ( index ) {
-            			var 
+            			var
             				$tr = $(this),
             				$ul = $tr.closest('table').next(),
             				nTurns = $this.find('tbody').find('tr').length;
@@ -251,7 +265,7 @@ $(function () {
             			nProfit = nProfit + parseInt( $tr.find('.profit').data('money') );
             			nAchievement = nAchievement + parseInt( $tr.find('.achievement').data('money') );
                         nOrgAchievement = nOrgAchievement + parseInt( $tr.find('.org_achievement').data('money') );
-            			
+
                         if ( ((nTurns - 1) == index) ) {
             				$ul.find('.goods_cost').find('span').text(nGoodsCost);
             				$ul.find('.profit').find('span').text(nProfit);
@@ -261,12 +275,12 @@ $(function () {
             			}
             		});
             		$this.tablesorter()
-            		.tablesorterPager({ container: $this.next().next() });       			
+            		.tablesorterPager({ container: $this.next().next() });
             	});
     		} else {
                 console.log(sFinancialUrl);return;
     			window.location = res;
-    		}			
+    		}
 		}
 	});
 

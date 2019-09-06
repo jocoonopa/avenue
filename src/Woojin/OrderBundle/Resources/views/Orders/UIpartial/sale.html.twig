@@ -36,6 +36,21 @@ window.phone_length = 10;
         <label for="radio3"><span data-icon='"'>網售</span></label>
         <input type="radio" name="sell_type" id="radio4" vale="same_business" />
         <label for="radio4"><span data-icon='a'>同行批貨</span></label>
+
+        <input type="radio" name="sell_type" id="radio5" vale="same_business" />
+        <label for="radio5"><span data-icon=''>香榭粉絲團</span></label>
+        <input type="radio" name="sell_type" id="radio6" vale="same_business" />
+        <label for="radio6"><span data-icon=''>香榭 LIVE 粉絲團</span></label>
+        <input type="radio" name="sell_type" id="radio7" vale="same_business" />
+        <label for="radio7"><span data-icon=''>Angie 粉絲團</span></label>
+        <input type="radio" name="sell_type" id="radio8" vale="same_business" />
+        <label for="radio8"><span data-icon=''>LINE@</span></label>
+        <input type="radio" name="sell_type" id="radio9" vale="same_business" />
+        <label for="radio9"><span data-icon=''>官網</span></label>
+        <input type="radio" name="sell_type" id="radio10" vale="same_business" />
+        <label for="radio10"><span data-icon=''>Yahoo購物中心</span></label>
+        <input type="radio" name="sell_type" id="radio11" vale="same_business" />
+        <label for="radio11"><span data-icon=''>MOMO購物中心</span></label>
 	</div>
 </div>
 
@@ -543,8 +558,31 @@ $(function(){
 			break;
 			case 'radio4':
 				$sellFlow.find('[name="nOrdersKindId"]').val(14);
-				break;
 			break;
+
+            case 'radio5':
+                $sellFlow.find('[name="nOrdersKindId"]').val(16);
+            break;
+            case 'radio6':
+                $sellFlow.find('[name="nOrdersKindId"]').val(17);
+            break;
+            case 'radio7':
+                $sellFlow.find('[name="nOrdersKindId"]').val(18);
+            break;
+
+            case 'radio8':
+                $sellFlow.find('[name="nOrdersKindId"]').val(19);
+            break;
+            case 'radio9':
+                $sellFlow.find('[name="nOrdersKindId"]').val(20);
+            break;
+            case 'radio10':
+                $sellFlow.find('[name="nOrdersKindId"]').val(21);
+            break;
+            case 'radio11':
+                $sellFlow.find('[name="nOrdersKindId"]').val(22);
+            break;
+
 			default:
 				break;
 		}

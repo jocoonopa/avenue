@@ -104,28 +104,25 @@ class ProfitExporter implements IExporter
     protected function getTitileMap()
     {
         return array(
-            'A1' => '付清時間',
-            'B1' => '品牌',
-            'C1' => '款式',
-            'D1' => '型號',
-            'E1' => '付款方式',
-            'F1' => '包名',
-            'G1' => '產編',
-            'H1' => '新舊',
-            'I1' => '訂價',
-            'J1' => '寄賣回扣',
-            'K1' => '販售方式',
-            'L1' => '銷售金額',
-            'M1' => '成本',
-            'N1' => '毛利',
-            'O1' => '原始銷售金額',
-            'P1' => '原始已付',
-            'Q1' => '原始毛利',
-            'R1' => '售出人',
-            'S1' => '備註',
-            'T1' => '活動',
-            'U1' => '訂單建立時間',
-            'V1' => '來源門市'
+            'A1' => '訂單建立時間', // 訂單建立時間
+            'B1' => '付清時間', // 付清時間
+            'C1' => '品牌', // 品牌
+            'D1' => '包名', // 包名
+            'E1' => '產編', // 產編
+            'F1' => '新舊', // 新舊
+            'G1' => '寄賣%數', // 寄賣%數
+            'H1' => '寄賣客', // 寄賣客
+            'I1' => '寄賣成本', // 寄賣成本
+            'J1' => '成本', // 成本
+            'K1' => '來源門市', // 來源門市
+            'L1' => '付款方式', // 付款方式
+            'M1' => '銷售金額', //銷售金額
+            'N1' => '含5?', // 含5?
+            'O1' => '免5?', // 免5?
+            'P1' => '毛利', // 毛利
+            'Q1' => '售出人', // 售出人
+            'R1' => '活動', // 活動
+            'S1' => '備註' // 備註
         );
     }
 
@@ -153,10 +150,7 @@ class ProfitExporter implements IExporter
                 'P' => '尚未結清',
                 'Q' => '尚未結清',
                 'R' => '尚未結清',
-                'S' => '尚未結清',
-                'T' => '尚未結清',
-                'U' => '尚未結清',
-                'V' => '尚未結清'
+                'S' => '尚未結清'
             );
         }
 
@@ -165,28 +159,25 @@ class ProfitExporter implements IExporter
             || $this->user->getRole()->hasAuth('READ_ORDER_ALL')
         )
             ? array(
-                'A' => $order->getOpes()->last()->getDatetime()->format('Y-m-d H:i:s'),
-                'B' => ($brand = $product->getBrand()) ? $brand->getName() : null,
-                'C' => ($pattern = $product->getPattern()) ? $pattern->getName() : null, // 款式
-                'D' => $product->getModel(), // 型號
-                'E' => $order->getPayType()->getName(), // 顏色
-                'F' => $product->getName(),
-                'G' => $product->getSn(),
-                'H' => ($level = $product->getLevel()) ? $level->getName() : null,
-                'I' => $product->getCostVerifyed($this->user),
-                'J' => $product->getFeedBack(),
-                'K' => $order->getKind()->getName(),
-                'L' => $order->getRequired(),
-                'M' => $product->getCostVerifyed($this->user),
-                'N' => ($profit = ($order->getRequired() - $product->getCostVerifyed($this->user))) > 0 ? $profit : 0,
-                'O' => $order->getOrgRequired(), // 原始應付
-                'P' => ($order->getRequired() === 0) ? 0 : round($order->getOrgRequired() * ($order->getPaid()/$order->getRequired())), //'原始已付'
-                'Q' => ($order->getOrgRequired() - $product->getCostVerifyed($this->user)),
-                'R' => $order->getOpes()->last()->getUser()->getUsername(),
-                'S' => $order->getMemo(),
-                'T' => ($activity = $product->getActivity()) ? $activity->getName() : '門市出售',
-                'U' => $order->getCreateAt()->format('Y-m-d H:i:s'),
-                'V' => $this->map[substr($product->getParent()->getSn(), 0, 1)]->getName()
+                'A' => $order->getCreateAt() ? $order->getCreateAt()->format('Y-m-d H:i:s') : null, // 訂單建立時間
+                'B' => $order->getOpes()->last()->getDatetime()->format('Y-m-d H:i:s'), // 付清時間
+                'C' => ($brand = $product->getBrand()) ? $brand->getName() : null,  // 品牌
+                'D' => $product->getName(), // 包名
+                'E' => $product->getSn(), // 產編
+                'F' => ($level = $product->getLevel()) ? $level->getName() : null, // 新舊
+                'G' => $product->getBsoCustomPercentage(), // 寄賣%數
+                'H' => false !== ($feedbackOrder = $product->getFeedBackOrder()) ? $feedbackOrder->getCustom()->getName() : null, // 寄賣客
+                'I' => $product->getFeedBack(), // 寄賣成本
+                'J' => $product->getCostVerifyed($this->user), // 成本
+                'K' => $this->map[substr($product->getParent()->getSn(), 0, 1)]->getName(), // 來源門市
+                'L' => $order->getPayType() ? $order->getPayType()->getName() : null, // 付款方式
+                'M' => $product->getPrice(), // 銷售金額
+                'N' => $order->getOrgRequired(), // 含5?
+                'O' => $order->getRequired(),  // 免5?
+                'P' => ($profit = ($order->getRequired() - $product->getCostVerifyed($this->user))) > 0 ? $profit : 0, // 毛利
+                'Q' => $order->getOpes()->last()->getUser()->getUsername(), // 售出人
+                'R' => ($activity = $product->getActivity()) ? $activity->getName() : '門市出售', // 活動
+                'S' => $order->getMemo() // 備註
             )
             : array(
                 'A' => '無閱讀權限',
@@ -208,9 +199,6 @@ class ProfitExporter implements IExporter
                 'Q' => '無閱讀權限',
                 'R' => '無閱讀權限',
                 'S' => '無閱讀權限',
-                'T' => '無閱讀權限',
-                'U' => '無閱讀權限',
-                'V' => '無閱讀權限'
             );
     }
 
@@ -253,120 +241,11 @@ class ProfitExporter implements IExporter
 
         $indexNext = ($this->index + 1);
 
-        $excel
-            ->setActiveSheetIndex(Avenue::START_FROM)
-            ->setCellValue('L' . $indexNext, "=SUM(L1:L" . $this->index . ")")
-        ;
-
-        $excel
-            ->setActiveSheetIndex(Avenue::START_FROM)
-            ->setCellValue('M' . $indexNext, "=SUM(M1:M" . $this->index . ")")
-        ;
-
-        $excel
-            ->setActiveSheetIndex(Avenue::START_FROM)
-            ->setCellValue('N'.$indexNext, "=SUM(N1:N" . $this->index . ")")
-        ;
-
-        $excel
-            ->getActiveSheet()
-            ->getStyle('E1:E' . $indexNext)
-            ->getFill()
-            ->applyFromArray(
-                array(
-                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                    'startcolor' => array('argb' => 'BFFF7F'),
-                )
-            )
-        ;
-
-        $excel
-            ->getActiveSheet()
-            ->getStyle('I1:I' . $indexNext)
-            ->getFill()
-            ->applyFromArray(
-                array(
-                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                    'startcolor' => array('argb' => '228B22'),
-                )
-        );
-
-        $excel
-            ->getActiveSheet()
-            ->getStyle('H1:H' . $indexNext)
-            ->getFill()
-            ->applyFromArray(
-                array(
-                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                    'startcolor' => array('argb' => 'FF7FFF')
-                )
-        );
-
-        $excel
-            ->getActiveSheet()
-            ->getStyle('L1:L' . $indexNext)
-            ->getFill()
-            ->applyFromArray(
-                array(
-                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                    'startcolor' => array('argb' => '5CF5F5')
-                )
-        );
-
-        $excel
-            ->getActiveSheet()
-            ->getStyle('M1:M' . $indexNext)
-            ->getFill()
-            ->applyFromArray(
-                array(
-                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                    'startcolor' => array('argb' => '7FFF00')
-                )
-        );
-
-        $excel
-            ->getActiveSheet()
-            ->getStyle('N1:N' . $indexNext)
-            ->getFill()
-            ->applyFromArray(
-                array(
-                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                    'startcolor' => array('argb' => 'FFA07A')
-                )
-        );
-
-        $excel
-            ->getActiveSheet()
-            ->getStyle('O1:O' . $indexNext)
-            ->getFill()
-            ->applyFromArray(
-                array(
-                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                    'startcolor' => array('argb' => 'FFE4EAF4')
-                )
-        );
-
-        $excel
-            ->getActiveSheet()
-            ->getStyle('P1:P' . $indexNext)
-            ->getFill()
-            ->applyFromArray(
-                array(
-                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                    'startcolor' => array('argb' => 'FFE4EAF4')
-                )
-        );
-
-        $excel
-            ->getActiveSheet()
-            ->getStyle('Q1:Q' . $indexNext)
-            ->getFill()
-            ->applyFromArray(
-                array(
-                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                    'startcolor' => array('argb' => 'FFE4EAF4')
-                )
-        );
+        foreach (array('I', 'J', 'M', 'N', 'O', 'P') as $val) {
+            $excel
+                ->setActiveSheetIndex(Avenue::START_FROM)
+                ->setCellValue($val . $indexNext, "=SUM({$val}1:{$val}" . $this->index . ")");
+        }
 
         // 指回第一個表索引，否則會報錯
         $excel->setActiveSheetIndex(Avenue::START_FROM);
