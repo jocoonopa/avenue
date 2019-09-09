@@ -15,6 +15,12 @@ window.phone_length = 10;
 <script src="{{ asset('/js/jquery.datetimepicker.js') }}"></script>
 
 <div class="sellStart">
+  <div class="manual-created-at">
+    <label class="vader" for="manual-created-at">訂單建立時間</label>
+
+    <input id="manual-created-at" type="text" name="manual_created_at" value="{{ "now"|date("Y-m-d H:i:s")}}" />
+  </div>
+
 	<div class="customMobil">
 		<label class="vader">輸入電話號碼:</label>
 		<input type="text" class="numeric" name="nCustomMobil" placeholder="請輸入電話號碼" />
@@ -100,6 +106,7 @@ window.phone_length = 10;
 		<input type="hidden" name="sGoodsSn" />
 		<input type="hidden" name="nCustomMobil" />
 		<input type="hidden" name="nOrdersKindId" value="6" />
+    <input id="manual-created-at" type="hidden" name="manual_created_at" value="{{ "now"|date("Y-m-d H:i:s")}}" />
 
 		<button type="button" class="step1 submitButton btn btn-default" onkeydown="preventEnterSubmit();">
 			<span onclick="copysn"><i class="icon-play"></i>確定</span>
@@ -523,11 +530,14 @@ $(function(){
 					$sellFlowForm.find('[name="sGoodsSn"]').val( sGoodsSn );
 					$sellFlowForm.find('[name="nOrdersRequired"]').val( nOrdersRequired );
 					$sellFlowForm.find('[name="nGoodsPrice"]').val( nOrdersRequired );
+          $sellFlowForm.find('[name="manual_created_at"]').val($('#manual-created-at').val());
 					$sellTypeDiv.add( $flowSepStart ).fadeIn( nAminateSpeed );
 				}
 			})
-  		.fail(function () {
+  		.fail(function (e) {
   			console.log('_error!');
+
+        alert('新增失敗，請檢查日期格式是否正確 (2019-09-09 12:15:00) 或其他資料填寫是否正確');
   		});
   	}
   }).autocomplete({

@@ -187,9 +187,12 @@ class OutController extends Controller
      */
     public function orderSellGoodsAction(Request $request)
     {
+        // 這寫法真的很找死....
         foreach ($request->request->keys() as $key) {
             $$key = $request->request->get($key);
         }
+
+        $manualCreatedAt = $request->request->get('manual_created_at') ? new \DateTime($request->request->get('manual_created_at')) : null;
 
         $dc = $this->getDoctrine();
         $em = $dc->getManager();
@@ -239,7 +242,7 @@ class OutController extends Controller
                 ->setOrgPaid($nOrdersPaidReal)
                 ->setPaid($nOrdersPaid)
                 ->setMemo($sOrdersMemo)
-            ;
+                ->setManualCreatedAt($manualCreatedAt);
 
             // 找發票
             $Invoices = $dc->getRepository('WoojinOrderBundle:Invoice')->findBy(array('sn' => $request->request->get('invoice_key')));
@@ -251,8 +254,7 @@ class OutController extends Controller
                     ->setCustom($oCustom)
                     ->setStore($this->getUser()->getStore())
                     ->setHasPrint(0)
-                    ->setSn($request->request->get('invoice_key'))
-                ;
+                    ->setSn($request->request->get('invoice_key'));
 
                 $em->persist($Invoice);
             } else {
@@ -302,6 +304,8 @@ class OutController extends Controller
         }
 
         $successProducts = array();
+
+        $manualCreatedAt = $request->request->get('manual_created_at');
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
@@ -420,7 +424,7 @@ class OutController extends Controller
                     ->setOrgRequired($nOrdersRequired)
                     ->setOrgPaid($nOrdersRequired)
                     ->setInvoice($invoice)
-                ;
+                    ->setManualCreatedAt($manualCreatedAt);
 
                 $em->persist($order);
 

@@ -159,7 +159,7 @@ class ProfitExporter implements IExporter
             || $this->user->getRole()->hasAuth('READ_ORDER_ALL')
         )
             ? array(
-                'A' => $order->getCreateAt() ? $order->getCreateAt()->format('Y-m-d H:i:s') : null, // 訂單建立時間
+                'A' => $order->getManualCreatedAt() ? $order->getManualCreatedAt()->format('Y-m-d H:i:s') : null, // 訂單建立時間
                 'B' => $order->getOpes()->last()->getDatetime()->format('Y-m-d H:i:s'), // 付清時間
                 'C' => ($brand = $product->getBrand()) ? $brand->getName() : null,  // 品牌
                 'D' => $product->getName(), // 包名

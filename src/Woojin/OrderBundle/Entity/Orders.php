@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Woojin\OrderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -129,6 +129,13 @@ class Orders
     protected $updateAt;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="manual_created_at", type="datetime", nullable=true)
+     */
+    protected $manualCreatedAt;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -174,7 +181,7 @@ class Orders
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -190,14 +197,14 @@ class Orders
     public function setMemo($memo)
     {
         $this->memo = $memo;
-    
+
         return $this;
     }
 
     /**
      * Get memo
      *
-     * @return string 
+     * @return string
      */
     public function getMemo()
     {
@@ -213,14 +220,14 @@ class Orders
     public function setRequired($required)
     {
         $this->required = $required;
-    
+
         return $this;
     }
 
     /**
      * Get required
      *
-     * @return integer 
+     * @return integer
      */
     public function getRequired()
     {
@@ -236,14 +243,14 @@ class Orders
     public function setPaid($paid)
     {
         $this->paid = $paid;
-    
+
         return $this;
     }
 
     /**
      * Get paid
      *
-     * @return integer 
+     * @return integer
      */
     public function getPaid()
     {
@@ -259,14 +266,14 @@ class Orders
     public function setOrgRequired($orgRequired)
     {
         $this->org_required = $orgRequired;
-    
+
         return $this;
     }
 
     /**
      * Get org_required
      *
-     * @return integer 
+     * @return integer
      */
     public function getOrgRequired()
     {
@@ -282,14 +289,14 @@ class Orders
     public function setOrgPaid($orgPaid)
     {
         $this->org_paid = $orgPaid;
-    
+
         return $this;
     }
 
     /**
      * Get org_paid
      *
-     * @return integer 
+     * @return integer
      */
     public function getOrgPaid()
     {
@@ -305,7 +312,7 @@ class Orders
     public function addOpe(\Woojin\OrderBundle\Entity\Ope $opes)
     {
         $this->opes[] = $opes;
-    
+
         return $this;
     }
 
@@ -322,7 +329,7 @@ class Orders
     /**
      * Get opes
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOpes()
     {
@@ -338,14 +345,14 @@ class Orders
     public function setGoodsPassport(\Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassport = null)
     {
         $this->goods_passport = $goodsPassport;
-    
+
         return $this;
     }
 
     /**
      * Get goods_passport
      *
-     * @return \Woojin\GoodsBundle\Entity\GoodsPassport 
+     * @return \Woojin\GoodsBundle\Entity\GoodsPassport
      */
     public function getGoodsPassport()
     {
@@ -361,14 +368,14 @@ class Orders
     public function setParent(\Woojin\OrderBundle\Entity\Orders $parent = null)
     {
         $this->parent = $parent;
-    
+
         return $this;
     }
 
     /**
      * Get parent
      *
-     * @return \Woojin\OrderBundle\Entity\Orders 
+     * @return \Woojin\OrderBundle\Entity\Orders
      */
     public function getParent()
     {
@@ -384,7 +391,7 @@ class Orders
     public function addRelate(\Woojin\OrderBundle\Entity\Orders $relates)
     {
         $this->relates[] = $relates;
-    
+
         return $this;
     }
 
@@ -401,7 +408,7 @@ class Orders
     /**
      * Get relates
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRelates()
     {
@@ -417,14 +424,14 @@ class Orders
     public function setPayType(\Woojin\OrderBundle\Entity\PayType $payType = null)
     {
         $this->pay_type = $payType;
-    
+
         return $this;
     }
 
     /**
      * Get pay_type
      *
-     * @return \Woojin\OrderBundle\Entity\PayType 
+     * @return \Woojin\OrderBundle\Entity\PayType
      */
     public function getPayType()
     {
@@ -440,14 +447,14 @@ class Orders
     public function setStatus(\Woojin\OrderBundle\Entity\OrdersStatus $status = null)
     {
         $this->status = $status;
-    
+
         return $this;
     }
 
     /**
      * Get status
      *
-     * @return \Woojin\OrderBundle\Entity\OrdersStatus 
+     * @return \Woojin\OrderBundle\Entity\OrdersStatus
      */
     public function getStatus()
     {
@@ -463,14 +470,14 @@ class Orders
     public function setKind(\Woojin\OrderBundle\Entity\OrdersKind $kind = null)
     {
         $this->kind = $kind;
-    
+
         return $this;
     }
 
     /**
      * Get kind
      *
-     * @return \Woojin\OrderBundle\Entity\OrdersKind 
+     * @return \Woojin\OrderBundle\Entity\OrdersKind
      */
     public function getKind()
     {
@@ -486,14 +493,14 @@ class Orders
     public function setCustom(\Woojin\OrderBundle\Entity\Custom $custom = null)
     {
         $this->custom = $custom;
-    
+
         return $this;
     }
 
     /**
      * Get custom
      *
-     * @return \Woojin\OrderBundle\Entity\Custom 
+     * @return \Woojin\OrderBundle\Entity\Custom
      */
     public function getCustom()
     {
@@ -509,14 +516,14 @@ class Orders
     public function setInvoice(\Woojin\OrderBundle\Entity\Invoice $invoice = null)
     {
         $this->invoice = $invoice;
-    
+
         return $this;
     }
 
     /**
      * Get invoice
      *
-     * @return \Woojin\OrderBundle\Entity\Invoice 
+     * @return \Woojin\OrderBundle\Entity\Invoice
      */
     public function getInvoice()
     {
@@ -532,7 +539,7 @@ class Orders
     public function addFit(\Woojin\OrderBundle\Entity\BenefitFrag $fits)
     {
         $this->fits[] = $fits;
-    
+
         return $this;
     }
 
@@ -549,7 +556,7 @@ class Orders
     /**
      * Get fits
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getFits()
     {
@@ -565,14 +572,14 @@ class Orders
     public function setCreateAt($createAt)
     {
         $this->createAt = $createAt;
-    
+
         return $this;
     }
 
     /**
      * Get createAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreateAt()
     {
@@ -588,17 +595,37 @@ class Orders
     public function setUpdateAt($updateAt)
     {
         $this->updateAt = $updateAt;
-    
+
         return $this;
     }
 
     /**
      * Get updateAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdateAt()
     {
         return $this->updateAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getManualCreatedAt()
+    {
+        return $this->manualCreatedAt;
+    }
+
+    /**
+     * @param \DateTime $manualCreatedAt
+     *
+     * @return self
+     */
+    public function setManualCreatedAt($manualCreatedAt)
+    {
+        $this->manualCreatedAt = $manualCreatedAt;
+
+        return $this;
     }
 }

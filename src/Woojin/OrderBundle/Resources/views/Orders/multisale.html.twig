@@ -42,7 +42,7 @@
 							</select>
 						</div>
 					</div>
-					
+
 					<div class="form-group">
 						<label class="col-sm-2 control-label">顏色</label>
 
@@ -59,7 +59,7 @@
 
 					<div class="form-group">
 						<label class="col-sm-2 control-label">色號</label>
-						
+
 						<div class="col-sm-10">
 							<input type="text" name="colorSn" class="form-control" />
 						</div>
@@ -72,7 +72,7 @@
 							<input type="text" name="sGoodsSn" class="form-control" placeholder="產編" />
 						</div>
 					</div>
-						
+
 					<div class="form-group">
 						<button type="button" class="search btn btn-info pull-left" onkeydown="preventEnterSubmit();"><i class="icon-search"></i>查詢</button>
 					</div>
@@ -82,7 +82,7 @@
 			<br/>
 			<hr />
 			<br/>
-			
+
 			<div class="row">
 				<form role="form" name="multiSale" class="hidden" method="POST" role="form">
 					<div class="form-group">
@@ -96,15 +96,22 @@
 							{{ render( controller('WoojinBaseBundle:Base:getPayTypeSelect') ) }}
 						</select>
 					</div>
-					
+
 					<div class="form-group">
 						<label>販售方式</label>
-						
+
 						<select name="nOrdersKindId" class="form-control">
 							<option value="6" selected >售出</option>
 							<option value="7">換購</option>
 							<option value="12">網路售出</option>
 							<option value="14">同行批貨</option>
+							<option value="16">香榭粉絲團</option>
+							<option value="17">香榭 LIVE 粉絲團</option>
+							<option value="18">Angie 粉絲團</option>
+							<option value="19">LINE@</option>
+							<option value="20">官網</option>
+							<option value="21">Yahoo購物中心</option>
+							<option value="22">MOMO購物中心</option>
 						</select>
 					</div>
 				</form>
@@ -133,9 +140,9 @@
 					</thead>
 					<tbody><!-- Ajax Res add Here! --></tbody>
 				</table>
-				
+
 				<div class="goods-info">
-					
+
 				</div>
 
 				<button type="button" class="sale btn btn-success pull-left hidden" onkeydown="preventEnterSubmit();">
@@ -168,12 +175,12 @@
 	$(function () {
 		{#{ render( controller("WoojinBaseBundle:Base:getBrandSelect") ) }#}
 		$('header').remove();
-		
+
 		var $paytypeSelect = $( '#orders-multisale' ).find( 'select[name="nPayTypeId"]' );
 
 		// 付款方式改變隨之變動應付金額
 		$paytypeSelect.change(function () {
-			var 
+			var
 				_discount = $(this).find('option:selected').data('discount'),
 				$requiredInput = $('#orders-multisale').find('.goods-info').find('input[name="rOrdersRequired[]"]');
 
@@ -183,7 +190,7 @@
 				});
 		});
 
-		var 
+		var
 			$form = $('#orders-multisale').find('form[name="multiSaleSearch"]'),
 			$formSale = $('#orders-multisale').find('form[name="multiSale"]'),
 			$button = $form.find('button'),
@@ -210,14 +217,14 @@
 
 				// 判斷是否有找到符合條件的上架產品
 				if ($('#orders-multisale').find('.res-container').find('tr').length > 1) {
-					var 
+					var
 						$inputRequired = $formSale.find('input[name="rOrdersRequired[]"]'),
 						_discount = $formSale.find('select[name="nPayTypeId"]').find('option:selected').data('discount');
 
 					// 將應付金額乘上折扣
 					$inputRequired.each(function () {
 						var _disPrice = Math.round(parseInt($(this).val()) * _discount);
-						
+
 						$(this).val(_disPrice);
 					});
 
@@ -244,7 +251,7 @@
 			keepOnlyChecked();
 
 			$formSale.submit();
-			
+
 			return false;
 		});
 
@@ -273,7 +280,7 @@
 		// 檢查客戶手機是否存在
 		$mobilInput.blur(function () {
 			$.post(
-				Routing.generate('admin_custom_checkExist'), 
+				Routing.generate('admin_custom_checkExist'),
 				{ 'custom_mobil': $mobilInput.val() }
 			)
 			.done(function (res) {
@@ -283,7 +290,7 @@
 					$mobilInput.val('09');
 					$('#orders-multisale').find('.goods-info').addClass('hidden');
 					alert('電話號碼不存在');
-				}     
+				}
 			})
 			.fail(function () {
 				alert('check mobil ajax error');
@@ -303,7 +310,7 @@
 				$saleButton.removeClass('show').addClass('hidden');
 
 				$("[rel^='prettyPhoto']").prettyPhoto();
-				
+
 				$.unblockUI();
 			},
 			error: function () {
@@ -342,14 +349,14 @@
 		});
 
 		var myBlock = function () {
-			$.blockUI({ css: { 
-	            border: 'none', 
-	            padding: '15px', 
-	            backgroundColor: '#000', 
-	            '-webkit-border-radius': '10px', 
-	            '-moz-border-radius': '10px', 
-	            opacity: .5, 
-	            color: '#fff' 
+			$.blockUI({ css: {
+	            border: 'none',
+	            padding: '15px',
+	            backgroundColor: '#000',
+	            '-webkit-border-radius': '10px',
+	            '-moz-border-radius': '10px',
+	            opacity: .5,
+	            color: '#fff'
 	        }});
 		};
 	});

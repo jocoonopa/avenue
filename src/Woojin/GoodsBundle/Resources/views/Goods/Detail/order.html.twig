@@ -1,4 +1,4 @@
-{% for order in product.orders %}                   
+{% for order in product.orders %}
     <div id="ResTabs{{ product.id }}-{{ loop.index }}" >
         <ul class="orders_list">
             <li class="orders_kind">
@@ -23,15 +23,15 @@
                         constant('Woojin\\Utility\\Avenue\\Avenue::OK_CONSIGN_IN'),
                         constant('Woojin\\Utility\\Avenue\\Avenue::OK_SPECIAL_SELL')
                     ] %}
-                        <span class="preWord">成本:</span> 
-                        {% if app.user|has_auth('READ_COST_OWN') %} 
+                        <span class="preWord">成本:</span>
+                        {% if app.user|has_auth('READ_COST_OWN') %}
                             {{ order.required|number_format }}元
                         {% else %}
                             沒有足夠權限
                         {% endif %}
                     {% elseif order.kind.id == constant('Woojin\\Utility\\Avenue\\Avenue::OK_FEEDBACK') %}
                         <span class="preWord">寄賣金額:</span>
-                        {% if app.user|has_auth('READ_COST_OWN') %} 
+                        {% if app.user|has_auth('READ_COST_OWN') %}
                             {{ order.required|number_format }}元
                         {% else %}
                             沒有足夠權限
@@ -53,14 +53,14 @@
                         constant('Woojin\\Utility\\Avenue\\Avenue::OK_SPECIAL_SELL')
                     ] %}
                         <span class="preWord">已付:</span>
-                        {% if app.user|has_auth('READ_COST_OWN') %} 
+                        {% if app.user|has_auth('READ_COST_OWN') %}
                             {{ order.paid|number_format }}元
                         {% else %}
                             沒有足夠權限
                         {% endif %}
                     {% elseif order.kind.id == constant('Woojin\\Utility\\Avenue\\Avenue::OK_FEEDBACK') %}
                         <span class="preWord">已付:</span>
-                        {% if app.user|has_auth('READ_COST_OWN') %} 
+                        {% if app.user|has_auth('READ_COST_OWN') %}
                             {{ order.paid|number_format }}元
                         {% else %}
                             沒有足夠權限
@@ -71,7 +71,7 @@
                     {% endif %}
                 </p>
             </li>
-            
+
             {% if order.memo %}
                 <li>
                     <p>
@@ -88,7 +88,7 @@
                 </li>
             {% endif %}
         </ul>
-        
+
         <table class="ope_list">
         {% for ope in order.opes %}
             {% if loop.first %}
@@ -113,15 +113,15 @@
             </tbody>
         {% endfor %}
         </table>
-            
+
         <div class="button" data-id="{{ order.id }}" data-goodsid="{{ product.id }}">
 
         {# {% if order.kind.id not in [1,4,9,5,11] %}
             <button class="change_order_custom btn btn-default"><i class="icon-pencil"></i>修改客戶</button>
         {% endif %}
 
-        {% 
-            if order.status.id == 1 and 
+        {%
+            if order.status.id == 1 and
             order.kind.id in [6,7,8,12,13,14]
         %}
             <button class="edit_orders btn btn-default" ><i class="icon-edit"></i>修改訂單</button>
@@ -132,17 +132,17 @@
         {% endif %} #}
 
         {% if loop.last %}
-            {# {% if 
-                order.kind.id in [6,7,8,12,13,14] and 
-                order.status.id != 3 
+            {# {% if
+                order.kind.id in [6,7,8,12,13,14] and
+                order.status.id != 3
             %}
                 <button class="cancel_orders btn btn-default"><i class="icon-remove-circle"></i>取消訂單</button>
 
             {% endif %}
 
-            {% if 
-                order.kind.id == 9 and 
-                order.status.id == 1 and 
+            {% if
+                order.kind.id == 9 and
+                order.status.id == 1 and
                 product.status.id == 3
             %}
                 <button class="cancel_orders btn btn-default"><i class="icon-remove-circle"></i>取消訂單</button>
@@ -153,7 +153,8 @@
                 constant('Woojin\\Utility\\Avenue\\Avenue::OK_EXCHANGE_OUT'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::OK_WEB_OUT'),
                 constant('Woojin\\Utility\\Avenue\\Avenue::OK_SPECIAL_SELL'),
-                constant('Woojin\\Utility\\Avenue\\Avenue::OK_SAME_BS')
+                constant('Woojin\\Utility\\Avenue\\Avenue::OK_SAME_BS'),
+                16,17,18,19,20,21,22
             ] %}
                 {% if order.invoice %}
                 <button class="print_sale_list btn btn-default" onclick="window.open('{{ path('invoice_print', {'id': order.invoice.id }) }}')">
@@ -162,7 +163,7 @@
                 {% endif %}
             {% endif %}
         {% endif %}
-                                         
+
         </div>
     </div>
 {% endfor %}
