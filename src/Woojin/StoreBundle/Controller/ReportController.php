@@ -136,10 +136,20 @@ class ReportController extends Controller
         $stopAt->add(new \DateInterval('P1D'));
 
         $and->add(
-            $qb->expr()->between(
-                'o.manualCreatedAt',
-                $qb->expr()->literal($startAt->format('Y-m-d')),
-                $qb->expr()->literal($stopAt->format('Y-m-d'))
+            $qb->expr()->orX(
+                $qb->expr()->between(
+                    'o.manualCreatedAt',
+                    $qb->expr()->literal($startAt->format('Y-m-d')),
+                    $qb->expr()->literal($stopAt->format('Y-m-d'))
+                ),
+                $qb->expr()->andX(
+                    $qb->expr()->isNull('o.manualCreatedAt'),
+                    $qb->expr()->between(
+                        'o.updateAt',
+                        $qb->expr()->literal($startAt->format('Y-m-d')),
+                        $qb->expr()->literal($stopAt->format('Y-m-d'))
+                    )
+                )
             )
         );
 
@@ -196,11 +206,9 @@ class ReportController extends Controller
         $products = array();
 
         foreach ($orders as $order) {
-            if ($order->getOpes()->last()->getDatetime() >= $startAt
-                && $order->getOpes()->last()->getDatetime() <= $stopAt
-            ) {
-                $products[] = $order->getProduct();
-            }
+            $product = $order->getProduct();
+
+            $products[$product->getSn()] = $order->getProduct();
         }
 
         if ($request->request->get('bExport') == 0) {
