@@ -75,11 +75,10 @@ class ProfitExporter implements IExporter
         foreach ($products as $key => $product) {
             if (($key === Avenue::START_FROM) && ($this->index === 2)) {
                 $excel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
-                $excel->getActiveSheet()->getColumnDimension('C')->setWidth(7);
-                $excel->getActiveSheet()->getColumnDimension('D')->setWidth(12);
-                $excel->getActiveSheet()->getColumnDimension('E')->setWidth(12);
-                $excel->getActiveSheet()->getColumnDimension('F')->setWidth(30);
-                $excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+                $excel->getActiveSheet()->getColumnDimension('B')->setWidth(18);
+                $excel->getActiveSheet()->getColumnDimension('D')->setWidth(18);
+                $excel->getActiveSheet()->getColumnDimension('E')->setWidth(18);
+                $excel->getActiveSheet()->getColumnDimension('S')->setWidth(30);
             }
 
             $sheet = $excel->setActiveSheetIndex(Avenue::START_FROM);
@@ -117,8 +116,8 @@ class ProfitExporter implements IExporter
             'K1' => '來源門市', // 來源門市
             'L1' => '付款方式', // 付款方式
             'M1' => '銷售金額', //銷售金額
-            'N1' => '含5?', // 含5?
-            'O1' => '免5?', // 免5?
+            'N1' => '含5', // 含5
+            'O1' => '免5', // 免5
             'P1' => '毛利', // 毛利
             'Q1' => '售出人', // 售出人
             'R1' => '活動', // 活動
@@ -160,20 +159,20 @@ class ProfitExporter implements IExporter
         )
             ? array(
                 'A' => $order->getManualCreatedAt() ? $order->getManualCreatedAt()->format('Y-m-d H:i:s') : null, // 訂單建立時間
-                'B' => $order->getOpes()->last()->getDatetime()->format('Y-m-d H:i:s'), // 付清時間
+                'B' => $order->getUpdateAt()->format('Y-m-d H:i:s'),//$order->getOpes()->last()->getDatetime()->format('Y-m-d H:i:s'), // 付清時間
                 'C' => ($brand = $product->getBrand()) ? $brand->getName() : null,  // 品牌
                 'D' => $product->getName(), // 包名
                 'E' => $product->getSn(), // 產編
                 'F' => ($level = $product->getLevel()) ? $level->getName() : null, // 新舊
-                'G' => $product->getBsoCustomPercentage(), // 寄賣%數
+                'G' => null,//$product->getBsoCustomPercentage(), // 寄賣%數
                 'H' => false !== ($feedbackOrder = $product->getFeedBackOrder()) ? $feedbackOrder->getCustom()->getName() : null, // 寄賣客
                 'I' => $product->getFeedBack(), // 寄賣成本
                 'J' => $product->getCostVerifyed($this->user), // 成本
                 'K' => $this->map[substr($product->getParent()->getSn(), 0, 1)]->getName(), // 來源門市
                 'L' => $order->getPayType() ? $order->getPayType()->getName() : null, // 付款方式
-                'M' => $product->getPrice(), // 銷售金額
-                'N' => $order->getOrgRequired(), // 含5?
-                'O' => $order->getRequired(),  // 免5?
+                'M' => $order->getRequired(), // 銷售金額
+                'N' => $this->getColumn_N_Value($order), // 含5?
+                'O' => $this->getColumn_O_Value($order),//$order->getRequired(),  // 免5? 合庫83 + 1
                 'P' => ($profit = ($order->getRequired() - $product->getCostVerifyed($this->user))) > 0 ? $profit : 0, // 毛利
                 'Q' => $order->getOpes()->last()->getUser()->getUsername(), // 售出人
                 'R' => ($activity = $product->getActivity()) ? $activity->getName() : '門市出售', // 活動
@@ -200,6 +199,26 @@ class ProfitExporter implements IExporter
                 'R' => '無閱讀權限',
                 'S' => '無閱讀權限',
             );
+    }
+
+    protected function getColumn_N_Value($order)
+    {
+        // 合庫付款方式
+        if (83 == $order->getPayType()->getId()) {
+            return null;
+        }
+
+        return $order->getOrgRequired();
+    }
+
+    protected function getColumn_O_Value($order)
+    {
+        // 83 + 1 現金
+        if (in_array($order->getPayType()->getId(), [1, 83])) {
+            return $order->getRequired();
+        }
+
+        return null;
     }
 
     public function getResponse()

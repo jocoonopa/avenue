@@ -125,8 +125,8 @@ class ReportController extends Controller
             ->from('WoojinOrderBundle:Orders', 'o')
             ->leftJoin('o.goods_passport', 'gd')
             ->leftJoin('gd.custom', 'gc')
-            ->leftJoin('o.custom', 'oc')
-            ->leftJoin('o.opes', 'p');
+            ->leftJoin('o.custom', 'oc');
+            //->leftJoin('o.opes', 'p');
 
         $and = $qb->expr()->andX();
 
@@ -137,7 +137,7 @@ class ReportController extends Controller
 
         $and->add(
             $qb->expr()->between(
-                'p.datetime',
+                'o.manualCreatedAt',
                 $qb->expr()->literal($startAt->format('Y-m-d')),
                 $qb->expr()->literal($stopAt->format('Y-m-d'))
             )
