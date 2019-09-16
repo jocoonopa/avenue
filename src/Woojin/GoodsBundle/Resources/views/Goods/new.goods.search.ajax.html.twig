@@ -15,7 +15,7 @@
             {% endif %}
         {% endif %}
 
-        {% if true == goods.isInShipment %}
+        {% if true == goods.isInShipment and 1 == goods.status %}
             <div style="position: absolute; right: 0; bottom: 0; background-color: red;">{{ '待出貨' }}</div>
         {% endif %}
     </div>

@@ -38,7 +38,8 @@ class GoodsPassportRepository extends EntityRepository
             ->from('WoojinGoodsBundle:GoodsPassport', 'g')
             ->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('g.isInShipment', true)
+                    $qb->expr()->eq('g.isInShipment', true),
+                    $qb->expr()->eq('g.status', Avenue::GS_ONSALE)
                 )
             );
 
