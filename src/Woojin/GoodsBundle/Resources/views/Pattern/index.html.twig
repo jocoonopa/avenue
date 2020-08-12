@@ -4,11 +4,11 @@
     {% if app.user|has_auth('PATTERN') %}
         <h1>款式列表
             <small>
-                {% if app.user.store.id == 6 %}
+                {# {% if app.user.store.id == 6 %} #}
                 <a href="{{ path('pattern_new') }}" class="btn btn-primary">
                     新增
                 </a>
-                {% endif %}
+                {# {% endif %} #}
             </small>
         </h1>
 

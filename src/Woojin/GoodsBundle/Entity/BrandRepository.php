@@ -14,7 +14,7 @@ class BrandRepository extends EntityRepository
             ->from('WoojinGoodsBundle:Brand', 'p')
             ->leftJoin('p.yc', 'y')
             ->where($qb->expr()->gt('p.count', 0))
-            ->orderBy('p.name', 'ASC')
+            ->orderBy('p.count', 'ASC')
             ->getQuery()
             ->getResult()
         ;

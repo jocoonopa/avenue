@@ -3,7 +3,7 @@
 {% block body -%}
 {% if app.user|has_auth('BRAND') %}
 
-    <h1>品牌列表 
+    <h1>品牌列表
         <small>
             {# {% if app.user.store.id == 6 %} #}
             <a href="{{ path('brand_new') }}" class="btn btn-primary">

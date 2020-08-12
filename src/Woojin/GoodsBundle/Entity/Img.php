@@ -112,7 +112,7 @@ class Img
     public function getPath($isAbs = false)
     {
         if ($this->getIsTrashed() && !$isAbs) {
-            return "http://laravel.avenue2003.com/storage{$this->path}";
+            return "https://laravel.avenue2003.com/storage{$this->path}";
         }
 
         return ($isAbs) ? $_SERVER['DOCUMENT_ROOT'] . $this->path : $this->path;

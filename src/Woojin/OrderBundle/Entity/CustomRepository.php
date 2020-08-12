@@ -133,13 +133,12 @@ class CustomRepository extends EntityRepository
                     $qb->expr()->neq('c.mobil', $qb->expr()->literal('')),
                     $qb->expr()->eq('c.store', $user->getStore()->getId())
                 )
-            )
-        ;
+            );
 
-        $res = $qb->getQuery()->getOneOrNullResult();
+        $res = $qb->getQuery()->getResult();
+
+        return is_null($res) ? null : isset($res[0]) ? $res[0] : null;
         // $res = $qb->getQuery()->getSingleResult();
-
-        return $res;
     }
 
     /**

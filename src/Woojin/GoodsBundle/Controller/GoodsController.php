@@ -1159,7 +1159,7 @@ class GoodsController extends Controller
      */
     public function goodsCheckonsaleAction ()
     {
-        ini_set('memory_limit', '256M');
+        ini_set('memory_limit', '1024M');
 
         $sStoreSn = $this->get('security.token_storage')->getToken()->getUser()->getStore()->getSn();
 
@@ -2704,7 +2704,7 @@ class GoodsController extends Controller
                 $qb->expr()->andX(
                     $qb->expr()->eq('g.sn', $qb->expr()->literal($sn)),
                     $qb->expr()->notIn('g.status', [2, 5, 8, 10]),
-                    $qb->expr()->eq('g.isInShipment', false)
+                    $qb->expr()->eq('g.isInShipment', 0)
                 )
             )
             ->getQuery()

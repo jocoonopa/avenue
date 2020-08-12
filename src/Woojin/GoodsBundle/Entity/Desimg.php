@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Woojin\GoodsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -39,7 +39,7 @@ class Desimg
      * @ORM\Column(type="boolean")
      */
     protected $isTrashed;
-    
+
     /**
      * Constructor
      */
@@ -61,7 +61,7 @@ class Desimg
 
     /**
      * 取得圖片檔案名稱
-     * 
+     *
      * @return string
      */
     public function getName()
@@ -70,11 +70,11 @@ class Desimg
 
         return (is_array($pathParts)) ? $pathParts[count($pathParts) - 1] : null;
     }
-    
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -90,21 +90,21 @@ class Desimg
     public function setPath($path)
     {
         $this->path = $path;
-    
+
         return $this;
     }
 
     /**
      * Get path
      *
-     * @return string 
+     * @return string
      */
     public function getPath()
     {
         if ($this->getIsTrashed()) {
-            return "http://laravel.avenue2003.com/storage{$this->path}"; 
+            return "https://laravel.avenue2003.com/storage{$this->path}";
         }
-        
+
         return $this->path;
     }
 
@@ -122,7 +122,7 @@ class Desimg
     public function addGoodsPassport(\Woojin\GoodsBundle\Entity\GoodsPassport $goodsPassports)
     {
         $this->goodsPassports[] = $goodsPassports;
-    
+
         return $this;
     }
 
@@ -139,7 +139,7 @@ class Desimg
     /**
      * Get goodsPassports
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGoodsPassports()
     {
@@ -155,14 +155,14 @@ class Desimg
     public function setYahooName($yahooName)
     {
         $this->yahooName = $yahooName;
-    
+
         return $this;
     }
 
     /**
      * Get yahooName
      *
-     * @return string 
+     * @return string
      */
     public function getYahooName()
     {

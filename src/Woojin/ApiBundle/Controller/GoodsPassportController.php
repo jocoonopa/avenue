@@ -413,6 +413,10 @@ class GoodsPassportController extends Controller
         $goods = $em->getRepository('WoojinGoodsBundle:GoodsPassport')
             ->findOneBy(array('sn' => $sn));
 
+        if (is_null($goods)) {
+            return $responseHandler->getNoncached($request, json_encode(['status' => 200]), $_format);
+        }
+
         $responseHandler = new ResponseHandler;
 
         $goods->setIsInShipment(1 === (int) $request->get('is_in_shipment'));
