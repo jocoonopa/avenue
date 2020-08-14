@@ -75,6 +75,7 @@ class Role implements RoleInterface
     const EDIT_ACTIVITY_DISPLAY         = 58;
     const BSO_VIEW_BELONG_PROFIT        = 59;
     const BSO_VIEW_ALL_PROFIT           = 60;
+    const CUSTOM_GETBACK                = 61;
 
     protected static $map = array(
         'BRAND'                         => '編輯品牌',
@@ -157,7 +158,8 @@ class Role implements RoleInterface
 
         'EDIT_SEO_SLOGAN'               => '關鍵字管理',
         'BSO_VIEW_BELONG_PROFIT'        => '檢視本店bso',
-        'BSO_VIEW_ALL_PROFIT'           => '檢視所有bso'
+        'BSO_VIEW_ALL_PROFIT'           => '檢視所有bso',
+        'CUSTOM_GETBACK'                => '客戶寄取回',
     );
 
     public static function getRolelist()

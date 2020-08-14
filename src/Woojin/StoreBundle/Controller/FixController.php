@@ -190,16 +190,20 @@ class FixController extends Controller
     {
         set_time_limit(0);
 
-        $date = new \DateTime();
-        $updateAt = $date->modify('-6 months')->format('Y-m-d');
+        $updateAt = new \DateTime('2019-09-30');
+        // $updateAt = $updateAt->modify('-11 months')->format('Y-m-d');
 
         $em = $this->getDoctrine()->getManager();
 
-        $sql = "UPDATE desimg LEFT JOIN goods_passport ON desimg.id = goods_passport.img_id SET desimg.isTrashed = true WHERE goods_passport.status_id in (2, 10) and goods_passport.updateAt <= '{$updateAt}'";
+        // goods_passport.status_id in (2, 10) and
+
+        $sql = "UPDATE desimg LEFT JOIN goods_passport ON desimg.id = goods_passport.img_id SET desimg.isTrashed = true WHERE goods_passport.updateAt <= '{$updateAt}'";
 
         $em->getConnection()->exec($sql);
 
-        $sql = "UPDATE img LEFT JOIN goods_passport ON img.id = goods_passport.img_id SET img.isTrashed = true WHERE goods_passport.status_id in (2, 10) and goods_passport.updateAt <= '{$updateAt}'";
+        // goods_passport.status_id in (2, 10) and
+
+        $sql = "UPDATE img LEFT JOIN goods_passport ON img.id = goods_passport.img_id SET img.isTrashed = true WHERE goods_passport.updateAt <= '{$updateAt}'";
 
         $em->getConnection()->exec($sql);
 

@@ -782,6 +782,10 @@ class ModifyController extends Controller
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
+        if (! $user->getRole()->hasAuth('CUSTOM_GETBACK')) {
+            return new \Exception('您沒有執行客戶寄賣取回的權限!');
+        }
+
         $em = $this->getDoctrine()->getManager();
         $em->getConnection()->beginTransaction();
 

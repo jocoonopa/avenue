@@ -38,7 +38,7 @@ abstract class Avenue
     const OS_HANDLING               = 1;
     const OS_COMPLETE               = 2;
     const OS_CANCEL                 = 3;
-    
+
     const OK_IN                     = 1;
     const OK_EXCHANGE_IN            = 2;
     const OK_TURN_IN                = 3;
@@ -56,7 +56,7 @@ abstract class Avenue
 
     const OKT_OUT                   = 2;
     const OKT_IN                    = 0;
-    
+
     const PT_CASH                   = 1;
     const PT_STAFF                  = 68;
     const PT_ATM                    = 81;
@@ -64,12 +64,12 @@ abstract class Avenue
     const STORE_STOCK_SN            = '$';
     const STORE_WEBSITE             = 8;
     const STORE_BSO                 = 9;
-    
+
     const SN_RATE                   = 100;
 
     const ROLE_CHIEF                = 2;
     const ROLE_SPECIAL_USER         = 5;
-    
+
     const CUS_NONE                  = 1;
     const MAX_RES                   = 12;
     const START_FROM                = 0;

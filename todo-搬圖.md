@@ -94,5 +94,6 @@ function RemoveEmptySubFolders($path)
 - 壓縮的 `.tar` 上傳透過 ftp upload 到 public/img, 然後解壓縮
 - 移除 `.tar`
 - 更改 isTrashed
+- 透過 cpanel 檔案管理員後台進行刪除
 
 
